@@ -7,7 +7,7 @@ import { Grid } from "./components/Grid";
 import { GRID_SIZE } from "./constants";
 import { PlayerState } from "./types";
 
-const gridDimensions = 6;
+const gridDimensions = 5;
 const totalGridSize = gridDimensions * GRID_SIZE;
 
 // const gridContainerClassName = `grid grid-rows-${gridDimensions} grid-cols-${gridDimensions}`;
@@ -38,7 +38,7 @@ function App() {
           }}
           // className={gridContainerClassName}
         >
-          {Array.from({ length: 36 }).map((_, index) => (
+          {Array.from({ length: gridDimensions ** 2 }).map((_, index) => (
             <Grid key={index} playerState={playerState} />
           ))}
         </div>
