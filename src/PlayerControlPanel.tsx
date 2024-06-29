@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import { PlayerState } from "./types";
 
 const Button: FC<{
   children: string;
@@ -30,21 +31,12 @@ const skills: { name: string; damage: number }[] = [
 ];
 
 export const PlayerControlPanel: FC<{
-  playerState: {
-    isAttacking: boolean;
-    isMoving: boolean;
-    isUsingSkill: boolean;
-    isEndingTurn: boolean;
-  };
-  setPlayerState: (state: {
-    isAttacking: boolean;
-    isMoving: boolean;
-    isUsingSkill: boolean;
-    isEndingTurn: boolean;
-  }) => void;
+  playerState: PlayerState;
+  setPlayerState: (state: PlayerState) => void;
 }> = ({ playerState, setPlayerState }) => {
   return (
     <div className="bg-white w-full p-2 flex justify-center items-center gap-5 absolute bottom-[50px]">
+      <div></div>
       {playerState.isUsingSkill ? (
         <>
           {skills.map((skill) => (
@@ -58,7 +50,6 @@ export const PlayerControlPanel: FC<{
                 isAttacking: false,
                 isMoving: false,
                 isUsingSkill: false,
-                isEndingTurn: false,
               })
             }
           >
@@ -73,7 +64,6 @@ export const PlayerControlPanel: FC<{
                 isAttacking: true,
                 isMoving: false,
                 isUsingSkill: false,
-                isEndingTurn: false,
               });
             }}
           >
@@ -85,7 +75,6 @@ export const PlayerControlPanel: FC<{
                 isAttacking: false,
                 isMoving: true,
                 isUsingSkill: false,
-                isEndingTurn: false,
               });
             }}
           >
@@ -97,7 +86,6 @@ export const PlayerControlPanel: FC<{
                 isAttacking: false,
                 isMoving: false,
                 isUsingSkill: true,
-                isEndingTurn: false,
               });
             }}
           >
@@ -109,7 +97,6 @@ export const PlayerControlPanel: FC<{
                 isAttacking: false,
                 isMoving: false,
                 isUsingSkill: false,
-                isEndingTurn: true,
               });
             }}
           >
