@@ -2,22 +2,23 @@
 // import reactLogo from "./assets/react.svg";
 // import viteLogo from "/vite.svg";
 import { useState } from "react";
-import { PlayerControlPanel } from "./ControlPanel";
+import { PlayerControlPanel } from "./PlayerControlPanel";
 import { Grid } from "./components/Grid";
 import { GRID_SIZE } from "./constants";
+import { PlayerState } from "./types";
 
 const gridDimensions = 6;
 const totalGridSize = gridDimensions * GRID_SIZE;
 
-const gridContainerClassName = `grid grid-rows-${gridDimensions} grid-cols-${gridDimensions}`;
+// const gridContainerClassName = `grid grid-rows-${gridDimensions} grid-cols-${gridDimensions}`;
 
 function App() {
   // const [count, setCount] = useState(0);
-  const [playerState, setPlayerState] = useState({
+  // const [playerHealth, setPlayerHealth] = useState(100);
+  const [playerState, setPlayerState] = useState<PlayerState>({
     isAttacking: false,
     isMoving: false,
     isUsingSkill: false,
-    isEndingTurn: false,
   });
 
   return (
@@ -28,11 +29,17 @@ function App() {
       </header>
       <div className="ml-auto mr-auto mb-10 ">
         <div
-          style={{ width: totalGridSize, height: totalGridSize }}
-          className={gridContainerClassName}
+          style={{
+            width: totalGridSize,
+            height: totalGridSize,
+            display: "grid",
+            gridTemplateColumns: `repeat(${gridDimensions}, ${GRID_SIZE}px)`,
+            gridTemplateRows: `repeat(${gridDimensions}, ${GRID_SIZE}px)`,
+          }}
+          // className={gridContainerClassName}
         >
           {Array.from({ length: 36 }).map((_, index) => (
-            <Grid key={index} />
+            <Grid key={index} playerState={playerState} />
           ))}
         </div>
       </div>
