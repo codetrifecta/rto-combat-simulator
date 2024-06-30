@@ -1,6 +1,6 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Tile } from "./Tile";
-import { TILE_SIZE } from "./constants";
+import { TILE_SIZE, TILE_TYPE } from "./constants";
 import { PlayerState } from "./types";
 
 /**
@@ -12,15 +12,15 @@ import { PlayerState } from "./types";
  * 4 - enemy
  */
 
-const roomLength = 7;
+const roomLength = 9;
 const totalRoomSize = roomLength * TILE_SIZE;
 
 // Initialize room matrix
-const roomMatrix: number[][] = Array.from({ length: roomLength }, () =>
+const initialRoomMatrix: number[][] = Array.from({ length: roomLength }, () =>
   Array.from({ length: roomLength }, () => 0)
 );
 
-console.log("pre", roomMatrix);
+console.log("pre", initialRoomMatrix);
 
 // Generate room layout
 for (let row = 0; row < roomLength; row++) {
@@ -33,30 +33,32 @@ for (let row = 0; row < roomLength; row++) {
       col === roomLength - 1
     ) {
       if (col === Math.floor(roomLength / 2)) {
-        roomMatrix[row][col] = 2;
+        initialRoomMatrix[row][col] = TILE_TYPE.DOOR;
       } else {
-        roomMatrix[row][col] = 1;
+        initialRoomMatrix[row][col] = TILE_TYPE.WALL;
       }
 
       console.log("row", row);
     }
     // Place player in the bottom middle
     else if (row === roomLength - 2 && col === Math.floor(roomLength / 2)) {
-      roomMatrix[row][col] = 3;
+      initialRoomMatrix[row][col] = TILE_TYPE.PLAYER;
     }
     // Place enemy in the top middle
     else if (row === 1 && col === Math.floor(roomLength / 2)) {
-      roomMatrix[row][col] = 4;
+      initialRoomMatrix[row][col] = TILE_TYPE.ENEMY;
     } else {
       // Place walls everywhere else
-      roomMatrix[row][col] = 0;
+      initialRoomMatrix[row][col] = TILE_TYPE.EMPTY;
     }
   }
 }
 
-console.log("post", roomMatrix);
-
 export const Room: FC<{ playerState: PlayerState }> = ({ playerState }) => {
+  const [roomMatrix] = useState<TILE_TYPE[][]>(initialRoomMatrix);
+
+  console.log("roomMatrix", roomMatrix);
+
   return (
     <div
       style={{
