@@ -35,8 +35,7 @@ export const PlayerControlPanel: FC<{
   setPlayerState: (state: PlayerState) => void;
 }> = ({ playerState, setPlayerState }) => {
   return (
-    <div className="bg-white w-full p-2 flex justify-center items-center gap-5 absolute bottom-[50px]">
-      <div></div>
+    <div className="bg-white w-screen p-4 flex justify-center items-center gap-5 box-border">
       {playerState.isUsingSkill ? (
         <>
           {skills.map((skill) => (
