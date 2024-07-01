@@ -82,7 +82,7 @@ export const PlayerControlPanel: FC<{
                   isUsingSkill: false,
                 });
               }}
-              disabled={disabled}
+              disabled={disabled || playerState.actionPoints < 2}
             >
               Attack
             </Button>
