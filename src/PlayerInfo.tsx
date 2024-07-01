@@ -12,7 +12,10 @@ export const PlayerInfo: FC<{ playerState: PlayerState }> = ({
         <p>Health: </p>
         <p>{playerState.health}</p>
         <p>Action Points: </p>
-        <ActionPoints actionPoints={playerState.actionPoints} />
+        <ActionPoints
+          actionPoints={playerState.actionPoints}
+          playerState={playerState}
+        />
       </div>
     </>
   );
