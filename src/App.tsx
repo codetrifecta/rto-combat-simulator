@@ -5,8 +5,6 @@ import { Room } from "./Room";
 import { GameInfo } from "./GameInfo";
 import { ENTITY_TYPE } from "./constants";
 
-// const gridContainerClassName = `grid grid-rows-${gridDimensions} grid-cols-${gridDimensions}`;
-
 function App() {
   const [gameState, setGameState] = useState<GameState>({
     // List of tuples with entity type and id of entity
@@ -65,7 +63,7 @@ function App() {
           ...prevState,
           isLoading: false,
         }));
-      }, 1000);
+      }, 1500);
     }
   }, [gameState.turnCycle, handleEndTurn]);
 
@@ -79,7 +77,7 @@ function App() {
         <GameInfo gameState={gameState} />
       </div>
       <div className="ml-auto mr-auto mb-10 ">
-        <Room playerState={playerState} />
+        <Room gameState={gameState} playerState={playerState} />
       </div>
       {/* Control Panel */}
       <PlayerControlPanel

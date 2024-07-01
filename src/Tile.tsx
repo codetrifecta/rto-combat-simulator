@@ -17,8 +17,9 @@ const className = `border-2 border-gray hover:border-black cursor-pointer `;
 export const Tile: FC<{
   tileType: number;
   playerState: PlayerState;
+  active: boolean;
   classNames?: string;
-}> = ({ tileType, playerState, classNames = "" }) => {
+}> = ({ tileType, playerState, active, classNames = "" }) => {
   return (
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
@@ -28,8 +29,10 @@ export const Tile: FC<{
         "bg-yellow-500": tileType === TILE_TYPE.DOOR,
         "bg-green-500": tileType === TILE_TYPE.PLAYER,
         "bg-red-500": tileType === TILE_TYPE.ENEMY,
-        "hover:bg-red-500": playerState.isAttacking,
-        "hover:bg-blue-500": playerState.isMoving,
+        "hover:border-red-500": playerState.isAttacking,
+        "hover:border-blue-500": playerState.isMoving,
+        "shadow-intense-green z-10": tileType === TILE_TYPE.PLAYER && active,
+        "shadow-intense-red z-10": tileType === TILE_TYPE.ENEMY && active,
       })}
     ></div>
   );

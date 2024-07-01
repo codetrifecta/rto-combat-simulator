@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Tile } from "./Tile";
-import { TILE_SIZE, TILE_TYPE } from "./constants";
-import { PlayerState } from "./types";
+import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
+import { GameState, PlayerState } from "./types";
 
 /**
  * Room
@@ -12,12 +12,14 @@ import { PlayerState } from "./types";
  * 4 - enemy
  */
 
+// Seems like ideal room size is AT LEAST 9x9
 const roomLength = 9;
 const totalRoomSize = roomLength * TILE_SIZE;
 
 // Initialize room matrix
-const initialRoomMatrix: number[][] = Array.from({ length: roomLength }, () =>
-  Array.from({ length: roomLength }, () => 0)
+const initialRoomMatrix: [TILE_TYPE, number][][] = Array.from(
+  { length: roomLength },
+  () => Array.from({ length: roomLength }, () => [TILE_TYPE.EMPTY, 0])
 );
 
 console.log("pre", initialRoomMatrix);
@@ -33,16 +35,16 @@ for (let row = 0; row < roomLength; row++) {
       col === roomLength - 1
     ) {
       if (col === Math.floor(roomLength / 2)) {
-        initialRoomMatrix[row][col] = TILE_TYPE.DOOR;
+        initialRoomMatrix[row][col] = [TILE_TYPE.DOOR, 1];
       } else {
-        initialRoomMatrix[row][col] = TILE_TYPE.WALL;
+        initialRoomMatrix[row][col] = [TILE_TYPE.WALL, 1];
       }
 
       console.log("row", row);
     }
     // Place player in the bottom middle
     else if (row === roomLength - 2 && col === Math.floor(roomLength / 2)) {
-      initialRoomMatrix[row][col] = TILE_TYPE.PLAYER;
+      initialRoomMatrix[row][col] = [TILE_TYPE.PLAYER, 1];
     }
     // Place two enemies in quadrant 1 and 2
     else if (
@@ -51,16 +53,27 @@ for (let row = 0; row < roomLength; row++) {
       (row === Math.floor(roomLength / 4) &&
         col === Math.floor((roomLength / 4) * 3))
     ) {
-      initialRoomMatrix[row][col] = TILE_TYPE.ENEMY;
+      if (col === Math.floor(roomLength / 4)) {
+        initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
+      } else {
+        initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 2];
+      }
     } else {
       // Place walls everywhere else
-      initialRoomMatrix[row][col] = TILE_TYPE.EMPTY;
+      initialRoomMatrix[row][col] = [TILE_TYPE.EMPTY, 1];
     }
   }
 }
 
-export const Room: FC<{ playerState: PlayerState }> = ({ playerState }) => {
-  const [roomMatrix] = useState<TILE_TYPE[][]>(initialRoomMatrix);
+// Manually modify room matrix
+// initialRoomMatrix[2][2] = [TILE_TYPE.ENEMY, 1];
+// initialRoomMatrix[2][4] = [TILE_TYPE.ENEMY, 2];
+
+export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
+  gameState,
+  playerState,
+}) => {
+  const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
   console.log("roomMatrix", roomMatrix);
 
@@ -75,52 +88,35 @@ export const Room: FC<{ playerState: PlayerState }> = ({ playerState }) => {
       }}
     >
       {roomMatrix.map((row, rowIndex) => {
-        return row.map((tile, columnIndex) => {
-          // console.log(tile);
-          switch (tile) {
-            case 0:
-              return (
-                <Tile
-                  tileType={tile}
-                  key={`${rowIndex}-${columnIndex}`}
-                  playerState={playerState}
-                />
-              );
-            case 1:
-              return (
-                <Tile
-                  tileType={tile}
-                  key={`${rowIndex}-${columnIndex}`}
-                  playerState={playerState}
-                />
-              );
-            case 2:
-              return (
-                <Tile
-                  tileType={tile}
-                  key={`${rowIndex}-${columnIndex}`}
-                  playerState={playerState}
-                />
-              );
-            case 3:
-              return (
-                <Tile
-                  tileType={tile}
-                  key={`${rowIndex}-${columnIndex}`}
-                  playerState={playerState}
-                />
-              );
-            case 4:
-              return (
-                <Tile
-                  tileType={tile}
-                  key={`${rowIndex}-${columnIndex}`}
-                  playerState={playerState}
-                />
-              );
-            default:
-              return null;
+        return row.map(([tileType, id], columnIndex) => {
+          // Parse tile type to entity type
+          let entityType: ENTITY_TYPE | null;
+          if (tileType === TILE_TYPE.PLAYER) {
+            entityType = ENTITY_TYPE.PLAYER;
+          } else if (tileType === TILE_TYPE.ENEMY) {
+            entityType = ENTITY_TYPE.ENEMY;
+          } else {
+            entityType = null;
           }
+
+          // Check if tile is active (i.e. it's the entity's turn)
+          let active: boolean = false;
+          if (
+            entityType !== null &&
+            gameState.turnCycle[0][0] === entityType &&
+            gameState.turnCycle[0][1] === id
+          ) {
+            active = true;
+          }
+
+          return (
+            <Tile
+              tileType={tileType}
+              key={`${rowIndex}-${columnIndex}`}
+              playerState={playerState}
+              active={active}
+            />
+          );
         });
       })}
     </div>
