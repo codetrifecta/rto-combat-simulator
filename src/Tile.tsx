@@ -18,6 +18,7 @@ export const Tile: FC<{
   active: boolean;
   isEffectZone: boolean;
   effectColor: string;
+  onClick: () => void;
   classNames?: string;
 }> = ({
   tileType,
@@ -25,6 +26,7 @@ export const Tile: FC<{
   active,
   isEffectZone,
   effectColor,
+  onClick,
   classNames = "",
 }) => {
   const isEffectTile =
@@ -50,17 +52,15 @@ export const Tile: FC<{
           "shadow-intense-green z-10": tileType === TILE_TYPE.PLAYER && active,
           "shadow-intense-red z-10": tileType === TILE_TYPE.ENEMY && active,
 
-          // Attack effect zone
+          // Effect zone
           [`border-${effectColor}-500`]: isEffectZone && isEffectTile,
-          [`hover:bg-red-300 hover:border-${effectColor}-500`]:
-            playerState.isAttacking && isEffectZone && isEffectTile,
-
-          // Move effect zone
-          "hover:bg-blue-500": playerState.isMoving,
-          [`hover:bg-blue-300 hover:border-${effectColor}-500`]:
-            playerState.isMoving && isEffectZone && isEffectTile,
+          [`hover:opacity-80 hover:border-${effectColor}-500`]:
+            (playerState.isAttacking || playerState.isMoving) &&
+            isEffectZone &&
+            isEffectTile,
         }
       )}
+      onClick={onClick}
     ></div>
   );
 };

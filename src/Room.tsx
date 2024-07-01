@@ -1,7 +1,7 @@
 import { FC, useMemo, useState } from "react";
 import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
-import { GameState, PlayerState } from "./types";
+import { Enemy, GameState, PlayerState } from "./types";
 
 /**
  * Room
@@ -37,8 +37,6 @@ for (let row = 0; row < roomLength; row++) {
       } else {
         initialRoomMatrix[row][col] = [TILE_TYPE.WALL, 1];
       }
-
-      console.log("row", row);
     }
     // Place player in the bottom middle
     else if (
@@ -55,9 +53,9 @@ for (let row = 0; row < roomLength; row++) {
         col === Math.floor((roomLength / 4) * 3))
     ) {
       if (col === Math.floor(roomLength / 4)) {
-        initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
+        // initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
       } else {
-        initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 2];
+        initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
       }
     } else {
       // Place walls everywhere else
@@ -67,13 +65,14 @@ for (let row = 0; row < roomLength; row++) {
 }
 
 // Manually modify room matrix
-// initialRoomMatrix[2][2] = [TILE_TYPE.ENEMY, 1];
+initialRoomMatrix[5][3] = [TILE_TYPE.ENEMY, 2];
 // initialRoomMatrix[2][4] = [TILE_TYPE.ENEMY, 2];
 
-export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
-  gameState,
-  playerState,
-}) => {
+export const Room: FC<{
+  gameState: GameState;
+  playerState: PlayerState;
+  enemies: Enemy[];
+}> = ({ gameState, playerState, enemies }) => {
   const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
   const playerPosition = useMemo(() => {
@@ -87,6 +86,11 @@ export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
   }, [roomMatrix]);
 
   console.log("roomMatrix", roomMatrix);
+
+  const handleEnemyClick = (id: number) => {
+    const enemy = enemies.find((enemy) => enemy.id === id);
+    console.log(`Player attacking ${enemy?.name}!`);
+  };
 
   return (
     <div
@@ -114,8 +118,8 @@ export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
           let active: boolean = false;
           if (
             entityType !== null &&
-            gameState.turnCycle[0][0] === entityType &&
-            gameState.turnCycle[0][1] === id
+            gameState.turnCycle[0].entityType === entityType &&
+            gameState.turnCycle[0].id === id
           ) {
             active = true;
           }
@@ -147,6 +151,11 @@ export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
               active={active}
               isEffectZone={isEffectZone}
               effectColor={effectColor}
+              onClick={() => {
+                if (isEffectZone && tileType === TILE_TYPE.ENEMY) {
+                  handleEnemyClick(id);
+                }
+              }}
             />
           );
         });
