@@ -1,8 +1,6 @@
 import { type FC } from "react";
 import { PlayerState } from "./types";
 import clsx from "clsx";
-import { MAX_ACTION_POINTS } from "./constants";
-
 const skills: { name: string; damage: number }[] = [
   {
     name: "Fireball",
@@ -40,13 +38,6 @@ export const PlayerControlPanel: FC<{
 
   return (
     <div>
-      <div className="mb-10">
-        <h2>Player</h2>
-        <p>Health: {playerState.health}</p>
-        <p>
-          Action Points: {playerState.actionPoints} / {MAX_ACTION_POINTS}
-        </p>
-      </div>
       <div
         className={clsx(
           "w-screen p-4 flex justify-center items-center gap-5 box-border",
