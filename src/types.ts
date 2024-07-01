@@ -1,15 +1,21 @@
 import { ENTITY_TYPE } from "./constants";
 
-export interface Player {
+export interface Entity {
+    id: number;
     name: string;
+    entityType: ENTITY_TYPE;
     health: number;
+}
+
+export interface Player extends Entity{
+    entityType: ENTITY_TYPE.PLAYER;
     state: PlayerState;
     skills: Skill[];
     equipment: {
-        weapon: Weapon;
-        helmet: Helmet;
-        armor: Armor;
-        leggings: Leggings;
+        weapon: Weapon | null;
+        helmet: Helmet | null;
+        armor: Armor | null;
+        leggings: Leggings | null;
     };
 }
 
@@ -21,8 +27,12 @@ export interface PlayerState {
     isUsingSkill: boolean;
 }
 
+export interface Enemy extends Entity{
+    entityType: ENTITY_TYPE.ENEMY;
+}
+
 export interface GameState {
-    turnCycle: [ENTITY_TYPE, number][];
+    turnCycle: Entity[];
     isGameOver: boolean;
     isLoading: boolean;
 }
