@@ -1,13 +1,22 @@
 import { useState } from "react";
 import { PlayerControlPanel } from "./PlayerControlPanel";
-import { PlayerState } from "./types";
+import { GameState, PlayerState } from "./types";
 import { Room } from "./Room";
+import { GameInfo } from "./GameInfo";
+import { ENTITY_TYPE } from "./constants";
 
 // const gridContainerClassName = `grid grid-rows-${gridDimensions} grid-cols-${gridDimensions}`;
 
 function App() {
-  // const [count, setCount] = useState(0);
-  // const [playerHealth, setPlayerHealth] = useState(100);
+  const [gameState] = useState<GameState>({
+    enemies: 1,
+    // List of tuples with entity type and id of entity
+    turnCycle: [
+      [ENTITY_TYPE.PLAYER, 1],
+      [ENTITY_TYPE.ENEMY, 1],
+    ],
+    isGameOver: false,
+  });
   const [playerState, setPlayerState] = useState<PlayerState>({
     isAttacking: false,
     isMoving: false,
@@ -20,6 +29,9 @@ function App() {
         <h1 className="mb-2">Return to Olympus</h1>
         <h2>Combat Simulator</h2>
       </header>
+      <div className="mb-10">
+        <GameInfo gameState={gameState} />
+      </div>
       <div className="ml-auto mr-auto mb-10 ">
         <Room playerState={playerState} />
       </div>
@@ -27,6 +39,7 @@ function App() {
       <PlayerControlPanel
         playerState={playerState}
         setPlayerState={setPlayerState}
+        disabled={gameState.turnCycle[0][0] !== ENTITY_TYPE.PLAYER}
       />
     </div>
   );

@@ -7,3 +7,8 @@ export enum TILE_TYPE {
   PLAYER = 3,
   ENEMY = 4,
 }
+
+export enum ENTITY_TYPE {
+  PLAYER = "player",
+  ENEMY = "enemy",
+}

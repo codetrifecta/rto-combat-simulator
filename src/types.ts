@@ -1,3 +1,5 @@
+import { ENTITY_TYPE } from "./constants";
+
 export interface Player {
     name: string;
     health: number;
@@ -15,6 +17,13 @@ export interface PlayerState {
     isAttacking: boolean;
     isMoving: boolean;
     isUsingSkill: boolean;
+}
+
+export interface GameState {
+    enemies: number;
+    turnCycle: [ENTITY_TYPE, number][];
+    isGameOver: boolean;
+
 }
 
 export interface Skill {
