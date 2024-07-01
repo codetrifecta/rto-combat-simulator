@@ -17,6 +17,8 @@ function App() {
     isLoading: false,
   });
   const [playerState, setPlayerState] = useState<PlayerState>({
+    health: 10,
+    actionPoints: 4,
     isAttacking: false,
     isMoving: false,
     isUsingSkill: false,
