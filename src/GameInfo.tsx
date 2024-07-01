@@ -9,24 +9,38 @@ export const GameInfo: FC<{ gameState: GameState }> = ({
   const currentTurn = useMemo(() => {
     switch (turnCycle[0][0]) {
       case ENTITY_TYPE.PLAYER:
-        return "Player Turn";
+        return "Player";
       case ENTITY_TYPE.ENEMY:
-        return "Enemy Turn";
+        return "Enemy";
       default:
         return "...";
     }
   }, [turnCycle]);
 
+  const nextTurns: string[] = useMemo(() => {
+    return turnCycle.slice(1).map(([entityType]) => {
+      switch (entityType) {
+        case ENTITY_TYPE.PLAYER:
+          return "Player";
+        case ENTITY_TYPE.ENEMY:
+          return "Enemy";
+        default:
+          return "...";
+      }
+    });
+  }, [turnCycle]);
+
   return (
     <div>
-      <div
+      <h2
         className={clsx({
           "text-green-500": turnCycle[0][0] === ENTITY_TYPE.PLAYER,
           "text-red-500": turnCycle[0][0] === ENTITY_TYPE.ENEMY,
         })}
       >
-        {currentTurn}
-      </div>
+        Current turn: {currentTurn}
+      </h2>
+      <h3>Next turn(s): {nextTurns.length > 0 && nextTurns.join(" -> ")}</h3>
     </div>
   );
 };

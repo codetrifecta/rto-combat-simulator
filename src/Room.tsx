@@ -44,8 +44,13 @@ for (let row = 0; row < roomLength; row++) {
     else if (row === roomLength - 2 && col === Math.floor(roomLength / 2)) {
       initialRoomMatrix[row][col] = TILE_TYPE.PLAYER;
     }
-    // Place enemy in the top middle
-    else if (row === 1 && col === Math.floor(roomLength / 2)) {
+    // Place two enemies in quadrant 1 and 2
+    else if (
+      (row === Math.floor(roomLength / 4) &&
+        col === Math.floor(roomLength / 4)) ||
+      (row === Math.floor(roomLength / 4) &&
+        col === Math.floor((roomLength / 4) * 3))
+    ) {
       initialRoomMatrix[row][col] = TILE_TYPE.ENEMY;
     } else {
       // Place walls everywhere else

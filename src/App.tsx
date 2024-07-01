@@ -13,6 +13,7 @@ function App() {
     turnCycle: [
       [ENTITY_TYPE.PLAYER, 1],
       [ENTITY_TYPE.ENEMY, 1],
+      [ENTITY_TYPE.ENEMY, 2],
     ],
     isGameOver: false,
     isLoading: false,
