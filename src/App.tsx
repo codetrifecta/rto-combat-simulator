@@ -84,7 +84,7 @@ function App() {
       </div>
 
       {/* Player Info */}
-      <div>
+      <div className="mb-5">
         <PlayerInfo playerState={playerState} />
       </div>
 

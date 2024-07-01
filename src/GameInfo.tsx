@@ -40,7 +40,7 @@ export const GameInfo: FC<{ gameState: GameState }> = ({
       >
         Current turn: {currentTurn}
       </h2>
-      <h3>Next turn(s): {nextTurns.length > 0 && nextTurns.join(" -> ")}</h3>
+      <h2>Next turn(s): {nextTurns.length > 0 && nextTurns.join(" -> ")}</h2>
     </div>
   );
 };

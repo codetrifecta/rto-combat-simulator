@@ -5,7 +5,7 @@
 Combat simulator for Return to Olympus
 
 - [x] Turn-based system
-- [ ] Action Point system
+- [x] Action Point system
 - [ ] Basic attack
 - [ ] Player movement
 - [ ] Enemy movement and attack
