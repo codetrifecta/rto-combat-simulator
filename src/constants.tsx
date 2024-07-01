@@ -12,3 +12,5 @@ export enum ENTITY_TYPE {
   PLAYER = "player",
   ENEMY = "enemy",
 }
+
+export const MAX_ACTION_POINTS = 6;

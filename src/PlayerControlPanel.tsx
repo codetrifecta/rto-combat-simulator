@@ -1,6 +1,7 @@
 import { type FC } from "react";
 import { PlayerState } from "./types";
 import clsx from "clsx";
+import { MAX_ACTION_POINTS } from "./constants";
 
 const skills: { name: string; damage: number }[] = [
   {
@@ -23,92 +24,109 @@ export const PlayerControlPanel: FC<{
   onEndTurn: () => void;
   disabled: boolean;
 }> = ({ playerState, setPlayerState, onEndTurn, disabled }) => {
+  const handleEndTurnClick = () => {
+    const newActionPoints =
+      playerState.actionPoints >= 2 ? 6 : playerState.actionPoints + 4;
+
+    setPlayerState({
+      ...playerState,
+      actionPoints: newActionPoints,
+      isAttacking: false,
+      isMoving: false,
+      isUsingSkill: false,
+    });
+    onEndTurn();
+  };
+
   return (
-    <div
-      className={clsx(
-        "w-screen p-4 flex justify-center items-center gap-5 box-border",
-        { "bg-white": !disabled },
-        { "bg-gray-300": disabled },
-        { "pointer-events-none": disabled }
-      )}
-    >
-      {playerState.isUsingSkill ? (
-        <>
-          {skills.map((skill) => (
+    <div>
+      <div className="mb-10">
+        <h2>Player</h2>
+        <p>Health: {playerState.health}</p>
+        <p>
+          Action Points: {playerState.actionPoints} / {MAX_ACTION_POINTS}
+        </p>
+      </div>
+      <div
+        className={clsx(
+          "w-screen p-4 flex justify-center items-center gap-5 box-border",
+          { "bg-white": !disabled },
+          { "bg-gray-300": disabled },
+          { "pointer-events-none": disabled }
+        )}
+      >
+        {playerState.isUsingSkill ? (
+          <>
+            {skills.map((skill) => (
+              <Button
+                key={skill.name}
+                onClick={() => console.log(skill.name)}
+                disabled={disabled}
+              >
+                {skill.name}
+              </Button>
+            ))}
             <Button
-              key={skill.name}
-              onClick={() => console.log(skill.name)}
+              onClick={() =>
+                setPlayerState({
+                  ...playerState,
+                  isAttacking: false,
+                  isMoving: false,
+                  isUsingSkill: false,
+                })
+              }
               disabled={disabled}
             >
-              {skill.name}
+              Cancel
             </Button>
-          ))}
-          <Button
-            onClick={() =>
-              setPlayerState({
-                isAttacking: false,
-                isMoving: false,
-                isUsingSkill: false,
-              })
-            }
-            disabled={disabled}
-          >
-            Cancel
-          </Button>
-        </>
-      ) : (
-        <>
-          <Button
-            onClick={() => {
-              setPlayerState({
-                isAttacking: true,
-                isMoving: false,
-                isUsingSkill: false,
-              });
-            }}
-            disabled={disabled}
-          >
-            Attack
-          </Button>
-          <Button
-            onClick={() => {
-              setPlayerState({
-                isAttacking: false,
-                isMoving: true,
-                isUsingSkill: false,
-              });
-            }}
-            disabled={disabled}
-          >
-            Move
-          </Button>
-          <Button
-            onClick={() => {
-              setPlayerState({
-                isAttacking: false,
-                isMoving: false,
-                isUsingSkill: true,
-              });
-            }}
-            disabled={disabled}
-          >
-            Skills
-          </Button>
-          <Button
-            onClick={() => {
-              setPlayerState({
-                isAttacking: false,
-                isMoving: false,
-                isUsingSkill: false,
-              });
-              onEndTurn();
-            }}
-            disabled={disabled}
-          >
-            End Turn
-          </Button>
-        </>
-      )}
+          </>
+        ) : (
+          <>
+            <Button
+              onClick={() => {
+                setPlayerState({
+                  ...playerState,
+                  isAttacking: true,
+                  isMoving: false,
+                  isUsingSkill: false,
+                });
+              }}
+              disabled={disabled}
+            >
+              Attack
+            </Button>
+            <Button
+              onClick={() => {
+                setPlayerState({
+                  ...playerState,
+                  isAttacking: false,
+                  isMoving: true,
+                  isUsingSkill: false,
+                });
+              }}
+              disabled={disabled}
+            >
+              Move
+            </Button>
+            <Button
+              onClick={() => {
+                setPlayerState({
+                  ...playerState,
+                  isAttacking: false,
+                  isMoving: false,
+                  isUsingSkill: true,
+                });
+              }}
+              disabled={disabled}
+            >
+              Skills
+            </Button>
+            <Button onClick={handleEndTurnClick} disabled={disabled}>
+              End Turn
+            </Button>
+          </>
+        )}
+      </div>
     </div>
   );
 };
