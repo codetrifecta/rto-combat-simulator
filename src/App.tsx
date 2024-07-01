@@ -12,8 +12,8 @@ function App() {
     enemies: 1,
     // List of tuples with entity type and id of entity
     turnCycle: [
-      [ENTITY_TYPE.PLAYER, 1],
       [ENTITY_TYPE.ENEMY, 1],
+      [ENTITY_TYPE.PLAYER, 1],
     ],
     isGameOver: false,
   });

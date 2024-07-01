@@ -1,5 +1,6 @@
 import { type FC } from "react";
 import { PlayerState } from "./types";
+import clsx from "clsx";
 
 const skills: { name: string; damage: number }[] = [
   {
@@ -17,16 +18,27 @@ const skills: { name: string; damage: number }[] = [
 ];
 
 export const PlayerControlPanel: FC<{
-  disabled: boolean;
   playerState: PlayerState;
   setPlayerState: (state: PlayerState) => void;
-}> = ({ playerState, setPlayerState }) => {
+  disabled: boolean;
+}> = ({ playerState, setPlayerState, disabled }) => {
   return (
-    <div className="bg-white w-screen p-4 flex justify-center items-center gap-5 box-border">
+    <div
+      className={clsx(
+        "w-screen p-4 flex justify-center items-center gap-5 box-border",
+        { "bg-white": !disabled },
+        { "bg-gray-300": disabled },
+        { "pointer-events-none": disabled }
+      )}
+    >
       {playerState.isUsingSkill ? (
         <>
           {skills.map((skill) => (
-            <Button key={skill.name} onClick={() => console.log(skill.name)}>
+            <Button
+              key={skill.name}
+              onClick={() => console.log(skill.name)}
+              disabled={disabled}
+            >
               {skill.name}
             </Button>
           ))}
@@ -38,6 +50,7 @@ export const PlayerControlPanel: FC<{
                 isUsingSkill: false,
               })
             }
+            disabled={disabled}
           >
             Cancel
           </Button>
@@ -52,6 +65,7 @@ export const PlayerControlPanel: FC<{
                 isUsingSkill: false,
               });
             }}
+            disabled={disabled}
           >
             Attack
           </Button>
@@ -63,6 +77,7 @@ export const PlayerControlPanel: FC<{
                 isUsingSkill: false,
               });
             }}
+            disabled={disabled}
           >
             Move
           </Button>
@@ -74,6 +89,7 @@ export const PlayerControlPanel: FC<{
                 isUsingSkill: true,
               });
             }}
+            disabled={disabled}
           >
             Skills
           </Button>
@@ -85,6 +101,7 @@ export const PlayerControlPanel: FC<{
                 isUsingSkill: false,
               });
             }}
+            disabled={disabled}
           >
             End Turn
           </Button>
@@ -97,11 +114,17 @@ export const PlayerControlPanel: FC<{
 const Button: FC<{
   children: string;
   onClick: () => void;
-}> = ({ children, onClick }) => {
+  disabled?: boolean;
+}> = ({ children, onClick, disabled }) => {
   return (
     <button
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      onClick={onClick}
+      className={clsx(
+        "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
+        { "opacity-50": disabled }
+      )}
+      onClick={() => {
+        if (!disabled) onClick();
+      }}
     >
       {children}
     </button>
