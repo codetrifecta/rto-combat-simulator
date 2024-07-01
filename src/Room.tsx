@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
 import { GameState, PlayerState } from "./types";
@@ -41,7 +41,10 @@ for (let row = 0; row < roomLength; row++) {
       console.log("row", row);
     }
     // Place player in the bottom middle
-    else if (row === roomLength - 2 && col === Math.floor(roomLength / 2)) {
+    else if (
+      row === Math.floor((roomLength / 4) * 3) &&
+      col === Math.floor(roomLength / 2)
+    ) {
       initialRoomMatrix[row][col] = [TILE_TYPE.PLAYER, 1];
     }
     // Place two enemies in quadrant 1 and 2
@@ -72,6 +75,16 @@ export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
   playerState,
 }) => {
   const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
+
+  const playerPosition = useMemo(() => {
+    const playerRow = roomMatrix.findIndex(
+      (row) => row.findIndex(([type]) => type === TILE_TYPE.PLAYER) !== -1
+    );
+    const playerCol = roomMatrix[playerRow].findIndex(
+      ([type]) => type === TILE_TYPE.PLAYER
+    );
+    return [playerRow, playerCol];
+  }, [roomMatrix]);
 
   console.log("roomMatrix", roomMatrix);
 
@@ -107,12 +120,33 @@ export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
             active = true;
           }
 
+          let isEffectZone: boolean = false;
+          let effectColor: string = "red";
+
+          // Check if player is attacking (basic attack)
+          // Highlight tiles that can be attacked by player (3x3 area around player)
+          if (playerState.isAttacking) {
+            const [playerRow, playerCol] = playerPosition;
+            effectColor = "red";
+
+            if (
+              rowIndex >= playerRow - 1 &&
+              rowIndex <= playerRow + 1 &&
+              columnIndex >= playerCol - 1 &&
+              columnIndex <= playerCol + 1
+            ) {
+              isEffectZone = true;
+            }
+          }
+
           return (
             <Tile
               tileType={tileType}
               key={`${rowIndex}-${columnIndex}`}
               playerState={playerState}
               active={active}
+              isEffectZone={isEffectZone}
+              effectColor={effectColor}
             />
           );
         });
