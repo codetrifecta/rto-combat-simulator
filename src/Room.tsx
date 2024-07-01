@@ -22,8 +22,6 @@ const initialRoomMatrix: [TILE_TYPE, number][][] = Array.from(
   () => Array.from({ length: roomLength }, () => [TILE_TYPE.EMPTY, 0])
 );
 
-console.log("pre", initialRoomMatrix);
-
 // Generate room layout
 for (let row = 0; row < roomLength; row++) {
   for (let col = 0; col < roomLength; col++) {

@@ -14,6 +14,8 @@ export interface Player {
 }
 
 export interface PlayerState {
+    health: number;
+    actionPoints: number;
     isAttacking: boolean;
     isMoving: boolean;
     isUsingSkill: boolean;

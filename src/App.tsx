@@ -4,6 +4,7 @@ import { GameState, PlayerState } from "./types";
 import { Room } from "./Room";
 import { GameInfo } from "./GameInfo";
 import { ENTITY_TYPE } from "./constants";
+import { PlayerInfo } from "./PlayerInfo";
 
 function App() {
   const [gameState, setGameState] = useState<GameState>({
@@ -17,6 +18,8 @@ function App() {
     isLoading: false,
   });
   const [playerState, setPlayerState] = useState<PlayerState>({
+    health: 10,
+    actionPoints: 1,
     isAttacking: false,
     isMoving: false,
     isUsingSkill: false,
@@ -79,7 +82,13 @@ function App() {
       <div className="ml-auto mr-auto mb-10 ">
         <Room gameState={gameState} playerState={playerState} />
       </div>
-      {/* Control Panel */}
+
+      {/* Player Info */}
+      <div>
+        <PlayerInfo playerState={playerState} />
+      </div>
+
+      {/* Player Control Panel */}
       <PlayerControlPanel
         playerState={playerState}
         setPlayerState={setPlayerState}
