@@ -4,12 +4,14 @@
 
 Combat simulator for Return to Olympus
 
-- [ ] Turn-based gameplay
+- [x] Turn-based system
+- [ ] Action Point system
+- [ ] Basic attack
 - [ ] Player movement
 - [ ] Enemy movement and attack
-- [ ] Basic attack
 - [ ] Player skills
 - [ ] Animation for each of the above
+- [ ] Multiple rooms (floor)
 
 ## Setup
 
