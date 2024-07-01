@@ -71,8 +71,9 @@ initialRoomMatrix[5][3] = [TILE_TYPE.ENEMY, 2];
 export const Room: FC<{
   gameState: GameState;
   playerState: PlayerState;
+  setPlayerState: (playerState: PlayerState) => void;
   enemies: Enemy[];
-}> = ({ gameState, playerState, enemies }) => {
+}> = ({ gameState, playerState, setPlayerState, enemies }) => {
   const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
   const playerPosition = useMemo(() => {
@@ -85,11 +86,20 @@ export const Room: FC<{
     return [playerRow, playerCol];
   }, [roomMatrix]);
 
-  console.log("roomMatrix", roomMatrix);
+  // console.log("roomMatrix", roomMatrix);
 
   const handleEnemyClick = (id: number) => {
     const enemy = enemies.find((enemy) => enemy.id === id);
     console.log(`Player attacking ${enemy?.name}!`);
+    setPlayerState({
+      ...playerState,
+      isAttacking: false,
+      actionPoints: playerState.actionPoints - 2,
+    });
+    // Simulate attack
+    setTimeout(() => {
+      console.log(`${enemy?.name} took 5 damage!`);
+    }, 1000);
   };
 
   return (

@@ -129,6 +129,7 @@ function App() {
         <Room
           gameState={gameState}
           playerState={playerState}
+          setPlayerState={setPlayerState}
           enemies={enemies}
         />
       </div>
