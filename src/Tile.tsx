@@ -3,8 +3,6 @@ import { TILE_SIZE, TILE_TYPE } from "./constants";
 import clsx from "clsx";
 import { PlayerState } from "./types";
 
-const className = `border-2 border-gray hover:border-black cursor-pointer `;
-
 /**
  * Room
  * 0 - empty
@@ -18,22 +16,51 @@ export const Tile: FC<{
   tileType: number;
   playerState: PlayerState;
   active: boolean;
+  isEffectZone: boolean;
+  effectColor: string;
+  onClick: () => void;
   classNames?: string;
-}> = ({ tileType, playerState, active, classNames = "" }) => {
+}> = ({
+  tileType,
+  playerState,
+  active,
+  isEffectZone,
+  effectColor,
+  onClick,
+  classNames = "",
+}) => {
+  const isEffectTile =
+    tileType !== TILE_TYPE.WALL &&
+    tileType !== TILE_TYPE.DOOR &&
+    tileType !== TILE_TYPE.PLAYER;
+
   return (
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
-      className={clsx(className, classNames, {
-        "bg-white": tileType === TILE_TYPE.EMPTY,
-        "bg-gray-500": tileType === TILE_TYPE.WALL,
-        "bg-yellow-500": tileType === TILE_TYPE.DOOR,
-        "bg-green-500": tileType === TILE_TYPE.PLAYER,
-        "bg-red-500": tileType === TILE_TYPE.ENEMY,
-        "hover:border-red-500": playerState.isAttacking,
-        "hover:border-blue-500": playerState.isMoving,
-        "shadow-intense-green z-10": tileType === TILE_TYPE.PLAYER && active,
-        "shadow-intense-red z-10": tileType === TILE_TYPE.ENEMY && active,
-      })}
+      className={clsx(
+        "border-2 border-gray hover:border-black cursor-pointer",
+        classNames,
+        {
+          // Tile type color
+          "bg-white": tileType === TILE_TYPE.EMPTY,
+          "bg-gray-500": tileType === TILE_TYPE.WALL,
+          "bg-yellow-500": tileType === TILE_TYPE.DOOR,
+          "bg-green-500": tileType === TILE_TYPE.PLAYER,
+          "bg-red-500": tileType === TILE_TYPE.ENEMY,
+
+          // Active tile
+          "shadow-intense-green z-10": tileType === TILE_TYPE.PLAYER && active,
+          "shadow-intense-red z-10": tileType === TILE_TYPE.ENEMY && active,
+
+          // Effect zone
+          [`border-${effectColor}-500`]: isEffectZone && isEffectTile,
+          [`hover:opacity-80 hover:border-${effectColor}-500`]:
+            (playerState.isAttacking || playerState.isMoving) &&
+            isEffectZone &&
+            isEffectTile,
+        }
+      )}
+      onClick={onClick}
     ></div>
   );
 };

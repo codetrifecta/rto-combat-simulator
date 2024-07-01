@@ -1,7 +1,7 @@
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
-import { GameState, PlayerState } from "./types";
+import { Enemy, GameState, PlayerState } from "./types";
 
 /**
  * Room
@@ -37,11 +37,12 @@ for (let row = 0; row < roomLength; row++) {
       } else {
         initialRoomMatrix[row][col] = [TILE_TYPE.WALL, 1];
       }
-
-      console.log("row", row);
     }
     // Place player in the bottom middle
-    else if (row === roomLength - 2 && col === Math.floor(roomLength / 2)) {
+    else if (
+      row === Math.floor((roomLength / 4) * 3) &&
+      col === Math.floor(roomLength / 2)
+    ) {
       initialRoomMatrix[row][col] = [TILE_TYPE.PLAYER, 1];
     }
     // Place two enemies in quadrant 1 and 2
@@ -52,9 +53,9 @@ for (let row = 0; row < roomLength; row++) {
         col === Math.floor((roomLength / 4) * 3))
     ) {
       if (col === Math.floor(roomLength / 4)) {
-        initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
+        // initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
       } else {
-        initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 2];
+        initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
       }
     } else {
       // Place walls everywhere else
@@ -64,16 +65,42 @@ for (let row = 0; row < roomLength; row++) {
 }
 
 // Manually modify room matrix
-// initialRoomMatrix[2][2] = [TILE_TYPE.ENEMY, 1];
+initialRoomMatrix[5][3] = [TILE_TYPE.ENEMY, 2];
 // initialRoomMatrix[2][4] = [TILE_TYPE.ENEMY, 2];
 
-export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
-  gameState,
-  playerState,
-}) => {
+export const Room: FC<{
+  gameState: GameState;
+  playerState: PlayerState;
+  setPlayerState: (playerState: PlayerState) => void;
+  enemies: Enemy[];
+}> = ({ gameState, playerState, setPlayerState, enemies }) => {
   const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
-  console.log("roomMatrix", roomMatrix);
+  const playerPosition = useMemo(() => {
+    const playerRow = roomMatrix.findIndex(
+      (row) => row.findIndex(([type]) => type === TILE_TYPE.PLAYER) !== -1
+    );
+    const playerCol = roomMatrix[playerRow].findIndex(
+      ([type]) => type === TILE_TYPE.PLAYER
+    );
+    return [playerRow, playerCol];
+  }, [roomMatrix]);
+
+  // console.log("roomMatrix", roomMatrix);
+
+  const handleEnemyClick = (id: number) => {
+    const enemy = enemies.find((enemy) => enemy.id === id);
+    console.log(`Player attacking ${enemy?.name}!`);
+    setPlayerState({
+      ...playerState,
+      isAttacking: false,
+      actionPoints: playerState.actionPoints - 2,
+    });
+    // Simulate attack
+    setTimeout(() => {
+      console.log(`${enemy?.name} took 5 damage!`);
+    }, 1000);
+  };
 
   return (
     <div
@@ -101,10 +128,29 @@ export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
           let active: boolean = false;
           if (
             entityType !== null &&
-            gameState.turnCycle[0][0] === entityType &&
-            gameState.turnCycle[0][1] === id
+            gameState.turnCycle[0].entityType === entityType &&
+            gameState.turnCycle[0].id === id
           ) {
             active = true;
+          }
+
+          let isEffectZone: boolean = false;
+          let effectColor: string = "red";
+
+          // Check if player is attacking (basic attack)
+          // Highlight tiles that can be attacked by player (3x3 area around player)
+          if (playerState.isAttacking) {
+            const [playerRow, playerCol] = playerPosition;
+            effectColor = "red";
+
+            if (
+              rowIndex >= playerRow - 1 &&
+              rowIndex <= playerRow + 1 &&
+              columnIndex >= playerCol - 1 &&
+              columnIndex <= playerCol + 1
+            ) {
+              isEffectZone = true;
+            }
           }
 
           return (
@@ -113,6 +159,13 @@ export const Room: FC<{ gameState: GameState; playerState: PlayerState }> = ({
               key={`${rowIndex}-${columnIndex}`}
               playerState={playerState}
               active={active}
+              isEffectZone={isEffectZone}
+              effectColor={effectColor}
+              onClick={() => {
+                if (isEffectZone && tileType === TILE_TYPE.ENEMY) {
+                  handleEnemyClick(id);
+                }
+              }}
             />
           );
         });

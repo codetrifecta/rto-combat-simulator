@@ -77,12 +77,12 @@ export const PlayerControlPanel: FC<{
               onClick={() => {
                 setPlayerState({
                   ...playerState,
-                  isAttacking: true,
+                  isAttacking: !playerState.isAttacking,
                   isMoving: false,
                   isUsingSkill: false,
                 });
               }}
-              disabled={disabled}
+              disabled={disabled || playerState.actionPoints < 2}
             >
               Attack
             </Button>
@@ -91,7 +91,7 @@ export const PlayerControlPanel: FC<{
                 setPlayerState({
                   ...playerState,
                   isAttacking: false,
-                  isMoving: true,
+                  isMoving: !playerState.isMoving,
                   isUsingSkill: false,
                 });
               }}
@@ -105,7 +105,7 @@ export const PlayerControlPanel: FC<{
                   ...playerState,
                   isAttacking: false,
                   isMoving: false,
-                  isUsingSkill: true,
+                  isUsingSkill: !playerState.isUsingSkill,
                 });
               }}
               disabled={disabled}
