@@ -20,8 +20,9 @@ const skills: { name: string; damage: number }[] = [
 export const PlayerControlPanel: FC<{
   playerState: PlayerState;
   setPlayerState: (state: PlayerState) => void;
+  onEndTurn: () => void;
   disabled: boolean;
-}> = ({ playerState, setPlayerState, disabled }) => {
+}> = ({ playerState, setPlayerState, onEndTurn, disabled }) => {
   return (
     <div
       className={clsx(
@@ -100,6 +101,7 @@ export const PlayerControlPanel: FC<{
                 isMoving: false,
                 isUsingSkill: false,
               });
+              onEndTurn();
             }}
             disabled={disabled}
           >

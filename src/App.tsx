@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PlayerControlPanel } from "./PlayerControlPanel";
 import { GameState, PlayerState } from "./types";
 import { Room } from "./Room";
@@ -8,20 +8,65 @@ import { ENTITY_TYPE } from "./constants";
 // const gridContainerClassName = `grid grid-rows-${gridDimensions} grid-cols-${gridDimensions}`;
 
 function App() {
-  const [gameState] = useState<GameState>({
-    enemies: 1,
+  const [gameState, setGameState] = useState<GameState>({
     // List of tuples with entity type and id of entity
     turnCycle: [
-      [ENTITY_TYPE.ENEMY, 1],
       [ENTITY_TYPE.PLAYER, 1],
+      [ENTITY_TYPE.ENEMY, 1],
     ],
     isGameOver: false,
+    isLoading: false,
   });
   const [playerState, setPlayerState] = useState<PlayerState>({
     isAttacking: false,
     isMoving: false,
     isUsingSkill: false,
   });
+
+  // Handle player and enemy's end turn action
+  const handleEndTurn = useCallback(() => {
+    // Rotate turn cycle, moving whatever was first in the cycle to the end of the cycle
+
+    const currentTurnCycle = gameState.turnCycle;
+    const currentEntityTurn = currentTurnCycle.shift();
+
+    if (!currentEntityTurn) {
+      console.error("No entity turn found in turn cycle");
+      return null;
+    }
+
+    currentTurnCycle.push(currentEntityTurn);
+
+    const newTurnCycle = [...currentTurnCycle];
+
+    setGameState((prevState) => ({
+      ...prevState,
+      turnCycle: newTurnCycle,
+    }));
+
+    return null;
+  }, [gameState.turnCycle]);
+
+  // Handle enemy's action
+  useEffect(() => {
+    if (gameState.turnCycle[0][0] === ENTITY_TYPE.ENEMY) {
+      // Set loading state to true (mocking backend call for enemy action)
+      setGameState((prevState) => ({
+        ...prevState,
+        isLoading: true,
+      }));
+
+      // Simulate enemy action with a timeout
+      setTimeout(() => {
+        // End enemy's turn
+        handleEndTurn();
+        setGameState((prevState) => ({
+          ...prevState,
+          isLoading: false,
+        }));
+      }, 1000);
+    }
+  }, [gameState.turnCycle, handleEndTurn]);
 
   return (
     <div className="relative w-full h-screen flex flex-col justify-start">
@@ -39,6 +84,7 @@ function App() {
       <PlayerControlPanel
         playerState={playerState}
         setPlayerState={setPlayerState}
+        onEndTurn={handleEndTurn}
         disabled={gameState.turnCycle[0][0] !== ENTITY_TYPE.PLAYER}
       />
     </div>

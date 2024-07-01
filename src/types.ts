@@ -20,10 +20,9 @@ export interface PlayerState {
 }
 
 export interface GameState {
-    enemies: number;
     turnCycle: [ENTITY_TYPE, number][];
     isGameOver: boolean;
-
+    isLoading: boolean;
 }
 
 export interface Skill {
