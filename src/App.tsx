@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PlayerControlPanel } from "./PlayerControlPanel";
-import { IEnemy, IGameState, IPlayer, IPlayerState } from "./types";
+import { IEnemy, IGameState, IPlayer } from "./types";
 import { Room } from "./Room";
 import { GameInfo } from "./GameInfo";
 import { ENTITY_TYPE } from "./constants";
@@ -60,18 +60,9 @@ function App() {
     }));
   }, [player.health, enemies, player]);
 
-  const handleSetPlayerState = useCallback(
-    (newPlayerState: IPlayerState) => {
-      setPlayer((prevState) => ({
-        ...prevState,
-        state: newPlayerState,
-      }));
-    },
-    [setPlayer]
-  );
-
   // Handle player and enemy's end turn action
   const handleEndTurn = useCallback(() => {
+    console.log("Ending turn via handleEndTurn", gameState.turnCycle[0]);
     // Rotate turn cycle, moving whatever was first in the cycle to the end of the cycle
 
     const currentTurnCycle = gameState.turnCycle;
@@ -96,6 +87,7 @@ function App() {
 
   // Handle enemy's action
   useEffect(() => {
+    console.log("useEffect", gameState.turnCycle[0]);
     if (
       gameState.turnCycle.length > 0 &&
       gameState.turnCycle[0].entityType === ENTITY_TYPE.ENEMY
@@ -159,8 +151,8 @@ function App() {
 
       {/* Player Control Panel */}
       <PlayerControlPanel
-        playerState={player.state}
-        setPlayerState={handleSetPlayerState}
+        player={player}
+        setPlayer={setPlayer}
         onEndTurn={handleEndTurn}
         disabled={gameState.turnCycle[0].entityType !== ENTITY_TYPE.PLAYER}
       />

@@ -3,15 +3,6 @@ import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
 import { IEnemy, IGameState, IPlayer } from "./types";
 
-/**
- * Room
- * 0 - empty
- * 1 - wall
- * 2 - door
- * 3 - player
- * 4 - enemy
- */
-
 // Seems like ideal room size is AT LEAST 9x9
 const roomLength = 9;
 const totalRoomSize = roomLength * TILE_SIZE;

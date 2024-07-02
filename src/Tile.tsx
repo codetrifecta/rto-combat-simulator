@@ -3,15 +3,6 @@ import { TILE_SIZE, TILE_TYPE } from "./constants";
 import clsx from "clsx";
 import { IPlayerState } from "./types";
 
-/**
- * Room
- * 0 - empty
- * 1 - wall
- * 2 - door
- * 3 - player
- * 4 - enemy
- */
-
 export const Tile: FC<{
   tileType: number;
   playerState: IPlayerState;
