@@ -46,13 +46,13 @@ function App() {
       id: 1,
       name: "Enemy 1",
       entityType: ENTITY_TYPE.ENEMY,
-      health: 5,
+      health: 4,
     },
     {
       id: 2,
       name: "Enemy 2",
       entityType: ENTITY_TYPE.ENEMY,
-      health: 5,
+      health: 4,
     },
   ]);
 

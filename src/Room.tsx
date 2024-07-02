@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
 import { IEnemy, IGameState, IPlayer } from "./types";
@@ -66,7 +66,8 @@ export const Room: FC<{
   enemies: IEnemy[];
   setEnemies: (enemies: IEnemy[]) => void;
 }> = ({ gameState, player, setPlayer, enemies, setEnemies }) => {
-  const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
+  const [roomMatrix, setRoomMatrix] =
+    useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
   const playerPosition = useMemo(() => {
     const playerRow = roomMatrix.findIndex(
@@ -78,7 +79,22 @@ export const Room: FC<{
     return [playerRow, playerCol];
   }, [roomMatrix]);
 
-  // console.log("roomMatrix", roomMatrix);
+  // Update room matrix when an enemy is defeated (i.e. removed from the game)
+  useEffect(() => {
+    setRoomMatrix((prevRoomMatrix) => {
+      return prevRoomMatrix.map((row) => {
+        return row.map(([tileType, id]) => {
+          if (tileType === TILE_TYPE.ENEMY) {
+            const enemy = enemies.find((enemy) => enemy.id === id);
+            if (!enemy) {
+              return [TILE_TYPE.EMPTY, 0];
+            }
+          }
+          return [tileType, id];
+        });
+      });
+    });
+  }, [enemies.length]);
 
   const handleEnemyClick = (id: number) => {
     const enemy = enemies.find((enemy) => enemy.id === id);
