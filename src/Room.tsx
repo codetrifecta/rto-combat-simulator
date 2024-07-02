@@ -3,7 +3,7 @@ import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
 import { IEnemy, IGameState, IPlayer } from "./types";
 
-// Seems like ideal room size is AT LEAST 9x9
+// Seems like ideal room size is AT LEAST 13x13
 const roomLength = 13;
 const totalRoomSize = roomLength * TILE_SIZE;
 
@@ -56,7 +56,7 @@ for (let row = 0; row < roomLength; row++) {
 }
 
 // Manually modify room matrix
-initialRoomMatrix[5][3] = [TILE_TYPE.ENEMY, 2];
+initialRoomMatrix[8][5] = [TILE_TYPE.ENEMY, 2];
 // initialRoomMatrix[2][4] = [TILE_TYPE.ENEMY, 2];
 
 export const Room: FC<{
