@@ -96,6 +96,16 @@ function App() {
   const handleEndTurn = useCallback(() => {
     // Rotate turn cycle, moving whatever was first in the cycle to the end of the cycle
 
+    // If current turn is player, end player's turn and give action points
+    if (gameState.turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
+      const newActionPoints =
+        player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
+      setPlayer((prevState) => ({
+        ...prevState,
+        actionPoints: newActionPoints,
+      }));
+    }
+
     const currentTurnCycle = gameState.turnCycle;
     const currentEntityTurn = currentTurnCycle.shift();
 
@@ -114,7 +124,7 @@ function App() {
     }));
 
     return null;
-  }, [gameState.turnCycle]);
+  }, [gameState.turnCycle, player.actionPoints]);
 
   // End turn automatically when player has no more action points
   useEffect(() => {
@@ -123,12 +133,6 @@ function App() {
       gameState.turnCycle[0].entityType === ENTITY_TYPE.PLAYER &&
       player.actionPoints === 0
     ) {
-      const newActionPoints =
-        player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
-      setPlayer((prevState) => ({
-        ...prevState,
-        actionPoints: newActionPoints,
-      }));
       handleEndTurn();
     }
   }, [gameState.turnCycle, player.actionPoints, handleEndTurn, isInitialized]);
