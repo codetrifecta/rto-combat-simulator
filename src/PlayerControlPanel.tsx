@@ -23,12 +23,8 @@ export const PlayerControlPanel: FC<{
   disabled: boolean;
 }> = ({ player, setPlayer, onEndTurn, disabled }) => {
   const handleEndTurnClick = () => {
-    const newActionPoints =
-      player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
-
     setPlayer({
       ...player,
-      actionPoints: newActionPoints,
       state: {
         isAttacking: false,
         isMoving: false,

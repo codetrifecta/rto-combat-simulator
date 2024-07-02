@@ -94,6 +94,23 @@ function App() {
     return null;
   }, [gameState.turnCycle]);
 
+  // End turn automatically when player has no more action points
+  useEffect(() => {
+    if (
+      isInitialized &&
+      gameState.turnCycle[0].entityType === ENTITY_TYPE.PLAYER &&
+      player.actionPoints === 0
+    ) {
+      const newActionPoints =
+        player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
+      setPlayer((prevState) => ({
+        ...prevState,
+        actionPoints: newActionPoints,
+      }));
+      handleEndTurn();
+    }
+  }, [gameState.turnCycle, player.actionPoints, handleEndTurn, isInitialized]);
+
   // Handle enemy's action
   useEffect(() => {
     if (
