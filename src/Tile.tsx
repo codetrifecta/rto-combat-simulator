@@ -1,7 +1,7 @@
 import { FC, useMemo } from "react";
 import { TILE_SIZE, TILE_TYPE } from "./constants";
 import clsx from "clsx";
-import { PlayerState } from "./types";
+import { IPlayerState } from "./types";
 
 /**
  * Room
@@ -14,7 +14,7 @@ import { PlayerState } from "./types";
 
 export const Tile: FC<{
   tileType: number;
-  playerState: PlayerState;
+  playerState: IPlayerState;
   active: boolean;
   isEffectZone: boolean;
   effectColor: string;
@@ -22,10 +22,9 @@ export const Tile: FC<{
   classNames?: string;
 }> = ({
   tileType,
-  // playerState,
+  playerState,
   active,
   isEffectZone,
-  effectColor,
   onClick,
   classNames = "",
 }) => {
@@ -38,12 +37,15 @@ export const Tile: FC<{
   }, [tileType]);
 
   // Effect zone classes
+  // Return flat string instead of formatted because getting an error where class is not applied
   const effectBorderClasses = useMemo(() => {
     if (isEffectZone && isEffectTile) {
-      return `hover:opacity-80 border-${effectColor}-500`;
+      if (playerState.isAttacking) {
+        return "hover:opacity-80 border-red-500";
+      }
     }
     return "";
-  }, [isEffectZone, isEffectTile, effectColor]);
+  }, [isEffectZone, isEffectTile, playerState.isAttacking]);
 
   return (
     <div
