@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { TILE_SIZE, TILE_TYPE } from "./constants";
 import clsx from "clsx";
 import { PlayerState } from "./types";
@@ -22,17 +22,28 @@ export const Tile: FC<{
   classNames?: string;
 }> = ({
   tileType,
-  playerState,
+  // playerState,
   active,
   isEffectZone,
   effectColor,
   onClick,
   classNames = "",
 }) => {
-  const isEffectTile =
-    tileType !== TILE_TYPE.WALL &&
-    tileType !== TILE_TYPE.DOOR &&
-    tileType !== TILE_TYPE.PLAYER;
+  const isEffectTile = useMemo(() => {
+    return (
+      tileType !== TILE_TYPE.WALL &&
+      tileType !== TILE_TYPE.DOOR &&
+      tileType !== TILE_TYPE.PLAYER
+    );
+  }, [tileType]);
+
+  // Effect zone classes
+  const effectBorderClasses = useMemo(() => {
+    if (isEffectZone && isEffectTile) {
+      return `hover:opacity-80 border-${effectColor}-500`;
+    }
+    return "";
+  }, [isEffectZone, isEffectTile, effectColor]);
 
   return (
     <div
@@ -53,11 +64,7 @@ export const Tile: FC<{
           "shadow-intense-red z-10": tileType === TILE_TYPE.ENEMY && active,
 
           // Effect zone
-          [`border-${effectColor}-500`]: isEffectZone && isEffectTile,
-          [`hover:opacity-80 hover:border-${effectColor}-500`]:
-            (playerState.isAttacking || playerState.isMoving) &&
-            isEffectZone &&
-            isEffectTile,
+          [effectBorderClasses]: isEffectZone && isEffectTile,
         }
       )}
       onClick={onClick}
