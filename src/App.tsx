@@ -1,26 +1,42 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PlayerControlPanel } from "./PlayerControlPanel";
-import { Enemy, GameState, PlayerState } from "./types";
+import { IEnemy, IGameState, IPlayer, IPlayerState } from "./types";
 import { Room } from "./Room";
 import { GameInfo } from "./GameInfo";
 import { ENTITY_TYPE } from "./constants";
 import { PlayerInfo } from "./PlayerInfo";
 
 function App() {
-  const [gameState, setGameState] = useState<GameState>({
+  const [gameState, setGameState] = useState<IGameState>({
     // List of tuples with entity type and id of entity
     turnCycle: [],
     isGameOver: false,
     isLoading: true,
   });
-  const [playerState, setPlayerState] = useState<PlayerState>({
+  const [player, setPlayer] = useState<IPlayer>({
+    id: 1,
+    name: "Player",
+    entityType: ENTITY_TYPE.PLAYER,
     health: 10,
-    actionPoints: 1,
-    isAttacking: false,
-    isMoving: false,
-    isUsingSkill: false,
+    actionPoints: 2,
+    skills: [],
+    state: {
+      isAttacking: false,
+      isMoving: false,
+      isUsingSkill: false,
+    },
+    equipment: {
+      weapon: {
+        name: "Sword",
+        damage: 2,
+        range: 1,
+      },
+      helmet: null,
+      armor: null,
+      leggings: null,
+    },
   });
-  const [enemies] = useState<Enemy[]>([
+  const [enemies] = useState<IEnemy[]>([
     {
       id: 1,
       name: "Enemy 1",
@@ -39,18 +55,20 @@ function App() {
     // Set turn cycle
     setGameState((prevState) => ({
       ...prevState,
-      turnCycle: [
-        {
-          id: 1,
-          name: "Player",
-          entityType: ENTITY_TYPE.PLAYER,
-          health: playerState.health,
-        },
-        ...enemies,
-      ],
+      turnCycle: [player, ...enemies],
       isLoading: false,
     }));
-  }, [playerState.health, enemies]);
+  }, [player.health, enemies, player]);
+
+  const handleSetPlayerState = useCallback(
+    (newPlayerState: IPlayerState) => {
+      setPlayer((prevState) => ({
+        ...prevState,
+        state: newPlayerState,
+      }));
+    },
+    [setPlayer]
+  );
 
   // Handle player and enemy's end turn action
   const handleEndTurn = useCallback(() => {
@@ -128,21 +146,21 @@ function App() {
       <div className="ml-auto mr-auto mb-10 ">
         <Room
           gameState={gameState}
-          playerState={playerState}
-          setPlayerState={setPlayerState}
+          player={player}
+          setPlayer={setPlayer}
           enemies={enemies}
         />
       </div>
 
       {/* Player Info */}
       <div className="mb-5">
-        <PlayerInfo playerState={playerState} />
+        <PlayerInfo player={player} />
       </div>
 
       {/* Player Control Panel */}
       <PlayerControlPanel
-        playerState={playerState}
-        setPlayerState={setPlayerState}
+        playerState={player.state}
+        setPlayerState={handleSetPlayerState}
         onEndTurn={handleEndTurn}
         disabled={gameState.turnCycle[0].entityType !== ENTITY_TYPE.PLAYER}
       />

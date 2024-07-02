@@ -1,7 +1,7 @@
 import { FC, useMemo, useState } from "react";
 import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
-import { Enemy, GameState, PlayerState } from "./types";
+import { IEnemy, IGameState, IPlayer } from "./types";
 
 /**
  * Room
@@ -69,11 +69,11 @@ initialRoomMatrix[5][3] = [TILE_TYPE.ENEMY, 2];
 // initialRoomMatrix[2][4] = [TILE_TYPE.ENEMY, 2];
 
 export const Room: FC<{
-  gameState: GameState;
-  playerState: PlayerState;
-  setPlayerState: (playerState: PlayerState) => void;
-  enemies: Enemy[];
-}> = ({ gameState, playerState, setPlayerState, enemies }) => {
+  gameState: IGameState;
+  player: IPlayer;
+  setPlayer: (player: IPlayer) => void;
+  enemies: IEnemy[];
+}> = ({ gameState, player, setPlayer, enemies }) => {
   const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
   const playerPosition = useMemo(() => {
@@ -91,10 +91,13 @@ export const Room: FC<{
   const handleEnemyClick = (id: number) => {
     const enemy = enemies.find((enemy) => enemy.id === id);
     console.log(`Player attacking ${enemy?.name}!`);
-    setPlayerState({
-      ...playerState,
-      isAttacking: false,
-      actionPoints: playerState.actionPoints - 2,
+    setPlayer({
+      ...player,
+      actionPoints: player.actionPoints - 1,
+      state: {
+        ...player.state,
+        isAttacking: false,
+      },
     });
     // Simulate attack
     setTimeout(() => {
@@ -139,7 +142,7 @@ export const Room: FC<{
 
           // Check if player is attacking (basic attack)
           // Highlight tiles that can be attacked by player (3x3 area around player)
-          if (playerState.isAttacking) {
+          if (player.state.isAttacking) {
             const [playerRow, playerCol] = playerPosition;
             effectColor = "red";
 
@@ -157,7 +160,7 @@ export const Room: FC<{
             <Tile
               tileType={tileType}
               key={`${rowIndex}-${columnIndex}`}
-              playerState={playerState}
+              playerState={player.state}
               active={active}
               isEffectZone={isEffectZone}
               effectColor={effectColor}

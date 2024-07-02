@@ -1,9 +1,9 @@
 import { FC, useMemo } from "react";
-import { GameState } from "./types";
+import { IGameState } from "./types";
 import { ENTITY_TYPE } from "./constants";
 import clsx from "clsx";
 
-export const GameInfo: FC<{ gameState: GameState }> = ({
+export const GameInfo: FC<{ gameState: IGameState }> = ({
   gameState: { turnCycle },
 }) => {
   const currentTurn = useMemo(() => {
