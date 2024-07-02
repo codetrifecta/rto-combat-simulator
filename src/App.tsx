@@ -51,6 +51,7 @@ function App() {
     },
   ]);
 
+  // Initialize game state
   useEffect(() => {
     // Set turn cycle
     setGameState((prevState) => ({
@@ -58,11 +59,14 @@ function App() {
       turnCycle: [player, ...enemies],
       isLoading: false,
     }));
-  }, [player.health, enemies, player]);
+  }, []);
+
+  const isInitialized = useMemo(() => {
+    return gameState.turnCycle.length > 0;
+  }, [gameState.turnCycle]);
 
   // Handle player and enemy's end turn action
   const handleEndTurn = useCallback(() => {
-    console.log("Ending turn via handleEndTurn", gameState.turnCycle[0]);
     // Rotate turn cycle, moving whatever was first in the cycle to the end of the cycle
 
     const currentTurnCycle = gameState.turnCycle;
@@ -87,7 +91,6 @@ function App() {
 
   // Handle enemy's action
   useEffect(() => {
-    console.log("useEffect", gameState.turnCycle[0]);
     if (
       gameState.turnCycle.length > 0 &&
       gameState.turnCycle[0].entityType === ENTITY_TYPE.ENEMY
@@ -109,10 +112,6 @@ function App() {
       }, 1500);
     }
   }, [gameState.turnCycle, handleEndTurn]);
-
-  const isInitialized = useMemo(() => {
-    return gameState.turnCycle.length > 0;
-  }, [gameState.turnCycle]);
 
   {
     /* Wait for game initialization */
