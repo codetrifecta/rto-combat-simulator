@@ -4,7 +4,7 @@ import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
 import { IEnemy, IGameState, IPlayer } from "./types";
 
 // Seems like ideal room size is AT LEAST 13x13
-const roomLength = 13;
+const roomLength = 11;
 const totalRoomSize = roomLength * TILE_SIZE;
 
 // Initialize room matrix
@@ -56,8 +56,8 @@ for (let row = 0; row < roomLength; row++) {
 }
 
 // Manually modify room matrix
-initialRoomMatrix[8][5] = [TILE_TYPE.ENEMY, 2];
-// initialRoomMatrix[2][4] = [TILE_TYPE.ENEMY, 2];
+// initialRoomMatrix[8][5] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 13x13 room
+initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
 
 export const Room: FC<{
   gameState: IGameState;
