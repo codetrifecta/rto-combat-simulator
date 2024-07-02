@@ -4,7 +4,7 @@ import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
 import { IEnemy, IGameState, IPlayer } from "./types";
 
 // Seems like ideal room size is AT LEAST 9x9
-const roomLength = 9;
+const roomLength = 13;
 const totalRoomSize = roomLength * TILE_SIZE;
 
 // Initialize room matrix
@@ -64,6 +64,7 @@ export const Room: FC<{
   player: IPlayer;
   setPlayer: (player: IPlayer) => void;
   enemies: IEnemy[];
+  setEnemies: (enemies: IEnemy[]) => void;
 }> = ({ gameState, player, setPlayer, enemies }) => {
   const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
@@ -133,15 +134,17 @@ export const Room: FC<{
 
           // Check if player is attacking (basic attack)
           // Highlight tiles that can be attacked by player (3x3 area around player)
-          if (player.state.isAttacking) {
+          if (player.state.isAttacking && player.equipment.weapon) {
             const [playerRow, playerCol] = playerPosition;
             effectColor = "red";
 
+            const range = player.equipment.weapon.range;
+
             if (
-              rowIndex >= playerRow - 1 &&
-              rowIndex <= playerRow + 1 &&
-              columnIndex >= playerCol - 1 &&
-              columnIndex <= playerCol + 1
+              rowIndex >= playerRow - range &&
+              rowIndex <= playerRow + range &&
+              columnIndex >= playerCol - range &&
+              columnIndex <= playerCol + range
             ) {
               isEffectZone = true;
             }

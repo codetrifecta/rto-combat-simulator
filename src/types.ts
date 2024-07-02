@@ -44,6 +44,7 @@ export interface IWeapon {
   name: string;
   damage: number;
   range: number;
+  cost: number;
 }
 
 export interface IHelmet {

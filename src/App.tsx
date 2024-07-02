@@ -30,13 +30,18 @@ function App() {
         name: "Sword",
         damage: 2,
         range: 1,
+        cost: 1,
+        // name: "Staff",
+        // damage: 1,
+        // range: 4,
+        // cost: 1,
       },
       helmet: null,
       armor: null,
       leggings: null,
     },
   });
-  const [enemies] = useState<IEnemy[]>([
+  const [enemies, setEnemies] = useState<IEnemy[]>([
     {
       id: 1,
       name: "Enemy 1",
@@ -140,6 +145,7 @@ function App() {
           player={player}
           setPlayer={setPlayer}
           enemies={enemies}
+          setEnemies={setEnemies}
         />
       </div>
 

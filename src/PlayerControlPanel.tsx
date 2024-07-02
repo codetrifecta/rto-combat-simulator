@@ -91,7 +91,11 @@ export const PlayerControlPanel: FC<{
                   isUsingSkill: false,
                 });
               }}
-              disabled={disabled || player.actionPoints < 2}
+              disabled={
+                disabled ||
+                (player.equipment.weapon &&
+                  player.actionPoints < player.equipment.weapon.cost)
+              }
             >
               Attack
             </Button>
@@ -134,7 +138,7 @@ export const PlayerControlPanel: FC<{
 const Button: FC<{
   children: string;
   onClick: () => void;
-  disabled?: boolean;
+  disabled?: boolean | undefined | null;
 }> = ({ children, onClick, disabled }) => {
   return (
     <button
