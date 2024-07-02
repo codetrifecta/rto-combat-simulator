@@ -70,6 +70,28 @@ function App() {
     return gameState.turnCycle.length > 0;
   }, [gameState.turnCycle]);
 
+  // Remove defeated enemies from the turn cycle when they are no longer in the enemies list
+  useEffect(() => {
+    if (gameState.turnCycle.length > 0) {
+      const newTurnCycle = gameState.turnCycle.filter((entity) => {
+        if (entity.entityType === ENTITY_TYPE.ENEMY) {
+          const enemy = enemies.find((e) => e.id === entity.id);
+          if (!enemy) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // console.log("newTurnCycle", newTurnCycle);
+
+      setGameState((prevState) => ({
+        ...prevState,
+        turnCycle: newTurnCycle,
+      }));
+    }
+  }, [enemies.length]);
+
   // Handle player and enemy's end turn action
   const handleEndTurn = useCallback(() => {
     // Rotate turn cycle, moving whatever was first in the cycle to the end of the cycle

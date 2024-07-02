@@ -65,7 +65,7 @@ export const Room: FC<{
   setPlayer: (player: IPlayer) => void;
   enemies: IEnemy[];
   setEnemies: (enemies: IEnemy[]) => void;
-}> = ({ gameState, player, setPlayer, enemies }) => {
+}> = ({ gameState, player, setPlayer, enemies, setEnemies }) => {
   const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
   const playerPosition = useMemo(() => {
@@ -83,6 +83,39 @@ export const Room: FC<{
   const handleEnemyClick = (id: number) => {
     const enemy = enemies.find((enemy) => enemy.id === id);
     console.log(`Player attacking ${enemy?.name}!`);
+
+    if (!enemy) {
+      console.error("Enemy not found!");
+      return;
+    }
+
+    if (player.state.isAttacking) {
+      if (!player.equipment.weapon) {
+        console.log("Player has no weapon equipped!");
+        return;
+      }
+
+      const weaponDamage = player.equipment.weapon.damage;
+      enemy.health = enemy.health - weaponDamage;
+
+      if (enemy.health <= 0) {
+        setEnemies(enemies.filter((e) => e.id !== id));
+        console.log(
+          `${enemy.name} took ${weaponDamage} damage and has been defeated!`
+        );
+      } else {
+        setEnemies(
+          enemies.map((e) => {
+            if (e.id === id) {
+              return enemy;
+            }
+            return e;
+          })
+        );
+        console.log(`${enemy.name} took ${weaponDamage} damage!`);
+      }
+    }
+
     setPlayer({
       ...player,
       actionPoints: player.actionPoints - 1,
@@ -91,10 +124,6 @@ export const Room: FC<{
         isAttacking: false,
       },
     });
-    // Simulate attack
-    setTimeout(() => {
-      console.log(`${enemy?.name} took 5 damage!`);
-    }, 1000);
   };
 
   return (
