@@ -9,6 +9,7 @@ import { useGameStateStore } from "./store/game";
 import { usePlayerStore } from "./store/player";
 import { useEnemyStore } from "./store/enemy";
 import { Logger } from "./components/Logger";
+import { useLogStore } from "./store/log";
 
 function App() {
   const [currentHoveredEntity, setCurrentHoveredEntity] =
@@ -22,6 +23,8 @@ function App() {
   const player = getPlayer();
 
   const { enemies } = useEnemyStore();
+
+  const { addLog } = useLogStore();
 
   // Initialize game state
   useEffect(() => {
@@ -61,15 +64,17 @@ function App() {
       // Simulate enemy action with a timeout
       setTimeout(() => {
         // End enemy's turn
+        addLog({
+          message: `${turnCycle[0].name} ended their turn!`,
+          type: "info",
+        });
         endTurn();
         setIsLoading(false);
       }, 1500);
     }
   }, [turnCycle, turnCycle.length]);
 
-  {
-    /* Wait for game initialization */
-  }
+  // Wait for game initialization
   if (!isInitialized) {
     return (
       <h1 className="w-screen h-screen flex justify-center items-center">

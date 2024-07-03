@@ -1,5 +1,5 @@
 import { ENTITY_TYPE, TILE_TYPE } from "./constants";
-import { IEntity, IPlayer } from "./types";
+import { IEntity, ILog, IPlayer } from "./types";
 
 export const generateRoomMatrix = (roomLength: number) => {
   // Initialize room matrix
@@ -61,7 +61,8 @@ export const handlePlayerEndTurn = (
   turnCycle: IEntity[],
   getPlayer: () => IPlayer,
   setPlayerActionPoints: (actionPoints: number) => void,
-  endTurn: () => void
+  endTurn: () => void,
+  addLog: (log: ILog) => void
 ) => {
   console.log("Ending player turn and gaining AP", turnCycle);
 
@@ -73,5 +74,6 @@ export const handlePlayerEndTurn = (
     setPlayerActionPoints(newActionPoints);
   }
 
+  addLog({ message: "Player's turn has ended.", type: "info" });
   endTurn();
 };

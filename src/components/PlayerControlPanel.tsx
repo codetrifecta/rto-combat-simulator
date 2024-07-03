@@ -4,6 +4,7 @@ import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
 import { ENTITY_TYPE } from "../constants";
 import { handlePlayerEndTurn } from "../utils";
+import { useLogStore } from "../store/log";
 
 export const PlayerControlPanel: FC = () => {
   const { turnCycle, endTurn } = useGameStateStore();
@@ -12,13 +13,21 @@ export const PlayerControlPanel: FC = () => {
 
   const player = getPlayer();
 
+  const { addLog } = useLogStore();
+
   const handleEndTurnClick = () => {
     setPlayerState({
       isAttacking: false,
       isMoving: false,
       isUsingSkill: false,
     });
-    handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
+    handlePlayerEndTurn(
+      turnCycle,
+      getPlayer,
+      setPlayerActionPoints,
+      endTurn,
+      addLog
+    );
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

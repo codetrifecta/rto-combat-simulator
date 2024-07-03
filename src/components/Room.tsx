@@ -6,6 +6,7 @@ import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
 import { generateRoomMatrix, handlePlayerEndTurn } from "../utils";
+import { useLogStore } from "../store/log";
 
 export const Room: FC<{
   currentHoveredEntity: IEnemy | null;
@@ -20,6 +21,8 @@ export const Room: FC<{
   const player = getPlayer();
 
   const { enemies, setEnemies } = useEnemyStore();
+
+  const { addLog } = useLogStore();
 
   const playerPosition = useMemo(() => {
     const playerRow = roomMatrix.findIndex(
@@ -55,13 +58,13 @@ export const Room: FC<{
     console.log(`Player attacking ${enemy?.name}!`);
 
     if (!enemy) {
-      console.error("Enemy not found!");
+      addLog({ message: "Enemy not found!", type: "error" });
       return;
     }
 
     if (player.state.isAttacking) {
       if (!player.equipment.weapon) {
-        console.log("Player has no weapon equipped!");
+        addLog({ message: "Player has no weapon equipped!", type: "error" });
         return;
       }
 
@@ -70,9 +73,10 @@ export const Room: FC<{
 
       if (enemy.health <= 0) {
         setEnemies(enemies.filter((e) => e.id !== id));
-        console.log(
-          `${enemy.name} took ${weaponDamage} damage and has been defeated!`
-        );
+        addLog({
+          message: `${enemy.name} took ${weaponDamage} damage and has been defeated!`,
+          type: "info",
+        });
       } else {
         setEnemies(
           enemies.map((e) => {
@@ -82,7 +86,10 @@ export const Room: FC<{
             return e;
           })
         );
-        console.log(`${enemy.name} took ${weaponDamage} damage!`);
+        addLog({
+          message: `${enemy.name} took ${weaponDamage} damage!`,
+          type: "info",
+        });
       }
     }
     setPlayerActionPoints(player.actionPoints - 1);
@@ -95,7 +102,13 @@ export const Room: FC<{
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
     if (player.actionPoints === 0) {
-      handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
+      handlePlayerEndTurn(
+        turnCycle,
+        getPlayer,
+        setPlayerActionPoints,
+        endTurn,
+        addLog
+      );
     }
   }, [
     endTurn,
@@ -103,6 +116,7 @@ export const Room: FC<{
     player.actionPoints,
     setPlayerActionPoints,
     turnCycle,
+    addLog,
   ]);
 
   return (
