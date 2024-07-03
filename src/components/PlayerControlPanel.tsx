@@ -36,8 +36,8 @@ export const PlayerControlPanel: FC = () => {
       <div
         className={clsx(
           "w-screen p-4 flex justify-center items-center gap-5 box-border",
-          { "bg-white": !disabled },
-          { "bg-gray-300": disabled },
+          { "bg-neutral-900": !disabled },
+          { "opacity-50": disabled },
           { "pointer-events-none": disabled }
         )}
       >

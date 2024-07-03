@@ -10,8 +10,10 @@ import { usePlayerStore } from "./store/player";
 import { useEnemyStore } from "./store/enemy";
 import { Logger } from "./components/Logger";
 import { useLogStore } from "./store/log";
+import clsx from "clsx";
 
 function App() {
+  const [headerOpen, setHeaderOpen] = useState(false);
   const [currentHoveredEntity, setCurrentHoveredEntity] =
     useState<IEnemy | null>(null);
 
@@ -90,8 +92,19 @@ function App() {
 
   return (
     <div className="relative w-full h-screen flex flex-col justify-start">
-      <header className="absolute top-[-150px] hover:top-0 h-[150px] pb-[30px] box-content w-full z-20 transition-all ease ">
-        <div className="h-[140px] flex flex-col justify-start items-center py-5 bg-neutral-900">
+      <header className="absolute top-0 w-full z-20">
+        <div
+          className="absolute h-[20px] w-full z-20"
+          onMouseEnter={() => setHeaderOpen(true)}
+          onMouseLeave={() => setHeaderOpen(false)}
+        ></div>
+        <div
+          className={clsx(
+            "absolute h-[135px] pt-3 w-full flex flex-col justify-start items-center bg-neutral-900 transition-all ease duration-300 delay-0",
+            { "top-[-135px] ": !headerOpen },
+            { "top-0": headerOpen }
+          )}
+        >
           <h1 className="mb-2 uppercase">
             R<span className="text-4xl">eturn</span>{" "}
             <span className="text-4xl">to</span> O
@@ -110,7 +123,7 @@ function App() {
       </div>
 
       {/* Combat Room */}
-      <div className="mb-8 grid grid-rows-1 grid-cols-8 w-full px-16 gap-5">
+      <div className="mb-6 grid grid-rows-1 grid-cols-8 w-full px-16 gap-5">
         <div className="col-span-2"></div>
         <div className="col-span-4 flex justify-center items-center">
           <Room
