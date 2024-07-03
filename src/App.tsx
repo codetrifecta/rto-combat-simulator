@@ -8,6 +8,7 @@ import { PlayerInfo } from "./components/PlayerInfo";
 import { useGameStateStore } from "./store/game";
 import { usePlayerStore } from "./store/player";
 import { useEnemyStore } from "./store/enemy";
+import { Logger } from "./components/Logger";
 
 function App() {
   const [currentHoveredEntity, setCurrentHoveredEntity] =
@@ -99,11 +100,17 @@ function App() {
       </div>
 
       {/* Combat Room */}
-      <div className="ml-auto mr-auto mb-10 ">
-        <Room
-          currentHoveredEntity={currentHoveredEntity}
-          setCurrentHoveredEntity={setCurrentHoveredEntity}
-        />
+      <div className="mb-10 grid grid-rows-1 grid-cols-8 w-full px-16 gap-5">
+        <div className="col-span-2"></div>
+        <div className="col-span-4 flex justify-center items-center">
+          <Room
+            currentHoveredEntity={currentHoveredEntity}
+            setCurrentHoveredEntity={setCurrentHoveredEntity}
+          />
+        </div>
+        <div className="relative col-span-2">
+          <Logger />
+        </div>
       </div>
 
       {/* Player Info */}
