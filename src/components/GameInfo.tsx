@@ -19,13 +19,7 @@ export const GameInfo: FC<{
         onMouseEnter={() => setCurrentHoveredEntity(turnCycle[0])}
         onMouseLeave={() => setCurrentHoveredEntity(null)}
       >
-        <EntityCard
-          entity={turnCycle[0]}
-          active={
-            currentHoveredEntity?.entityType === turnCycle[0].entityType &&
-            currentHoveredEntity?.id === turnCycle[0].id
-          }
-        />
+        <EntityCard entity={turnCycle[0]} active={true} />
       </div>
       {turnCycle.length > 1 &&
         turnCycle.slice(1).map((entity) => {
