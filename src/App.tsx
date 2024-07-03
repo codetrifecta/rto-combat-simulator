@@ -1,21 +1,19 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PlayerControlPanel } from "./components/PlayerControlPanel";
-import { IEnemy, IGameState, IPlayer } from "./types";
+import { IEnemy, IPlayer } from "./types";
 import { Room } from "./components/Room";
 import { GameInfo } from "./components/GameInfo";
 import { ENTITY_TYPE } from "./constants";
 import { PlayerInfo } from "./components/PlayerInfo";
+import { useGameStateStore } from "./store/game";
 
 function App() {
   const [currentHoveredEntity, setCurrentHoveredEntity] =
     useState<IEnemy | null>(null);
 
-  const [gameState, setGameState] = useState<IGameState>({
-    // List of tuples with entity type and id of entity
-    turnCycle: [],
-    isGameOver: false,
-    isLoading: true,
-  });
+  const { turnCycle, setTurnCycle, setIsLoading, endTurn } =
+    useGameStateStore();
+
   const [player, setPlayer] = useState<IPlayer>({
     id: 1,
     name: "Kratos",
@@ -61,22 +59,19 @@ function App() {
 
   // Initialize game state
   useEffect(() => {
-    // Set turn cycle
-    setGameState((prevState) => ({
-      ...prevState,
-      turnCycle: [player, ...enemies],
-      isLoading: false,
-    }));
+    // Set turn cycle and loading state in game store
+    setTurnCycle([player, ...enemies]);
+    setIsLoading(false);
   }, []);
 
   const isInitialized = useMemo(() => {
-    return gameState.turnCycle.length > 0;
-  }, [gameState.turnCycle]);
+    return turnCycle.length > 0;
+  }, [turnCycle]);
 
   // Remove defeated enemies from the turn cycle when they are no longer in the enemies list
   useEffect(() => {
-    if (gameState.turnCycle.length > 0) {
-      const newTurnCycle = gameState.turnCycle.filter((entity) => {
+    if (turnCycle.length > 0) {
+      const newTurnCycle = turnCycle.filter((entity) => {
         if (entity.entityType === ENTITY_TYPE.ENEMY) {
           const enemy = enemies.find((e) => e.id === entity.id);
           if (!enemy) {
@@ -85,43 +80,19 @@ function App() {
         }
         return true;
       });
-      // console.log("newTurnCycle", gameState);
-      setGameState((prevState) => ({
-        ...prevState,
-        turnCycle: newTurnCycle,
-      }));
+
+      // Update game store turn cycle
+      console.log("newTurnCycle", newTurnCycle);
+      setTurnCycle(newTurnCycle);
     }
   }, [enemies.length]);
 
-  // Handle end turn by rotating turn cycle by 1
-  const handleEndTurn = useCallback(() => {
-    // Rotate turn cycle, moving whatever was first in the cycle to the end of the cycle
-    const currentTurnCycle = gameState.turnCycle;
-    const currentEntityTurn = currentTurnCycle.shift();
-
-    if (!currentEntityTurn) {
-      console.error("No entity turn found in turn cycle");
-      return null;
-    }
-
-    currentTurnCycle.push(currentEntityTurn);
-
-    const newTurnCycle = [...currentTurnCycle];
-
-    setGameState((prevState) => ({
-      ...prevState,
-      turnCycle: newTurnCycle,
-    }));
-
-    return null;
-  }, [gameState.turnCycle]);
-
   // Handle player's end turn action
-  const handlePlayerEndTurn = useCallback(() => {
-    // console.log("Ending player turn and gaining AP", gameState.turnCycle);
+  const handlePlayerEndTurn = () => {
+    console.log("Ending player turn and gaining AP", turnCycle);
 
     // If current turn is player, end player's turn and give action points
-    if (gameState.turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
+    if (turnCycle[0] && turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
       const newActionPoints =
         player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
       setPlayer((prevState) => ({
@@ -130,34 +101,22 @@ function App() {
       }));
     }
 
-    // Rotate turn cycle, moving whatever was first in the cycle to the end of the cycle
-    handleEndTurn();
-  }, [gameState.turnCycle, handleEndTurn, player.actionPoints]);
+    endTurn();
+  };
 
   // Handle enemy's action
   useEffect(() => {
-    if (
-      gameState.turnCycle.length > 0 &&
-      gameState.turnCycle[0].entityType === ENTITY_TYPE.ENEMY
-    ) {
-      // console.log("Enemy action", gameState.turnCycle);
-      // Set loading state to true (mocking backend call for enemy action)
-      setGameState((prevState) => ({
-        ...prevState,
-        isLoading: true,
-      }));
+    if (turnCycle.length > 0 && turnCycle[0].entityType === ENTITY_TYPE.ENEMY) {
+      setIsLoading(true);
 
       // Simulate enemy action with a timeout
       setTimeout(() => {
         // End enemy's turn
-        handleEndTurn();
-        setGameState((prevState) => ({
-          ...prevState,
-          isLoading: false,
-        }));
+        endTurn();
+        setIsLoading(false);
       }, 1500);
     }
-  }, [gameState.turnCycle, gameState.turnCycle.length, handleEndTurn]);
+  }, [turnCycle, turnCycle.length]);
 
   {
     /* Wait for game initialization */
@@ -179,14 +138,12 @@ function App() {
 
       <div className="mb-10">
         <GameInfo
-          gameState={gameState}
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
       </div>
       <div className="ml-auto mr-auto mb-10 ">
         <Room
-          gameState={gameState}
           player={player}
           setPlayer={setPlayer}
           enemies={enemies}
@@ -207,7 +164,10 @@ function App() {
         player={player}
         setPlayer={setPlayer}
         onEndTurn={handlePlayerEndTurn}
-        disabled={gameState.turnCycle[0].entityType !== ENTITY_TYPE.PLAYER}
+        disabled={
+          turnCycle[0] !== null &&
+          turnCycle[0].entityType !== ENTITY_TYPE.PLAYER
+        }
       />
     </div>
   );

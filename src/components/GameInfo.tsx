@@ -1,18 +1,16 @@
 import { FC } from "react";
-import { IEntity, IGameState } from "../types";
+import { IEntity } from "../types";
 import { ENTITY_TYPE } from "../constants";
 import clsx from "clsx";
+import { useGameStateStore } from "../store/game";
 
 export const GameInfo: FC<{
-  gameState: IGameState;
   currentHoveredEntity: IEntity | null;
   setCurrentHoveredEntity: (entity: IEntity | null) => void;
-}> = ({
-  gameState: { turnCycle },
-  currentHoveredEntity,
-  setCurrentHoveredEntity,
-}) => {
+}> = ({ currentHoveredEntity, setCurrentHoveredEntity }) => {
   console.log("currently hovered entity:", currentHoveredEntity);
+
+  const { turnCycle } = useGameStateStore();
 
   return (
     <div className="w-full mx-auto flex justify-center">
@@ -33,7 +31,7 @@ export const GameInfo: FC<{
         turnCycle.slice(1).map((entity) => {
           return (
             <div
-              key={entity.id}
+              key={entity.entityType + entity.id}
               className="mr-1"
               onMouseEnter={() => setCurrentHoveredEntity(entity)}
               onMouseLeave={() => setCurrentHoveredEntity(null)}

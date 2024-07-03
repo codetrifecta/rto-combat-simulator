@@ -1,7 +1,8 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "../constants";
-import { IEnemy, IGameState, IPlayer } from "../types";
+import { IEnemy, IPlayer } from "../types";
+import { useGameStateStore } from "../store/game";
 
 // Seems like ideal room size is AT LEAST 13x13
 const roomLength = 11;
@@ -60,7 +61,6 @@ for (let row = 0; row < roomLength; row++) {
 initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
 
 export const Room: FC<{
-  gameState: IGameState;
   player: IPlayer;
   setPlayer: (player: IPlayer) => void;
   enemies: IEnemy[];
@@ -69,7 +69,6 @@ export const Room: FC<{
   currentHoveredEntity: IEnemy | null;
   setCurrentHoveredEntity: (enemy: IEnemy | null) => void;
 }> = ({
-  gameState,
   player,
   setPlayer,
   enemies,
@@ -80,6 +79,8 @@ export const Room: FC<{
 }) => {
   const [roomMatrix, setRoomMatrix] =
     useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
+
+  const { turnCycle } = useGameStateStore();
 
   const playerPosition = useMemo(() => {
     const playerRow = roomMatrix.findIndex(
@@ -93,6 +94,7 @@ export const Room: FC<{
 
   // Update room matrix when an enemy is defeated (i.e. removed from the game)
   useEffect(() => {
+    console.log("room turn cycle:", turnCycle);
     setRoomMatrix((prevRoomMatrix) => {
       return prevRoomMatrix.map((row) => {
         return row.map(([tileType, id]) => {
@@ -188,8 +190,9 @@ export const Room: FC<{
           let active: boolean = false;
           if (
             (entityType !== null &&
-              gameState.turnCycle[0].entityType === entityType &&
-              gameState.turnCycle[0].id === id) ||
+              turnCycle[0] !== null &&
+              turnCycle[0].entityType === entityType &&
+              turnCycle[0].id === id) ||
             (currentHoveredEntity?.entityType === entityType &&
               currentHoveredEntity?.id === id)
           ) {
