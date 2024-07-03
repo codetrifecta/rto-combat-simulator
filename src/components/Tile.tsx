@@ -45,27 +45,26 @@ export const Tile: FC<{
   return (
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
-      className={clsx(
-        "relative border-2 border-gray hover:border-black cursor-pointer",
-        classNames,
-        {
-          // Tile type color
-          "bg-white": tileType === TILE_TYPE.EMPTY,
-          "bg-gray-500": tileType === TILE_TYPE.WALL,
-          "bg-yellow-500": tileType === TILE_TYPE.DOOR,
-          "bg-green-500 z-10 hover:shadow-intense-green":
-            tileType === TILE_TYPE.PLAYER,
-          "bg-red-500 z-10 hover:shadow-intense-red":
-            tileType === TILE_TYPE.ENEMY,
+      className={clsx("relative border-2 border-gray ", classNames, {
+        // Don't highlight wall tiles
+        "cursor-pointer hover:border-black": tileType !== TILE_TYPE.WALL,
 
-          // Active tile
-          "shadow-intense-green z-10": tileType === TILE_TYPE.PLAYER && active,
-          "shadow-intense-red z-10": tileType === TILE_TYPE.ENEMY && active,
+        // Tile type color
+        "bg-white": tileType === TILE_TYPE.EMPTY,
+        "bg-gray-500": tileType === TILE_TYPE.WALL,
+        "bg-yellow-500": tileType === TILE_TYPE.DOOR,
+        "bg-green-500 z-10 hover:shadow-intense-green":
+          tileType === TILE_TYPE.PLAYER,
+        "bg-red-500 z-10 hover:shadow-intense-red":
+          tileType === TILE_TYPE.ENEMY,
 
-          // Effect zone
-          [effectBorderClasses]: isEffectZone && isEffectTile,
-        }
-      )}
+        // Active tile
+        "shadow-intense-green z-10": tileType === TILE_TYPE.PLAYER && active,
+        "shadow-intense-red z-10": tileType === TILE_TYPE.ENEMY && active,
+
+        // Effect zone
+        [effectBorderClasses]: isEffectZone && isEffectTile,
+      })}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
