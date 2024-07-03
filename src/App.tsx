@@ -79,13 +79,19 @@ function App() {
 
   return (
     <div className="relative w-full h-screen flex flex-col justify-start">
-      <header className="mt-10 mb-10">
-        <h1 className="mb-2">Return to Olympus</h1>
-        <h2>Combat Simulator</h2>
+      <header className="absolute top-[-150px] hover:top-0 h-[150px] pb-[30px] box-content w-full z-20 transition-all ease ">
+        <div className="h-[140px] flex flex-col justify-start items-center py-5 bg-neutral-900">
+          <h1 className="mb-2 uppercase">
+            R<span className="text-4xl">eturn</span>{" "}
+            <span className="text-4xl">to</span> O
+            <span className="text-4xl">lympus</span>
+          </h1>
+          <h2>Combat Simulator</h2>
+        </div>
       </header>
 
       {/* Game Info (Currently only displays turn cycle) */}
-      <div className="mb-10">
+      <div className="mt-16 mb-10">
         <GameInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
