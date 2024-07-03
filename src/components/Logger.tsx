@@ -44,7 +44,7 @@ const LogItem = forwardRef<HTMLDivElement, { log: ILog }>(({ log }, ref) => {
 
   return (
     <div className={clsx("mb-2 rounded-md py-1 px-3", bgColor)} ref={ref}>
-      <p className="text-left"> {log.message}</p>
+      <p className="text-left text-white"> {log.message}</p>
     </div>
   );
 });
