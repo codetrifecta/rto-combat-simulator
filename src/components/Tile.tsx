@@ -46,8 +46,11 @@ export const Tile: FC<{
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
       className={clsx("relative border-2 border-gray ", classNames, {
-        // Don't highlight wall tiles
-        "cursor-pointer hover:border-black": tileType !== TILE_TYPE.WALL,
+        // Only use cursor-pointer non-wall tiles
+        "cursor-pointer": tileType !== TILE_TYPE.WALL,
+
+        // Only put border black on wall tiles
+        "hover:border-black": tileType == TILE_TYPE.EMPTY,
 
         // Tile type color
         "bg-white": tileType === TILE_TYPE.EMPTY,
