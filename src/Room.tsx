@@ -66,7 +66,7 @@ export const Room: FC<{
   enemies: IEnemy[];
   setEnemies: (enemies: IEnemy[]) => void;
   onEndTurn: () => void;
-  setCurrentHoveredEnemy: (enemy: IEnemy | null) => void;
+  setCurrentHoveredEntity: (enemy: IEnemy | null) => void;
 }> = ({
   gameState,
   player,
@@ -74,7 +74,7 @@ export const Room: FC<{
   enemies,
   setEnemies,
   onEndTurn,
-  setCurrentHoveredEnemy,
+  setCurrentHoveredEntity,
 }) => {
   const [roomMatrix, setRoomMatrix] =
     useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
@@ -229,11 +229,19 @@ export const Room: FC<{
               onMouseEnter={() => {
                 if (tileType === TILE_TYPE.ENEMY) {
                   const enemy = enemies.find((enemy) => enemy.id === id);
-                  setCurrentHoveredEnemy(enemy || null);
+
+                  if (!enemy) {
+                    console.error("Enemy not found!");
+                    return;
+                  }
+
+                  setCurrentHoveredEntity(enemy);
+                } else if (tileType === TILE_TYPE.PLAYER) {
+                  setCurrentHoveredEntity(player);
                 }
               }}
               onMouseLeave={() => {
-                setCurrentHoveredEnemy(null);
+                setCurrentHoveredEntity(null);
               }}
             />
           );
