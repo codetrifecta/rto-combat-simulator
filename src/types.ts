@@ -63,6 +63,6 @@ export interface ILeggings {
 }
 
 export interface ILog {
-  message: string;
+  message: string | JSX.Element;
   type: "info" | "error";
 }

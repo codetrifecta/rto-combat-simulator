@@ -21,13 +21,7 @@ export const PlayerControlPanel: FC = () => {
       isMoving: false,
       isUsingSkill: false,
     });
-    handlePlayerEndTurn(
-      turnCycle,
-      getPlayer,
-      setPlayerActionPoints,
-      endTurn,
-      addLog
-    );
+    handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,7 +107,21 @@ export const PlayerControlPanel: FC = () => {
             >
               Skills
             </Button>
-            <Button onClick={handleEndTurnClick} disabled={disabled}>
+            <Button
+              onClick={() => {
+                handleEndTurnClick();
+                addLog({
+                  message: (
+                    <>
+                      <span className="text-green-500">{player.name}</span>{" "}
+                      ended their turn.
+                    </>
+                  ),
+                  type: "info",
+                });
+              }}
+              disabled={disabled}
+            >
               End Turn
             </Button>
           </>

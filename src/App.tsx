@@ -65,7 +65,12 @@ function App() {
       setTimeout(() => {
         // End enemy's turn
         addLog({
-          message: `${turnCycle[0].name} ended their turn!`,
+          message: (
+            <>
+              <span className="text-red-500">{turnCycle[0].name}</span> ended
+              their turn.
+            </>
+          ),
           type: "info",
         });
         endTurn();

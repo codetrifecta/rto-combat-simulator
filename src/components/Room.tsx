@@ -74,7 +74,12 @@ export const Room: FC<{
       if (enemy.health <= 0) {
         setEnemies(enemies.filter((e) => e.id !== id));
         addLog({
-          message: `${enemy.name} took ${weaponDamage} damage and has been defeated!`,
+          message: (
+            <>
+              <span className="text-red-500">{enemy.name}</span> took{" "}
+              {weaponDamage} damage and has been defeated!
+            </>
+          ),
           type: "info",
         });
       } else {
@@ -87,7 +92,12 @@ export const Room: FC<{
           })
         );
         addLog({
-          message: `${enemy.name} took ${weaponDamage} damage!`,
+          message: (
+            <>
+              <span className="text-red-500">{enemy.name}</span> took{" "}
+              {weaponDamage} damage.
+            </>
+          ),
           type: "info",
         });
       }
@@ -102,13 +112,16 @@ export const Room: FC<{
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
     if (player.actionPoints === 0) {
-      handlePlayerEndTurn(
-        turnCycle,
-        getPlayer,
-        setPlayerActionPoints,
-        endTurn,
-        addLog
-      );
+      handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
+      addLog({
+        message: (
+          <>
+            <span className="text-green-500">{player.name}</span> ended their
+            turn.
+          </>
+        ),
+        type: "info",
+      });
     }
   }, [
     endTurn,
