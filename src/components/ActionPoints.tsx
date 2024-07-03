@@ -1,6 +1,6 @@
 import { type FC } from "react";
-import { MAX_ACTION_POINTS } from "./constants";
-import { IPlayerState } from "./types";
+import { MAX_ACTION_POINTS } from "../constants";
+import { IPlayerState } from "../types";
 
 // Display action points as circles
 export const ActionPoints: FC<{

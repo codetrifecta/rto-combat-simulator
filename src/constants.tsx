@@ -1,5 +1,7 @@
 export const TILE_SIZE = 65;
 
+export const ROOM_LENGTH = 11;
+
 export enum TILE_TYPE {
   EMPTY = 0,
   WALL = 1,

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { IPlayer } from "./types";
+import { IPlayer } from "../types";
 import { ActionPoints } from "./ActionPoints";
 
 export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {

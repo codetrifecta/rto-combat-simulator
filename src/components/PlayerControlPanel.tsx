@@ -1,45 +1,32 @@
-import { type FC } from "react";
-import { IPlayer, IPlayerState } from "./types";
+import { useMemo, type FC } from "react";
 import clsx from "clsx";
-const skills: { name: string; damage: number }[] = [
-  {
-    name: "Fireball",
-    damage: 10,
-  },
-  {
-    name: "Heal",
-    damage: -10,
-  },
-  {
-    name: "Lightning",
-    damage: 15,
-  },
-];
+import { usePlayerStore } from "../store/player";
+import { useGameStateStore } from "../store/game";
+import { ENTITY_TYPE } from "../constants";
+import { handlePlayerEndTurn } from "../utils";
 
-export const PlayerControlPanel: FC<{
-  player: IPlayer;
-  setPlayer: (state: IPlayer) => void;
-  onEndTurn: () => void;
-  disabled: boolean;
-}> = ({ player, setPlayer, onEndTurn, disabled }) => {
+export const PlayerControlPanel: FC = () => {
+  const { turnCycle, endTurn } = useGameStateStore();
+
+  const { setPlayerState, getPlayer, setPlayerActionPoints } = usePlayerStore();
+
+  const player = getPlayer();
+
   const handleEndTurnClick = () => {
-    setPlayer({
-      ...player,
-      state: {
-        isAttacking: false,
-        isMoving: false,
-        isUsingSkill: false,
-      },
+    setPlayerState({
+      isAttacking: false,
+      isMoving: false,
+      isUsingSkill: false,
     });
-    onEndTurn();
+    handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
   };
 
-  const handlePlayerStateChange = (state: IPlayerState) => {
-    setPlayer({
-      ...player,
-      state,
-    });
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const disabled = useMemo(() => {
+    return (
+      turnCycle[0] !== null && turnCycle[0].entityType !== ENTITY_TYPE.PLAYER
+    );
+  }, [turnCycle]);
 
   return (
     <div>
@@ -53,7 +40,7 @@ export const PlayerControlPanel: FC<{
       >
         {player.state.isUsingSkill ? (
           <>
-            {skills.map((skill) => (
+            {player.skills.map((skill) => (
               <Button
                 key={skill.name}
                 onClick={() => console.log(skill.name)}
@@ -64,8 +51,7 @@ export const PlayerControlPanel: FC<{
             ))}
             <Button
               onClick={() =>
-                handlePlayerStateChange({
-                  ...player.state,
+                setPlayerState({
                   isAttacking: false,
                   isMoving: false,
                   isUsingSkill: false,
@@ -80,8 +66,7 @@ export const PlayerControlPanel: FC<{
           <>
             <Button
               onClick={() => {
-                handlePlayerStateChange({
-                  ...player.state,
+                setPlayerState({
                   isAttacking: !player.state.isAttacking,
                   isMoving: false,
                   isUsingSkill: false,
@@ -97,8 +82,7 @@ export const PlayerControlPanel: FC<{
             </Button>
             <Button
               onClick={() => {
-                handlePlayerStateChange({
-                  ...player.state,
+                setPlayerState({
                   isAttacking: false,
                   isMoving: !player.state.isMoving,
                   isUsingSkill: false,
@@ -110,8 +94,7 @@ export const PlayerControlPanel: FC<{
             </Button>
             <Button
               onClick={() => {
-                handlePlayerStateChange({
-                  ...player.state,
+                setPlayerState({
                   isAttacking: false,
                   isMoving: false,
                   isUsingSkill: !player.state.isUsingSkill,
