@@ -46,15 +46,17 @@ export const Tile: FC<{
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
       className={clsx(
-        "border-2 border-gray hover:border-black cursor-pointer",
+        "relative border-2 border-gray hover:border-black cursor-pointer",
         classNames,
         {
           // Tile type color
           "bg-white": tileType === TILE_TYPE.EMPTY,
           "bg-gray-500": tileType === TILE_TYPE.WALL,
           "bg-yellow-500": tileType === TILE_TYPE.DOOR,
-          "bg-green-500": tileType === TILE_TYPE.PLAYER,
-          "bg-red-500": tileType === TILE_TYPE.ENEMY,
+          "bg-green-500 z-10 hover:shadow-intense-green":
+            tileType === TILE_TYPE.PLAYER,
+          "bg-red-500 z-10 hover:shadow-intense-red":
+            tileType === TILE_TYPE.ENEMY,
 
           // Active tile
           "shadow-intense-green z-10": tileType === TILE_TYPE.PLAYER && active,
