@@ -1,17 +1,17 @@
 import { type FC } from "react";
 import { MAX_ACTION_POINTS } from "./constants";
-import { PlayerState } from "./types";
+import { IPlayerState } from "./types";
 
 // Display action points as circles
 export const ActionPoints: FC<{
   actionPoints: number;
-  playerState: PlayerState;
+  playerState: IPlayerState;
 }> = ({ actionPoints, playerState }) => {
   const emptyActionPoints = MAX_ACTION_POINTS - actionPoints;
   let usedActionPoints = 0;
 
   if (playerState.isAttacking) {
-    usedActionPoints = 2;
+    usedActionPoints = 1;
   }
 
   const availableActionPoints = actionPoints - usedActionPoints;

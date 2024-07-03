@@ -1,11 +1,12 @@
 import { FC, useMemo } from "react";
-import { GameState } from "./types";
+import { IEnemy, IGameState } from "./types";
 import { ENTITY_TYPE } from "./constants";
 import clsx from "clsx";
 
-export const GameInfo: FC<{ gameState: GameState }> = ({
-  gameState: { turnCycle },
-}) => {
+export const GameInfo: FC<{
+  gameState: IGameState;
+  currentHoveredEnemy: IEnemy | null;
+}> = ({ gameState: { turnCycle }, currentHoveredEnemy }) => {
   const currentTurn = useMemo(() => {
     const currentEntity = turnCycle[0];
 
@@ -17,6 +18,8 @@ export const GameInfo: FC<{ gameState: GameState }> = ({
       return entity.name;
     });
   }, [turnCycle]);
+
+  console.log("currently hovered enemy:", currentHoveredEnemy);
 
   return (
     <div>

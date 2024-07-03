@@ -1,32 +1,26 @@
 import { FC, useMemo } from "react";
 import { TILE_SIZE, TILE_TYPE } from "./constants";
 import clsx from "clsx";
-import { PlayerState } from "./types";
-
-/**
- * Room
- * 0 - empty
- * 1 - wall
- * 2 - door
- * 3 - player
- * 4 - enemy
- */
+import { IPlayerState } from "./types";
 
 export const Tile: FC<{
   tileType: number;
-  playerState: PlayerState;
+  playerState: IPlayerState;
   active: boolean;
   isEffectZone: boolean;
   effectColor: string;
   onClick: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
   classNames?: string;
 }> = ({
   tileType,
-  // playerState,
+  playerState,
   active,
   isEffectZone,
-  effectColor,
   onClick,
+  onMouseEnter,
+  onMouseLeave,
   classNames = "",
 }) => {
   const isEffectTile = useMemo(() => {
@@ -38,12 +32,15 @@ export const Tile: FC<{
   }, [tileType]);
 
   // Effect zone classes
+  // Return flat string instead of formatted because getting an error where class is not applied
   const effectBorderClasses = useMemo(() => {
     if (isEffectZone && isEffectTile) {
-      return `hover:opacity-80 border-${effectColor}-500`;
+      if (playerState.isAttacking) {
+        return "hover:opacity-80 border-red-500";
+      }
     }
     return "";
-  }, [isEffectZone, isEffectTile, effectColor]);
+  }, [isEffectZone, isEffectTile, playerState.isAttacking]);
 
   return (
     <div
@@ -68,6 +65,8 @@ export const Tile: FC<{
         }
       )}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     ></div>
   );
 };

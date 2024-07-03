@@ -1,19 +1,10 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
-import { Enemy, GameState, PlayerState } from "./types";
+import { IEnemy, IGameState, IPlayer } from "./types";
 
-/**
- * Room
- * 0 - empty
- * 1 - wall
- * 2 - door
- * 3 - player
- * 4 - enemy
- */
-
-// Seems like ideal room size is AT LEAST 9x9
-const roomLength = 9;
+// Seems like ideal room size is AT LEAST 13x13
+const roomLength = 11;
 const totalRoomSize = roomLength * TILE_SIZE;
 
 // Initialize room matrix
@@ -65,16 +56,28 @@ for (let row = 0; row < roomLength; row++) {
 }
 
 // Manually modify room matrix
-initialRoomMatrix[5][3] = [TILE_TYPE.ENEMY, 2];
-// initialRoomMatrix[2][4] = [TILE_TYPE.ENEMY, 2];
+// initialRoomMatrix[8][5] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 13x13 room
+initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
 
 export const Room: FC<{
-  gameState: GameState;
-  playerState: PlayerState;
-  setPlayerState: (playerState: PlayerState) => void;
-  enemies: Enemy[];
-}> = ({ gameState, playerState, setPlayerState, enemies }) => {
-  const [roomMatrix] = useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
+  gameState: IGameState;
+  player: IPlayer;
+  setPlayer: (player: IPlayer) => void;
+  enemies: IEnemy[];
+  setEnemies: (enemies: IEnemy[]) => void;
+  onEndTurn: () => void;
+  setCurrentHoveredEnemy: (enemy: IEnemy | null) => void;
+}> = ({
+  gameState,
+  player,
+  setPlayer,
+  enemies,
+  setEnemies,
+  onEndTurn,
+  setCurrentHoveredEnemy,
+}) => {
+  const [roomMatrix, setRoomMatrix] =
+    useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
   const playerPosition = useMemo(() => {
     const playerRow = roomMatrix.findIndex(
@@ -86,21 +89,76 @@ export const Room: FC<{
     return [playerRow, playerCol];
   }, [roomMatrix]);
 
-  // console.log("roomMatrix", roomMatrix);
+  // Update room matrix when an enemy is defeated (i.e. removed from the game)
+  useEffect(() => {
+    setRoomMatrix((prevRoomMatrix) => {
+      return prevRoomMatrix.map((row) => {
+        return row.map(([tileType, id]) => {
+          if (tileType === TILE_TYPE.ENEMY) {
+            const enemy = enemies.find((enemy) => enemy.id === id);
+            if (!enemy) {
+              return [TILE_TYPE.EMPTY, 0];
+            }
+          }
+          return [tileType, id];
+        });
+      });
+    });
+  }, [enemies.length]);
 
+  // Handle player attacking an enemy
   const handleEnemyClick = (id: number) => {
     const enemy = enemies.find((enemy) => enemy.id === id);
     console.log(`Player attacking ${enemy?.name}!`);
-    setPlayerState({
-      ...playerState,
-      isAttacking: false,
-      actionPoints: playerState.actionPoints - 2,
+
+    if (!enemy) {
+      console.error("Enemy not found!");
+      return;
+    }
+
+    if (player.state.isAttacking) {
+      if (!player.equipment.weapon) {
+        console.log("Player has no weapon equipped!");
+        return;
+      }
+
+      const weaponDamage = player.equipment.weapon.damage;
+      enemy.health = enemy.health - weaponDamage;
+
+      if (enemy.health <= 0) {
+        setEnemies(enemies.filter((e) => e.id !== id));
+        console.log(
+          `${enemy.name} took ${weaponDamage} damage and has been defeated!`
+        );
+      } else {
+        setEnemies(
+          enemies.map((e) => {
+            if (e.id === id) {
+              return enemy;
+            }
+            return e;
+          })
+        );
+        console.log(`${enemy.name} took ${weaponDamage} damage!`);
+      }
+    }
+
+    setPlayer({
+      ...player,
+      actionPoints: player.actionPoints - 1,
+      state: {
+        ...player.state,
+        isAttacking: false,
+      },
     });
-    // Simulate attack
-    setTimeout(() => {
-      console.log(`${enemy?.name} took 5 damage!`);
-    }, 1000);
   };
+
+  // Automatically end player's turn when action points reach 0
+  useEffect(() => {
+    if (player.actionPoints === 0) {
+      onEndTurn();
+    }
+  }, [onEndTurn, player.actionPoints]);
 
   return (
     <div
@@ -139,15 +197,17 @@ export const Room: FC<{
 
           // Check if player is attacking (basic attack)
           // Highlight tiles that can be attacked by player (3x3 area around player)
-          if (playerState.isAttacking) {
+          if (player.state.isAttacking && player.equipment.weapon) {
             const [playerRow, playerCol] = playerPosition;
             effectColor = "red";
 
+            const range = player.equipment.weapon.range;
+
             if (
-              rowIndex >= playerRow - 1 &&
-              rowIndex <= playerRow + 1 &&
-              columnIndex >= playerCol - 1 &&
-              columnIndex <= playerCol + 1
+              rowIndex >= playerRow - range &&
+              rowIndex <= playerRow + range &&
+              columnIndex >= playerCol - range &&
+              columnIndex <= playerCol + range
             ) {
               isEffectZone = true;
             }
@@ -157,7 +217,7 @@ export const Room: FC<{
             <Tile
               tileType={tileType}
               key={`${rowIndex}-${columnIndex}`}
-              playerState={playerState}
+              playerState={player.state}
               active={active}
               isEffectZone={isEffectZone}
               effectColor={effectColor}
@@ -165,6 +225,15 @@ export const Room: FC<{
                 if (isEffectZone && tileType === TILE_TYPE.ENEMY) {
                   handleEnemyClick(id);
                 }
+              }}
+              onMouseEnter={() => {
+                if (tileType === TILE_TYPE.ENEMY) {
+                  const enemy = enemies.find((enemy) => enemy.id === id);
+                  setCurrentHoveredEnemy(enemy || null);
+                }
+              }}
+              onMouseLeave={() => {
+                setCurrentHoveredEnemy(null);
               }}
             />
           );

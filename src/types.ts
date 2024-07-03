@@ -1,65 +1,63 @@
 import { ENTITY_TYPE } from "./constants";
 
-export interface Entity {
-    id: number;
-    name: string;
-    entityType: ENTITY_TYPE;
-    health: number;
+export interface IEntity {
+  id: number;
+  name: string;
+  entityType: ENTITY_TYPE;
+  health: number;
 }
 
-export interface Player extends Entity{
-    entityType: ENTITY_TYPE.PLAYER;
-    state: PlayerState;
-    skills: Skill[];
-    equipment: {
-        weapon: Weapon | null;
-        helmet: Helmet | null;
-        armor: Armor | null;
-        leggings: Leggings | null;
-    };
+export interface IPlayer extends IEntity {
+  actionPoints: number;
+  skills: ISkill[];
+  state: IPlayerState;
+  equipment: {
+    weapon: IWeapon | null;
+    helmet: IHelmet | null;
+    armor: IArmor | null;
+    leggings: ILeggings | null;
+  };
 }
 
-export interface PlayerState {
-    health: number;
-    actionPoints: number;
-    isAttacking: boolean;
-    isMoving: boolean;
-    isUsingSkill: boolean;
+export interface IPlayerState {
+  isAttacking: boolean;
+  isMoving: boolean;
+  isUsingSkill: boolean;
 }
 
-export interface Enemy extends Entity{
-    entityType: ENTITY_TYPE.ENEMY;
+export interface IEnemy extends IEntity {}
+
+export interface IGameState {
+  turnCycle: IEntity[];
+  isGameOver: boolean;
+  isLoading: boolean;
 }
 
-export interface GameState {
-    turnCycle: Entity[];
-    isGameOver: boolean;
-    isLoading: boolean;
+export interface ISkill {
+  name: string;
+  damage: number;
+  range: number;
+  cooldown: number;
 }
 
-export interface Skill {
-    name: string;
-    damage: number;
-    range: number;
-    cooldown: number;
+export interface IWeapon {
+  name: string;
+  damage: number;
+  range: number;
+  cost: number;
 }
 
-export interface Weapon {
-    name: string;
-    damage: number;
+export interface IHelmet {
+  name: string;
+  defense: number;
 }
 
-export interface Helmet {
-    name: string;
-    defense: number;
+export interface IArmor {
+  name: string;
+  defense: number;
 }
 
-export interface Armor {
-    name: string;
-    defense: number;
-}
-
-export interface Leggings {
-    name: string;
-    defense: number;
+export interface ILeggings {
+  name: string;
+  defense: number;
 }

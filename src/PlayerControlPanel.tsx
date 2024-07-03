@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { PlayerState } from "./types";
+import { IPlayer, IPlayerState } from "./types";
 import clsx from "clsx";
 const skills: { name: string; damage: number }[] = [
   {
@@ -17,23 +17,28 @@ const skills: { name: string; damage: number }[] = [
 ];
 
 export const PlayerControlPanel: FC<{
-  playerState: PlayerState;
-  setPlayerState: (state: PlayerState) => void;
+  player: IPlayer;
+  setPlayer: (state: IPlayer) => void;
   onEndTurn: () => void;
   disabled: boolean;
-}> = ({ playerState, setPlayerState, onEndTurn, disabled }) => {
+}> = ({ player, setPlayer, onEndTurn, disabled }) => {
   const handleEndTurnClick = () => {
-    const newActionPoints =
-      playerState.actionPoints >= 2 ? 6 : playerState.actionPoints + 4;
-
-    setPlayerState({
-      ...playerState,
-      actionPoints: newActionPoints,
-      isAttacking: false,
-      isMoving: false,
-      isUsingSkill: false,
+    setPlayer({
+      ...player,
+      state: {
+        isAttacking: false,
+        isMoving: false,
+        isUsingSkill: false,
+      },
     });
     onEndTurn();
+  };
+
+  const handlePlayerStateChange = (state: IPlayerState) => {
+    setPlayer({
+      ...player,
+      state,
+    });
   };
 
   return (
@@ -46,7 +51,7 @@ export const PlayerControlPanel: FC<{
           { "pointer-events-none": disabled }
         )}
       >
-        {playerState.isUsingSkill ? (
+        {player.state.isUsingSkill ? (
           <>
             {skills.map((skill) => (
               <Button
@@ -59,8 +64,8 @@ export const PlayerControlPanel: FC<{
             ))}
             <Button
               onClick={() =>
-                setPlayerState({
-                  ...playerState,
+                handlePlayerStateChange({
+                  ...player.state,
                   isAttacking: false,
                   isMoving: false,
                   isUsingSkill: false,
@@ -75,23 +80,27 @@ export const PlayerControlPanel: FC<{
           <>
             <Button
               onClick={() => {
-                setPlayerState({
-                  ...playerState,
-                  isAttacking: !playerState.isAttacking,
+                handlePlayerStateChange({
+                  ...player.state,
+                  isAttacking: !player.state.isAttacking,
                   isMoving: false,
                   isUsingSkill: false,
                 });
               }}
-              disabled={disabled || playerState.actionPoints < 2}
+              disabled={
+                disabled ||
+                (player.equipment.weapon &&
+                  player.actionPoints < player.equipment.weapon.cost)
+              }
             >
               Attack
             </Button>
             <Button
               onClick={() => {
-                setPlayerState({
-                  ...playerState,
+                handlePlayerStateChange({
+                  ...player.state,
                   isAttacking: false,
-                  isMoving: !playerState.isMoving,
+                  isMoving: !player.state.isMoving,
                   isUsingSkill: false,
                 });
               }}
@@ -101,11 +110,11 @@ export const PlayerControlPanel: FC<{
             </Button>
             <Button
               onClick={() => {
-                setPlayerState({
-                  ...playerState,
+                handlePlayerStateChange({
+                  ...player.state,
                   isAttacking: false,
                   isMoving: false,
-                  isUsingSkill: !playerState.isUsingSkill,
+                  isUsingSkill: !player.state.isUsingSkill,
                 });
               }}
               disabled={disabled}
@@ -125,7 +134,7 @@ export const PlayerControlPanel: FC<{
 const Button: FC<{
   children: string;
   onClick: () => void;
-  disabled?: boolean;
+  disabled?: boolean | undefined | null;
 }> = ({ children, onClick, disabled }) => {
   return (
     <button
