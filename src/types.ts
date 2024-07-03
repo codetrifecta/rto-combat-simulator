@@ -61,3 +61,8 @@ export interface ILeggings {
   name: string;
   defense: number;
 }
+
+export interface ILog {
+  message: string;
+  type: "info" | "error";
+}
