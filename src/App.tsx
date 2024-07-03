@@ -7,6 +7,7 @@ import { ENTITY_TYPE } from "./constants";
 import { PlayerInfo } from "./components/PlayerInfo";
 import { useGameStateStore } from "./store/game";
 import { usePlayerStore } from "./store/player";
+import { useEnemyStore } from "./store/enemy";
 
 function App() {
   const [currentHoveredEntity, setCurrentHoveredEntity] =
@@ -19,20 +20,21 @@ function App() {
 
   const player = getPlayer();
 
-  const [enemies, setEnemies] = useState<IEnemy[]>([
-    {
-      id: 1,
-      name: "Enemy 1",
-      entityType: ENTITY_TYPE.ENEMY,
-      health: 4,
-    },
-    {
-      id: 2,
-      name: "Enemy 2",
-      entityType: ENTITY_TYPE.ENEMY,
-      health: 4,
-    },
-  ]);
+  // const [enemies, setEnemies] = useState<IEnemy[]>([
+  //   {
+  //     id: 1,
+  //     name: "Enemy 1",
+  //     entityType: ENTITY_TYPE.ENEMY,
+  //     health: 4,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Enemy 2",
+  //     entityType: ENTITY_TYPE.ENEMY,
+  //     health: 4,
+  //   },
+  // ]);
+  const { enemies } = useEnemyStore();
 
   // Initialize game state
   useEffect(() => {
@@ -118,8 +120,6 @@ function App() {
       </div>
       <div className="ml-auto mr-auto mb-10 ">
         <Room
-          enemies={enemies}
-          setEnemies={setEnemies}
           onEndTurn={handlePlayerEndTurn}
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}

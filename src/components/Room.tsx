@@ -4,6 +4,7 @@ import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "../constants";
 import { IEnemy } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
+import { useEnemyStore } from "../store/enemy";
 
 // Seems like ideal room size is AT LEAST 13x13
 const roomLength = 11;
@@ -62,24 +63,18 @@ for (let row = 0; row < roomLength; row++) {
 initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
 
 export const Room: FC<{
-  enemies: IEnemy[];
-  setEnemies: (enemies: IEnemy[]) => void;
   onEndTurn: () => void;
   currentHoveredEntity: IEnemy | null;
   setCurrentHoveredEntity: (enemy: IEnemy | null) => void;
-}> = ({
-  enemies,
-  setEnemies,
-  onEndTurn,
-  currentHoveredEntity,
-  setCurrentHoveredEntity,
-}) => {
+}> = ({ onEndTurn, currentHoveredEntity, setCurrentHoveredEntity }) => {
   const [roomMatrix, setRoomMatrix] =
     useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
   const { turnCycle } = useGameStateStore();
   const { getPlayer, setPlayerActionPoints, setPlayerState } = usePlayerStore();
   const player = getPlayer();
+
+  const { enemies, setEnemies } = useEnemyStore();
 
   const playerPosition = useMemo(() => {
     const playerRow = roomMatrix.findIndex(
