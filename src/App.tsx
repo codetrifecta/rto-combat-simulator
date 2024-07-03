@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { PlayerControlPanel } from "./PlayerControlPanel";
+import { PlayerControlPanel } from "./components/PlayerControlPanel";
 import { IEnemy, IGameState, IPlayer } from "./types";
-import { Room } from "./Room";
-import { GameInfo } from "./GameInfo";
+import { Room } from "./components/Room";
+import { GameInfo } from "./components/GameInfo";
 import { ENTITY_TYPE } from "./constants";
-import { PlayerInfo } from "./PlayerInfo";
+import { PlayerInfo } from "./components/PlayerInfo";
 
 function App() {
   const [currentHoveredEntity, setCurrentHoveredEntity] =

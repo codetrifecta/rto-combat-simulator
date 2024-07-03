@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { Tile } from "./Tile";
-import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "./constants";
-import { IEnemy, IGameState, IPlayer } from "./types";
+import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "../constants";
+import { IEnemy, IGameState, IPlayer } from "../types";
 
 // Seems like ideal room size is AT LEAST 13x13
 const roomLength = 11;

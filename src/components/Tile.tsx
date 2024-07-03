@@ -1,7 +1,7 @@
 import { FC, useMemo } from "react";
-import { TILE_SIZE, TILE_TYPE } from "./constants";
+import { TILE_SIZE, TILE_TYPE } from "../constants";
 import clsx from "clsx";
-import { IPlayerState } from "./types";
+import { IPlayerState } from "../types";
 
 export const Tile: FC<{
   tileType: number;

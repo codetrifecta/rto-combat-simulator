@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { IPlayer, IPlayerState } from "./types";
+import { IPlayer, IPlayerState } from "../types";
 import clsx from "clsx";
 const skills: { name: string; damage: number }[] = [
   {

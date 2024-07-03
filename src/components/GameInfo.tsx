@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { IEntity, IGameState } from "./types";
-import { ENTITY_TYPE } from "./constants";
+import { IEntity, IGameState } from "../types";
+import { ENTITY_TYPE } from "../constants";
 import clsx from "clsx";
 
 export const GameInfo: FC<{
