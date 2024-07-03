@@ -1,6 +1,6 @@
 import { type FC } from "react";
-import { IPlayer, IPlayerState } from "../types";
 import clsx from "clsx";
+import { usePlayerStore } from "../store/player";
 const skills: { name: string; damage: number }[] = [
   {
     name: "Fireball",
@@ -17,28 +17,20 @@ const skills: { name: string; damage: number }[] = [
 ];
 
 export const PlayerControlPanel: FC<{
-  player: IPlayer;
-  setPlayer: (state: IPlayer) => void;
   onEndTurn: () => void;
   disabled: boolean;
-}> = ({ player, setPlayer, onEndTurn, disabled }) => {
+}> = ({ onEndTurn, disabled }) => {
+  const { setPlayerState, getPlayer } = usePlayerStore();
+
+  const player = getPlayer();
+
   const handleEndTurnClick = () => {
-    setPlayer({
-      ...player,
-      state: {
-        isAttacking: false,
-        isMoving: false,
-        isUsingSkill: false,
-      },
+    setPlayerState({
+      isAttacking: false,
+      isMoving: false,
+      isUsingSkill: false,
     });
     onEndTurn();
-  };
-
-  const handlePlayerStateChange = (state: IPlayerState) => {
-    setPlayer({
-      ...player,
-      state,
-    });
   };
 
   return (
@@ -64,8 +56,7 @@ export const PlayerControlPanel: FC<{
             ))}
             <Button
               onClick={() =>
-                handlePlayerStateChange({
-                  ...player.state,
+                setPlayerState({
                   isAttacking: false,
                   isMoving: false,
                   isUsingSkill: false,
@@ -80,8 +71,7 @@ export const PlayerControlPanel: FC<{
           <>
             <Button
               onClick={() => {
-                handlePlayerStateChange({
-                  ...player.state,
+                setPlayerState({
                   isAttacking: !player.state.isAttacking,
                   isMoving: false,
                   isUsingSkill: false,
@@ -97,8 +87,7 @@ export const PlayerControlPanel: FC<{
             </Button>
             <Button
               onClick={() => {
-                handlePlayerStateChange({
-                  ...player.state,
+                setPlayerState({
                   isAttacking: false,
                   isMoving: !player.state.isMoving,
                   isUsingSkill: false,
@@ -110,8 +99,7 @@ export const PlayerControlPanel: FC<{
             </Button>
             <Button
               onClick={() => {
-                handlePlayerStateChange({
-                  ...player.state,
+                setPlayerState({
                   isAttacking: false,
                   isMoving: false,
                   isUsingSkill: !player.state.isUsingSkill,

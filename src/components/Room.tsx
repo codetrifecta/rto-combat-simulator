@@ -1,8 +1,9 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { Tile } from "./Tile";
 import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "../constants";
-import { IEnemy, IPlayer } from "../types";
+import { IEnemy } from "../types";
 import { useGameStateStore } from "../store/game";
+import { usePlayerStore } from "../store/player";
 
 // Seems like ideal room size is AT LEAST 13x13
 const roomLength = 11;
@@ -61,16 +62,12 @@ for (let row = 0; row < roomLength; row++) {
 initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
 
 export const Room: FC<{
-  player: IPlayer;
-  setPlayer: (player: IPlayer) => void;
   enemies: IEnemy[];
   setEnemies: (enemies: IEnemy[]) => void;
   onEndTurn: () => void;
   currentHoveredEntity: IEnemy | null;
   setCurrentHoveredEntity: (enemy: IEnemy | null) => void;
 }> = ({
-  player,
-  setPlayer,
   enemies,
   setEnemies,
   onEndTurn,
@@ -81,6 +78,8 @@ export const Room: FC<{
     useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
   const { turnCycle } = useGameStateStore();
+  const { getPlayer, setPlayerActionPoints, setPlayerState } = usePlayerStore();
+  const player = getPlayer();
 
   const playerPosition = useMemo(() => {
     const playerRow = roomMatrix.findIndex(
@@ -146,14 +145,10 @@ export const Room: FC<{
         console.log(`${enemy.name} took ${weaponDamage} damage!`);
       }
     }
-
-    setPlayer({
-      ...player,
-      actionPoints: player.actionPoints - 1,
-      state: {
-        ...player.state,
-        isAttacking: false,
-      },
+    setPlayerActionPoints(player.actionPoints - 1);
+    setPlayerState({
+      ...player.state,
+      isAttacking: false,
     });
   };
 

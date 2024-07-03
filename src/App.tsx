@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { PlayerControlPanel } from "./components/PlayerControlPanel";
-import { IEnemy, IPlayer } from "./types";
+import { IEnemy } from "./types";
 import { Room } from "./components/Room";
 import { GameInfo } from "./components/GameInfo";
 import { ENTITY_TYPE } from "./constants";
 import { PlayerInfo } from "./components/PlayerInfo";
 import { useGameStateStore } from "./store/game";
+import { usePlayerStore } from "./store/player";
 
 function App() {
   const [currentHoveredEntity, setCurrentHoveredEntity] =
@@ -14,34 +15,10 @@ function App() {
   const { turnCycle, setTurnCycle, setIsLoading, endTurn } =
     useGameStateStore();
 
-  const [player, setPlayer] = useState<IPlayer>({
-    id: 1,
-    name: "Kratos",
-    entityType: ENTITY_TYPE.PLAYER,
-    health: 10,
-    actionPoints: 2,
-    skills: [],
-    state: {
-      isAttacking: false,
-      isMoving: false,
-      isUsingSkill: false,
-    },
-    equipment: {
-      weapon: {
-        name: "Sword",
-        damage: 2,
-        range: 1,
-        cost: 1,
-        // name: "Staff",
-        // damage: 1,
-        // range: 4,
-        // cost: 1,
-      },
-      helmet: null,
-      armor: null,
-      leggings: null,
-    },
-  });
+  const { getPlayer, setPlayerActionPoints } = usePlayerStore();
+
+  const player = getPlayer();
+
   const [enemies, setEnemies] = useState<IEnemy[]>([
     {
       id: 1,
@@ -95,10 +72,7 @@ function App() {
     if (turnCycle[0] && turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
       const newActionPoints =
         player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
-      setPlayer((prevState) => ({
-        ...prevState,
-        actionPoints: newActionPoints,
-      }));
+      setPlayerActionPoints(newActionPoints);
     }
 
     endTurn();
@@ -144,8 +118,6 @@ function App() {
       </div>
       <div className="ml-auto mr-auto mb-10 ">
         <Room
-          player={player}
-          setPlayer={setPlayer}
           enemies={enemies}
           setEnemies={setEnemies}
           onEndTurn={handlePlayerEndTurn}
@@ -161,8 +133,6 @@ function App() {
 
       {/* Player Control Panel */}
       <PlayerControlPanel
-        player={player}
-        setPlayer={setPlayer}
         onEndTurn={handlePlayerEndTurn}
         disabled={
           turnCycle[0] !== null &&
