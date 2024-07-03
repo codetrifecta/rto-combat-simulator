@@ -10,6 +10,8 @@ export const Tile: FC<{
   isEffectZone: boolean;
   effectColor: string;
   onClick: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
   classNames?: string;
 }> = ({
   tileType,
@@ -17,6 +19,8 @@ export const Tile: FC<{
   active,
   isEffectZone,
   onClick,
+  onMouseEnter,
+  onMouseLeave,
   classNames = "",
 }) => {
   const isEffectTile = useMemo(() => {
@@ -61,6 +65,8 @@ export const Tile: FC<{
         }
       )}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     ></div>
   );
 };

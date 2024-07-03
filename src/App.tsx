@@ -7,6 +7,9 @@ import { ENTITY_TYPE } from "./constants";
 import { PlayerInfo } from "./PlayerInfo";
 
 function App() {
+  const [currentHoveredEnemy, setCurrentHoveredEnemy] = useState<IEnemy | null>(
+    null
+  );
   const [gameState, setGameState] = useState<IGameState>({
     // List of tuples with entity type and id of entity
     turnCycle: [],
@@ -175,7 +178,10 @@ function App() {
       </header>
 
       <div className="mb-10">
-        <GameInfo gameState={gameState} />
+        <GameInfo
+          gameState={gameState}
+          currentHoveredEnemy={currentHoveredEnemy}
+        />
       </div>
       <div className="ml-auto mr-auto mb-10 ">
         <Room
@@ -185,6 +191,7 @@ function App() {
           enemies={enemies}
           setEnemies={setEnemies}
           onEndTurn={handlePlayerEndTurn}
+          setCurrentHoveredEnemy={setCurrentHoveredEnemy}
         />
       </div>
 
