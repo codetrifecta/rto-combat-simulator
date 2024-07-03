@@ -4,20 +4,6 @@ import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
 import { ENTITY_TYPE } from "../constants";
 import { handlePlayerEndTurn } from "../utils";
-const skills: { name: string; damage: number }[] = [
-  {
-    name: "Fireball",
-    damage: 10,
-  },
-  {
-    name: "Heal",
-    damage: -10,
-  },
-  {
-    name: "Lightning",
-    damage: 15,
-  },
-];
 
 export const PlayerControlPanel: FC = () => {
   const { turnCycle, endTurn } = useGameStateStore();
@@ -54,7 +40,7 @@ export const PlayerControlPanel: FC = () => {
       >
         {player.state.isUsingSkill ? (
           <>
-            {skills.map((skill) => (
+            {player.skills.map((skill) => (
               <Button
                 key={skill.name}
                 onClick={() => console.log(skill.name)}
