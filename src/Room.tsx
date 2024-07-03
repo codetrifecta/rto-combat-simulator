@@ -65,7 +65,8 @@ export const Room: FC<{
   setPlayer: (player: IPlayer) => void;
   enemies: IEnemy[];
   setEnemies: (enemies: IEnemy[]) => void;
-}> = ({ gameState, player, setPlayer, enemies, setEnemies }) => {
+  onEndTurn: () => void;
+}> = ({ gameState, player, setPlayer, enemies, setEnemies, onEndTurn }) => {
   const [roomMatrix, setRoomMatrix] =
     useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
 
@@ -96,6 +97,7 @@ export const Room: FC<{
     });
   }, [enemies.length]);
 
+  // Handle player attacking an enemy
   const handleEnemyClick = (id: number) => {
     const enemy = enemies.find((enemy) => enemy.id === id);
     console.log(`Player attacking ${enemy?.name}!`);
@@ -141,6 +143,13 @@ export const Room: FC<{
       },
     });
   };
+
+  // Automatically end player's turn when action points reach 0
+  useEffect(() => {
+    if (player.actionPoints === 0) {
+      onEndTurn();
+    }
+  }, [onEndTurn, player.actionPoints]);
 
   return (
     <div

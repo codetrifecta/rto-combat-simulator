@@ -82,9 +82,7 @@ function App() {
         }
         return true;
       });
-
-      // console.log("newTurnCycle", newTurnCycle);
-
+      // console.log("newTurnCycle", gameState);
       setGameState((prevState) => ({
         ...prevState,
         turnCycle: newTurnCycle,
@@ -92,20 +90,9 @@ function App() {
     }
   }, [enemies.length]);
 
-  // Handle player and enemy's end turn action
+  // Handle end turn by rotating turn cycle by 1
   const handleEndTurn = useCallback(() => {
     // Rotate turn cycle, moving whatever was first in the cycle to the end of the cycle
-
-    // If current turn is player, end player's turn and give action points
-    if (gameState.turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
-      const newActionPoints =
-        player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
-      setPlayer((prevState) => ({
-        ...prevState,
-        actionPoints: newActionPoints,
-      }));
-    }
-
     const currentTurnCycle = gameState.turnCycle;
     const currentEntityTurn = currentTurnCycle.shift();
 
@@ -124,18 +111,25 @@ function App() {
     }));
 
     return null;
-  }, [gameState.turnCycle, player.actionPoints]);
+  }, [gameState.turnCycle]);
 
-  // End turn automatically when player has no more action points
-  useEffect(() => {
-    if (
-      isInitialized &&
-      gameState.turnCycle[0].entityType === ENTITY_TYPE.PLAYER &&
-      player.actionPoints === 0
-    ) {
-      handleEndTurn();
+  // Handle player's end turn action
+  const handlePlayerEndTurn = useCallback(() => {
+    // console.log("Ending player turn and gaining AP", gameState.turnCycle);
+
+    // If current turn is player, end player's turn and give action points
+    if (gameState.turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
+      const newActionPoints =
+        player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
+      setPlayer((prevState) => ({
+        ...prevState,
+        actionPoints: newActionPoints,
+      }));
     }
-  }, [gameState.turnCycle, player.actionPoints, handleEndTurn, isInitialized]);
+
+    // Rotate turn cycle, moving whatever was first in the cycle to the end of the cycle
+    handleEndTurn();
+  }, [gameState.turnCycle, handleEndTurn, player.actionPoints]);
 
   // Handle enemy's action
   useEffect(() => {
@@ -143,6 +137,7 @@ function App() {
       gameState.turnCycle.length > 0 &&
       gameState.turnCycle[0].entityType === ENTITY_TYPE.ENEMY
     ) {
+      // console.log("Enemy action", gameState.turnCycle);
       // Set loading state to true (mocking backend call for enemy action)
       setGameState((prevState) => ({
         ...prevState,
@@ -159,7 +154,7 @@ function App() {
         }));
       }, 1500);
     }
-  }, [gameState.turnCycle, handleEndTurn]);
+  }, [gameState.turnCycle, gameState.turnCycle.length, handleEndTurn]);
 
   {
     /* Wait for game initialization */
@@ -189,6 +184,7 @@ function App() {
           setPlayer={setPlayer}
           enemies={enemies}
           setEnemies={setEnemies}
+          onEndTurn={handlePlayerEndTurn}
         />
       </div>
 
@@ -201,7 +197,7 @@ function App() {
       <PlayerControlPanel
         player={player}
         setPlayer={setPlayer}
-        onEndTurn={handleEndTurn}
+        onEndTurn={handlePlayerEndTurn}
         disabled={gameState.turnCycle[0].entityType !== ENTITY_TYPE.PLAYER}
       />
     </div>
