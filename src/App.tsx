@@ -7,9 +7,9 @@ import { ENTITY_TYPE } from "./constants";
 import { PlayerInfo } from "./PlayerInfo";
 
 function App() {
-  const [currentHoveredEnemy, setCurrentHoveredEnemy] = useState<IEnemy | null>(
-    null
-  );
+  const [currentHoveredEntity, setCurrentHoveredEntity] =
+    useState<IEnemy | null>(null);
+
   const [gameState, setGameState] = useState<IGameState>({
     // List of tuples with entity type and id of entity
     turnCycle: [],
@@ -18,7 +18,7 @@ function App() {
   });
   const [player, setPlayer] = useState<IPlayer>({
     id: 1,
-    name: "Player",
+    name: "Kratos",
     entityType: ENTITY_TYPE.PLAYER,
     health: 10,
     actionPoints: 2,
@@ -180,7 +180,8 @@ function App() {
       <div className="mb-10">
         <GameInfo
           gameState={gameState}
-          currentHoveredEnemy={currentHoveredEnemy}
+          currentHoveredEntity={currentHoveredEntity}
+          setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
       </div>
       <div className="ml-auto mr-auto mb-10 ">
@@ -191,7 +192,8 @@ function App() {
           enemies={enemies}
           setEnemies={setEnemies}
           onEndTurn={handlePlayerEndTurn}
-          setCurrentHoveredEnemy={setCurrentHoveredEnemy}
+          currentHoveredEntity={currentHoveredEntity}
+          setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
       </div>
 
