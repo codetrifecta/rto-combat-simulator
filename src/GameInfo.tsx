@@ -36,20 +36,6 @@ export const GameInfo: FC<{
         })}
     </div>
   );
-
-  // return (
-  //   <div>
-  //     <h2
-  //       className={clsx({
-  //         "text-green-500": turnCycle[0].entityType === ENTITY_TYPE.PLAYER,
-  //         "text-red-500": turnCycle[0].entityType === ENTITY_TYPE.Entity,
-  //       })}
-  //     >
-  //       Current turn: {currentTurnEntityName}
-  //     </h2>
-  //     <h2>Next turn(s): {nextTurns.length > 0 && nextTurns.join(" -> ")}</h2>
-  //   </div>
-  // );
 };
 
 const EntityCard: FC<{ entity: IEntity; active: boolean }> = ({
@@ -58,7 +44,13 @@ const EntityCard: FC<{ entity: IEntity; active: boolean }> = ({
 }) => {
   return (
     <div
-      className={clsx("border p-3", {
+      className={clsx("relative border p-3", {
+        "bg-green-700": entity.entityType === ENTITY_TYPE.PLAYER,
+        "bg-red-700": entity.entityType === ENTITY_TYPE.ENEMY,
+        "z-0 hover:shadow-intense-green hover:z-10":
+          entity.entityType === ENTITY_TYPE.PLAYER && !active,
+        "z-0 hover:shadow-intense-red hover:z-10":
+          entity.entityType === ENTITY_TYPE.ENEMY && !active,
         "shadow-intense-green z-10":
           entity.entityType === ENTITY_TYPE.PLAYER && active,
         "shadow-intense-red z-10":
