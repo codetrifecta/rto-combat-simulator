@@ -29,7 +29,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       cost: 1,
       //   name: "Staff",
       //   damage: 1,
-      //   range: 4,
+      //   range: 3,
       //   cost: 1,
     },
     helmet: null,
