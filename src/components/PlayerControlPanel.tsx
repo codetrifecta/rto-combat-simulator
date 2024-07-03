@@ -4,6 +4,7 @@ import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
 import { ENTITY_TYPE } from "../constants";
 import { handlePlayerEndTurn } from "../utils";
+import { useLogStore } from "../store/log";
 
 export const PlayerControlPanel: FC = () => {
   const { turnCycle, endTurn } = useGameStateStore();
@@ -11,6 +12,8 @@ export const PlayerControlPanel: FC = () => {
   const { setPlayerState, getPlayer, setPlayerActionPoints } = usePlayerStore();
 
   const player = getPlayer();
+
+  const { addLog } = useLogStore();
 
   const handleEndTurnClick = () => {
     setPlayerState({
@@ -104,7 +107,21 @@ export const PlayerControlPanel: FC = () => {
             >
               Skills
             </Button>
-            <Button onClick={handleEndTurnClick} disabled={disabled}>
+            <Button
+              onClick={() => {
+                handleEndTurnClick();
+                addLog({
+                  message: (
+                    <>
+                      <span className="text-green-500">{player.name}</span>{" "}
+                      ended their turn.
+                    </>
+                  ),
+                  type: "info",
+                });
+              }}
+              disabled={disabled}
+            >
               End Turn
             </Button>
           </>

@@ -8,6 +8,8 @@ import { PlayerInfo } from "./components/PlayerInfo";
 import { useGameStateStore } from "./store/game";
 import { usePlayerStore } from "./store/player";
 import { useEnemyStore } from "./store/enemy";
+import { Logger } from "./components/Logger";
+import { useLogStore } from "./store/log";
 
 function App() {
   const [currentHoveredEntity, setCurrentHoveredEntity] =
@@ -21,6 +23,8 @@ function App() {
   const player = getPlayer();
 
   const { enemies } = useEnemyStore();
+
+  const { addLog } = useLogStore();
 
   // Initialize game state
   useEffect(() => {
@@ -60,15 +64,22 @@ function App() {
       // Simulate enemy action with a timeout
       setTimeout(() => {
         // End enemy's turn
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{turnCycle[0].name}</span> ended
+              their turn.
+            </>
+          ),
+          type: "info",
+        });
         endTurn();
         setIsLoading(false);
       }, 1500);
     }
   }, [turnCycle, turnCycle.length]);
 
-  {
-    /* Wait for game initialization */
-  }
+  // Wait for game initialization
   if (!isInitialized) {
     return (
       <h1 className="w-screen h-screen flex justify-center items-center">
@@ -79,13 +90,19 @@ function App() {
 
   return (
     <div className="relative w-full h-screen flex flex-col justify-start">
-      <header className="mt-10 mb-10">
-        <h1 className="mb-2">Return to Olympus</h1>
-        <h2>Combat Simulator</h2>
+      <header className="absolute top-[-150px] hover:top-0 h-[150px] pb-[30px] box-content w-full z-20 transition-all ease ">
+        <div className="h-[140px] flex flex-col justify-start items-center py-5 bg-neutral-900">
+          <h1 className="mb-2 uppercase">
+            R<span className="text-4xl">eturn</span>{" "}
+            <span className="text-4xl">to</span> O
+            <span className="text-4xl">lympus</span>
+          </h1>
+          <h2>Combat Simulator</h2>
+        </div>
       </header>
 
       {/* Game Info (Currently only displays turn cycle) */}
-      <div className="mb-10">
+      <div className="mt-16 mb-10">
         <GameInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
@@ -93,11 +110,17 @@ function App() {
       </div>
 
       {/* Combat Room */}
-      <div className="ml-auto mr-auto mb-10 ">
-        <Room
-          currentHoveredEntity={currentHoveredEntity}
-          setCurrentHoveredEntity={setCurrentHoveredEntity}
-        />
+      <div className="mb-10 grid grid-rows-1 grid-cols-8 w-full px-16 gap-5">
+        <div className="col-span-2"></div>
+        <div className="col-span-4 flex justify-center items-center">
+          <Room
+            currentHoveredEntity={currentHoveredEntity}
+            setCurrentHoveredEntity={setCurrentHoveredEntity}
+          />
+        </div>
+        <div className="relative col-span-2">
+          <Logger />
+        </div>
       </div>
 
       {/* Player Info */}
