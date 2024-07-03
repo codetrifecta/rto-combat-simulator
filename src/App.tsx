@@ -102,7 +102,7 @@ function App() {
       </header>
 
       {/* Game Info (Currently only displays turn cycle) */}
-      <div className="mt-16 mb-10">
+      <div className="mt-10 mb-8">
         <GameInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
@@ -110,7 +110,7 @@ function App() {
       </div>
 
       {/* Combat Room */}
-      <div className="mb-10 grid grid-rows-1 grid-cols-8 w-full px-16 gap-5">
+      <div className="mb-8 grid grid-rows-1 grid-cols-8 w-full px-16 gap-5">
         <div className="col-span-2"></div>
         <div className="col-span-4 flex justify-center items-center">
           <Room
@@ -124,7 +124,7 @@ function App() {
       </div>
 
       {/* Player Info */}
-      <div className="mb-5">
+      <div className="mb-6">
         <PlayerInfo player={player} />
       </div>
 

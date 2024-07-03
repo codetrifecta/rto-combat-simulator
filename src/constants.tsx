@@ -1,4 +1,4 @@
-export const TILE_SIZE = 65;
+export const TILE_SIZE = 50;
 
 export const ROOM_LENGTH = 11;
 
