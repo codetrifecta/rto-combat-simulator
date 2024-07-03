@@ -181,6 +181,7 @@ function App() {
         <GameInfo
           gameState={gameState}
           currentHoveredEntity={currentHoveredEntity}
+          setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
       </div>
       <div className="ml-auto mr-auto mb-10 ">
@@ -191,6 +192,7 @@ function App() {
           enemies={enemies}
           setEnemies={setEnemies}
           onEndTurn={handlePlayerEndTurn}
+          currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
       </div>

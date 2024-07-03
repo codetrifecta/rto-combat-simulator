@@ -66,6 +66,7 @@ export const Room: FC<{
   enemies: IEnemy[];
   setEnemies: (enemies: IEnemy[]) => void;
   onEndTurn: () => void;
+  currentHoveredEntity: IEnemy | null;
   setCurrentHoveredEntity: (enemy: IEnemy | null) => void;
 }> = ({
   gameState,
@@ -74,6 +75,7 @@ export const Room: FC<{
   enemies,
   setEnemies,
   onEndTurn,
+  currentHoveredEntity,
   setCurrentHoveredEntity,
 }) => {
   const [roomMatrix, setRoomMatrix] =
@@ -185,9 +187,11 @@ export const Room: FC<{
           // Check if tile is active (i.e. it's the entity's turn)
           let active: boolean = false;
           if (
-            entityType !== null &&
-            gameState.turnCycle[0].entityType === entityType &&
-            gameState.turnCycle[0].id === id
+            (entityType !== null &&
+              gameState.turnCycle[0].entityType === entityType &&
+              gameState.turnCycle[0].id === id) ||
+            (currentHoveredEntity?.entityType === entityType &&
+              currentHoveredEntity?.id === id)
           ) {
             active = true;
           }
@@ -229,7 +233,14 @@ export const Room: FC<{
               onMouseEnter={() => {
                 if (tileType === TILE_TYPE.ENEMY) {
                   const enemy = enemies.find((enemy) => enemy.id === id);
-                  setCurrentHoveredEntity(enemy || null);
+                  if (!enemy) {
+                    console.error("Enemy not found!");
+                    return;
+                  }
+
+                  setCurrentHoveredEntity(enemy);
+                } else if (tileType === TILE_TYPE.PLAYER) {
+                  setCurrentHoveredEntity(player);
                 }
               }}
               onMouseLeave={() => {

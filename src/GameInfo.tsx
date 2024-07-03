@@ -6,12 +6,21 @@ import clsx from "clsx";
 export const GameInfo: FC<{
   gameState: IGameState;
   currentHoveredEntity: IEntity | null;
-}> = ({ gameState: { turnCycle }, currentHoveredEntity }) => {
+  setCurrentHoveredEntity: (entity: IEntity | null) => void;
+}> = ({
+  gameState: { turnCycle },
+  currentHoveredEntity,
+  setCurrentHoveredEntity,
+}) => {
   console.log("currently hovered entity:", currentHoveredEntity);
 
   return (
     <div className="w-full mx-auto flex justify-center">
-      <div className="mr-5">
+      <div
+        className="mr-5"
+        onMouseEnter={() => setCurrentHoveredEntity(turnCycle[0])}
+        onMouseLeave={() => setCurrentHoveredEntity(null)}
+      >
         <EntityCard
           entity={turnCycle[0]}
           active={
@@ -23,7 +32,12 @@ export const GameInfo: FC<{
       {turnCycle.length > 1 &&
         turnCycle.slice(1).map((entity) => {
           return (
-            <div key={entity.id} className="mr-1">
+            <div
+              key={entity.id}
+              className="mr-1"
+              onMouseEnter={() => setCurrentHoveredEntity(entity)}
+              onMouseLeave={() => setCurrentHoveredEntity(null)}
+            >
               <EntityCard
                 entity={entity}
                 active={
