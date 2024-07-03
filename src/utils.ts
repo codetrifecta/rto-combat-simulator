@@ -1,4 +1,5 @@
-import { TILE_TYPE } from "./constants";
+import { ENTITY_TYPE, TILE_TYPE } from "./constants";
+import { IEntity, IPlayer } from "./types";
 
 export const generateRoomMatrix = (roomLength: number) => {
   // Initialize room matrix
@@ -54,4 +55,23 @@ export const generateRoomMatrix = (roomLength: number) => {
   initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
 
   return initialRoomMatrix;
+};
+
+export const handlePlayerEndTurn = (
+  turnCycle: IEntity[],
+  getPlayer: () => IPlayer,
+  setPlayerActionPoints: (actionPoints: number) => void,
+  endTurn: () => void
+) => {
+  console.log("Ending player turn and gaining AP", turnCycle);
+
+  // If current turn is player, end player's turn and give action points
+  if (turnCycle[0] && turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
+    const player = getPlayer();
+    const newActionPoints =
+      player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
+    setPlayerActionPoints(newActionPoints);
+  }
+
+  endTurn();
 };

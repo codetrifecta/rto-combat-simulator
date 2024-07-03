@@ -16,7 +16,7 @@ function App() {
   const { turnCycle, setTurnCycle, setIsLoading, endTurn } =
     useGameStateStore();
 
-  const { getPlayer, setPlayerActionPoints } = usePlayerStore();
+  const { getPlayer } = usePlayerStore();
 
   const player = getPlayer();
 
@@ -52,20 +52,6 @@ function App() {
     }
   }, [enemies.length]);
 
-  // Handle player's end turn action
-  const handlePlayerEndTurn = () => {
-    console.log("Ending player turn and gaining AP", turnCycle);
-
-    // If current turn is player, end player's turn and give action points
-    if (turnCycle[0] && turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
-      const newActionPoints =
-        player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
-      setPlayerActionPoints(newActionPoints);
-    }
-
-    endTurn();
-  };
-
   // Handle enemy's action
   useEffect(() => {
     if (turnCycle.length > 0 && turnCycle[0].entityType === ENTITY_TYPE.ENEMY) {
@@ -98,15 +84,17 @@ function App() {
         <h2>Combat Simulator</h2>
       </header>
 
+      {/* Game Info (Currently only displays turn cycle) */}
       <div className="mb-10">
         <GameInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
       </div>
+
+      {/* Combat Room */}
       <div className="ml-auto mr-auto mb-10 ">
         <Room
-          onEndTurn={handlePlayerEndTurn}
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
@@ -118,7 +106,7 @@ function App() {
       </div>
 
       {/* Player Control Panel */}
-      <PlayerControlPanel onEndTurn={handlePlayerEndTurn} />
+      <PlayerControlPanel />
     </div>
   );
 }

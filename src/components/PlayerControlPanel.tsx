@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
 import { ENTITY_TYPE } from "../constants";
+import { handlePlayerEndTurn } from "../utils";
 const skills: { name: string; damage: number }[] = [
   {
     name: "Fireball",
@@ -18,12 +19,10 @@ const skills: { name: string; damage: number }[] = [
   },
 ];
 
-export const PlayerControlPanel: FC<{
-  onEndTurn: () => void;
-}> = ({ onEndTurn }) => {
-  const { turnCycle } = useGameStateStore();
+export const PlayerControlPanel: FC = () => {
+  const { turnCycle, endTurn } = useGameStateStore();
 
-  const { setPlayerState, getPlayer } = usePlayerStore();
+  const { setPlayerState, getPlayer, setPlayerActionPoints } = usePlayerStore();
 
   const player = getPlayer();
 
@@ -33,7 +32,7 @@ export const PlayerControlPanel: FC<{
       isMoving: false,
       isUsingSkill: false,
     });
-    onEndTurn();
+    handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
