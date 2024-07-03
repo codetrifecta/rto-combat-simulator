@@ -1,6 +1,8 @@
-import { type FC } from "react";
+import { useMemo, type FC } from "react";
 import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
+import { useGameStateStore } from "../store/game";
+import { ENTITY_TYPE } from "../constants";
 const skills: { name: string; damage: number }[] = [
   {
     name: "Fireball",
@@ -18,8 +20,9 @@ const skills: { name: string; damage: number }[] = [
 
 export const PlayerControlPanel: FC<{
   onEndTurn: () => void;
-  disabled: boolean;
-}> = ({ onEndTurn, disabled }) => {
+}> = ({ onEndTurn }) => {
+  const { turnCycle } = useGameStateStore();
+
   const { setPlayerState, getPlayer } = usePlayerStore();
 
   const player = getPlayer();
@@ -32,6 +35,13 @@ export const PlayerControlPanel: FC<{
     });
     onEndTurn();
   };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const disabled = useMemo(() => {
+    return (
+      turnCycle[0] !== null && turnCycle[0].entityType !== ENTITY_TYPE.PLAYER
+    );
+  }, [turnCycle]);
 
   return (
     <div>

@@ -20,20 +20,6 @@ function App() {
 
   const player = getPlayer();
 
-  // const [enemies, setEnemies] = useState<IEnemy[]>([
-  //   {
-  //     id: 1,
-  //     name: "Enemy 1",
-  //     entityType: ENTITY_TYPE.ENEMY,
-  //     health: 4,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Enemy 2",
-  //     entityType: ENTITY_TYPE.ENEMY,
-  //     health: 4,
-  //   },
-  // ]);
   const { enemies } = useEnemyStore();
 
   // Initialize game state
@@ -132,13 +118,7 @@ function App() {
       </div>
 
       {/* Player Control Panel */}
-      <PlayerControlPanel
-        onEndTurn={handlePlayerEndTurn}
-        disabled={
-          turnCycle[0] !== null &&
-          turnCycle[0].entityType !== ENTITY_TYPE.PLAYER
-        }
-      />
+      <PlayerControlPanel onEndTurn={handlePlayerEndTurn} />
     </div>
   );
 }
