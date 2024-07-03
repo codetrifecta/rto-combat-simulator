@@ -1,74 +1,75 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { Tile } from "./Tile";
-import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "../constants";
+import { ENTITY_TYPE, ROOM_LENGTH, TILE_SIZE, TILE_TYPE } from "../constants";
 import { IEnemy } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
+import { generateRoomMatrix } from "../utils";
 
 // Seems like ideal room size is AT LEAST 13x13
-const roomLength = 11;
-const totalRoomSize = roomLength * TILE_SIZE;
+// const roomLength = 11;
 
-// Initialize room matrix
-const initialRoomMatrix: [TILE_TYPE, number][][] = Array.from(
-  { length: roomLength },
-  () => Array.from({ length: roomLength }, () => [TILE_TYPE.EMPTY, 0])
-);
+// // Initialize room matrix
+// const initialRoomMatrix: [TILE_TYPE, number][][] = Array.from(
+//   { length: roomLength },
+//   () => Array.from({ length: roomLength }, () => [TILE_TYPE.EMPTY, 0])
+// );
 
-// Generate room layout
-for (let row = 0; row < roomLength; row++) {
-  for (let col = 0; col < roomLength; col++) {
-    // Surround room with walls and place door in the middle of the top wall and bottom wall
-    if (
-      row === 0 ||
-      row === roomLength - 1 ||
-      col === 0 ||
-      col === roomLength - 1
-    ) {
-      if (col === Math.floor(roomLength / 2)) {
-        initialRoomMatrix[row][col] = [TILE_TYPE.DOOR, 1];
-      } else {
-        initialRoomMatrix[row][col] = [TILE_TYPE.WALL, 1];
-      }
-    }
-    // Place player in the bottom middle
-    else if (
-      row === Math.floor((roomLength / 4) * 3) &&
-      col === Math.floor(roomLength / 2)
-    ) {
-      initialRoomMatrix[row][col] = [TILE_TYPE.PLAYER, 1];
-    }
-    // Place two enemies in quadrant 1 and 2
-    else if (
-      (row === Math.floor(roomLength / 4) &&
-        col === Math.floor(roomLength / 4)) ||
-      (row === Math.floor(roomLength / 4) &&
-        col === Math.floor((roomLength / 4) * 3))
-    ) {
-      if (col === Math.floor(roomLength / 4)) {
-        // initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
-      } else {
-        initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
-      }
-    } else {
-      // Place walls everywhere else
-      initialRoomMatrix[row][col] = [TILE_TYPE.EMPTY, 1];
-    }
-  }
-}
+// // Generate room layout
+// for (let row = 0; row < roomLength; row++) {
+//   for (let col = 0; col < roomLength; col++) {
+//     // Surround room with walls and place door in the middle of the top wall and bottom wall
+//     if (
+//       row === 0 ||
+//       row === roomLength - 1 ||
+//       col === 0 ||
+//       col === roomLength - 1
+//     ) {
+//       if (col === Math.floor(roomLength / 2)) {
+//         initialRoomMatrix[row][col] = [TILE_TYPE.DOOR, 1];
+//       } else {
+//         initialRoomMatrix[row][col] = [TILE_TYPE.WALL, 1];
+//       }
+//     }
+//     // Place player in the bottom middle
+//     else if (
+//       row === Math.floor((roomLength / 4) * 3) &&
+//       col === Math.floor(roomLength / 2)
+//     ) {
+//       initialRoomMatrix[row][col] = [TILE_TYPE.PLAYER, 1];
+//     }
+//     // Place two enemies in quadrant 1 and 2
+//     else if (
+//       (row === Math.floor(roomLength / 4) &&
+//         col === Math.floor(roomLength / 4)) ||
+//       (row === Math.floor(roomLength / 4) &&
+//         col === Math.floor((roomLength / 4) * 3))
+//     ) {
+//       if (col === Math.floor(roomLength / 4)) {
+//         // initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
+//       } else {
+//         initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
+//       }
+//     } else {
+//       // Place walls everywhere else
+//       initialRoomMatrix[row][col] = [TILE_TYPE.EMPTY, 1];
+//     }
+//   }
+// }
 
-// Manually modify room matrix
-// initialRoomMatrix[8][5] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 13x13 room
-initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
+// // Manually modify room matrix
+// // initialRoomMatrix[8][5] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 13x13 room
+// initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
 
 export const Room: FC<{
   onEndTurn: () => void;
   currentHoveredEntity: IEnemy | null;
   setCurrentHoveredEntity: (enemy: IEnemy | null) => void;
 }> = ({ onEndTurn, currentHoveredEntity, setCurrentHoveredEntity }) => {
-  const [roomMatrix, setRoomMatrix] =
-    useState<[TILE_TYPE, number][][]>(initialRoomMatrix);
+  const [roomMatrix, setRoomMatrix] = useState<[TILE_TYPE, number][][]>(
+    generateRoomMatrix(ROOM_LENGTH)
+  );
 
   const { turnCycle } = useGameStateStore();
   const { getPlayer, setPlayerActionPoints, setPlayerState } = usePlayerStore();
@@ -157,11 +158,11 @@ export const Room: FC<{
   return (
     <div
       style={{
-        width: totalRoomSize,
-        height: totalRoomSize,
+        width: ROOM_LENGTH * TILE_SIZE,
+        height: ROOM_LENGTH * TILE_SIZE,
         display: "grid",
-        gridTemplateColumns: `repeat(${roomLength}, ${TILE_SIZE}px)`,
-        gridTemplateRows: `repeat(${roomLength}, ${TILE_SIZE}px)`,
+        gridTemplateColumns: `repeat(${ROOM_LENGTH}, ${TILE_SIZE}px)`,
+        gridTemplateRows: `repeat(${ROOM_LENGTH}, ${TILE_SIZE}px)`,
       }}
     >
       {roomMatrix.map((row, rowIndex) => {
