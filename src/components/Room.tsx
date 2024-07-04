@@ -16,7 +16,7 @@ export const Room: FC<{
     generateRoomMatrix(ROOM_LENGTH)
   );
 
-  const { turnCycle, endTurn } = useGameStateStore();
+  const { turnCycle, endTurn, setIsRoomOver } = useGameStateStore();
   const { getPlayer, setPlayerActionPoints, setPlayerState } = usePlayerStore();
   const player = getPlayer();
 
@@ -55,6 +55,20 @@ export const Room: FC<{
         });
       });
     });
+  }, [enemies.length]);
+
+  // Log a message saying the player has completed the room when all enemies are defeated
+  useEffect(() => {
+    if (enemies.length === 0) {
+      addLog({
+        message: (
+          <span className="text-green-500">Player completed the room!</span>
+        ),
+        type: "info",
+      });
+      setIsRoomOver(true);
+      // setPlayerActionPoints()
+    }
   }, [enemies.length]);
 
   // Handle player attacking an enemy

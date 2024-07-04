@@ -11,7 +11,7 @@ export const useLogStore = create<ILogStore>((set, get) => ({
   logs: [
     {
       type: "info",
-      message: "Welcome to the game!",
+      message: "Welcome to the combat simulator!",
     },
   ],
   addLog: (log) => set({ logs: [...get().logs, log] }),

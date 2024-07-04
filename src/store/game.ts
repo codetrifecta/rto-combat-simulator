@@ -5,13 +5,13 @@ interface IGameStateStore extends IGameState {
   getCurrentTurnEntity: () => IEntity | null;
   endTurn: () => void;
   setTurnCycle: (turnCycle: IEntity[]) => void;
-  setIsGameOver: (isGameOver: boolean) => void;
+  setIsRoomOver: (isRoomOver: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
 }
 
 export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   turnCycle: [],
-  isGameOver: false,
+  isRoomOver: false,
   isLoading: true,
 
   getCurrentTurnEntity: () => {
@@ -44,7 +44,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
 
   setTurnCycle: (turnCycle: IEntity[]) => set({ turnCycle }),
 
-  setIsGameOver: (isGameOver: boolean) => set({ isGameOver }),
+  setIsRoomOver: (isRoomOver: boolean) => set({ isRoomOver }),
 
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
 }));
