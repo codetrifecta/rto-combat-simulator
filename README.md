@@ -8,12 +8,13 @@ Combat simulator for Return to Olympus
 - [x] Action Point system
 - [x] Basic attack
 - [x] Enemy receive damage & defeat
-- [ ] Logging
-- [ ] Inventory
+- [x] Logging
+- [x] Inventory
 - [ ] Player movement (naive)
 - [ ] Enemy movement and attack
 - [ ] Player skills
-- [ ] Animation for each of the above
+- [ ] Sprites for each of the above
+- [ ] Animations for each of the above
 - [ ] Multiple rooms (floor)
 
 ## Setup
