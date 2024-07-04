@@ -31,6 +31,8 @@ export const PlayerControlPanel: FC = () => {
     );
   }, [turnCycle]);
 
+  console.log("control panel", player.state);
+
   return (
     <div>
       <div
