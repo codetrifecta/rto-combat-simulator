@@ -5,9 +5,11 @@ import { usePlayerInventoryStore } from "../store/inventory";
 import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
 
-const cardClasses = "p-3 border border-white min-w-[150px] cursor-pointer";
-
+const equipmentTypeClasses = "mb-4";
+const equipmentTitleClasses = "mb-0";
 const cardContainerClasses = "flex gap-3 overflow-y-auto pb-5 p-3";
+const cardClasses = "p-3 border border-white min-w-[150px] cursor-pointer";
+const cardParagraphClasses = "text-base";
 
 export const InventoryChooser: FC = () => {
   const { weapons, helmets, chestpieces, leggings } = usePlayerInventoryStore();
@@ -31,8 +33,8 @@ export const InventoryChooser: FC = () => {
     >
       <h2 className="mb-5 pb-3 w-full border-b">Inventory Chooser</h2>
       {/* Weapons */}
-      <div className="mb-2">
-        <h2 className="mb-3">Weapons</h2>
+      <div className={clsx(equipmentTypeClasses)}>
+        <h2 className={clsx(equipmentTitleClasses)}>Weapons</h2>
         <div className={clsx(cardContainerClasses)}>
           {weapons.map((weapon) => {
             if (player.equipment.weapon?.id === weapon.id) {
@@ -59,8 +61,8 @@ export const InventoryChooser: FC = () => {
       </div>
 
       {/* Helmets */}
-      <div className="mb-2">
-        <h2 className="mb-3">Helmets</h2>
+      <div className={clsx(equipmentTypeClasses)}>
+        <h2 className={clsx(equipmentTitleClasses)}>Helmets</h2>
         <div className={clsx(cardContainerClasses)}>
           {helmets.map((helmet) => {
             if (player.equipment.helmet?.id === helmet.id) {
@@ -87,8 +89,8 @@ export const InventoryChooser: FC = () => {
       </div>
 
       {/* Chestpieces */}
-      <div className="mb-2">
-        <h2 className="mb-3">Chestpieces</h2>
+      <div className={clsx(equipmentTypeClasses)}>
+        <h2 className={clsx(equipmentTitleClasses)}>Chestpieces</h2>
         <div className={clsx(cardContainerClasses)}>
           {chestpieces.map((chestpiece) => {
             if (player.equipment.chestpiece?.id === chestpiece.id) {
@@ -116,7 +118,7 @@ export const InventoryChooser: FC = () => {
 
       {/* Leggings */}
       <div className="mb-2">
-        <h2 className="mb-3">Leggings</h2>
+        <h2 className={clsx(equipmentTitleClasses)}>Leggings</h2>
         <div className={clsx(cardContainerClasses)}>
           {leggings.map((legging) => {
             if (player.equipment.legging?.id === legging.id) {
@@ -159,9 +161,9 @@ const WeaponCard: FC<{
       onClick={onClick}
     >
       <h3>{weapon.name}</h3>
-      <p>Damage: {weapon.damage}</p>
-      <p>Range: {weapon.range}</p>
-      <p>Cost: {weapon.cost}</p>
+      <p className={clsx(cardParagraphClasses)}>Damage: {weapon.damage}</p>
+      <p className={clsx(cardParagraphClasses)}>Range: {weapon.range}</p>
+      <p className={clsx(cardParagraphClasses)}>Cost: {weapon.cost}</p>
     </div>
   );
 };
@@ -180,7 +182,7 @@ const ArmorCard: FC<{
       onClick={onClick}
     >
       <h3>{armor.name}</h3>
-      <p>Defense: {armor.defense}</p>
+      <p className={clsx(cardParagraphClasses)}>Defense: {armor.defense}</p>
     </div>
   );
 };
