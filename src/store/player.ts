@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ENTITY_TYPE } from "../constants";
+import { ENTITY_TYPE, STARTING_ACTION_POINTS } from "../constants";
 import {
   IChestpiece,
   IHelmet,
@@ -25,7 +25,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   name: "Kratos",
   entityType: ENTITY_TYPE.PLAYER,
   health: 10,
-  actionPoints: 2,
+  actionPoints: STARTING_ACTION_POINTS,
   skills: [],
   state: {
     isAttacking: false,
