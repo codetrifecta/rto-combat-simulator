@@ -28,6 +28,12 @@ export const Room: FC<{
     const playerRow = roomMatrix.findIndex(
       (row) => row.findIndex(([type]) => type === TILE_TYPE.PLAYER) !== -1
     );
+
+    if (playerRow === -1) {
+      console.error("Player row not found in room matrix!");
+      return [ROOM_LENGTH / 2, ROOM_LENGTH / 2];
+    }
+
     const playerCol = roomMatrix[playerRow].findIndex(
       ([type]) => type === TILE_TYPE.PLAYER
     );
@@ -108,6 +114,7 @@ export const Room: FC<{
   };
 
   // Update room matrix when player moves
+  // x = column, y = row
   const handlePlayerMove = (x: number, y: number) => {
     setRoomMatrix((prevRoomMatrix) => {
       const [playerRow, playerCol] = playerPosition;
@@ -117,10 +124,7 @@ export const Room: FC<{
             if (rowIndex === playerRow && columnIndex === playerCol) {
               // Set player's current tile to empty
               return [TILE_TYPE.EMPTY, 0];
-            } else if (
-              rowIndex === playerRow + y &&
-              columnIndex === playerCol + x
-            ) {
+            } else if (rowIndex === y && columnIndex === x) {
               // Set player's new tile to player
               return [TILE_TYPE.PLAYER, player.id];
             }
@@ -130,9 +134,23 @@ export const Room: FC<{
       );
       return newRoomMatrix;
     });
+    addLog({
+      message: (
+        <>
+          <span className="text-green-500">{player.name}</span> moved to tile (
+          {x}, {y}).
+        </>
+      ),
+      type: "info",
+    });
+    setPlayerActionPoints(player.actionPoints - 1);
+    setPlayerState({
+      ...player.state,
+      isMoving: false,
+    });
   };
 
-  console.log("room", player.state);
+  // console.log("room", player.state);
 
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
@@ -254,8 +272,8 @@ export const Room: FC<{
                     tileType === TILE_TYPE.EMPTY
                   ) {
                     handlePlayerMove(
-                      rowIndex, // x
-                      columnIndex // y
+                      columnIndex, // x
+                      rowIndex // y
                     );
                   }
                 }
