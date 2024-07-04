@@ -23,17 +23,14 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   },
   equipment: {
     weapon: {
-      name: "Club",
-      damage: 2,
+      id: 1,
+      name: "Fists",
+      damage: 1,
       range: 1,
       cost: 1,
-      //   name: "Staff",
-      //   damage: 1,
-      //   range: 3,
-      //   cost: 1,
     },
     helmet: null,
-    armor: null,
+    chestpiece: null,
     leggings: null,
   },
 
