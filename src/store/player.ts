@@ -17,7 +17,7 @@ interface IPlayerStore extends IPlayer {
   setPlayerWeapon: (weapon: IWeapon) => void;
   setPlayerHelmet: (helmet: IHelmet) => void;
   setPlayerChestpiece: (chestpiece: IChestpiece) => void;
-  setPlayerLegging: (leggings: ILegging) => void;
+  setPlayerLegging: (legging: ILegging) => void;
 }
 
 export const usePlayerStore = create<IPlayerStore>((set, get) => ({
