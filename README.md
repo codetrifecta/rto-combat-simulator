@@ -10,9 +10,10 @@ Combat simulator for Return to Olympus
 - [x] Enemy receive damage & defeat
 - [x] Logging
 - [x] Inventory
-- [ ] Player movement (naive)
-- [ ] Enemy movement and attack
+- [x] Player movement (naive)
 - [ ] Player skills
+- [ ] Enemy attack
+- [ ] Enemy movement (naive)
 - [ ] Sprites for each of the above
 - [ ] Animations for each of the above
 - [ ] Multiple rooms (floor)
