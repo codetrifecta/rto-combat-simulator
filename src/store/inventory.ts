@@ -1,16 +1,16 @@
 import { create } from "zustand";
-import { IChestpiece, IHelmet, ILeggings, IWeapon } from "../types";
+import { IChestpiece, IHelmet, ILegging, IWeapon } from "../types";
 
 interface IPlayerInventoryStore {
   weapons: IWeapon[];
   helmets: IHelmet[];
   chestpieces: IChestpiece[];
-  leggings: ILeggings[];
+  leggings: ILegging[];
 
   setWeapons: (weapons: IWeapon[]) => void;
   setHelmets: (helmets: IHelmet[]) => void;
   setChestpieces: (chestpieces: IChestpiece[]) => void;
-  setLeggings: (leggings: ILeggings[]) => void;
+  setLeggings: (leggings: ILegging[]) => void;
 }
 
 export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({

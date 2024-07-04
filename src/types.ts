@@ -15,7 +15,7 @@ export interface IPlayer extends IEntity {
     weapon: IWeapon | null;
     helmet: IHelmet | null;
     chestpiece: IChestpiece | null;
-    leggings: ILeggings | null;
+    legging: ILegging | null;
   };
 }
 
@@ -58,7 +58,7 @@ export interface IHelmet extends IArmor {}
 
 export interface IChestpiece extends IArmor {}
 
-export interface ILeggings extends IArmor {}
+export interface ILegging extends IArmor {}
 
 export interface ILog {
   message: string | JSX.Element;

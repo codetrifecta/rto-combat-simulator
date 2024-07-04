@@ -1,12 +1,23 @@
 import { create } from "zustand";
 import { ENTITY_TYPE } from "../constants";
-import { IPlayer, IPlayerState } from "../types";
+import {
+  IChestpiece,
+  IHelmet,
+  ILegging,
+  IPlayer,
+  IPlayerState,
+  IWeapon,
+} from "../types";
 
 interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
   setPlayer: (player: IPlayer) => void;
   setPlayerActionPoints: (actionPoints: number) => void;
   setPlayerState: (state: IPlayerState) => void;
+  setPlayerWeapon: (weapon: IWeapon) => void;
+  setPlayerHelmet: (helmet: IHelmet) => void;
+  setPlayerChestpiece: (chestpiece: IChestpiece) => void;
+  setPlayerLegging: (leggings: ILegging) => void;
 }
 
 export const usePlayerStore = create<IPlayerStore>((set, get) => ({
@@ -31,7 +42,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     },
     helmet: null,
     chestpiece: null,
-    leggings: null,
+    legging: null,
   },
 
   getPlayer: () => {
@@ -50,4 +61,12 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   setPlayer: (player: IPlayer) => set({ ...player }),
   setPlayerActionPoints: (actionPoints: number) => set({ actionPoints }),
   setPlayerState: (state: IPlayerState) => set({ state }),
+  setPlayerWeapon: (weapon: IWeapon) =>
+    set({ equipment: { ...get().equipment, weapon } }),
+  setPlayerHelmet: (helmet: IHelmet) =>
+    set({ equipment: { ...get().equipment, helmet } }),
+  setPlayerChestpiece: (chestpiece: IChestpiece) =>
+    set({ equipment: { ...get().equipment, chestpiece } }),
+  setPlayerLegging: (legging: ILegging) =>
+    set({ equipment: { ...get().equipment, legging } }),
 }));
