@@ -162,14 +162,14 @@ export const Room: FC<{
       ),
       type: "info",
     });
-    setPlayerActionPoints(player.actionPoints - 1);
+    if (!isRoomOver) {
+      setPlayerActionPoints(player.actionPoints - 1);
+    }
     setPlayerState({
       ...player.state,
       isMoving: false,
     });
   };
-
-  // console.log("room", player.state);
 
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
