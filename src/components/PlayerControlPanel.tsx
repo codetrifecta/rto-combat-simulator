@@ -7,7 +7,7 @@ import { handlePlayerEndTurn } from "../utils";
 import { useLogStore } from "../store/log";
 
 export const PlayerControlPanel: FC = () => {
-  const { turnCycle, endTurn } = useGameStateStore();
+  const { turnCycle, endTurn, isRoomOver } = useGameStateStore();
 
   const { setPlayerState, getPlayer, setPlayerActionPoints } = usePlayerStore();
 
@@ -77,6 +77,7 @@ export const PlayerControlPanel: FC = () => {
               }}
               disabled={
                 disabled ||
+                isRoomOver ||
                 player.equipment.weapon === null ||
                 (player.equipment.weapon &&
                   player.actionPoints < player.equipment.weapon.cost)
@@ -104,7 +105,7 @@ export const PlayerControlPanel: FC = () => {
                   isUsingSkill: !player.state.isUsingSkill,
                 });
               }}
-              disabled={disabled}
+              disabled={disabled || isRoomOver}
             >
               Skills
             </Button>
@@ -121,7 +122,7 @@ export const PlayerControlPanel: FC = () => {
                   type: "info",
                 });
               }}
-              disabled={disabled}
+              disabled={disabled || isRoomOver}
             >
               End Turn
             </Button>
