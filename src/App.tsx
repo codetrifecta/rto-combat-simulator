@@ -11,6 +11,7 @@ import { useEnemyStore } from "./store/enemy";
 import { Logger } from "./components/Logger";
 import { useLogStore } from "./store/log";
 import clsx from "clsx";
+import { InventoryChooser } from "./components/InventoryChooser";
 
 function App() {
   const [headerOpen, setHeaderOpen] = useState(false);
@@ -124,7 +125,9 @@ function App() {
 
       {/* Combat Room */}
       <div className="mb-6 grid grid-rows-1 grid-cols-8 w-full px-16 gap-5">
-        <div className="col-span-2"></div>
+        <div className="col-span-2">
+          <InventoryChooser />
+        </div>
         <div className="col-span-4 flex justify-center items-center">
           <Room
             currentHoveredEntity={currentHoveredEntity}

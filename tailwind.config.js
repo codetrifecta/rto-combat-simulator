@@ -6,6 +6,8 @@ export default {
       boxShadow: {
         "intense-green": "0 0 5px 5px green",
         "intense-red": "0 0 5px 5px red",
+        "intense-white": "0 0 5px 5px white",
+        "intense-gray": "0 0 5px 5px gray",
       },
     },
   },
