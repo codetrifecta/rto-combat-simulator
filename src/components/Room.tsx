@@ -291,6 +291,15 @@ export const Room: FC<{
                       columnIndex, // x
                       rowIndex // y
                     );
+                  } else if (
+                    player.state.isMoving &&
+                    tileType === TILE_TYPE.DOOR
+                  ) {
+                    addLog({
+                      message: "Player moved to the next room!",
+                      type: "info",
+                    });
+                    // TODO: Reset room and generate new room matrix
                   }
                 }
               }}
