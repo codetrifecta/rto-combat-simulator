@@ -77,6 +77,7 @@ export const PlayerControlPanel: FC = () => {
               }}
               disabled={
                 disabled ||
+                player.equipment.weapon === null ||
                 (player.equipment.weapon &&
                   player.actionPoints < player.equipment.weapon.cost)
               }
@@ -139,12 +140,14 @@ const Button: FC<{
   return (
     <button
       className={clsx(
-        "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
-        { "opacity-50": disabled }
+        "bg-blue-500  text-white font-bold py-2 px-4 rounded",
+        { "hover:bg-blue-700": !disabled },
+        { "opacity-50 pointer-event-none": disabled }
       )}
       onClick={() => {
         if (!disabled) onClick();
       }}
+      disabled={disabled || false}
     >
       {children}
     </button>
