@@ -32,6 +32,8 @@ export const ActionPoints: FC<{
       return;
     }
     usedActionPoints = weapon.cost;
+  } else if (state.isMoving) {
+    usedActionPoints = 1;
   }
 
   const availableActionPoints = actionPoints - usedActionPoints;

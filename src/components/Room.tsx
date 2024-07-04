@@ -36,7 +36,6 @@ export const Room: FC<{
 
   // Update room matrix when an enemy is defeated (i.e. removed from the game)
   useEffect(() => {
-    console.log("room turn cycle:", turnCycle);
     setRoomMatrix((prevRoomMatrix) => {
       return prevRoomMatrix.map((row) => {
         return row.map(([tileType, id]) => {
@@ -55,7 +54,6 @@ export const Room: FC<{
   // Handle player attacking an enemy
   const handleEnemyClick = (id: number) => {
     const enemy = enemies.find((enemy) => enemy.id === id);
-    console.log(`Player attacking ${enemy?.name}!`);
 
     if (!enemy) {
       addLog({ message: "Enemy not found!", type: "error" });
@@ -109,6 +107,33 @@ export const Room: FC<{
     });
   };
 
+  // Update room matrix when player moves
+  const handlePlayerMove = (x: number, y: number) => {
+    setRoomMatrix((prevRoomMatrix) => {
+      const [playerRow, playerCol] = playerPosition;
+      const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
+        (row, rowIndex) => {
+          return row.map(([tileType, id], columnIndex) => {
+            if (rowIndex === playerRow && columnIndex === playerCol) {
+              // Set player's current tile to empty
+              return [TILE_TYPE.EMPTY, 0];
+            } else if (
+              rowIndex === playerRow + y &&
+              columnIndex === playerCol + x
+            ) {
+              // Set player's new tile to player
+              return [TILE_TYPE.PLAYER, player.id];
+            }
+            return [tileType, id];
+          });
+        }
+      );
+      return newRoomMatrix;
+    });
+  };
+
+  console.log("room", player.state);
+
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
     if (player.actionPoints === 0) {
@@ -130,6 +155,7 @@ export const Room: FC<{
     setPlayerActionPoints,
     turnCycle,
     addLog,
+    player.name,
   ]);
 
   return (
@@ -168,13 +194,11 @@ export const Room: FC<{
           }
 
           let isEffectZone: boolean = false;
-          let effectColor: string = "red";
 
           // Check if player is attacking (basic attack)
           // Highlight tiles that can be attacked by player (3x3 area around player)
           if (player.state.isAttacking && player.equipment.weapon) {
             const [playerRow, playerCol] = playerPosition;
-            effectColor = "red";
 
             const range = player.equipment.weapon.range;
 
@@ -188,6 +212,29 @@ export const Room: FC<{
             }
           }
 
+          // Check if player is (in the process of) moving
+          // Highlight tiles that can be moved to by player (5x5 area around player not including wall or door tiles)
+          if (player.state.isMoving) {
+            const [playerRow, playerCol] = playerPosition;
+
+            // console.log(
+            //   "move zone",
+            //   playerRow,
+            //   playerCol,
+            //   rowIndex,
+            //   columnIndex
+            // );
+
+            if (
+              rowIndex >= playerRow - 2 &&
+              rowIndex <= playerRow + 2 &&
+              columnIndex >= playerCol - 2 &&
+              columnIndex <= playerCol + 2
+            ) {
+              isEffectZone = true;
+            }
+          }
+
           return (
             <Tile
               tileType={tileType}
@@ -195,10 +242,22 @@ export const Room: FC<{
               playerState={player.state}
               active={active}
               isEffectZone={isEffectZone}
-              effectColor={effectColor}
               onClick={() => {
-                if (isEffectZone && tileType === TILE_TYPE.ENEMY) {
-                  handleEnemyClick(id);
+                if (isEffectZone) {
+                  if (
+                    player.state.isAttacking &&
+                    tileType === TILE_TYPE.ENEMY
+                  ) {
+                    handleEnemyClick(id);
+                  } else if (
+                    player.state.isMoving &&
+                    tileType === TILE_TYPE.EMPTY
+                  ) {
+                    handlePlayerMove(
+                      rowIndex, // x
+                      columnIndex // y
+                    );
+                  }
                 }
               }}
               onMouseEnter={() => {
