@@ -5,7 +5,11 @@ export interface IEntity {
   name: string;
   entityType: ENTITY_TYPE;
   health: number;
+  statuses: IStatus[];
+  damageBonus: number;
 }
+
+export type IAllEntity = IEntity | IPlayer | IEnemy;
 
 export interface IPlayer extends IEntity {
   actionPoints: number;
@@ -34,10 +38,24 @@ export interface IGameState {
 }
 
 export interface ISkill {
+  id: number;
   name: string;
+  description: string;
   damage: number;
   range: number;
   cooldown: number;
+  cost: number;
+  effect: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => void;
+  onClick: () => void;
+}
+
+export interface IStatus {
+  id: 1;
+  name: string;
+  description: string;
+  duration: number;
+  effect: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => void;
+  effectEnd: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => void;
 }
 
 export interface IWeapon {

@@ -13,6 +13,8 @@ export const PlayerControlPanel: FC = () => {
 
   const player = getPlayer();
 
+  console.log(player);
+
   const { addLog } = useLogStore();
 
   const handleEndTurnClick = () => {
@@ -46,7 +48,7 @@ export const PlayerControlPanel: FC = () => {
             {player.skills.map((skill) => (
               <Button
                 key={skill.name}
-                onClick={() => console.log(skill.name)}
+                onClick={() => skill.onClick()}
                 disabled={disabled}
               >
                 {skill.name}

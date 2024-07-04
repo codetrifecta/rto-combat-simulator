@@ -21,7 +21,7 @@ function App() {
   const { turnCycle, setTurnCycle, setIsLoading, endTurn } =
     useGameStateStore();
 
-  const { getPlayer } = usePlayerStore();
+  const { getPlayer, setPlayer } = usePlayerStore();
 
   const player = getPlayer();
 
@@ -35,6 +35,31 @@ function App() {
     setTurnCycle([player, ...enemies]);
     setIsLoading(false);
   }, []);
+
+  // Update player's skills with onClick event handlers to trigger skill effects
+  // and log messages
+  useEffect(() => {
+    if (turnCycle.length > 0) {
+      const playerSkills = player.skills.map((skill) => ({
+        ...skill,
+        onClick: () => {
+          if (player.actionPoints >= skill.cost) {
+            skill.effect(player, setPlayer);
+            addLog({
+              message: (
+                <>
+                  <span className="text-green-500">{player.name}</span> used{" "}
+                  <span className="text-green-500">{skill.name}</span>.
+                </>
+              ),
+              type: "info",
+            });
+          }
+        },
+      }));
+      setPlayer({ ...player, skills: playerSkills });
+    }
+  }, [turnCycle]);
 
   const isInitialized = useMemo(() => {
     return turnCycle.length > 0;
