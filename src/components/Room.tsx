@@ -1,6 +1,12 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { Tile } from "./Tile";
-import { ENTITY_TYPE, ROOM_LENGTH, TILE_SIZE, TILE_TYPE } from "../constants";
+import {
+  ENTITY_TYPE,
+  ROOM_LENGTH,
+  STARTING_ACTION_POINTS,
+  TILE_SIZE,
+  TILE_TYPE,
+} from "../constants";
 import { IEnemy } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
@@ -16,7 +22,7 @@ export const Room: FC<{
     generateRoomMatrix(ROOM_LENGTH)
   );
 
-  const { turnCycle, endTurn, setIsRoomOver } = useGameStateStore();
+  const { turnCycle, endTurn, isRoomOver, setIsRoomOver } = useGameStateStore();
   const { getPlayer, setPlayerActionPoints, setPlayerState } = usePlayerStore();
   const player = getPlayer();
 
@@ -40,8 +46,9 @@ export const Room: FC<{
     return [playerRow, playerCol];
   }, [roomMatrix]);
 
-  // Update room matrix when an enemy is defeated (i.e. removed from the game)
+  // When an enemy is defeated, remove it from the room matrix and check if the room is over
   useEffect(() => {
+    // Update room matrix when an enemy is defeated (i.e. removed from the game)
     setRoomMatrix((prevRoomMatrix) => {
       return prevRoomMatrix.map((row) => {
         return row.map(([tileType, id]) => {
@@ -55,10 +62,8 @@ export const Room: FC<{
         });
       });
     });
-  }, [enemies.length]);
 
-  // Log a message saying the player has completed the room when all enemies are defeated
-  useEffect(() => {
+    // Log a message saying the player has completed the room when all enemies are defeated
     if (enemies.length === 0) {
       addLog({
         message: (
@@ -67,7 +72,7 @@ export const Room: FC<{
         type: "info",
       });
       setIsRoomOver(true);
-      // setPlayerActionPoints()
+      setPlayerActionPoints(STARTING_ACTION_POINTS);
     }
   }, [enemies.length]);
 
@@ -247,23 +252,19 @@ export const Room: FC<{
           // Check if player is (in the process of) moving
           // Highlight tiles that can be moved to by player (5x5 area around player not including wall or door tiles)
           if (player.state.isMoving) {
-            const [playerRow, playerCol] = playerPosition;
-
-            // console.log(
-            //   "move zone",
-            //   playerRow,
-            //   playerCol,
-            //   rowIndex,
-            //   columnIndex
-            // );
-
-            if (
-              rowIndex >= playerRow - 2 &&
-              rowIndex <= playerRow + 2 &&
-              columnIndex >= playerCol - 2 &&
-              columnIndex <= playerCol + 2
-            ) {
+            if (isRoomOver) {
               isEffectZone = true;
+            } else {
+              const [playerRow, playerCol] = playerPosition;
+
+              if (
+                rowIndex >= playerRow - 2 &&
+                rowIndex <= playerRow + 2 &&
+                columnIndex >= playerCol - 2 &&
+                columnIndex <= playerCol + 2
+              ) {
+                isEffectZone = true;
+              }
             }
           }
 
@@ -274,6 +275,7 @@ export const Room: FC<{
               playerState={player.state}
               active={active}
               isEffectZone={isEffectZone}
+              isRoomOver={isRoomOver}
               onClick={() => {
                 if (isEffectZone) {
                   if (

@@ -8,6 +8,7 @@ export const Tile: FC<{
   playerState: IPlayerState;
   active: boolean;
   isEffectZone: boolean;
+  isRoomOver: boolean;
   onClick: () => void;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
@@ -17,6 +18,7 @@ export const Tile: FC<{
   playerState,
   active,
   isEffectZone,
+  isRoomOver,
   onClick,
   onMouseEnter,
   onMouseLeave,
@@ -31,13 +33,22 @@ export const Tile: FC<{
   }, [tileType]);
 
   const isMovingEffectTile = useMemo(() => {
-    return (
-      tileType !== TILE_TYPE.WALL &&
-      tileType !== TILE_TYPE.DOOR &&
-      tileType !== TILE_TYPE.PLAYER &&
-      tileType !== TILE_TYPE.ENEMY
-    );
-  }, [tileType]);
+    if (isRoomOver) {
+      // Player can move to the door when the room is over (door restriction is lifted)
+      return (
+        tileType !== TILE_TYPE.WALL &&
+        tileType !== TILE_TYPE.PLAYER &&
+        tileType !== TILE_TYPE.ENEMY
+      );
+    } else {
+      return (
+        tileType !== TILE_TYPE.WALL &&
+        tileType !== TILE_TYPE.DOOR &&
+        tileType !== TILE_TYPE.PLAYER &&
+        tileType !== TILE_TYPE.ENEMY
+      );
+    }
+  }, [isRoomOver, tileType]);
 
   // Effect zone classes
   // Return flat string instead of formatted because getting an error where class is not applied
