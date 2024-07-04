@@ -105,8 +105,8 @@ export const Room: FC<{
           type: "info",
         });
       }
+      setPlayerActionPoints(player.actionPoints - player.equipment.weapon.cost);
     }
-    setPlayerActionPoints(player.actionPoints - 1);
     setPlayerState({
       ...player.state,
       isAttacking: false,
