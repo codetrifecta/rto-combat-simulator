@@ -54,7 +54,6 @@ function App() {
       });
 
       // Update game store turn cycle
-      console.log("newTurnCycle", newTurnCycle);
       setTurnCycle(newTurnCycle);
     }
   }, [enemies.length]);

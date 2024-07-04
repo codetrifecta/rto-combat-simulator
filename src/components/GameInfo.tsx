@@ -8,8 +8,6 @@ export const GameInfo: FC<{
   currentHoveredEntity: IEntity | null;
   setCurrentHoveredEntity: (entity: IEntity | null) => void;
 }> = ({ currentHoveredEntity, setCurrentHoveredEntity }) => {
-  console.log("currently hovered entity:", currentHoveredEntity);
-
   const { turnCycle } = useGameStateStore();
 
   return (

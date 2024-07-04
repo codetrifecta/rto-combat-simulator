@@ -29,7 +29,7 @@ export interface IEnemy extends IEntity {}
 
 export interface IGameState {
   turnCycle: IEntity[];
-  isGameOver: boolean;
+  isRoomOver: boolean;
   isLoading: boolean;
 }
 

@@ -24,8 +24,6 @@ export const InventoryChooser: FC = () => {
 
   const player = getPlayer();
 
-  console.log(player.equipment);
-
   return (
     <div
       className="bg-zinc-900 overflow-auto p-5 border-white border"

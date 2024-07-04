@@ -1,6 +1,12 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { Tile } from "./Tile";
-import { ENTITY_TYPE, ROOM_LENGTH, TILE_SIZE, TILE_TYPE } from "../constants";
+import {
+  ENTITY_TYPE,
+  ROOM_LENGTH,
+  STARTING_ACTION_POINTS,
+  TILE_SIZE,
+  TILE_TYPE,
+} from "../constants";
 import { IEnemy } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
@@ -16,7 +22,7 @@ export const Room: FC<{
     generateRoomMatrix(ROOM_LENGTH)
   );
 
-  const { turnCycle, endTurn } = useGameStateStore();
+  const { turnCycle, endTurn, isRoomOver, setIsRoomOver } = useGameStateStore();
   const { getPlayer, setPlayerActionPoints, setPlayerState } = usePlayerStore();
   const player = getPlayer();
 
@@ -28,15 +34,21 @@ export const Room: FC<{
     const playerRow = roomMatrix.findIndex(
       (row) => row.findIndex(([type]) => type === TILE_TYPE.PLAYER) !== -1
     );
+
+    if (playerRow === -1) {
+      console.error("Player row not found in room matrix!");
+      return [ROOM_LENGTH / 2, ROOM_LENGTH / 2];
+    }
+
     const playerCol = roomMatrix[playerRow].findIndex(
       ([type]) => type === TILE_TYPE.PLAYER
     );
     return [playerRow, playerCol];
   }, [roomMatrix]);
 
-  // Update room matrix when an enemy is defeated (i.e. removed from the game)
+  // When an enemy is defeated, remove it from the room matrix and check if the room is over
   useEffect(() => {
-    console.log("room turn cycle:", turnCycle);
+    // Update room matrix when an enemy is defeated (i.e. removed from the game)
     setRoomMatrix((prevRoomMatrix) => {
       return prevRoomMatrix.map((row) => {
         return row.map(([tileType, id]) => {
@@ -50,12 +62,23 @@ export const Room: FC<{
         });
       });
     });
+
+    // Log a message saying the player has completed the room when all enemies are defeated
+    if (enemies.length === 0) {
+      addLog({
+        message: (
+          <span className="text-green-500">Player completed the room!</span>
+        ),
+        type: "info",
+      });
+      setIsRoomOver(true);
+      setPlayerActionPoints(STARTING_ACTION_POINTS);
+    }
   }, [enemies.length]);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (id: number) => {
     const enemy = enemies.find((enemy) => enemy.id === id);
-    console.log(`Player attacking ${enemy?.name}!`);
 
     if (!enemy) {
       addLog({ message: "Enemy not found!", type: "error" });
@@ -101,13 +124,52 @@ export const Room: FC<{
           type: "info",
         });
       }
+      setPlayerActionPoints(player.actionPoints - player.equipment.weapon.cost);
     }
-    setPlayerActionPoints(player.actionPoints - 1);
     setPlayerState({
       ...player.state,
       isAttacking: false,
     });
   };
+
+  // Update room matrix when player moves
+  // x = column, y = row
+  const handlePlayerMove = (x: number, y: number) => {
+    setRoomMatrix((prevRoomMatrix) => {
+      const [playerRow, playerCol] = playerPosition;
+      const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
+        (row, rowIndex) => {
+          return row.map(([tileType, id], columnIndex) => {
+            if (rowIndex === playerRow && columnIndex === playerCol) {
+              // Set player's current tile to empty
+              return [TILE_TYPE.EMPTY, 0];
+            } else if (rowIndex === y && columnIndex === x) {
+              // Set player's new tile to player
+              return [TILE_TYPE.PLAYER, player.id];
+            }
+            return [tileType, id];
+          });
+        }
+      );
+      return newRoomMatrix;
+    });
+    addLog({
+      message: (
+        <>
+          <span className="text-green-500">{player.name}</span> moved to tile (
+          {x}, {y}).
+        </>
+      ),
+      type: "info",
+    });
+    setPlayerActionPoints(player.actionPoints - 1);
+    setPlayerState({
+      ...player.state,
+      isMoving: false,
+    });
+  };
+
+  // console.log("room", player.state);
 
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
@@ -130,6 +192,7 @@ export const Room: FC<{
     setPlayerActionPoints,
     turnCycle,
     addLog,
+    player.name,
   ]);
 
   return (
@@ -168,13 +231,11 @@ export const Room: FC<{
           }
 
           let isEffectZone: boolean = false;
-          let effectColor: string = "red";
 
           // Check if player is attacking (basic attack)
           // Highlight tiles that can be attacked by player (3x3 area around player)
           if (player.state.isAttacking && player.equipment.weapon) {
             const [playerRow, playerCol] = playerPosition;
-            effectColor = "red";
 
             const range = player.equipment.weapon.range;
 
@@ -188,6 +249,25 @@ export const Room: FC<{
             }
           }
 
+          // Check if player is (in the process of) moving
+          // Highlight tiles that can be moved to by player (5x5 area around player not including wall or door tiles)
+          if (player.state.isMoving) {
+            if (isRoomOver) {
+              isEffectZone = true;
+            } else {
+              const [playerRow, playerCol] = playerPosition;
+
+              if (
+                rowIndex >= playerRow - 2 &&
+                rowIndex <= playerRow + 2 &&
+                columnIndex >= playerCol - 2 &&
+                columnIndex <= playerCol + 2
+              ) {
+                isEffectZone = true;
+              }
+            }
+          }
+
           return (
             <Tile
               tileType={tileType}
@@ -195,10 +275,32 @@ export const Room: FC<{
               playerState={player.state}
               active={active}
               isEffectZone={isEffectZone}
-              effectColor={effectColor}
+              isRoomOver={isRoomOver}
               onClick={() => {
-                if (isEffectZone && tileType === TILE_TYPE.ENEMY) {
-                  handleEnemyClick(id);
+                if (isEffectZone) {
+                  if (
+                    player.state.isAttacking &&
+                    tileType === TILE_TYPE.ENEMY
+                  ) {
+                    handleEnemyClick(id);
+                  } else if (
+                    player.state.isMoving &&
+                    tileType === TILE_TYPE.EMPTY
+                  ) {
+                    handlePlayerMove(
+                      columnIndex, // x
+                      rowIndex // y
+                    );
+                  } else if (
+                    player.state.isMoving &&
+                    tileType === TILE_TYPE.DOOR
+                  ) {
+                    addLog({
+                      message: "Player moved to the next room!",
+                      type: "info",
+                    });
+                    // TODO: Reset room and generate new room matrix
+                  }
                 }
               }}
               onMouseEnter={() => {

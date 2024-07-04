@@ -76,8 +76,6 @@ export const handlePlayerEndTurn = (
   setPlayerActionPoints: (actionPoints: number) => void,
   endTurn: () => void
 ) => {
-  console.log("Ending player turn and gaining AP", turnCycle);
-
   // If current turn is player, end player's turn and give action points
   if (turnCycle[0] && turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
     const player = getPlayer();
