@@ -50,6 +50,13 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
       range: 3,
       cost: 1,
     },
+    {
+      id: 6,
+      name: "Test Hammer of Doom",
+      damage: 100,
+      range: 100,
+      cost: 1,
+    },
   ],
   helmets: [
     {
