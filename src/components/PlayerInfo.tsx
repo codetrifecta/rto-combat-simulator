@@ -13,10 +13,7 @@ export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
         </div>
         <div className="flex items-center">
           <p className="mr-2">Action Points: </p>
-          <ActionPoints
-            actionPoints={player.actionPoints}
-            playerState={player.state}
-          />
+          <ActionPoints player={player} />
         </div>
       </div>
     </>

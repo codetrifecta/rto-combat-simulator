@@ -1,17 +1,37 @@
 import { type FC } from "react";
 import { MAX_ACTION_POINTS } from "../constants";
-import { IPlayerState } from "../types";
+import { IPlayer } from "../types";
+import { useLogStore } from "../store/log";
 
 // Display action points as circles
 export const ActionPoints: FC<{
-  actionPoints: number;
-  playerState: IPlayerState;
-}> = ({ actionPoints, playerState }) => {
+  player: IPlayer;
+}> = ({ player }) => {
+  const {
+    actionPoints,
+    state,
+    equipment: { weapon },
+  } = player;
+
+  const { addLog } = useLogStore();
+
   const emptyActionPoints = MAX_ACTION_POINTS - actionPoints;
   let usedActionPoints = 0;
 
-  if (playerState.isAttacking) {
-    usedActionPoints = 1;
+  if (state.isAttacking) {
+    if (!weapon) {
+      addLog({
+        message: (
+          <>
+            <span className="text-green-500">{player.name}</span> has no weapon
+            equipped.
+          </>
+        ),
+        type: "error",
+      });
+      return;
+    }
+    usedActionPoints = weapon.cost;
   }
 
   const availableActionPoints = actionPoints - usedActionPoints;
