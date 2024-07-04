@@ -11,6 +11,7 @@ import { useEnemyStore } from "./store/enemy";
 import { Logger } from "./components/Logger";
 import { useLogStore } from "./store/log";
 import clsx from "clsx";
+import { InventoryChooser } from "./components/InventoryChooser";
 
 function App() {
   const [headerOpen, setHeaderOpen] = useState(false);
@@ -115,16 +116,20 @@ function App() {
       </header>
 
       {/* Game Info (Currently only displays turn cycle) */}
-      <div className="mt-10 mb-8">
+      <section className="mt-10 mb-8">
         <GameInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
-      </div>
+      </section>
 
-      {/* Combat Room */}
-      <div className="mb-6 grid grid-rows-1 grid-cols-8 w-full px-16 gap-5">
-        <div className="col-span-2"></div>
+      {/* Middle Section */}
+      <section className="mb-6 grid grid-rows-1 grid-cols-8 w-full lg:px-4 xl:px-16  gap-5">
+        <div className="col-span-2">
+          <InventoryChooser />
+        </div>
+
+        {/* Combat Room */}
         <div className="col-span-4 flex justify-center items-center">
           <Room
             currentHoveredEntity={currentHoveredEntity}
@@ -134,15 +139,17 @@ function App() {
         <div className="relative col-span-2">
           <Logger />
         </div>
-      </div>
+      </section>
 
       {/* Player Info */}
-      <div className="mb-6">
+      <section className="mb-6">
         <PlayerInfo player={player} />
-      </div>
+      </section>
 
       {/* Player Control Panel */}
-      <PlayerControlPanel />
+      <section>
+        <PlayerControlPanel />
+      </section>
     </div>
   );
 }

@@ -1,6 +1,19 @@
 import { ENTITY_TYPE, TILE_TYPE } from "./constants";
 import { IEntity, IPlayer } from "./types";
 
+/**
+ * Generate a room matrix based on the room length
+ * @param roomLength number (integer) representing the length of the room matrix
+ * @returns a 2D array of tuples (TILE_TYPE, number) representing the type of tile and the id of whatever the tile is in the  room matrix
+ *          ex - 2d array of 5x5 room matrix:
+ *         [
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.DOOR, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.ENEMY, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.EMPTY,1 ], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.PLAYER, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.DOOR, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1]]
+ *          ]
+ */
 export const generateRoomMatrix = (roomLength: number) => {
   // Initialize room matrix
   const initialRoomMatrix: [TILE_TYPE, number][][] = Array.from(
