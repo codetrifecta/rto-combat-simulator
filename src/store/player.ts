@@ -14,10 +14,10 @@ interface IPlayerStore extends IPlayer {
   setPlayer: (player: IPlayer) => void;
   setPlayerActionPoints: (actionPoints: number) => void;
   setPlayerState: (state: IPlayerState) => void;
-  setPlayerWeapon: (weapon: IWeapon) => void;
-  setPlayerHelmet: (helmet: IHelmet) => void;
-  setPlayerChestpiece: (chestpiece: IChestpiece) => void;
-  setPlayerLegging: (legging: ILegging) => void;
+  setPlayerWeapon: (weapon: IWeapon | null) => void;
+  setPlayerHelmet: (helmet: IHelmet | null) => void;
+  setPlayerChestpiece: (chestpiece: IChestpiece | null) => void;
+  setPlayerLegging: (legging: ILegging | null) => void;
 }
 
 export const usePlayerStore = create<IPlayerStore>((set, get) => ({
@@ -59,14 +59,17 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     return player;
   },
   setPlayer: (player: IPlayer) => set({ ...player }),
+
   setPlayerActionPoints: (actionPoints: number) => set({ actionPoints }),
+
   setPlayerState: (state: IPlayerState) => set({ state }),
-  setPlayerWeapon: (weapon: IWeapon) =>
+
+  setPlayerWeapon: (weapon: IWeapon | null) =>
     set({ equipment: { ...get().equipment, weapon } }),
-  setPlayerHelmet: (helmet: IHelmet) =>
+  setPlayerHelmet: (helmet: IHelmet | null) =>
     set({ equipment: { ...get().equipment, helmet } }),
-  setPlayerChestpiece: (chestpiece: IChestpiece) =>
+  setPlayerChestpiece: (chestpiece: IChestpiece | null) =>
     set({ equipment: { ...get().equipment, chestpiece } }),
-  setPlayerLegging: (legging: ILegging) =>
+  setPlayerLegging: (legging: ILegging | null) =>
     set({ equipment: { ...get().equipment, legging } }),
 }));

@@ -36,7 +36,14 @@ export const InventoryChooser: FC = () => {
         <div className={clsx(cardContainerClasses)}>
           {weapons.map((weapon) => {
             if (player.equipment.weapon?.id === weapon.id) {
-              return <WeaponCard key={weapon.id} weapon={weapon} active />;
+              return (
+                <WeaponCard
+                  key={weapon.id}
+                  weapon={weapon}
+                  active
+                  onClick={() => setPlayerWeapon(null)}
+                />
+              );
             } else {
               return (
                 <WeaponCard
@@ -57,7 +64,14 @@ export const InventoryChooser: FC = () => {
         <div className={clsx(cardContainerClasses)}>
           {helmets.map((helmet) => {
             if (player.equipment.helmet?.id === helmet.id) {
-              return <ArmorCard key={helmet.id} armor={helmet} active />;
+              return (
+                <ArmorCard
+                  key={helmet.id}
+                  armor={helmet}
+                  active
+                  onClick={() => setPlayerWeapon(null)}
+                />
+              );
             } else {
               return (
                 <ArmorCard
@@ -79,7 +93,12 @@ export const InventoryChooser: FC = () => {
           {chestpieces.map((chestpiece) => {
             if (player.equipment.chestpiece?.id === chestpiece.id) {
               return (
-                <ArmorCard key={chestpiece.id} armor={chestpiece} active />
+                <ArmorCard
+                  key={chestpiece.id}
+                  armor={chestpiece}
+                  active
+                  onClick={() => setPlayerWeapon(null)}
+                />
               );
             } else {
               return (
@@ -101,7 +120,14 @@ export const InventoryChooser: FC = () => {
         <div className={clsx(cardContainerClasses)}>
           {leggings.map((legging) => {
             if (player.equipment.legging?.id === legging.id) {
-              return <ArmorCard key={legging.id} armor={legging} active />;
+              return (
+                <ArmorCard
+                  key={legging.id}
+                  armor={legging}
+                  active
+                  onClick={() => setPlayerWeapon(null)}
+                />
+              );
             } else {
               return (
                 <ArmorCard
