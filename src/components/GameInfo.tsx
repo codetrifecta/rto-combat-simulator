@@ -55,7 +55,7 @@ export const GameInfo: FC<{
       >
         <EntityCard entity={currentTurnEntity} active={true} />
       </div>
-      {nextTurnEnties.length > 1 &&
+      {nextTurnEnties.length >= 1 &&
         nextTurnEnties.map((entity) => {
           if (!entity) {
             return null;
