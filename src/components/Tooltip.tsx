@@ -19,8 +19,6 @@ export const Tooltip: FC<{ children: JSX.Element[] }> = ({ children }) => {
     }
   }
 
-  console.log(isTop, tooltipRect?.top, screenHeight, tooltipRect?.height);
-  //   isTop ? ` bottom-[-${tooltipRect?.height || "40px"}]` : "";
   return (
     <div
       className={

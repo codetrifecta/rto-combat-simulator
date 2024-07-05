@@ -13,8 +13,6 @@ export const PlayerControlPanel: FC = () => {
 
   const player = getPlayer();
 
-  console.log(player);
-
   const { addLog } = useLogStore();
 
   const [openSkills, setOpenSkills] = useState(false);
