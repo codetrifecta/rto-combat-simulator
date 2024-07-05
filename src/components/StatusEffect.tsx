@@ -12,7 +12,7 @@ export const StatusEffect: FC<{ status: IStatus }> = ({ status }) => {
       <Tooltip>
         <h2>{status.name}</h2>
         <p>{status.description}</p>
-        <p className="">Lasts {status.duration} more turns.</p>
+        <p className="">Lasts {status.durationCounter} more turns.</p>
       </Tooltip>
     </div>
   );
