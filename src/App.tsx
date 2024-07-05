@@ -115,7 +115,7 @@ function App() {
 
       {/* Player Info */}
       <section className="mb-6">
-        <PlayerInfo player={player} />
+        <PlayerInfo />
       </section>
 
       {/* Player Control Panel */}

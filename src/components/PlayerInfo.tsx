@@ -1,11 +1,13 @@
 import { FC } from "react";
-import { IPlayer } from "../types";
 import { ActionPoints } from "./ActionPoints";
 import { useGameStateStore } from "../store/game";
 import clsx from "clsx";
 import { StatusEffect } from "./StatusEffect";
+import { usePlayerStore } from "../store/player";
 
-export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
+export const PlayerInfo: FC = () => {
+  const { getPlayer } = usePlayerStore();
+  const player = getPlayer();
   const { isRoomOver } = useGameStateStore();
 
   return (
@@ -35,7 +37,7 @@ export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
         {!isRoomOver && (
           <div className="flex items-center">
             <p className="mr-2">Action Points: </p>
-            <ActionPoints player={player} />
+            <ActionPoints />
           </div>
         )}
       </div>
