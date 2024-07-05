@@ -3,6 +3,7 @@ import { Tile } from "./Tile";
 import {
   ENTITY_TYPE,
   ROOM_LENGTH,
+  SKILL_TYPE,
   STARTING_ACTION_POINTS,
   TILE_SIZE,
   TILE_TYPE,
@@ -172,6 +173,37 @@ export const Room: FC<{
     });
   };
 
+  const handlePlayerUseSkill = (skillId: number) => {
+    const skill = player.skills.find((skill) => skill.id === skillId);
+
+    if (!skill) {
+      addLog({ message: "Skill not found!", type: "error" });
+      return;
+    }
+
+    skill.effect(player, setPlayer);
+    setPlayer({
+      ...player,
+      actionPoints: player.actionPoints - skill.cost,
+      skills: player.skills.map((s) =>
+        s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+      ),
+    });
+    addLog({
+      message: (
+        <>
+          <span className="text-green-500">{player.name}</span> used{" "}
+          <span className="text-green-500">{skill.name}</span>.
+        </>
+      ),
+      type: "info",
+    });
+    setPlayerState({
+      ...player.state,
+      isUsingSkill: false,
+    });
+  };
+
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
     if (player.actionPoints === 0) {
@@ -254,12 +286,11 @@ export const Room: FC<{
           }
 
           let isEffectZone: boolean = false;
+          const [playerRow, playerCol] = playerPosition;
 
           // Check if player is attacking (basic attack)
           // Highlight tiles that can be attacked by player (3x3 area around player)
           if (player.state.isAttacking && player.equipment.weapon) {
-            const [playerRow, playerCol] = playerPosition;
-
             const range = player.equipment.weapon.range;
 
             if (
@@ -278,8 +309,6 @@ export const Room: FC<{
             if (isRoomOver) {
               isEffectZone = true;
             } else {
-              const [playerRow, playerCol] = playerPosition;
-
               if (
                 rowIndex >= playerRow - 2 &&
                 rowIndex <= playerRow + 2 &&
@@ -287,6 +316,26 @@ export const Room: FC<{
                 columnIndex <= playerCol + 2
               ) {
                 isEffectZone = true;
+              }
+            }
+          }
+
+          // Check if player is using a skill
+          // Highlight tiles that can be affected by player's skill
+          if (player.state.isUsingSkill) {
+            const skill = player.skills.find(
+              (skill) => skill.id === player.state.skillId
+            );
+
+            if (!skill) {
+              console.error("Skill not found!");
+            } else {
+              // Check skill type
+              if (skill.skillType === SKILL_TYPE.SELF) {
+                // If skill is self-targeted, highlight player's tile
+                if (rowIndex === playerRow && columnIndex === playerCol) {
+                  isEffectZone = true;
+                }
               }
             }
           }
@@ -323,6 +372,11 @@ export const Room: FC<{
                       type: "info",
                     });
                     // TODO: Reset room and generate new room matrix
+                  } else if (
+                    player.state.isUsingSkill &&
+                    player.state.skillId
+                  ) {
+                    handlePlayerUseSkill(player.state.skillId);
                   }
                 }
               }}

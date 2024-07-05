@@ -20,10 +20,17 @@ export enum ENTITY_TYPE {
 export const STARTING_ACTION_POINTS = 4;
 export const MAX_ACTION_POINTS = 6;
 
+export enum SKILL_TYPE {
+  SELF = "self",
+  ST = "st",
+  AOE = "aoe",
+}
+
 export const SKILLS: ISkill[] = [
   {
     id: 1,
     name: "Buff Up",
+    skillType: SKILL_TYPE.SELF,
     description: "Increase damage for all attacks by 2 for 3 turns.",
     damage: 0,
     range: 0,

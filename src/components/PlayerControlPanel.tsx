@@ -1,4 +1,4 @@
-import { useMemo, type FC } from "react";
+import { useMemo, useState, type FC } from "react";
 import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
@@ -16,6 +16,8 @@ export const PlayerControlPanel: FC = () => {
   console.log(player);
 
   const { addLog } = useLogStore();
+
+  const [openSkills, setOpenSkills] = useState(false);
 
   const handleEndTurnClick = () => {
     setPlayerState({
@@ -43,14 +45,16 @@ export const PlayerControlPanel: FC = () => {
           { "pointer-events-none": disabled }
         )}
       >
-        {player.state.isUsingSkill ? (
+        {openSkills ? (
           <>
             {player.skills.map((skill) => (
               <Button
                 key={skill.name}
                 onClick={() => {
                   setPlayerState({
-                    ...player.state,
+                    isAttacking: false,
+                    isMoving: false,
+                    isUsingSkill: !player.state.isUsingSkill,
                     skillId: skill.id,
                   });
                   // if (player.actionPoints >= skill.cost) {
@@ -86,13 +90,14 @@ export const PlayerControlPanel: FC = () => {
               </Button>
             ))}
             <Button
-              onClick={() =>
+              onClick={() => {
                 setPlayerState({
                   isAttacking: false,
                   isMoving: false,
                   isUsingSkill: false,
-                })
-              }
+                });
+                setOpenSkills(false);
+              }}
               disabled={disabled}
             >
               Cancel
@@ -132,11 +137,7 @@ export const PlayerControlPanel: FC = () => {
             </Button>
             <Button
               onClick={() => {
-                setPlayerState({
-                  isAttacking: false,
-                  isMoving: false,
-                  isUsingSkill: !player.state.isUsingSkill,
-                });
+                setOpenSkills(true);
               }}
               disabled={disabled || isRoomOver}
             >

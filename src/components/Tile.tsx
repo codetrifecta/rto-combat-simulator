@@ -50,6 +50,10 @@ export const Tile: FC<{
     }
   }, [isRoomOver, tileType]);
 
+  const isSkillEffectTile = useMemo(() => {
+    return tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR;
+  }, [tileType]);
+
   // Effect zone classes
   // Return flat string instead of formatted because getting an error where class is not applied
   const effectBorderClasses = useMemo(() => {
@@ -58,6 +62,8 @@ export const Tile: FC<{
         return "hover:opacity-80 border-red-500";
       } else if (playerState.isMoving && isMovingEffectTile) {
         return "hover:opacity-80 border-blue-500";
+      } else if (playerState.isUsingSkill && isSkillEffectTile) {
+        return "hover:opacity-80 !border-yellow-500";
       }
     }
     return "";
@@ -65,8 +71,10 @@ export const Tile: FC<{
     isEffectZone,
     playerState.isAttacking,
     playerState.isMoving,
+    playerState.isUsingSkill,
     isAttackEffectTile,
     isMovingEffectTile,
+    isSkillEffectTile,
   ]);
 
   return (
@@ -94,7 +102,8 @@ export const Tile: FC<{
 
         // Effect zone
         [effectBorderClasses]:
-          isEffectZone && (isAttackEffectTile || isMovingEffectTile),
+          isEffectZone &&
+          (isAttackEffectTile || isMovingEffectTile || isSkillEffectTile),
       })}
       onClick={onClick}
       onMouseEnter={onMouseEnter}

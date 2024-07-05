@@ -37,20 +37,20 @@ export const ActionPoints: FC = () => {
   } else if (state.isMoving) {
     usedActionPoints = 1;
   } else if (state.isUsingSkill) {
-    // const skill = player.skills.find((skill) => skill.id === state.skillId);
-    // if (!skill) {
-    //   addLog({
-    //     message: (
-    //       <>
-    //         <span className="text-green-500">{player.name}</span> is not using
-    //         any skill.
-    //       </>
-    //     ),
-    //     type: "error",
-    //   });
-    //   return;
-    // }
-    // usedActionPoints = skill.cost;
+    const skill = player.skills.find((skill) => skill.id === state.skillId);
+    if (!skill) {
+      addLog({
+        message: (
+          <>
+            <span className="text-green-500">{player.name}</span> is not using
+            any skill.
+          </>
+        ),
+        type: "error",
+      });
+      return;
+    }
+    usedActionPoints = skill.cost;
   }
 
   const availableActionPoints = actionPoints - usedActionPoints;

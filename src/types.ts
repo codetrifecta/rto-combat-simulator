@@ -1,4 +1,4 @@
-import { ENTITY_TYPE } from "./constants";
+import { ENTITY_TYPE, SKILL_TYPE } from "./constants";
 
 export interface IEntity {
   id: number;
@@ -41,6 +41,7 @@ export interface IGameState {
 export interface ISkill {
   id: number;
   name: string;
+  skillType: SKILL_TYPE;
   description: string;
   damage: number;
   range: number;
