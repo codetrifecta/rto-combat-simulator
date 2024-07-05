@@ -34,7 +34,7 @@ export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
       {player.statuses.length > 0 && (
         <div className="flex justify-center items-center mt-3">
           {player.statuses.map((status) => (
-            <StatusEffect status={status} />
+            <StatusEffect key={status.id} status={status} />
           ))}
         </div>
       )}

@@ -112,7 +112,7 @@ const EntityCard: FC<{ entity: IEntity | null; active: boolean }> = ({
       {entity.statuses.length > 0 && (
         <div className="mt-3 flex flex-wrap justify-center items-center">
           {entity.statuses.map((status) => (
-            <StatusEffect status={status} />
+            <StatusEffect key={status.id} status={status} />
           ))}
         </div>
       )}
