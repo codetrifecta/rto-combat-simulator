@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
+import { StatusEffect } from "./StatusEffect";
 
 export const GameInfo: FC<{
   currentHoveredEntity: IEntity | null;
@@ -111,12 +112,7 @@ const EntityCard: FC<{ entity: IEntity | null; active: boolean }> = ({
       {entity.statuses.length > 0 && (
         <div className="mt-3 flex flex-wrap justify-center items-center">
           {entity.statuses.map((status) => (
-            <div
-              key={status.id}
-              className="w-[30px] h-[30px] border border-white flex justify-center items-center"
-            >
-              {status.id}
-            </div>
+            <StatusEffect status={status} />
           ))}
         </div>
       )}

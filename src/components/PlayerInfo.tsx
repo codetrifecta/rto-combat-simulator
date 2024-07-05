@@ -3,6 +3,7 @@ import { IPlayer } from "../types";
 import { ActionPoints } from "./ActionPoints";
 import { useGameStateStore } from "../store/game";
 import clsx from "clsx";
+import { StatusEffect } from "./StatusEffect";
 
 export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
   const { isRoomOver } = useGameStateStore();
@@ -33,9 +34,7 @@ export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
       {player.statuses.length > 0 && (
         <div className="flex justify-center items-center mt-3">
           {player.statuses.map((status) => (
-            <div className="w-[30px] h-[30px] border border-white flex justify-center items-center">
-              {status.id}
-            </div>
+            <StatusEffect status={status} />
           ))}
         </div>
       )}
