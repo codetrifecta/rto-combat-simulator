@@ -49,7 +49,7 @@ export const PlayerControlPanel: FC = () => {
               <Button
                 key={skill.name}
                 onClick={() => skill.onClick()}
-                disabled={disabled}
+                disabled={disabled || player.actionPoints < skill.cost}
               >
                 {skill.name}
               </Button>

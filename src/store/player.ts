@@ -15,8 +15,8 @@ interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
   setPlayer: (player: IPlayer) => void;
   setPlayerActionPoints: (actionPoints: number) => void;
-  setSkills: (skills: ISkill[]) => void;
-  setStatuses: (statuses: IStatus[]) => void;
+  setPlayerSkills: (skills: ISkill[]) => void;
+  setPlayerStatuses: (statuses: IStatus[]) => void;
   setPlayerState: (state: IPlayerState) => void;
   setPlayerWeapon: (weapon: IWeapon | null) => void;
   setPlayerHelmet: (helmet: IHelmet | null) => void;
@@ -70,9 +70,9 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
 
   setPlayerActionPoints: (actionPoints: number) => set({ actionPoints }),
 
-  setSkills: (skills: ISkill[]) => set({ skills }),
+  setPlayerSkills: (skills: ISkill[]) => set({ skills }),
 
-  setStatuses: (statuses: IStatus[]) => set({ statuses }),
+  setPlayerStatuses: (statuses: IStatus[]) => set({ statuses }),
 
   setPlayerState: (state: IPlayerState) => set({ state }),
 

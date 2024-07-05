@@ -28,6 +28,7 @@ export const SKILLS: ISkill[] = [
     damage: 0,
     range: 0,
     cooldown: 3,
+    cooldownCounter: 0,
     cost: 2,
     effect: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => {
       console.log("Buff Up effect");
@@ -49,6 +50,7 @@ export const STATUSES: IStatus[] = [
     name: "Buffed",
     description: "Increased damage for all attacks by 2 for 3 turns.",
     duration: 3,
+    durationCounter: 3,
     effect: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => {
       console.log("Buffed effect");
       const newEntity: IPlayer = {

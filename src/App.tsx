@@ -22,7 +22,7 @@ function App() {
 
   const { turnCycle, setTurnCycle, setIsLoading } = useGameStateStore();
 
-  const { getPlayer, setPlayer } = usePlayerStore();
+  const { getPlayer, setPlayer, setPlayerSkills } = usePlayerStore();
 
   const player = getPlayer();
 
@@ -69,6 +69,11 @@ function App() {
         onClick: () => {
           if (player.actionPoints >= skill.cost) {
             skill.effect(player, setPlayer);
+            setPlayerSkills(
+              player.skills.map((s) =>
+                s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+              )
+            );
             addLog({
               message: (
                 <>
