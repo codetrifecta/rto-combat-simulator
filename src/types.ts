@@ -27,6 +27,7 @@ export interface IPlayerState {
   isAttacking: boolean;
   isMoving: boolean;
   isUsingSkill: boolean;
+  skillId?: number;
 }
 
 export interface IEnemy extends IEntity {}

@@ -49,28 +49,32 @@ export const PlayerControlPanel: FC = () => {
               <Button
                 key={skill.name}
                 onClick={() => {
-                  if (player.actionPoints >= skill.cost) {
-                    skill.effect(player, setPlayer);
-                    setPlayer({
-                      ...player,
-                      actionPoints: player.actionPoints - skill.cost,
-                      skills: player.skills.map((s) =>
-                        s.id === skill.id
-                          ? { ...s, cooldownCounter: s.cooldown }
-                          : s
-                      ),
-                    });
-                    addLog({
-                      message: (
-                        <>
-                          <span className="text-green-500">{player.name}</span>{" "}
-                          used{" "}
-                          <span className="text-green-500">{skill.name}</span>.
-                        </>
-                      ),
-                      type: "info",
-                    });
-                  }
+                  setPlayerState({
+                    ...player.state,
+                    skillId: skill.id,
+                  });
+                  // if (player.actionPoints >= skill.cost) {
+                  //   skill.effect(player, setPlayer);
+                  //   setPlayer({
+                  //     ...player,
+                  //     actionPoints: player.actionPoints - skill.cost,
+                  //     skills: player.skills.map((s) =>
+                  //       s.id === skill.id
+                  //         ? { ...s, cooldownCounter: s.cooldown }
+                  //         : s
+                  //     ),
+                  //   });
+                  //   addLog({
+                  //     message: (
+                  //       <>
+                  //         <span className="text-green-500">{player.name}</span>{" "}
+                  //         used{" "}
+                  //         <span className="text-green-500">{skill.name}</span>.
+                  //       </>
+                  //     ),
+                  //     type: "info",
+                  //   });
+                  // }
                 }}
                 disabled={
                   disabled ||
