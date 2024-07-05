@@ -1,11 +1,13 @@
 import { create } from "zustand";
-import { ENTITY_TYPE, STARTING_ACTION_POINTS } from "../constants";
+import { ENTITY_TYPE, SKILLS, STARTING_ACTION_POINTS } from "../constants";
 import {
   IChestpiece,
   IHelmet,
   ILegging,
   IPlayer,
   IPlayerState,
+  ISkill,
+  IStatus,
   IWeapon,
 } from "../types";
 
@@ -13,6 +15,8 @@ interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
   setPlayer: (player: IPlayer) => void;
   setPlayerActionPoints: (actionPoints: number) => void;
+  setPlayerSkills: (skills: ISkill[]) => void;
+  setPlayerStatuses: (statuses: IStatus[]) => void;
   setPlayerState: (state: IPlayerState) => void;
   setPlayerWeapon: (weapon: IWeapon | null) => void;
   setPlayerHelmet: (helmet: IHelmet | null) => void;
@@ -25,8 +29,10 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   name: "Kratos",
   entityType: ENTITY_TYPE.PLAYER,
   health: 10,
+  damageBonus: 0,
   actionPoints: STARTING_ACTION_POINTS,
-  skills: [],
+  skills: SKILLS,
+  statuses: [],
   state: {
     isAttacking: false,
     isMoving: false,
@@ -51,8 +57,10 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       name: get().name,
       entityType: get().entityType,
       health: get().health,
+      damageBonus: get().damageBonus,
       actionPoints: get().actionPoints,
       skills: get().skills,
+      statuses: get().statuses,
       state: get().state,
       equipment: get().equipment,
     };
@@ -61,6 +69,10 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   setPlayer: (player: IPlayer) => set({ ...player }),
 
   setPlayerActionPoints: (actionPoints: number) => set({ actionPoints }),
+
+  setPlayerSkills: (skills: ISkill[]) => set({ skills }),
+
+  setPlayerStatuses: (statuses: IStatus[]) => set({ statuses }),
 
   setPlayerState: (state: IPlayerState) => set({ state }),
 

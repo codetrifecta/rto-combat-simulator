@@ -3,6 +3,7 @@ import { Tile } from "./Tile";
 import {
   ENTITY_TYPE,
   ROOM_LENGTH,
+  SKILL_TYPE,
   STARTING_ACTION_POINTS,
   TILE_SIZE,
   TILE_TYPE,
@@ -22,8 +23,10 @@ export const Room: FC<{
     generateRoomMatrix(ROOM_LENGTH)
   );
 
-  const { turnCycle, endTurn, isRoomOver, setIsRoomOver } = useGameStateStore();
-  const { getPlayer, setPlayerActionPoints, setPlayerState } = usePlayerStore();
+  const { turnCycle, setTurnCycle, endTurn, isRoomOver, setIsRoomOver } =
+    useGameStateStore();
+  const { getPlayer, setPlayer, setPlayerActionPoints, setPlayerState } =
+    usePlayerStore();
   const player = getPlayer();
 
   const { enemies, setEnemies } = useEnemyStore();
@@ -92,7 +95,14 @@ export const Room: FC<{
       }
 
       const weaponDamage = player.equipment.weapon.damage;
-      enemy.health = enemy.health - weaponDamage;
+
+      const statusDamageBonus = player.statuses.reduce((acc, status) => {
+        return acc + status.effect.damageBonus;
+      }, 0);
+
+      const totalDamage = weaponDamage + statusDamageBonus;
+
+      enemy.health = enemy.health - totalDamage;
 
       if (enemy.health <= 0) {
         setEnemies(enemies.filter((e) => e.id !== id));
@@ -100,7 +110,7 @@ export const Room: FC<{
           message: (
             <>
               <span className="text-red-500">{enemy.name}</span> took{" "}
-              {weaponDamage} damage and has been defeated!
+              {totalDamage} damage and has been defeated!
             </>
           ),
           type: "info",
@@ -118,7 +128,7 @@ export const Room: FC<{
           message: (
             <>
               <span className="text-red-500">{enemy.name}</span> took{" "}
-              {weaponDamage} damage.
+              {totalDamage} damage.
             </>
           ),
           type: "info",
@@ -171,10 +181,41 @@ export const Room: FC<{
     });
   };
 
+  const handlePlayerUseSkill = (skillId: number) => {
+    const skill = player.skills.find((skill) => skill.id === skillId);
+
+    if (!skill) {
+      addLog({ message: "Skill not found!", type: "error" });
+      return;
+    }
+
+    const newPlayer = skill.effect(player);
+    setPlayer({
+      ...newPlayer,
+      actionPoints: player.actionPoints - skill.cost,
+      skills: player.skills.map((s) =>
+        s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+      ),
+    });
+    addLog({
+      message: (
+        <>
+          <span className="text-green-500">{player.name}</span> used{" "}
+          <span className="text-green-500">{skill.name}</span>.
+        </>
+      ),
+      type: "info",
+    });
+    setPlayerState({
+      ...player.state,
+      isUsingSkill: false,
+    });
+  };
+
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
-    if (player.actionPoints === 0) {
-      handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
+    if (player.actionPoints === 0 && !isRoomOver && enemies.length > 0) {
+      handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
       addLog({
         message: (
           <>
@@ -193,7 +234,49 @@ export const Room: FC<{
     turnCycle,
     addLog,
     player.name,
+    setPlayer,
+    isRoomOver,
+    enemies.length,
   ]);
+
+  // Handle ending turns
+  useEffect(() => {
+    // Handle enemy's action
+    if (turnCycle.length > 0 && turnCycle[0].entityType === ENTITY_TYPE.ENEMY) {
+      // Simulate enemy action with a timeout
+      setTimeout(() => {
+        // End enemy's turn
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{turnCycle[0].name}</span> ended
+              their turn.
+            </>
+          ),
+          type: "info",
+        });
+        endTurn();
+      }, 1500);
+    }
+  }, [turnCycle, turnCycle.length]);
+
+  // Remove defeated enemies from the turn cycle when they are no longer in the enemies list
+  useEffect(() => {
+    if (turnCycle.length > 0) {
+      const newTurnCycle = turnCycle.filter((entity) => {
+        if (entity.entityType === ENTITY_TYPE.ENEMY) {
+          const enemy = enemies.find((e) => e.id === entity.id);
+          if (!enemy) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // Update game store turn cycle
+      setTurnCycle(newTurnCycle);
+    }
+  }, [enemies.length]);
 
   return (
     <div
@@ -231,12 +314,11 @@ export const Room: FC<{
           }
 
           let isEffectZone: boolean = false;
+          const [playerRow, playerCol] = playerPosition;
 
           // Check if player is attacking (basic attack)
           // Highlight tiles that can be attacked by player (3x3 area around player)
           if (player.state.isAttacking && player.equipment.weapon) {
-            const [playerRow, playerCol] = playerPosition;
-
             const range = player.equipment.weapon.range;
 
             if (
@@ -255,8 +337,6 @@ export const Room: FC<{
             if (isRoomOver) {
               isEffectZone = true;
             } else {
-              const [playerRow, playerCol] = playerPosition;
-
               if (
                 rowIndex >= playerRow - 2 &&
                 rowIndex <= playerRow + 2 &&
@@ -264,6 +344,26 @@ export const Room: FC<{
                 columnIndex <= playerCol + 2
               ) {
                 isEffectZone = true;
+              }
+            }
+          }
+
+          // Check if player is using a skill
+          // Highlight tiles that can be affected by player's skill
+          if (player.state.isUsingSkill) {
+            const skill = player.skills.find(
+              (skill) => skill.id === player.state.skillId
+            );
+
+            if (!skill) {
+              console.error("Skill not found!");
+            } else {
+              // Check skill type
+              if (skill.skillType === SKILL_TYPE.SELF) {
+                // If skill is self-targeted, highlight player's tile
+                if (rowIndex === playerRow && columnIndex === playerCol) {
+                  isEffectZone = true;
+                }
               }
             }
           }
@@ -300,6 +400,11 @@ export const Room: FC<{
                       type: "info",
                     });
                     // TODO: Reset room and generate new room matrix
+                  } else if (
+                    player.state.isUsingSkill &&
+                    player.state.skillId
+                  ) {
+                    handlePlayerUseSkill(player.state.skillId);
                   }
                 }
               }}

@@ -18,12 +18,16 @@ export const useEnemyStore = create<IEnemyStore>((set, get) => ({
       name: "Gorgon",
       entityType: ENTITY_TYPE.ENEMY,
       health: 6,
+      damageBonus: 0,
+      statuses: [],
     },
     {
       id: 2,
       name: "Shade",
       entityType: ENTITY_TYPE.ENEMY,
       health: 3,
+      damageBonus: 0,
+      statuses: [],
     },
   ],
 

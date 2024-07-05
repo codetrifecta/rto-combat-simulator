@@ -1,11 +1,15 @@
-import { ENTITY_TYPE } from "./constants";
+import { ENTITY_TYPE, SKILL_TYPE } from "./constants";
 
 export interface IEntity {
   id: number;
   name: string;
   entityType: ENTITY_TYPE;
   health: number;
+  statuses: IStatus[];
+  damageBonus: number;
 }
+
+export type IAllEntity = IEntity | IPlayer | IEnemy;
 
 export interface IPlayer extends IEntity {
   actionPoints: number;
@@ -23,6 +27,7 @@ export interface IPlayerState {
   isAttacking: boolean;
   isMoving: boolean;
   isUsingSkill: boolean;
+  skillId?: number;
 }
 
 export interface IEnemy extends IEntity {}
@@ -34,10 +39,29 @@ export interface IGameState {
 }
 
 export interface ISkill {
+  id: number;
   name: string;
+  skillType: SKILL_TYPE;
+  description: string;
   damage: number;
   range: number;
   cooldown: number;
+  cooldownCounter: number;
+  cost: number;
+  effect: (entity: IPlayer) => IPlayer;
+}
+
+export interface IStatus {
+  id: 1;
+  name: string;
+  description: string;
+  duration: number;
+  durationCounter: number;
+  effect: IStatusEffect;
+}
+
+export interface IStatusEffect {
+  damageBonus: number;
 }
 
 export interface IWeapon {

@@ -1,4 +1,4 @@
-import { useMemo, type FC } from "react";
+import { useMemo, useState, type FC } from "react";
 import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
@@ -9,11 +9,13 @@ import { useLogStore } from "../store/log";
 export const PlayerControlPanel: FC = () => {
   const { turnCycle, endTurn, isRoomOver } = useGameStateStore();
 
-  const { setPlayerState, getPlayer, setPlayerActionPoints } = usePlayerStore();
+  const { setPlayerState, getPlayer, setPlayer } = usePlayerStore();
 
   const player = getPlayer();
 
   const { addLog } = useLogStore();
+
+  const [openSkills, setOpenSkills] = useState(false);
 
   const handleEndTurnClick = () => {
     setPlayerState({
@@ -21,7 +23,7 @@ export const PlayerControlPanel: FC = () => {
       isMoving: false,
       isUsingSkill: false,
     });
-    handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
+    handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,25 +43,59 @@ export const PlayerControlPanel: FC = () => {
           { "pointer-events-none": disabled }
         )}
       >
-        {player.state.isUsingSkill ? (
+        {openSkills ? (
           <>
             {player.skills.map((skill) => (
               <Button
                 key={skill.name}
-                onClick={() => console.log(skill.name)}
-                disabled={disabled}
+                onClick={() => {
+                  setPlayerState({
+                    isAttacking: false,
+                    isMoving: false,
+                    isUsingSkill: !player.state.isUsingSkill,
+                    skillId: skill.id,
+                  });
+                  // if (player.actionPoints >= skill.cost) {
+                  //   skill.effect(player, setPlayer);
+                  //   setPlayer({
+                  //     ...player,
+                  //     actionPoints: player.actionPoints - skill.cost,
+                  //     skills: player.skills.map((s) =>
+                  //       s.id === skill.id
+                  //         ? { ...s, cooldownCounter: s.cooldown }
+                  //         : s
+                  //     ),
+                  //   });
+                  //   addLog({
+                  //     message: (
+                  //       <>
+                  //         <span className="text-green-500">{player.name}</span>{" "}
+                  //         used{" "}
+                  //         <span className="text-green-500">{skill.name}</span>.
+                  //       </>
+                  //     ),
+                  //     type: "info",
+                  //   });
+                  // }
+                }}
+                disabled={
+                  disabled ||
+                  player.actionPoints < skill.cost ||
+                  skill.cooldownCounter > 0
+                }
               >
                 {skill.name}
               </Button>
             ))}
             <Button
-              onClick={() =>
+              onClick={() => {
                 setPlayerState({
                   isAttacking: false,
                   isMoving: false,
                   isUsingSkill: false,
-                })
-              }
+                });
+                setOpenSkills(false);
+              }}
               disabled={disabled}
             >
               Cancel
@@ -99,11 +135,7 @@ export const PlayerControlPanel: FC = () => {
             </Button>
             <Button
               onClick={() => {
-                setPlayerState({
-                  isAttacking: false,
-                  isMoving: false,
-                  isUsingSkill: !player.state.isUsingSkill,
-                });
+                setOpenSkills(true);
               }}
               disabled={disabled || isRoomOver}
             >

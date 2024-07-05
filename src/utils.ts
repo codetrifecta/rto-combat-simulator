@@ -73,15 +73,45 @@ export const generateRoomMatrix = (roomLength: number) => {
 export const handlePlayerEndTurn = (
   turnCycle: IEntity[],
   getPlayer: () => IPlayer,
-  setPlayerActionPoints: (actionPoints: number) => void,
+  setPlayer: (player: IPlayer) => void,
   endTurn: () => void
 ) => {
-  // If current turn is player, end player's turn and give action points
+  // If current turn is player, end player's turn and give action points and reduce skill cooldown and status effects duration
   if (turnCycle[0] && turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
     const player = getPlayer();
+
+    // Give action points
     const newActionPoints =
       player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
-    setPlayerActionPoints(newActionPoints);
+
+    // Reduce skill cooldowns
+    const newSkills = player.skills.map((skill) => {
+      if (skill.cooldownCounter > 0) {
+        return { ...skill, cooldownCounter: skill.cooldownCounter - 1 };
+      }
+      return skill;
+    });
+
+    // Reduce status effect durations
+    const newStatuses = player.statuses.map((status) => {
+      if (status.duration > 0) {
+        return { ...status, durationCounter: status.durationCounter - 1 };
+      }
+      return status;
+    });
+
+    // Filter out the new statuses with duration 0
+    const filteredStatuses = newStatuses.filter(
+      (status) => status.durationCounter > 0
+    );
+
+    // Update player
+    setPlayer({
+      ...player,
+      actionPoints: newActionPoints,
+      skills: newSkills,
+      statuses: filteredStatuses,
+    });
   }
 
   endTurn();
