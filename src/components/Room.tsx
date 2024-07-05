@@ -94,7 +94,14 @@ export const Room: FC<{
       }
 
       const weaponDamage = player.equipment.weapon.damage;
-      enemy.health = enemy.health - weaponDamage;
+
+      const statusDamageBonus = player.statuses.reduce((acc, status) => {
+        return acc + status.effect.damageBonus;
+      }, 0);
+
+      const totalDamage = weaponDamage + statusDamageBonus;
+
+      enemy.health = enemy.health - totalDamage;
 
       if (enemy.health <= 0) {
         setEnemies(enemies.filter((e) => e.id !== id));
@@ -102,7 +109,7 @@ export const Room: FC<{
           message: (
             <>
               <span className="text-red-500">{enemy.name}</span> took{" "}
-              {weaponDamage} damage and has been defeated!
+              {totalDamage} damage and has been defeated!
             </>
           ),
           type: "info",
@@ -120,7 +127,7 @@ export const Room: FC<{
           message: (
             <>
               <span className="text-red-500">{enemy.name}</span> took{" "}
-              {weaponDamage} damage.
+              {totalDamage} damage.
             </>
           ),
           type: "info",
