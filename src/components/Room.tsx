@@ -264,15 +264,12 @@ export const Room: FC<{
       const newTurnCycle = turnCycle.filter((entity) => {
         if (entity.entityType === ENTITY_TYPE.ENEMY) {
           const enemy = enemies.find((e) => e.id === entity.id);
-          console.log(enemies.length, enemy, entity.id);
           if (!enemy) {
             return false;
           }
         }
         return true;
       });
-
-      console.log(newTurnCycle);
 
       // Update game store turn cycle
       setTurnCycle(newTurnCycle);

@@ -42,7 +42,6 @@ export const SKILLS: ISkill[] = [
         ...entity,
         statuses: [...entity.statuses, STATUSES[0]],
       };
-      console.log("Buff Up effect", newEntity);
       return newEntity;
     },
   },
