@@ -1,6 +1,6 @@
 import { IPlayer, ISkill, IStatus } from "./types";
 
-export const TILE_SIZE = 50; // Default to 50
+export const TILE_SIZE = 45; // Default to 50
 
 export const ROOM_LENGTH = 11; // Default to 11
 
