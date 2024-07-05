@@ -214,7 +214,7 @@ export const Room: FC<{
 
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
-    if (player.actionPoints === 0) {
+    if (player.actionPoints === 0 && !isRoomOver && enemies.length > 0) {
       handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
       addLog({
         message: (
@@ -235,6 +235,8 @@ export const Room: FC<{
     addLog,
     player.name,
     setPlayer,
+    isRoomOver,
+    enemies.length,
   ]);
 
   // Handle ending turns
