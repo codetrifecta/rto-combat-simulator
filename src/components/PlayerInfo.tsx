@@ -10,6 +10,8 @@ export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
   return (
     <>
       <h2 className="mb-1">Player Info</h2>
+
+      {/* Player health and action points */}
       <div className="w-[600px] ml-auto mr-auto text-left flex justify-center items-center">
         <div
           className={clsx("flex items-center", {
@@ -26,6 +28,17 @@ export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
           </div>
         )}
       </div>
+
+      {/* Display statuses */}
+      {player.statuses.length > 0 && (
+        <div className="flex justify-center items-center mt-3">
+          {player.statuses.map((status) => (
+            <div className="w-[30px] h-[30px] border border-white flex justify-center items-center">
+              {status.id}
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 };
