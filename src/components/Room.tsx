@@ -23,7 +23,8 @@ export const Room: FC<{
     generateRoomMatrix(ROOM_LENGTH)
   );
 
-  const { turnCycle, endTurn, isRoomOver, setIsRoomOver } = useGameStateStore();
+  const { turnCycle, setTurnCycle, endTurn, isRoomOver, setIsRoomOver } =
+    useGameStateStore();
   const { getPlayer, setPlayer, setPlayerActionPoints, setPlayerState } =
     usePlayerStore();
   const player = getPlayer();
@@ -256,6 +257,27 @@ export const Room: FC<{
       }, 1500);
     }
   }, [turnCycle, turnCycle.length]);
+
+  // Remove defeated enemies from the turn cycle when they are no longer in the enemies list
+  useEffect(() => {
+    if (turnCycle.length > 0) {
+      const newTurnCycle = turnCycle.filter((entity) => {
+        if (entity.entityType === ENTITY_TYPE.ENEMY) {
+          const enemy = enemies.find((e) => e.id === entity.id);
+          console.log(enemies.length, enemy, entity.id);
+          if (!enemy) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      console.log(newTurnCycle);
+
+      // Update game store turn cycle
+      setTurnCycle(newTurnCycle);
+    }
+  }, [enemies.length]);
 
   return (
     <div

@@ -3,7 +3,7 @@ import { PlayerControlPanel } from "./components/PlayerControlPanel";
 import { IEnemy } from "./types";
 import { Room } from "./components/Room";
 import { GameInfo } from "./components/GameInfo";
-import { ENTITY_TYPE } from "./constants";
+// import { ENTITY_TYPE } from "./constants";
 import { PlayerInfo } from "./components/PlayerInfo";
 import { useGameStateStore } from "./store/game";
 import { usePlayerStore } from "./store/player";
@@ -35,24 +35,6 @@ function App() {
   const isInitialized = useMemo(() => {
     return turnCycle.length > 0;
   }, [turnCycle]);
-
-  // Remove defeated enemies from the turn cycle when they are no longer in the enemies list
-  useEffect(() => {
-    if (turnCycle.length > 0) {
-      const newTurnCycle = turnCycle.filter((entity) => {
-        if (entity.entityType === ENTITY_TYPE.ENEMY) {
-          const enemy = enemies.find((e) => e.id === entity.id);
-          if (!enemy) {
-            return false;
-          }
-        }
-        return true;
-      });
-
-      // Update game store turn cycle
-      setTurnCycle(newTurnCycle);
-    }
-  }, [enemies.length]);
 
   // Wait for game initialization
   if (!isInitialized) {
