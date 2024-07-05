@@ -48,7 +48,7 @@ export interface ISkill {
   cooldown: number;
   cooldownCounter: number;
   cost: number;
-  effect: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => void;
+  effect: (entity: IPlayer) => IPlayer;
 }
 
 export interface IStatus {

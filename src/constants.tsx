@@ -37,13 +37,13 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
-    effect: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => {
-      console.log("Buff Up effect");
+    effect: (entity: IPlayer) => {
       const newEntity: IPlayer = {
         ...entity,
         statuses: [...entity.statuses, STATUSES[0]],
       };
-      setEntity(newEntity);
+      console.log("Buff Up effect", newEntity);
+      return newEntity;
     },
   },
 ];

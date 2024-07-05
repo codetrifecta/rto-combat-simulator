@@ -181,9 +181,9 @@ export const Room: FC<{
       return;
     }
 
-    skill.effect(player, setPlayer);
+    const newPlayer = skill.effect(player);
     setPlayer({
-      ...player,
+      ...newPlayer,
       actionPoints: player.actionPoints - skill.cost,
       skills: player.skills.map((s) =>
         s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
