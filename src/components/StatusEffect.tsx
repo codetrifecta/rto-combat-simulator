@@ -34,7 +34,7 @@ const Tooltip: FC<{ children: JSX.Element[] }> = ({ children }) => {
   return (
     <div
       className={clsx(
-        "absolute inline-block opacity-0 group-hover:opacity-100 z-[-10] group-hover:z-10 bg-neutral-900 text-white p-2 rounded-lg shadow-lg transition-all ease duration-200 w-[250px]",
+        "absolute inline-block opacity-0 group-hover:opacity-100 z-[-10] group-hover:z-50 bg-neutral-900 text-white p-2 rounded-lg shadow-lg transition-all ease duration-200 w-[250px]",
         {
           "bottom-[40px]": !isTop,
           "top-[40px]": isTop,

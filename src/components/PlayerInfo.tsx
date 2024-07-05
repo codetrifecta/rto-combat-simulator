@@ -10,7 +10,17 @@ export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
 
   return (
     <>
-      <h2 className="mb-1">Player Info</h2>
+      <div className="flex justify-center items-center w-full">
+        <h2 className="mb-1">{player.name}</h2>
+        {/* Display statuses */}
+        {player.statuses.length > 0 && (
+          <div className="flex justify-center items-center ml-3">
+            {player.statuses.map((status) => (
+              <StatusEffect key={status.id} status={status} />
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Player health and action points */}
       <div className="w-[600px] ml-auto mr-auto text-left flex justify-center items-center">
@@ -29,15 +39,6 @@ export const PlayerInfo: FC<{ player: IPlayer }> = ({ player }) => {
           </div>
         )}
       </div>
-
-      {/* Display statuses */}
-      {player.statuses.length > 0 && (
-        <div className="flex justify-center items-center mt-3">
-          {player.statuses.map((status) => (
-            <StatusEffect key={status.id} status={status} />
-          ))}
-        </div>
-      )}
     </>
   );
 };
