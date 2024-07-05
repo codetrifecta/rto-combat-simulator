@@ -9,7 +9,7 @@ import { useLogStore } from "../store/log";
 export const PlayerControlPanel: FC = () => {
   const { turnCycle, endTurn, isRoomOver } = useGameStateStore();
 
-  const { setPlayerState, getPlayer, setPlayerActionPoints } = usePlayerStore();
+  const { setPlayerState, getPlayer, setPlayer } = usePlayerStore();
 
   const player = getPlayer();
 
@@ -23,7 +23,7 @@ export const PlayerControlPanel: FC = () => {
       isMoving: false,
       isUsingSkill: false,
     });
-    handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
+    handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

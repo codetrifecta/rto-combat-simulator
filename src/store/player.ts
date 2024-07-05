@@ -6,6 +6,8 @@ import {
   ILegging,
   IPlayer,
   IPlayerState,
+  ISkill,
+  IStatus,
   IWeapon,
 } from "../types";
 
@@ -13,6 +15,8 @@ interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
   setPlayer: (player: IPlayer) => void;
   setPlayerActionPoints: (actionPoints: number) => void;
+  setSkills: (skills: ISkill[]) => void;
+  setStatuses: (statuses: IStatus[]) => void;
   setPlayerState: (state: IPlayerState) => void;
   setPlayerWeapon: (weapon: IWeapon | null) => void;
   setPlayerHelmet: (helmet: IHelmet | null) => void;
@@ -65,6 +69,10 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   setPlayer: (player: IPlayer) => set({ ...player }),
 
   setPlayerActionPoints: (actionPoints: number) => set({ actionPoints }),
+
+  setSkills: (skills: ISkill[]) => set({ skills }),
+
+  setStatuses: (statuses: IStatus[]) => set({ statuses }),
 
   setPlayerState: (state: IPlayerState) => set({ state }),
 

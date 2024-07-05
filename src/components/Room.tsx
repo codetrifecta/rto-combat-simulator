@@ -23,7 +23,8 @@ export const Room: FC<{
   );
 
   const { turnCycle, endTurn, isRoomOver, setIsRoomOver } = useGameStateStore();
-  const { getPlayer, setPlayerActionPoints, setPlayerState } = usePlayerStore();
+  const { getPlayer, setPlayer, setPlayerActionPoints, setPlayerState } =
+    usePlayerStore();
   const player = getPlayer();
 
   const { enemies, setEnemies } = useEnemyStore();
@@ -174,7 +175,7 @@ export const Room: FC<{
   // Automatically end player's turn when action points reach 0
   useEffect(() => {
     if (player.actionPoints === 0) {
-      handlePlayerEndTurn(turnCycle, getPlayer, setPlayerActionPoints, endTurn);
+      handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
       addLog({
         message: (
           <>
@@ -193,7 +194,29 @@ export const Room: FC<{
     turnCycle,
     addLog,
     player.name,
+    setPlayer,
   ]);
+
+  // Handle ending turns
+  useEffect(() => {
+    // Handle enemy's action
+    if (turnCycle.length > 0 && turnCycle[0].entityType === ENTITY_TYPE.ENEMY) {
+      // Simulate enemy action with a timeout
+      setTimeout(() => {
+        // End enemy's turn
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{turnCycle[0].name}</span> ended
+              their turn.
+            </>
+          ),
+          type: "info",
+        });
+        endTurn();
+      }, 1500);
+    }
+  }, [turnCycle, turnCycle.length]);
 
   return (
     <div
