@@ -38,9 +38,6 @@ export const SKILLS: ISkill[] = [
       };
       setEntity(newEntity);
     },
-    onClick: () => {
-      console.log("Buff Up!");
-    },
   },
 ];
 
@@ -51,20 +48,8 @@ export const STATUSES: IStatus[] = [
     description: "Increased damage for all attacks by 2 for 3 turns.",
     duration: 3,
     durationCounter: 3,
-    effect: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => {
-      console.log("Buffed effect");
-      const newEntity: IPlayer = {
-        ...entity,
-        damageBonus: entity.damageBonus + 2,
-      };
-      setEntity(newEntity);
-    },
-    effectEnd: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => {
-      const newEntity: IPlayer = {
-        ...entity,
-        damageBonus: entity.damageBonus - 2,
-      };
-      setEntity(newEntity);
+    effect: {
+      damageBonus: 2,
     },
   },
 ];

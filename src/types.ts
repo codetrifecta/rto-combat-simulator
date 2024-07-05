@@ -47,7 +47,6 @@ export interface ISkill {
   cooldownCounter: number;
   cost: number;
   effect: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => void;
-  onClick: () => void;
 }
 
 export interface IStatus {
@@ -56,8 +55,11 @@ export interface IStatus {
   description: string;
   duration: number;
   durationCounter: number;
-  effect: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => void;
-  effectEnd: (entity: IPlayer, setEntity: (entity: IPlayer) => void) => void;
+  effect: IStatusEffect;
+}
+
+export interface IStatusEffect {
+  damageBonus: number;
 }
 
 export interface IWeapon {

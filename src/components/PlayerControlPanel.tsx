@@ -48,7 +48,30 @@ export const PlayerControlPanel: FC = () => {
             {player.skills.map((skill) => (
               <Button
                 key={skill.name}
-                onClick={() => skill.onClick()}
+                onClick={() => {
+                  if (player.actionPoints >= skill.cost) {
+                    skill.effect(player, setPlayer);
+                    setPlayer({
+                      ...player,
+                      actionPoints: player.actionPoints - skill.cost,
+                      skills: player.skills.map((s) =>
+                        s.id === skill.id
+                          ? { ...s, cooldownCounter: s.cooldown }
+                          : s
+                      ),
+                    });
+                    addLog({
+                      message: (
+                        <>
+                          <span className="text-green-500">{player.name}</span>{" "}
+                          used{" "}
+                          <span className="text-green-500">{skill.name}</span>.
+                        </>
+                      ),
+                      type: "info",
+                    });
+                  }
+                }}
                 disabled={
                   disabled ||
                   player.actionPoints < skill.cost ||

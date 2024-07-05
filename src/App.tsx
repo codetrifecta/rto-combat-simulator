@@ -9,11 +9,8 @@ import { useGameStateStore } from "./store/game";
 import { usePlayerStore } from "./store/player";
 import { useEnemyStore } from "./store/enemy";
 import { Logger } from "./components/Logger";
-import { useLogStore } from "./store/log";
 import clsx from "clsx";
 import { InventoryChooser } from "./components/InventoryChooser";
-
-let isPlayerSkillsUpdated = false;
 
 function App() {
   const [headerOpen, setHeaderOpen] = useState(false);
@@ -22,13 +19,11 @@ function App() {
 
   const { turnCycle, setTurnCycle, setIsLoading } = useGameStateStore();
 
-  const { getPlayer, setPlayer, setPlayerSkills } = usePlayerStore();
+  const { getPlayer } = usePlayerStore();
 
   const player = getPlayer();
 
   const { enemies } = useEnemyStore();
-
-  const { addLog } = useLogStore();
 
   // Initialize game state
   useEffect(() => {
@@ -58,59 +53,6 @@ function App() {
       setTurnCycle(newTurnCycle);
     }
   }, [enemies.length]);
-
-  // // Handle ending turns
-  useEffect(() => {
-    // Update player's skills with onClick event handlers to trigger skill effects
-    // and log messages. Only do this once at the start when player skills are initialized
-    if (turnCycle.length > 0 && isPlayerSkillsUpdated === false) {
-      const playerSkills = player.skills.map((skill) => ({
-        ...skill,
-        onClick: () => {
-          if (player.actionPoints >= skill.cost) {
-            skill.effect(player, setPlayer);
-            setPlayerSkills(
-              player.skills.map((s) =>
-                s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
-              )
-            );
-            addLog({
-              message: (
-                <>
-                  <span className="text-green-500">{player.name}</span> used{" "}
-                  <span className="text-green-500">{skill.name}</span>.
-                </>
-              ),
-              type: "info",
-            });
-          }
-        },
-      }));
-      setPlayer({ ...player, skills: playerSkills });
-      isPlayerSkillsUpdated = true;
-    }
-
-    // // Handle enemy's action
-    // if (turnCycle.length > 0 && turnCycle[0].entityType === ENTITY_TYPE.ENEMY) {
-    //   setIsLoading(true);
-
-    //   // Simulate enemy action with a timeout
-    //   setTimeout(() => {
-    //     // End enemy's turn
-    //     addLog({
-    //       message: (
-    //         <>
-    //           <span className="text-red-500">{turnCycle[0].name}</span> ended
-    //           their turn.
-    //         </>
-    //       ),
-    //       type: "info",
-    //     });
-    //     endTurn();
-    //     setIsLoading(false);
-    //   }, 1500);
-    // }
-  }, [turnCycle, turnCycle.length]);
 
   // Wait for game initialization
   if (!isInitialized) {
