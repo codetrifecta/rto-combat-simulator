@@ -51,7 +51,6 @@ export interface ISkill {
   cooldown: number;
   cooldownCounter: number;
   cost: number;
-  effect: (entity: IEntity) => IEntity | undefined;
 }
 
 export interface IStatus {

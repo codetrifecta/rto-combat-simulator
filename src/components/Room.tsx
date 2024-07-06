@@ -6,6 +6,8 @@ import {
   SKILL_ID,
   SKILL_TYPE,
   STARTING_ACTION_POINTS,
+  STATUSES,
+  STATUS_ID,
   TILE_SIZE,
   TILE_TYPE,
 } from "../constants";
@@ -380,7 +382,26 @@ export const Room: FC<{
         return;
       }
 
-      const affectedEnemy = skill.effect(enemy);
+      const affectedEnemy = { ...enemy };
+
+      switch (skill.id) {
+        case SKILL_ID.GORGONS_GAZE: {
+          // Petrify enemy
+          const petrifedStatus = STATUSES.find(
+            (s) => s.id === STATUS_ID.PETRIFIED
+          );
+
+          if (!petrifedStatus) {
+            addLog({ message: "Petrified status not found!", type: "error" });
+            return;
+          }
+
+          affectedEnemy.statuses.push(petrifedStatus);
+          break;
+        }
+        default:
+          break;
+      }
 
       if (!affectedEnemy) {
         addLog({ message: "Skill did not return anything!", type: "error" });
@@ -476,7 +497,19 @@ export const Room: FC<{
       return;
     }
 
-    const newPlayer = skill.effect(player);
+    const newPlayer = {
+      ...player,
+    };
+
+    // Handle skill effect
+    switch (skill.id) {
+      case SKILL_ID.BUFF_UP:
+        // Increase player's damage by 1
+        newPlayer.damageBonus += 1;
+        break;
+      default:
+        break;
+    }
 
     if (!newPlayer) {
       addLog({ message: "Skill did not return anything!", type: "error" });

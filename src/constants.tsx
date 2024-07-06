@@ -1,5 +1,4 @@
-import { IEntity, IPlayer, ISkill, IStatus } from "./types";
-import { isPlayer } from "./utils";
+import { ISkill, IStatus } from "./types";
 
 export const TILE_SIZE = 45; // Default to 50
 
@@ -30,6 +29,7 @@ export enum SKILL_TYPE {
 export enum SKILL_ID {
   BUFF_UP = 1,
   GORGONS_GAZE = 2,
+  LIGHTNING = 3,
 }
 
 export const SKILLS: ISkill[] = [
@@ -43,15 +43,6 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
-    effect: (entity: IEntity): IEntity | undefined => {
-      if (isPlayer(entity)) {
-        const newEntity: IPlayer = {
-          ...entity,
-          statuses: [...entity.statuses, STATUSES[0]],
-        };
-        return newEntity;
-      }
-    },
   },
   {
     id: SKILL_ID.GORGONS_GAZE,
@@ -64,19 +55,17 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
-    effect: (entity: IEntity): IEntity | undefined => {
-      const newEntity: IEntity = {
-        ...entity,
-        statuses: [...entity.statuses, STATUSES[1]],
-      };
-      return newEntity;
-    },
   },
 ];
 
+export const STATUS_ID = {
+  BUFFED: 1,
+  PETRIFIED: 2,
+};
+
 export const STATUSES: IStatus[] = [
   {
-    id: 1,
+    id: STATUS_ID.BUFFED,
     name: "Buffed",
     description: "Increased damage for all attacks by 2 for 3 turns.",
     duration: 3,
@@ -88,7 +77,7 @@ export const STATUSES: IStatus[] = [
     },
   },
   {
-    id: 2,
+    id: STATUS_ID.PETRIFIED,
     name: "Petrified",
     description: "Cannot move or attack for 3 turns.",
     duration: 3,
