@@ -40,7 +40,7 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
       id: 4,
       name: "Bow",
       damage: 2,
-      range: 5,
+      range: 4,
       cost: 2,
     },
     {
