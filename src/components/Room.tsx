@@ -383,6 +383,7 @@ export const Room: FC<{
       }
 
       const totalDamage = skill.damage + statusDamageBonus;
+      let doesDamage = false;
 
       const affectedEnemy = { ...enemy };
 
@@ -404,6 +405,7 @@ export const Room: FC<{
         case SKILL_ID.LIGHTNING: {
           // Deal damage to enemy
           affectedEnemy.health = affectedEnemy.health - totalDamage;
+          doesDamage = true;
           break;
         }
         default:
@@ -422,35 +424,37 @@ export const Room: FC<{
       });
 
       // Check if enemy is defeated
-      if (affectedEnemy.health <= 0) {
-        setEnemies(enemies.filter((e) => e.id !== id));
-        addLog({
-          message: (
-            <>
-              <span className="text-red-500">{affectedEnemy.name}</span> took{" "}
-              {totalDamage} damage and has been defeated!
-            </>
-          ),
-          type: "info",
-        });
-      } else {
-        setEnemies(
-          enemies.map((e) => {
-            if (e.id === id) {
-              return affectedEnemy;
-            }
-            return e;
-          })
-        );
-        addLog({
-          message: (
-            <>
-              <span className="text-red-500">{affectedEnemy.name}</span> took{" "}
-              {totalDamage} damage.
-            </>
-          ),
-          type: "info",
-        });
+      if (doesDamage) {
+        if (affectedEnemy.health <= 0) {
+          setEnemies(enemies.filter((e) => e.id !== id));
+          addLog({
+            message: (
+              <>
+                <span className="text-red-500">{affectedEnemy.name}</span> took{" "}
+                {totalDamage} damage and has been defeated!
+              </>
+            ),
+            type: "info",
+          });
+        } else {
+          setEnemies(
+            enemies.map((e) => {
+              if (e.id === id) {
+                return affectedEnemy;
+              }
+              return e;
+            })
+          );
+          addLog({
+            message: (
+              <>
+                <span className="text-red-500">{affectedEnemy.name}</span> took{" "}
+                {totalDamage} damage.
+              </>
+            ),
+            type: "info",
+          });
+        }
       }
 
       // Decrease player's action points and set skill cooldown
@@ -567,6 +571,92 @@ export const Room: FC<{
       ),
       type: "info",
     });
+    setPlayerState({
+      ...player.state,
+      isUsingSkill: false,
+    });
+  };
+
+  // This function is called when player uses a skill that targets an empty tile
+  // Skills that affect enemies are handled in the handleEnemyClick function
+  const handleEmptyTileClick = (skillId: number, x: number, y: number) => {
+    const skill = player.skills.find((skill) => skill.id === skillId);
+
+    if (!skill) {
+      addLog({ message: "Skill not found!", type: "error" });
+      return;
+    }
+
+    const newPlayer = {
+      ...player,
+    };
+
+    // Handle skill effect
+    switch (skill.id) {
+      case SKILL_ID.TELEPORT: {
+        // Teleport player to empty tile
+        // Set player's current tile to empty and new tile to player
+        setRoomMatrix((prevRoomMatrix) => {
+          const [playerRow, playerCol] = playerPosition;
+          const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
+            (row, rowIndex) => {
+              return row.map(([tileType, id], columnIndex) => {
+                if (rowIndex === playerRow && columnIndex === playerCol) {
+                  return [TILE_TYPE.EMPTY, 0];
+                } else if (rowIndex === y && columnIndex === x) {
+                  return [TILE_TYPE.PLAYER, player.id];
+                }
+                return [tileType, id];
+              });
+            }
+          );
+          return newRoomMatrix;
+        });
+        break;
+      }
+      default:
+        break;
+    }
+
+    if (!newPlayer) {
+      addLog({ message: "Skill did not return anything!", type: "error" });
+      return;
+    }
+
+    if (!isPlayer(newPlayer)) {
+      addLog({ message: "Skill effect did not return player", type: "error" });
+      return;
+    }
+
+    setPlayer({
+      ...newPlayer,
+      actionPoints: player.actionPoints - skill.cost,
+      skills: player.skills.map((s) =>
+        s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+      ),
+    });
+    if (skill.id === SKILL_ID.TELEPORT) {
+      addLog({
+        message: (
+          <>
+            <span className="text-green-500">{player.name}</span> used{" "}
+            <span className="text-green-500">{skill.name}</span> to teleport to
+            tile ({x}, {y}).
+          </>
+        ),
+        type: "info",
+      });
+    } else {
+      addLog({
+        message: (
+          <>
+            <span className="text-green-500">{player.name}</span> used{" "}
+            <span className="text-green-500">{skill.name}</span>.
+          </>
+        ),
+        type: "info",
+      });
+    }
     setPlayerState({
       ...player.state,
       isUsingSkill: false,
@@ -849,13 +939,20 @@ export const Room: FC<{
                     player.state.isUsingSkill &&
                     player.state.skillId
                   ) {
-                    // Check if skill is self-targeted or single target
+                    // Check tile clicked
                     if (tileType === TILE_TYPE.PLAYER) {
-                      // Self-targeted skill
+                      // Skills that uses the player tile
                       handlePlayerUseSkill(player.state.skillId);
                     } else if (tileType === TILE_TYPE.ENEMY) {
-                      // Single target skill
+                      // Skills that uses the enemy tile
                       handleEnemyClick(id);
+                    } else if (tileType === TILE_TYPE.EMPTY) {
+                      // Skills that uses the empty tile
+                      handleEmptyTileClick(
+                        player.state.skillId,
+                        columnIndex,
+                        rowIndex
+                      );
                     }
                   }
                 }
