@@ -268,6 +268,34 @@ export const Room: FC<{
 
         // End enemy's turn after moving and attacking (if they can)
         setTimeout(() => {
+          // Decrease enemy's statuses' duration
+          const decreasedStatuses = enemy.statuses.map((status) => {
+            return {
+              ...status,
+              durationCounter: status.durationCounter - 1,
+            };
+          });
+
+          // Filter out statuses with duration 0
+          const filteredStatuses = decreasedStatuses.filter(
+            (status) => status.durationCounter > 0
+          );
+
+          // Update enemy with new statuses
+          const newEnemy = {
+            ...enemy,
+            statuses: filteredStatuses,
+          };
+
+          setEnemies(
+            enemies.map((e) => {
+              if (e.id === enemy.id) {
+                return newEnemy;
+              }
+              return e;
+            })
+          );
+
           addLog({
             message: (
               <>
