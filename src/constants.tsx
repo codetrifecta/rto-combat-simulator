@@ -1,4 +1,4 @@
-import { IEnemy, IEntity, IPlayer, ISkill, IStatus } from "./types";
+import { IEntity, IPlayer, ISkill, IStatus } from "./types";
 import { isPlayer } from "./utils";
 
 export const TILE_SIZE = 45; // Default to 50
@@ -59,8 +59,8 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
-    effect: (entity: IEnemy): IEnemy => {
-      const newEntity: IEnemy = {
+    effect: (entity: IEntity): IEntity | undefined => {
+      const newEntity: IEntity = {
         ...entity,
         statuses: [...entity.statuses, STATUSES[1]],
       };

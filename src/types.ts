@@ -30,7 +30,10 @@ export interface IPlayerState {
   skillId?: number;
 }
 
-export interface IEnemy extends IEntity {}
+export interface IEnemy extends IEntity {
+  range: number;
+  damage: number;
+}
 
 export interface IGameState {
   turnCycle: IEntity[];
