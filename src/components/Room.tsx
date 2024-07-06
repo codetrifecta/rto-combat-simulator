@@ -503,10 +503,17 @@ export const Room: FC<{
 
     // Handle skill effect
     switch (skill.id) {
-      case SKILL_ID.BUFF_UP:
-        // Increase player's damage by 1
-        newPlayer.damageBonus += 1;
+      case SKILL_ID.BUFF_UP: {
+        const buffedStatus = STATUSES.find((s) => s.id === STATUS_ID.BUFFED);
+
+        if (!buffedStatus) {
+          addLog({ message: "Buffed status not found!", type: "error" });
+          return;
+        }
+
+        newPlayer.statuses.push(buffedStatus);
         break;
+      }
       default:
         break;
     }
