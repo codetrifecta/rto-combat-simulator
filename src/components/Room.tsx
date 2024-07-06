@@ -12,7 +12,12 @@ import { IEnemy } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
-import { generateRoomMatrix, handlePlayerEndTurn, isPlayer } from "../utils";
+import {
+  generateRoomMatrix,
+  handlePlayerEndTurn,
+  isEnemy,
+  isPlayer,
+} from "../utils";
 import { useLogStore } from "../store/log";
 
 export const Room: FC<{
@@ -223,10 +228,60 @@ export const Room: FC<{
         });
       }
       setPlayerActionPoints(player.actionPoints - player.equipment.weapon.cost);
+    } else if (player.state.isUsingSkill && player.state.skillId) {
+      const skill = player.skills.find(
+        (skill) => skill.id === player.state.skillId
+      );
+
+      if (!skill) {
+        addLog({ message: "Skill not found!", type: "error" });
+        return;
+      }
+
+      const affectedEnemy = skill.effect(enemy);
+
+      if (!affectedEnemy) {
+        addLog({ message: "Skill did not return anything!", type: "error" });
+        return;
+      }
+
+      if (!isEnemy(affectedEnemy)) {
+        addLog({ message: "Skill effect did not return enemy", type: "error" });
+        return;
+      }
+
+      setEnemies(
+        enemies.map((e) => {
+          if (e.id === id) {
+            return affectedEnemy;
+          }
+          return e;
+        })
+      );
+      addLog({
+        message: (
+          <>
+            <span className="text-green-500">{player.name}</span> used{" "}
+            <span className="text-green-500">{skill.name}</span> on{" "}
+            <span className="text-red-500">{enemy.name}</span>.
+          </>
+        ),
+        type: "info",
+      });
+      setPlayer({
+        ...player,
+        actionPoints: player.actionPoints - skill.cost,
+        skills: player.skills.map((s) =>
+          s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+        ),
+      });
     }
+
     setPlayerState({
       ...player.state,
       isAttacking: false,
+      isMoving: false,
+      isUsingSkill: false,
     });
   };
 
@@ -269,6 +324,8 @@ export const Room: FC<{
     });
   };
 
+  // This function is called when player uses a a self targeted skill, e.g buffing themselves
+  // Skills that affect enemies are handled in the handleEnemyClick function
   const handlePlayerUseSkill = (skillId: number) => {
     const skill = player.skills.find((skill) => skill.id === skillId);
 
@@ -383,7 +440,7 @@ export const Room: FC<{
 
           // Check if player is using a skill
           // Highlight tiles that can be affected by player's skill
-          if (player.state.isUsingSkill) {
+          if (player.state.isUsingSkill && player.state.skillId) {
             const skill = player.skills.find(
               (skill) => skill.id === player.state.skillId
             );
@@ -395,6 +452,18 @@ export const Room: FC<{
               if (skill.skillType === SKILL_TYPE.SELF) {
                 // If skill is self-targeted, highlight player's tile
                 if (rowIndex === playerRow && columnIndex === playerCol) {
+                  isEffectZone = true;
+                }
+              } else if (skill.skillType === SKILL_TYPE.ST) {
+                // If skill is single target, highlight tiles that can be affected by the skill
+                const range = skill.range;
+
+                if (
+                  rowIndex >= playerRow - range &&
+                  rowIndex <= playerRow + range &&
+                  columnIndex >= playerCol - range &&
+                  columnIndex <= playerCol + range
+                ) {
                   isEffectZone = true;
                 }
               }
@@ -437,7 +506,14 @@ export const Room: FC<{
                     player.state.isUsingSkill &&
                     player.state.skillId
                   ) {
-                    handlePlayerUseSkill(player.state.skillId);
+                    // Check if skill is self-targeted or single target
+                    if (tileType === TILE_TYPE.PLAYER) {
+                      // Self-targeted skill
+                      handlePlayerUseSkill(player.state.skillId);
+                    } else if (tileType === TILE_TYPE.ENEMY) {
+                      // Single target skill
+                      handleEnemyClick(id);
+                    }
                   }
                 }
               }}
