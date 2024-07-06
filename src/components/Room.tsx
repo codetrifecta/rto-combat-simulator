@@ -161,10 +161,34 @@ export const Room: FC<{
           return;
         }
 
-        // For now, end enemy's turn after moving twice to a random adjacent tile
-        setTimeout(() => {
-          handleEnemyMovement(enemy);
-        }, 1000);
+        let totalTime = 0;
+
+        // For now, end enemy's turn after moving once to a random adjacent tile
+
+        // Check if enemy has a status effect that prevents them from moving
+        const cannotMove = enemy.statuses.find(
+          (status) => status.effect.canMove === false
+        );
+
+        // Move enemy if they can move
+        totalTime += 1500;
+        if (!cannotMove) {
+          setTimeout(() => {
+            handleEnemyMovement(enemy);
+          }, totalTime);
+        } else {
+          setTimeout(() => {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> is unable
+                  to move.
+                </>
+              ),
+              type: "info",
+            });
+          }, totalTime);
+        }
 
         // End enemy's turn after moving
         setTimeout(() => {
@@ -178,7 +202,7 @@ export const Room: FC<{
             type: "info",
           });
           endTurn();
-        }, 2000);
+        }, totalTime + 1000);
       }
     };
     handleEnemyEndTurn();
