@@ -6,7 +6,7 @@ export const Tooltip: FC<{ children: ReactNode; active: boolean }> = ({
   active,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  //   const tooltipRect = ref.current?.getBoundingClientRect();
+  const tooltipRect = ref.current?.getBoundingClientRect();
 
   useEffect(() => {
     // When parent element is initialized, set the tooltip position
@@ -22,6 +22,7 @@ export const Tooltip: FC<{ children: ReactNode; active: boolean }> = ({
         isTop = false;
       }
 
+      // Set tooltip position to top or bottom of parent element
       if (isTop) {
         ref.current.style.bottom = `-${tooltipRect.height + 10}px`;
       } else {
@@ -33,7 +34,7 @@ export const Tooltip: FC<{ children: ReactNode; active: boolean }> = ({
         (ref.current.parentElement.clientWidth - tooltipRect.width) / 2
       }px`;
     }
-  }, [ref.current?.parentElement]);
+  }, [ref.current?.parentElement, tooltipRect]);
 
   return (
     <div
