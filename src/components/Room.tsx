@@ -49,43 +49,123 @@ export const Room: FC<{
     return [playerRow, playerCol];
   }, [roomMatrix]);
 
-  // When an enemy is defeated, remove it from the room matrix and check if the room is over
+  // When an enemy is defeated (i.e. removed from the game),
+  // remove it from the room matrix,
+  // remove it from the turn cycle and,
+  // check if the room is over and log a message if it is.
   useEffect(() => {
-    // Update room matrix when an enemy is defeated (i.e. removed from the game)
-    setRoomMatrix((prevRoomMatrix) => {
-      return prevRoomMatrix.map((row) => {
-        return row.map(([tileType, id]) => {
-          if (tileType === TILE_TYPE.ENEMY) {
-            const enemy = enemies.find((enemy) => enemy.id === id);
-            if (!enemy) {
-              return [TILE_TYPE.EMPTY, 0];
+    // Update room matrix to remove defeated enemy tiles
+    const updateRoomMatrixWhenEnemyDefeated = () => {
+      setRoomMatrix((prevRoomMatrix) => {
+        return prevRoomMatrix.map((row) => {
+          return row.map(([tileType, id]) => {
+            if (tileType === TILE_TYPE.ENEMY) {
+              const enemy = enemies.find((enemy) => enemy.id === id);
+              if (!enemy) {
+                return [TILE_TYPE.EMPTY, 0];
+              }
             }
-          }
-          return [tileType, id];
+            return [tileType, id];
+          });
         });
       });
-    });
+    };
 
-    // Log a message saying the player has completed the room when all enemies are defeated
-    if (enemies.length === 0) {
-      addLog({
-        message: (
-          <span className="text-green-500">Player completed the room!</span>
-        ),
-        type: "info",
-      });
-      setIsRoomOver(true);
-      setPlayer({
-        ...player,
-        actionPoints: STARTING_ACTION_POINTS,
-        skills: player.skills.map((skill) => ({
-          ...skill,
-          cooldownCounter: skill.cooldown,
-        })),
-        statuses: [],
-      });
-    }
+    // Update turn cycle to remove defeated enemies
+    const updateTurnCycleWhenEnemyDefeated = () => {
+      if (turnCycle.length > 0) {
+        const newTurnCycle = turnCycle.filter((entity) => {
+          if (entity.entityType === ENTITY_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === entity.id);
+            if (!enemy) {
+              return false;
+            }
+          }
+          return true;
+        });
+
+        // Update game store turn cycle
+        setTurnCycle(newTurnCycle);
+      }
+    };
+
+    // If all enemies are defeated, log a message saying the player has completed the room
+    const logRoomCompletion = () => {
+      if (enemies.length === 0) {
+        addLog({
+          message: (
+            <span className="text-green-500">Player completed the room!</span>
+          ),
+          type: "info",
+        });
+        setIsRoomOver(true);
+        setPlayer({
+          ...player,
+          actionPoints: STARTING_ACTION_POINTS,
+          skills: player.skills.map((skill) => ({
+            ...skill,
+            cooldownCounter: skill.cooldown,
+          })),
+          statuses: [],
+        });
+      }
+    };
+
+    updateRoomMatrixWhenEnemyDefeated();
+    updateTurnCycleWhenEnemyDefeated();
+    logRoomCompletion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enemies.length]);
+
+  // When player's action points reach 0 and there are still enemies in the room (room is not over),
+  // Automatically end player's turn
+  useEffect(() => {
+    const automaticallyEndPlayerTurn = () => {
+      if (player.actionPoints === 0 && !isRoomOver && enemies.length > 0) {
+        handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> ended their
+              turn.
+            </>
+          ),
+          type: "info",
+        });
+      }
+    };
+    automaticallyEndPlayerTurn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player.actionPoints, isRoomOver, enemies.length]);
+
+  // When turn cycle changes,
+  // Handle enemy turn (for now, just end their turn after a timeout)
+  useEffect(() => {
+    // Handle enemy's action and end turn
+    const handleEnemyEndTurn = () => {
+      if (
+        turnCycle.length > 0 &&
+        turnCycle[0].entityType === ENTITY_TYPE.ENEMY
+      ) {
+        // Simulate enemy action with a timeout
+        setTimeout(() => {
+          // End enemy's turn
+          addLog({
+            message: (
+              <>
+                <span className="text-red-500">{turnCycle[0].name}</span> ended
+                their turn.
+              </>
+            ),
+            type: "info",
+          });
+          endTurn();
+        }, 1500);
+      }
+    };
+    handleEnemyEndTurn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turnCycle, turnCycle.length]);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (id: number) => {
@@ -219,72 +299,6 @@ export const Room: FC<{
       isUsingSkill: false,
     });
   };
-
-  // Automatically end player's turn when action points reach 0
-  useEffect(() => {
-    if (player.actionPoints === 0 && !isRoomOver && enemies.length > 0) {
-      handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
-      addLog({
-        message: (
-          <>
-            <span className="text-green-500">{player.name}</span> ended their
-            turn.
-          </>
-        ),
-        type: "info",
-      });
-    }
-  }, [
-    endTurn,
-    getPlayer,
-    player.actionPoints,
-    setPlayerActionPoints,
-    turnCycle,
-    addLog,
-    player.name,
-    setPlayer,
-    isRoomOver,
-    enemies.length,
-  ]);
-
-  // Handle ending turns
-  useEffect(() => {
-    // Handle enemy's action
-    if (turnCycle.length > 0 && turnCycle[0].entityType === ENTITY_TYPE.ENEMY) {
-      // Simulate enemy action with a timeout
-      setTimeout(() => {
-        // End enemy's turn
-        addLog({
-          message: (
-            <>
-              <span className="text-red-500">{turnCycle[0].name}</span> ended
-              their turn.
-            </>
-          ),
-          type: "info",
-        });
-        endTurn();
-      }, 1500);
-    }
-  }, [turnCycle, turnCycle.length]);
-
-  // Remove defeated enemies from the turn cycle when they are no longer in the enemies list
-  useEffect(() => {
-    if (turnCycle.length > 0) {
-      const newTurnCycle = turnCycle.filter((entity) => {
-        if (entity.entityType === ENTITY_TYPE.ENEMY) {
-          const enemy = enemies.find((e) => e.id === entity.id);
-          if (!enemy) {
-            return false;
-          }
-        }
-        return true;
-      });
-
-      // Update game store turn cycle
-      setTurnCycle(newTurnCycle);
-    }
-  }, [enemies.length]);
 
   return (
     <div
