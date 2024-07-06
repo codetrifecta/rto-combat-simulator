@@ -63,6 +63,7 @@ export interface IStatus {
 export interface IStatusEffect {
   damageBonus: number;
   canMove: boolean;
+  canAttack: boolean;
 }
 
 export interface IWeapon {

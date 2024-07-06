@@ -79,6 +79,7 @@ export const STATUSES: IStatus[] = [
     effect: {
       damageBonus: 2,
       canMove: true,
+      canAttack: true,
     },
   },
   {
@@ -90,6 +91,7 @@ export const STATUSES: IStatus[] = [
     effect: {
       damageBonus: 0,
       canMove: false,
+      canAttack: true,
     },
   },
 ];
