@@ -13,13 +13,13 @@ Combat simulator for Return to Olympus
 - [x] Player movement (naive)
 - [ ] Player skills
   - [x] Buff Up
-  - [ ] Petrify
+  - [x] Petrify (Gorgon's Gaze)
   - [ ] Lightning
   - [ ] Teleport
   - [ ] Cleave
   - [ ] Fireball
-- [ ] Enemy attack
-- [ ] Enemy movement (naive)
+- [x] Enemy attack (naive)
+- [x] Enemy movement (naive)
 - [ ] Sprites for each of the above
 - [ ] Animations for each of the above
 - [ ] Multiple rooms (floor)

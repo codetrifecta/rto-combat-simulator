@@ -3,21 +3,28 @@ import { Tile } from "./Tile";
 import {
   ENTITY_TYPE,
   ROOM_LENGTH,
+  SKILL_ID,
   SKILL_TYPE,
   STARTING_ACTION_POINTS,
   TILE_SIZE,
   TILE_TYPE,
 } from "../constants";
-import { IEnemy } from "../types";
+import { IEnemy, IEntity } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
-import { generateRoomMatrix, handlePlayerEndTurn } from "../utils";
+import {
+  generateRoomMatrix,
+  getEntityPosition,
+  handlePlayerEndTurn,
+  isEnemy,
+  isPlayer,
+} from "../utils";
 import { useLogStore } from "../store/log";
 
 export const Room: FC<{
-  currentHoveredEntity: IEnemy | null;
-  setCurrentHoveredEntity: (enemy: IEnemy | null) => void;
+  currentHoveredEntity: IEntity | null;
+  setCurrentHoveredEntity: (enemy: IEntity | null) => void;
 }> = ({ currentHoveredEntity, setCurrentHoveredEntity }) => {
   const [roomMatrix, setRoomMatrix] = useState<[TILE_TYPE, number][][]>(
     generateRoomMatrix(ROOM_LENGTH)
@@ -33,59 +40,279 @@ export const Room: FC<{
 
   const { addLog } = useLogStore();
 
+  // Get player's position in the room matrix
   const playerPosition = useMemo(() => {
-    const playerRow = roomMatrix.findIndex(
-      (row) => row.findIndex(([type]) => type === TILE_TYPE.PLAYER) !== -1
-    );
+    return getEntityPosition(player, roomMatrix);
 
-    if (playerRow === -1) {
-      console.error("Player row not found in room matrix!");
-      return [ROOM_LENGTH / 2, ROOM_LENGTH / 2];
-    }
-
-    const playerCol = roomMatrix[playerRow].findIndex(
-      ([type]) => type === TILE_TYPE.PLAYER
-    );
-    return [playerRow, playerCol];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomMatrix]);
 
-  // When an enemy is defeated, remove it from the room matrix and check if the room is over
+  // When an enemy is defeated (i.e. removed from the game),
+  // remove it from the room matrix,
+  // remove it from the turn cycle and,
+  // check if the room is over and log a message if it is.
   useEffect(() => {
-    // Update room matrix when an enemy is defeated (i.e. removed from the game)
-    setRoomMatrix((prevRoomMatrix) => {
-      return prevRoomMatrix.map((row) => {
-        return row.map(([tileType, id]) => {
-          if (tileType === TILE_TYPE.ENEMY) {
-            const enemy = enemies.find((enemy) => enemy.id === id);
-            if (!enemy) {
-              return [TILE_TYPE.EMPTY, 0];
+    // Update room matrix to remove defeated enemy tiles
+    const updateRoomMatrixWhenEnemyDefeated = () => {
+      setRoomMatrix((prevRoomMatrix) => {
+        return prevRoomMatrix.map((row) => {
+          return row.map(([tileType, id]) => {
+            if (tileType === TILE_TYPE.ENEMY) {
+              const enemy = enemies.find((enemy) => enemy.id === id);
+              if (!enemy) {
+                return [TILE_TYPE.EMPTY, 0];
+              }
             }
-          }
-          return [tileType, id];
+            return [tileType, id];
+          });
         });
       });
-    });
+    };
 
-    // Log a message saying the player has completed the room when all enemies are defeated
-    if (enemies.length === 0) {
-      addLog({
-        message: (
-          <span className="text-green-500">Player completed the room!</span>
-        ),
-        type: "info",
-      });
-      setIsRoomOver(true);
-      setPlayer({
-        ...player,
-        actionPoints: STARTING_ACTION_POINTS,
-        skills: player.skills.map((skill) => ({
-          ...skill,
-          cooldownCounter: skill.cooldown,
-        })),
-        statuses: [],
-      });
-    }
+    // Update turn cycle to remove defeated enemies
+    const updateTurnCycleWhenEnemyDefeated = () => {
+      if (turnCycle.length > 0) {
+        const newTurnCycle = turnCycle.filter((entity) => {
+          if (entity.entityType === ENTITY_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === entity.id);
+            if (!enemy) {
+              return false;
+            }
+          }
+          return true;
+        });
+
+        // Update game store turn cycle
+        setTurnCycle(newTurnCycle);
+      }
+    };
+
+    // If all enemies are defeated, log a message saying the player has completed the room
+    const logRoomCompletion = () => {
+      if (enemies.length === 0) {
+        addLog({
+          message: (
+            <span className="text-green-500">Player completed the room!</span>
+          ),
+          type: "info",
+        });
+        setIsRoomOver(true);
+        setPlayer({
+          ...player,
+          actionPoints: STARTING_ACTION_POINTS,
+          skills: player.skills.map((skill) => ({
+            ...skill,
+            cooldownCounter: skill.cooldown,
+          })),
+          statuses: [],
+        });
+      }
+    };
+
+    updateRoomMatrixWhenEnemyDefeated();
+    updateTurnCycleWhenEnemyDefeated();
+    logRoomCompletion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enemies.length]);
+
+  // When player's action points reach 0 and there are still enemies in the room (room is not over),
+  // Automatically end player's turn
+  useEffect(() => {
+    const automaticallyEndPlayerTurn = () => {
+      if (player.actionPoints === 0 && !isRoomOver && enemies.length > 0) {
+        handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> ended their
+              turn.
+            </>
+          ),
+          type: "info",
+        });
+      }
+    };
+    automaticallyEndPlayerTurn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player.actionPoints, isRoomOver, enemies.length]);
+
+  // When turn cycle changes,
+  // Handle enemy turn (for now, move to a random adjacent tile and attack player if in range)
+  useEffect(() => {
+    // Handle enemy's action and end turn
+    const handleEnemyEndTurn = () => {
+      if (
+        turnCycle.length > 0 &&
+        turnCycle[0].entityType === ENTITY_TYPE.ENEMY &&
+        isEnemy(turnCycle[0])
+      ) {
+        // Simulate enemy action with a timeout
+        const enemy = enemies.find((e) => e.id === turnCycle[0].id);
+
+        if (!enemy) {
+          addLog({ message: "Enemy not found!", type: "error" });
+          return;
+        }
+
+        // console.log(enemy);
+
+        // For now, end enemy's turn after moving once to a random adjacent tile and attacking the player if they are in range
+        let totalTime = 0; // Total time for enemy's turn
+
+        // Check if enemy has a status effect that prevents them from moving
+        const cannotMove = enemy.statuses.some(
+          (status) => status.effect.canMove === false
+        );
+
+        // Check if enemy has a status effect that prevents them from attacking
+        const cannotAttack = enemy.statuses.some(
+          (status) => status.effect.canAttack === false
+        );
+
+        // console.log("before moving", getEntityPosition(enemy, roomMatrix));
+
+        let enemyPosition: [number, number] | undefined = getEntityPosition(
+          enemy,
+          roomMatrix
+        );
+
+        const moveTime = 1000;
+        const attackTime = 1000;
+        const endTurnTime = 2000;
+
+        // Move enemy if they can move
+        totalTime += moveTime;
+
+        if (cannotMove && cannotAttack) {
+          setTimeout(() => {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> is unable
+                  to move or attack.
+                </>
+              ),
+              type: "info",
+            });
+          }, moveTime);
+        } else {
+          if (!cannotMove) {
+            setTimeout(() => {
+              enemyPosition = handleEnemyMovement(enemy);
+
+              // Make enemy attack player if they can attack
+              if (!cannotAttack) {
+                totalTime += attackTime;
+
+                setTimeout(() => {
+                  if (!enemyPosition) {
+                    console.error("Enemy position not found!");
+                    return;
+                  }
+                  handleEnemyAttack(enemy, enemyPosition, playerPosition);
+                }, attackTime);
+              } else {
+                console.log("enemy cannot attack");
+                setTimeout(() => {
+                  addLog({
+                    message: (
+                      <>
+                        <span className="text-red-500">{enemy.name}</span> is
+                        unable to attack.
+                      </>
+                    ),
+                    type: "info",
+                  });
+                }, attackTime);
+              }
+            }, moveTime);
+          } else {
+            setTimeout(() => {
+              addLog({
+                message: (
+                  <>
+                    <span className="text-red-500">{enemy.name}</span> is unable
+                    to move.
+                  </>
+                ),
+                type: "info",
+              });
+
+              // Make enemy attack player if they can attack
+              if (!cannotAttack) {
+                totalTime += attackTime;
+
+                setTimeout(() => {
+                  if (!enemyPosition) {
+                    console.error("Enemy position not found!");
+                    return;
+                  }
+                  handleEnemyAttack(enemy, enemyPosition, playerPosition);
+                }, attackTime);
+              } else {
+                console.log("enemy cannot attack");
+                setTimeout(() => {
+                  addLog({
+                    message: (
+                      <>
+                        <span className="text-red-500">{enemy.name}</span> is
+                        unable to attack.
+                      </>
+                    ),
+                    type: "info",
+                  });
+                }, attackTime);
+              }
+            }, moveTime);
+          }
+        }
+
+        // End enemy's turn after moving and attacking (if they can)
+        setTimeout(() => {
+          // Decrease enemy's statuses' duration
+          const decreasedStatuses = enemy.statuses.map((status) => {
+            return {
+              ...status,
+              durationCounter: status.durationCounter - 1,
+            };
+          });
+
+          // Filter out statuses with duration 0
+          const filteredStatuses = decreasedStatuses.filter(
+            (status) => status.durationCounter > 0
+          );
+
+          // Update enemy with new statuses
+          const newEnemy = {
+            ...enemy,
+            statuses: filteredStatuses,
+          };
+
+          setEnemies(
+            enemies.map((e) => {
+              if (e.id === enemy.id) {
+                return newEnemy;
+              }
+              return e;
+            })
+          );
+
+          addLog({
+            message: (
+              <>
+                <span className="text-red-500">{enemy.name}</span> ended their
+                turn.
+              </>
+            ),
+            type: "info",
+          });
+          endTurn();
+        }, totalTime + endTurnTime);
+      }
+    };
+    handleEnemyEndTurn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turnCycle, turnCycle.length]);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (id: number) => {
@@ -143,10 +370,60 @@ export const Room: FC<{
         });
       }
       setPlayerActionPoints(player.actionPoints - player.equipment.weapon.cost);
+    } else if (player.state.isUsingSkill && player.state.skillId) {
+      const skill = player.skills.find(
+        (skill) => skill.id === player.state.skillId
+      );
+
+      if (!skill) {
+        addLog({ message: "Skill not found!", type: "error" });
+        return;
+      }
+
+      const affectedEnemy = skill.effect(enemy);
+
+      if (!affectedEnemy) {
+        addLog({ message: "Skill did not return anything!", type: "error" });
+        return;
+      }
+
+      if (!isEnemy(affectedEnemy)) {
+        addLog({ message: "Skill effect did not return enemy", type: "error" });
+        return;
+      }
+
+      setEnemies(
+        enemies.map((e) => {
+          if (e.id === id) {
+            return affectedEnemy;
+          }
+          return e;
+        })
+      );
+      addLog({
+        message: (
+          <>
+            <span className="text-green-500">{player.name}</span> used{" "}
+            <span className="text-green-500">{skill.name}</span> on{" "}
+            <span className="text-red-500">{enemy.name}</span>.
+          </>
+        ),
+        type: "info",
+      });
+      setPlayer({
+        ...player,
+        actionPoints: player.actionPoints - skill.cost,
+        skills: player.skills.map((s) =>
+          s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+        ),
+      });
     }
+
     setPlayerState({
       ...player.state,
       isAttacking: false,
+      isMoving: false,
+      isUsingSkill: false,
     });
   };
 
@@ -189,6 +466,8 @@ export const Room: FC<{
     });
   };
 
+  // This function is called when player uses a a self targeted skill, e.g buffing themselves
+  // Skills that affect enemies are handled in the handleEnemyClick function
   const handlePlayerUseSkill = (skillId: number) => {
     const skill = player.skills.find((skill) => skill.id === skillId);
 
@@ -198,6 +477,17 @@ export const Room: FC<{
     }
 
     const newPlayer = skill.effect(player);
+
+    if (!newPlayer) {
+      addLog({ message: "Skill did not return anything!", type: "error" });
+      return;
+    }
+
+    if (!isPlayer(newPlayer)) {
+      addLog({ message: "Skill effect did not return player", type: "error" });
+      return;
+    }
+
     setPlayer({
       ...newPlayer,
       actionPoints: player.actionPoints - skill.cost,
@@ -220,71 +510,137 @@ export const Room: FC<{
     });
   };
 
-  // Automatically end player's turn when action points reach 0
-  useEffect(() => {
-    if (player.actionPoints === 0 && !isRoomOver && enemies.length > 0) {
-      handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
+  // Handle enemy movement (naive)
+  // For now, just move the enemy to a random adjacent tile
+  const handleEnemyMovement = (enemy: IEnemy): [number, number] | undefined => {
+    const [enemyRow, enemyCol] = roomMatrix.reduce(
+      (acc, row, rowIndex) => {
+        const colIndex = row.findIndex(([tileType, id]) => {
+          if (tileType === TILE_TYPE.ENEMY && id === enemy.id) {
+            return true;
+          }
+          return false;
+        });
+        if (colIndex !== -1) {
+          return [rowIndex, colIndex];
+        }
+        return acc;
+      },
+      [-1, -1]
+    );
+
+    if (enemyRow === -1 || enemyCol === -1) {
+      addLog({ message: "Enemy not found in room matrix!", type: "error" });
+      return;
+    }
+
+    const possibleMoves: [number, number][] = [
+      [enemyRow - 1, enemyCol], // Up
+      [enemyRow + 1, enemyCol], // Down
+      [enemyRow, enemyCol - 1], // Left
+      [enemyRow, enemyCol + 1], // Right
+    ];
+
+    const randomMove = possibleMoves[Math.floor(Math.random() * 4)];
+
+    // console.log("handling enemy movement", enemy, randomMove);
+
+    // Check if random move is outside bounds (ie. outside the room matrix bounds and not an empty tile)
+    // If so, do nothing
+    if (
+      randomMove[0] < 0 ||
+      randomMove[0] >= ROOM_LENGTH ||
+      randomMove[1] < 0 ||
+      randomMove[1] >= ROOM_LENGTH ||
+      roomMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.EMPTY
+    ) {
+      // Do nothing if random move is out of bounds or not an empty tile
+      return;
+    }
+
+    // Update room matrix to move enemy to random adjacent tile
+    if (randomMove[0] >= 0 && randomMove[0] < ROOM_LENGTH) {
+      if (randomMove[1] >= 0 && randomMove[1] < ROOM_LENGTH) {
+        setRoomMatrix((prevRoomMatrix) => {
+          const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
+            (row, rowIndex) => {
+              return row.map(([tileType, id], columnIndex) => {
+                if (rowIndex === enemyRow && columnIndex === enemyCol) {
+                  return [TILE_TYPE.EMPTY, 0];
+                } else if (
+                  rowIndex === randomMove[0] &&
+                  columnIndex === randomMove[1]
+                ) {
+                  return [TILE_TYPE.ENEMY, enemy.id];
+                }
+                return [tileType, id];
+              });
+            }
+          );
+          return newRoomMatrix;
+        });
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{enemy.name}</span> moved to tile (
+              {randomMove[1]}, {randomMove[0]}).
+            </>
+          ),
+          type: "info",
+        });
+      }
+    }
+
+    return randomMove;
+  };
+
+  // Handle enemy attack (naive)
+  // For now, just attack the player if they are in range
+  const handleEnemyAttack = (
+    enemy: IEnemy,
+    enemyPosition: [number, number],
+    playerPosition: [number, number]
+  ) => {
+    const [enemyRow, enemyCol] = enemyPosition;
+    const [playerRow, playerCol] = playerPosition;
+
+    if (!enemyRow || !enemyCol || !playerRow || !playerCol) {
+      addLog({ message: "Enemy or player position not found!", type: "error" });
+      return;
+    }
+
+    // console.log("enemy attack position", enemyRow, enemyCol);
+
+    const canAttackPlayer =
+      Math.abs(playerRow - enemyRow) <= enemy.range &&
+      Math.abs(playerCol - enemyCol) <= enemy.range;
+
+    if (canAttackPlayer) {
+      const baseDamage = enemy.damage;
+
+      const statusDamageBonus = enemy.statuses.reduce((acc, status) => {
+        return acc + status.effect.damageBonus;
+      }, 0);
+
+      const totalDamage = baseDamage + statusDamageBonus;
+
+      setPlayer({
+        ...player,
+        health: player.health - totalDamage,
+      });
+
       addLog({
         message: (
           <>
-            <span className="text-green-500">{player.name}</span> ended their
-            turn.
+            <span className="text-red-500">{enemy.name}</span> attacked{" "}
+            <span className="text-green-500">{player.name}</span> for{" "}
+            {totalDamage} damage.
           </>
         ),
         type: "info",
       });
     }
-  }, [
-    endTurn,
-    getPlayer,
-    player.actionPoints,
-    setPlayerActionPoints,
-    turnCycle,
-    addLog,
-    player.name,
-    setPlayer,
-    isRoomOver,
-    enemies.length,
-  ]);
-
-  // Handle ending turns
-  useEffect(() => {
-    // Handle enemy's action
-    if (turnCycle.length > 0 && turnCycle[0].entityType === ENTITY_TYPE.ENEMY) {
-      // Simulate enemy action with a timeout
-      setTimeout(() => {
-        // End enemy's turn
-        addLog({
-          message: (
-            <>
-              <span className="text-red-500">{turnCycle[0].name}</span> ended
-              their turn.
-            </>
-          ),
-          type: "info",
-        });
-        endTurn();
-      }, 1500);
-    }
-  }, [turnCycle, turnCycle.length]);
-
-  // Remove defeated enemies from the turn cycle when they are no longer in the enemies list
-  useEffect(() => {
-    if (turnCycle.length > 0) {
-      const newTurnCycle = turnCycle.filter((entity) => {
-        if (entity.entityType === ENTITY_TYPE.ENEMY) {
-          const enemy = enemies.find((e) => e.id === entity.id);
-          if (!enemy) {
-            return false;
-          }
-        }
-        return true;
-      });
-
-      // Update game store turn cycle
-      setTurnCycle(newTurnCycle);
-    }
-  }, [enemies.length]);
+  };
 
   return (
     <div
@@ -358,7 +714,7 @@ export const Room: FC<{
 
           // Check if player is using a skill
           // Highlight tiles that can be affected by player's skill
-          if (player.state.isUsingSkill) {
+          if (player.state.isUsingSkill && player.state.skillId) {
             const skill = player.skills.find(
               (skill) => skill.id === player.state.skillId
             );
@@ -371,6 +727,35 @@ export const Room: FC<{
                 // If skill is self-targeted, highlight player's tile
                 if (rowIndex === playerRow && columnIndex === playerCol) {
                   isEffectZone = true;
+                }
+              } else if (skill.skillType === SKILL_TYPE.ST) {
+                // If skill is single target, highlight tiles that can be affected by the skill
+                const range = skill.range;
+
+                // Check for the specific skill's effect zone
+                switch (skill.id) {
+                  case SKILL_ID.GORGONS_GAZE:
+                    // Effect zone is a 5x5 around the player (not including the player)
+                    if (
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
+                  default:
+                    if (
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
                 }
               }
             }
@@ -412,7 +797,14 @@ export const Room: FC<{
                     player.state.isUsingSkill &&
                     player.state.skillId
                   ) {
-                    handlePlayerUseSkill(player.state.skillId);
+                    // Check if skill is self-targeted or single target
+                    if (tileType === TILE_TYPE.PLAYER) {
+                      // Self-targeted skill
+                      handlePlayerUseSkill(player.state.skillId);
+                    } else if (tileType === TILE_TYPE.ENEMY) {
+                      // Single target skill
+                      handleEnemyClick(id);
+                    }
                   }
                 }
               }}

@@ -1,5 +1,5 @@
 import { ENTITY_TYPE, TILE_TYPE } from "./constants";
-import { IEntity, IPlayer } from "./types";
+import { IEnemy, IEntity, IPlayer } from "./types";
 
 /**
  * Generate a room matrix based on the room length
@@ -115,4 +115,51 @@ export const handlePlayerEndTurn = (
   }
 
   endTurn();
+};
+
+/**
+ * Check if entity is a player
+ * @param entity IEntity | IPlayer | IEnemy
+ * @returns boolean indicating if entity is a player
+ */
+export const isPlayer = (
+  entity: IEntity | IPlayer | IEnemy
+): entity is IPlayer => {
+  return entity.entityType === ENTITY_TYPE.PLAYER;
+};
+
+/**
+ * Check if entity is an enemy
+ * @param entity IEntity | IPlayer | IEnemy
+ * @returns boolean indicating if entity is an enemy
+ */
+export const isEnemy = (
+  entity: IEntity | IPlayer | IEnemy
+): entity is IEnemy => {
+  return entity.entityType === ENTITY_TYPE.ENEMY;
+};
+
+export const getEntityPosition = (
+  entity: IEntity,
+  roomMatrix: [TILE_TYPE, number][][]
+): [number, number] => {
+  for (let row = 0; row < roomMatrix.length; row++) {
+    for (let col = 0; col < roomMatrix.length; col++) {
+      const tile = roomMatrix[row][col];
+      if (tile[1] === entity.id) {
+        if (
+          tile[0] === TILE_TYPE.PLAYER &&
+          entity.entityType === ENTITY_TYPE.PLAYER
+        ) {
+          return [row, col];
+        } else if (
+          tile[0] === TILE_TYPE.ENEMY &&
+          entity.entityType === ENTITY_TYPE.ENEMY
+        ) {
+          return [row, col];
+        }
+      }
+    }
+  }
+  return [-1, -1];
 };

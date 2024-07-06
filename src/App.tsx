@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { PlayerControlPanel } from "./components/PlayerControlPanel";
-import { IEnemy } from "./types";
+import { IEntity } from "./types";
 import { Room } from "./components/Room";
 import { GameInfo } from "./components/GameInfo";
 // import { ENTITY_TYPE } from "./constants";
@@ -15,7 +15,7 @@ import { InventoryChooser } from "./components/InventoryChooser";
 function App() {
   const [headerOpen, setHeaderOpen] = useState(false);
   const [currentHoveredEntity, setCurrentHoveredEntity] =
-    useState<IEnemy | null>(null);
+    useState<IEntity | null>(null);
 
   const { turnCycle, setTurnCycle, setIsLoading } = useGameStateStore();
 
