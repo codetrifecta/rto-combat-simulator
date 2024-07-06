@@ -1,4 +1,5 @@
-import { IPlayer, ISkill, IStatus } from "./types";
+import { IEnemy, IEntity, IPlayer, ISkill, IStatus } from "./types";
+import { isPlayer } from "./utils";
 
 export const TILE_SIZE = 45; // Default to 50
 
@@ -37,10 +38,31 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
-    effect: (entity: IPlayer) => {
-      const newEntity: IPlayer = {
+    effect: (entity: IEntity): IEntity | undefined => {
+      if (isPlayer(entity)) {
+        const newEntity: IPlayer = {
+          ...entity,
+          statuses: [...entity.statuses, STATUSES[0]],
+        };
+        return newEntity;
+      }
+    },
+  },
+  {
+    id: 2,
+    name: "Gorgon's Gaze",
+    skillType: SKILL_TYPE.ST,
+    description:
+      "Petrfy an enemy for 3 turns. Petrified enemies cannot move or attack.",
+    damage: 0,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+    effect: (entity: IEnemy): IEnemy => {
+      const newEntity: IEnemy = {
         ...entity,
-        statuses: [...entity.statuses, STATUSES[0]],
+        statuses: [...entity.statuses, STATUSES[1]],
       };
       return newEntity;
     },
@@ -56,6 +78,18 @@ export const STATUSES: IStatus[] = [
     durationCounter: 3,
     effect: {
       damageBonus: 2,
+      canMove: true,
+    },
+  },
+  {
+    id: 2,
+    name: "Petrified",
+    description: "Cannot move or attack for 3 turns.",
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      damageBonus: 0,
+      canMove: false,
     },
   },
 ];

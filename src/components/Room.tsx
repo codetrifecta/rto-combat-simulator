@@ -12,7 +12,7 @@ import { IEnemy } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
-import { generateRoomMatrix, handlePlayerEndTurn } from "../utils";
+import { generateRoomMatrix, handlePlayerEndTurn, isPlayer } from "../utils";
 import { useLogStore } from "../store/log";
 
 export const Room: FC<{
@@ -278,6 +278,17 @@ export const Room: FC<{
     }
 
     const newPlayer = skill.effect(player);
+
+    if (!newPlayer) {
+      addLog({ message: "Skill did not return anything!", type: "error" });
+      return;
+    }
+
+    if (!isPlayer(newPlayer)) {
+      addLog({ message: "Skill effect did not return player", type: "error" });
+      return;
+    }
+
     setPlayer({
       ...newPlayer,
       actionPoints: player.actionPoints - skill.cost,

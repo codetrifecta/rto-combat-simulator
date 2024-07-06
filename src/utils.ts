@@ -1,5 +1,5 @@
 import { ENTITY_TYPE, TILE_TYPE } from "./constants";
-import { IEntity, IPlayer } from "./types";
+import { IEnemy, IEntity, IPlayer } from "./types";
 
 /**
  * Generate a room matrix based on the room length
@@ -115,4 +115,26 @@ export const handlePlayerEndTurn = (
   }
 
   endTurn();
+};
+
+/**
+ * Check if entity is a player
+ * @param entity IEntity | IPlayer | IEnemy
+ * @returns boolean indicating if entity is a player
+ */
+export const isPlayer = (
+  entity: IEntity | IPlayer | IEnemy
+): entity is IPlayer => {
+  return entity.entityType === ENTITY_TYPE.PLAYER;
+};
+
+/**
+ * Check if entity is an enemy
+ * @param entity IEntity | IPlayer | IEnemy
+ * @returns boolean indicating if entity is an enemy
+ */
+export const isEnemy = (
+  entity: IEntity | IPlayer | IEnemy
+): entity is IEnemy => {
+  return entity.entityType === ENTITY_TYPE.ENEMY;
 };
