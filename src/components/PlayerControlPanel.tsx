@@ -72,6 +72,9 @@ export const PlayerControlPanel: FC = () => {
                   <p>{skill.description}</p>
                   <p>Cost: {skill.cost} AP</p>
                   <p>Cooldown: {skill.cooldown} turns</p>
+                  {skill.cooldownCounter > 0 && (
+                    <p>Turns until active: {skill.cooldownCounter}</p>
+                  )}
                 </Tooltip>
 
                 <Button
@@ -226,14 +229,14 @@ const Button: FC<{
       className={clsx(
         "bg-blue-500  text-white font-bold py-2 px-4 rounded",
         { "hover:bg-blue-700": !disabled },
-        { "opacity-50 pointer-event-none": disabled }
+        { "opacity-50 pointer-event-none cursor-default": disabled }
       )}
       onClick={() => {
         if (!disabled) onClick();
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      disabled={disabled || false}
+      // disabled={disabled || false}
     >
       {children}
     </button>
