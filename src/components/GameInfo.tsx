@@ -92,7 +92,7 @@ const EntityCard: FC<{ entity: IEntity | null; active: boolean }> = ({
   return (
     <div>
       <div
-        className={clsx("relative border p-3", {
+        className={clsx("relative border p-3 cursor-default", {
           "bg-green-700": entity.entityType === ENTITY_TYPE.PLAYER,
           "bg-red-700": entity.entityType === ENTITY_TYPE.ENEMY,
           "z-0 hover:shadow-intense-green hover:z-10":

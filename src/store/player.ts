@@ -13,6 +13,7 @@ import {
 
 interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
+  getPlayerBonusDamage: () => number;
   setPlayer: (player: IPlayer) => void;
   setPlayerActionPoints: (actionPoints: number) => void;
   setPlayerSkills: (skills: ISkill[]) => void;
@@ -66,6 +67,15 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     };
     return player;
   },
+
+  getPlayerBonusDamage: () => {
+    const bonusDamage = get().statuses.reduce(
+      (acc, status) => acc + status.effect.damageBonus,
+      0
+    );
+    return bonusDamage;
+  },
+
   setPlayer: (player: IPlayer) => set({ ...player }),
 
   setPlayerActionPoints: (actionPoints: number) => set({ actionPoints }),

@@ -12,6 +12,12 @@ Combat simulator for Return to Olympus
 - [x] Inventory
 - [x] Player movement (naive)
 - [ ] Player skills
+  - [x] Buff Up
+  - [ ] Petrify
+  - [ ] Lightning
+  - [ ] Teleport
+  - [ ] Cleave
+  - [ ] Fireball
 - [ ] Enemy attack
 - [ ] Enemy movement (naive)
 - [ ] Sprites for each of the above
