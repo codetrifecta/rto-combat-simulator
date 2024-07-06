@@ -1,4 +1,4 @@
-import { useMemo, useState, type FC } from "react";
+import { useEffect, useMemo, useState, type FC } from "react";
 import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
@@ -9,6 +9,7 @@ import { Tooltip } from "./Tooltip";
 
 export const PlayerControlPanel: FC = () => {
   const [isAttackButtonHovered, setIsAttackButtonHovered] = useState(false);
+  const [isMoveButtonHovered, setIsMoveButtonHovered] = useState(false);
 
   const { turnCycle, endTurn, isRoomOver } = useGameStateStore();
 
@@ -16,6 +17,19 @@ export const PlayerControlPanel: FC = () => {
     usePlayerStore();
 
   const player = getPlayer();
+
+  const [areSkillButtonsHovered, setAreSkillButtonsHovered] = useState<
+    Record<number, boolean>
+  >({});
+
+  // Initialize player skill buttons hover state
+  useEffect(() => {
+    const initialSkillButtonHoverState = player.skills.reduce(
+      (acc, skill) => ({ ...acc, [skill.id]: false }),
+      {}
+    );
+    setAreSkillButtonsHovered(initialSkillButtonHoverState);
+  }, [player.skills]);
 
   const bonusDamage = getPlayerBonusDamage();
 
@@ -52,24 +66,44 @@ export const PlayerControlPanel: FC = () => {
         {openSkills ? (
           <>
             {player.skills.map((skill) => (
-              <Button
-                key={skill.name}
-                onClick={() => {
-                  setPlayerState({
-                    isAttacking: false,
-                    isMoving: false,
-                    isUsingSkill: !player.state.isUsingSkill,
-                    skillId: skill.id,
-                  });
-                }}
-                disabled={
-                  disabled ||
-                  player.actionPoints < skill.cost ||
-                  skill.cooldownCounter > 0
-                }
-              >
-                {skill.name}
-              </Button>
+              <div key={skill.id} className="relative">
+                <Tooltip active={areSkillButtonsHovered[skill.id]}>
+                  <h2>{skill.name}</h2>
+                  <p>{skill.description}</p>
+                  <p>Cost: {skill.cost} AP</p>
+                  <p>Cooldown: {skill.cooldown} turns</p>
+                </Tooltip>
+
+                <Button
+                  onClick={() => {
+                    setPlayerState({
+                      isAttacking: false,
+                      isMoving: false,
+                      isUsingSkill: !player.state.isUsingSkill,
+                      skillId: skill.id,
+                    });
+                  }}
+                  onMouseEnter={() =>
+                    setAreSkillButtonsHovered({
+                      ...areSkillButtonsHovered,
+                      [skill.id]: true,
+                    })
+                  }
+                  onMouseLeave={() =>
+                    setAreSkillButtonsHovered({
+                      ...areSkillButtonsHovered,
+                      [skill.id]: false,
+                    })
+                  }
+                  disabled={
+                    disabled ||
+                    player.actionPoints < skill.cost ||
+                    skill.cooldownCounter > 0
+                  }
+                >
+                  {skill.name}
+                </Button>
+              </div>
             ))}
             <Button
               onClick={() => {
@@ -92,6 +126,7 @@ export const PlayerControlPanel: FC = () => {
                 {player.equipment.weapon ? (
                   <>
                     <h2>Weapon attack</h2>
+                    <h3>Weapon Equipped: {player.equipment.weapon.name}</h3>
                     <p>Base DMG: {player.equipment.weapon?.damage}</p>
                     <p>Bonus DMG: {bonusDamage}</p>
                     <p>
@@ -124,18 +159,29 @@ export const PlayerControlPanel: FC = () => {
               </Button>
             </div>
 
-            <Button
-              onClick={() => {
-                setPlayerState({
-                  isAttacking: false,
-                  isMoving: !player.state.isMoving,
-                  isUsingSkill: false,
-                });
-              }}
-              disabled={disabled}
-            >
-              Move
-            </Button>
+            <div className="relative">
+              <Tooltip active={isMoveButtonHovered}>
+                <h2>Move</h2>
+                <p>Move within a range of 2 tiles.</p>
+                <p>Cost: 1 AP</p>
+                <p></p>
+              </Tooltip>
+              <Button
+                onClick={() => {
+                  setPlayerState({
+                    isAttacking: false,
+                    isMoving: !player.state.isMoving,
+                    isUsingSkill: false,
+                  });
+                }}
+                onMouseEnter={() => setIsMoveButtonHovered(true)}
+                onMouseLeave={() => setIsMoveButtonHovered(false)}
+                disabled={disabled}
+              >
+                Move
+              </Button>
+            </div>
+
             <Button
               onClick={() => {
                 setOpenSkills(true);
