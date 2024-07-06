@@ -8,7 +8,7 @@ export const StatusEffect: FC<{ status: IStatus }> = ({ status }) => {
   return (
     <div
       key={status.id}
-      className="relative group w-[30px] h-[30px] border border-white flex justify-center items-center"
+      className="relative group w-[30px] h-[30px] border border-white flex justify-center items-center cursor-default"
       onMouseEnter={() => setIsStatusHovered(true)}
       onMouseLeave={() => setIsStatusHovered(false)}
     >
