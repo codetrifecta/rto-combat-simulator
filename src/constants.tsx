@@ -27,9 +27,14 @@ export enum SKILL_TYPE {
   AOE = "aoe",
 }
 
+export enum SKILL_ID {
+  BUFF_UP = 1,
+  GORGONS_GAZE = 2,
+}
+
 export const SKILLS: ISkill[] = [
   {
-    id: 1,
+    id: SKILL_ID.BUFF_UP,
     name: "Buff Up",
     skillType: SKILL_TYPE.SELF,
     description: "Increase damage for all attacks by 2 for 3 turns.",
@@ -49,7 +54,7 @@ export const SKILLS: ISkill[] = [
     },
   },
   {
-    id: 2,
+    id: SKILL_ID.GORGONS_GAZE,
     name: "Gorgon's Gaze",
     skillType: SKILL_TYPE.ST,
     description:
