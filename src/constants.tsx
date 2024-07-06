@@ -30,6 +30,7 @@ export enum SKILL_ID {
   BUFF_UP = 1,
   GORGONS_GAZE = 2,
   LIGHTNING = 3,
+  TELEPORT = 4,
 }
 
 export const SKILLS: ISkill[] = [
@@ -66,6 +67,17 @@ export const SKILLS: ISkill[] = [
     cooldown: 1,
     cooldownCounter: 0,
     cost: 2,
+  },
+  {
+    id: SKILL_ID.TELEPORT,
+    name: "Teleport",
+    skillType: SKILL_TYPE.ST,
+    description: "Teleport to an empty tile in the room.",
+    damage: 0,
+    range: 4,
+    cooldown: 4,
+    cooldownCounter: 0,
+    cost: 1,
   },
 ];
 
