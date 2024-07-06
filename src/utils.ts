@@ -138,3 +138,28 @@ export const isEnemy = (
 ): entity is IEnemy => {
   return entity.entityType === ENTITY_TYPE.ENEMY;
 };
+
+export const getEntityPosition = (
+  entity: IEntity,
+  roomMatrix: [TILE_TYPE, number][][]
+): [number, number] => {
+  for (let row = 0; row < roomMatrix.length; row++) {
+    for (let col = 0; col < roomMatrix.length; col++) {
+      const tile = roomMatrix[row][col];
+      if (tile[1] === entity.id) {
+        if (
+          tile[0] === TILE_TYPE.PLAYER &&
+          entity.entityType === ENTITY_TYPE.PLAYER
+        ) {
+          return [row, col];
+        } else if (
+          tile[0] === TILE_TYPE.ENEMY &&
+          entity.entityType === ENTITY_TYPE.ENEMY
+        ) {
+          return [row, col];
+        }
+      }
+    }
+  }
+  return [-1, -1];
+};

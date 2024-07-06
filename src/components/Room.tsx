@@ -8,12 +8,13 @@ import {
   TILE_SIZE,
   TILE_TYPE,
 } from "../constants";
-import { IEnemy } from "../types";
+import { IEnemy, IEntity } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
 import {
   generateRoomMatrix,
+  getEntityPosition,
   handlePlayerEndTurn,
   isEnemy,
   isPlayer,
@@ -21,8 +22,8 @@ import {
 import { useLogStore } from "../store/log";
 
 export const Room: FC<{
-  currentHoveredEntity: IEnemy | null;
-  setCurrentHoveredEntity: (enemy: IEnemy | null) => void;
+  currentHoveredEntity: IEntity | null;
+  setCurrentHoveredEntity: (enemy: IEntity | null) => void;
 }> = ({ currentHoveredEntity, setCurrentHoveredEntity }) => {
   const [roomMatrix, setRoomMatrix] = useState<[TILE_TYPE, number][][]>(
     generateRoomMatrix(ROOM_LENGTH)
@@ -38,20 +39,11 @@ export const Room: FC<{
 
   const { addLog } = useLogStore();
 
+  // Get player's position in the room matrix
   const playerPosition = useMemo(() => {
-    const playerRow = roomMatrix.findIndex(
-      (row) => row.findIndex(([type]) => type === TILE_TYPE.PLAYER) !== -1
-    );
+    return getEntityPosition(player, roomMatrix);
 
-    if (playerRow === -1) {
-      console.error("Player row not found in room matrix!");
-      return [ROOM_LENGTH / 2, ROOM_LENGTH / 2];
-    }
-
-    const playerCol = roomMatrix[playerRow].findIndex(
-      ([type]) => type === TILE_TYPE.PLAYER
-    );
-    return [playerRow, playerCol];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomMatrix]);
 
   // When an enemy is defeated (i.e. removed from the game),
@@ -163,7 +155,7 @@ export const Room: FC<{
 
         let totalTime = 0;
 
-        // For now, end enemy's turn after moving once to a random adjacent tile
+        // For now, end enemy's turn after moving once to a random adjacent tile and attacking the player if they are in range
 
         // Check if enemy has a status effect that prevents them from moving
         const cannotMove = enemy.statuses.find(
@@ -190,7 +182,45 @@ export const Room: FC<{
           }, totalTime);
         }
 
-        // End enemy's turn after moving
+        // Check if enemy is in range to attack player
+        const [playerRow, playerCol] = playerPosition;
+        const [enemyRow, enemyCol] = getEntityPosition(enemy, roomMatrix);
+
+        const canAttackPlayer =
+          Math.abs(playerRow - enemyRow) <= enemy.range &&
+          Math.abs(playerCol - enemyCol) <= enemy.range;
+
+        // Attack player if they are in enemy's range
+        if (canAttackPlayer) {
+          totalTime += 1500;
+          setTimeout(() => {
+            const baseDamage = enemy.damage;
+
+            const statusDamageBonus = enemy.statuses.reduce((acc, status) => {
+              return acc + status.effect.damageBonus;
+            }, 0);
+
+            const totalDamage = baseDamage + statusDamageBonus;
+
+            setPlayer({
+              ...player,
+              health: player.health - totalDamage,
+            });
+
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> attacked{" "}
+                  <span className="text-green-500">{player.name}</span> for{" "}
+                  {totalDamage} damage.
+                </>
+              ),
+              type: "info",
+            });
+          }, totalTime);
+        }
+
+        // End enemy's turn after moving and attacking (if they can)
         setTimeout(() => {
           addLog({
             message: (
