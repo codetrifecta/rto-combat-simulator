@@ -5,13 +5,19 @@ import { useGameStateStore } from "../store/game";
 import { ENTITY_TYPE } from "../constants";
 import { handlePlayerEndTurn } from "../utils";
 import { useLogStore } from "../store/log";
+import { Tooltip } from "./Tooltip";
 
 export const PlayerControlPanel: FC = () => {
+  const [isAttackButtonHovered, setIsAttackButtonHovered] = useState(false);
+
   const { turnCycle, endTurn, isRoomOver } = useGameStateStore();
 
-  const { setPlayerState, getPlayer, setPlayer } = usePlayerStore();
+  const { setPlayerState, getPlayer, getPlayerBonusDamage, setPlayer } =
+    usePlayerStore();
 
   const player = getPlayer();
+
+  const bonusDamage = getPlayerBonusDamage();
 
   const { addLog } = useLogStore();
 
@@ -55,28 +61,6 @@ export const PlayerControlPanel: FC = () => {
                     isUsingSkill: !player.state.isUsingSkill,
                     skillId: skill.id,
                   });
-                  // if (player.actionPoints >= skill.cost) {
-                  //   skill.effect(player, setPlayer);
-                  //   setPlayer({
-                  //     ...player,
-                  //     actionPoints: player.actionPoints - skill.cost,
-                  //     skills: player.skills.map((s) =>
-                  //       s.id === skill.id
-                  //         ? { ...s, cooldownCounter: s.cooldown }
-                  //         : s
-                  //     ),
-                  //   });
-                  //   addLog({
-                  //     message: (
-                  //       <>
-                  //         <span className="text-green-500">{player.name}</span>{" "}
-                  //         used{" "}
-                  //         <span className="text-green-500">{skill.name}</span>.
-                  //       </>
-                  //     ),
-                  //     type: "info",
-                  //   });
-                  // }
                 }}
                 disabled={
                   disabled ||
@@ -103,24 +87,43 @@ export const PlayerControlPanel: FC = () => {
           </>
         ) : (
           <>
-            <Button
-              onClick={() => {
-                setPlayerState({
-                  isAttacking: !player.state.isAttacking,
-                  isMoving: false,
-                  isUsingSkill: false,
-                });
-              }}
-              disabled={
-                disabled ||
-                isRoomOver ||
-                player.equipment.weapon === null ||
-                (player.equipment.weapon &&
-                  player.actionPoints < player.equipment.weapon.cost)
-              }
-            >
-              Attack
-            </Button>
+            <div className="relative">
+              <Tooltip active={isAttackButtonHovered}>
+                {player.equipment.weapon ? (
+                  <>
+                    <h2>Weapon attack</h2>
+                    <p>Base DMG: {player.equipment.weapon?.damage}</p>
+                    <p>Bonus DMG: {bonusDamage}</p>
+                    <p>
+                      Total DMG: {player.equipment.weapon?.damage + bonusDamage}
+                    </p>
+                  </>
+                ) : (
+                  <h2>No weapon equipped</h2>
+                )}
+              </Tooltip>
+              <Button
+                onClick={() => {
+                  setPlayerState({
+                    isAttacking: !player.state.isAttacking,
+                    isMoving: false,
+                    isUsingSkill: false,
+                  });
+                }}
+                onMouseEnter={() => setIsAttackButtonHovered(true)}
+                onMouseLeave={() => setIsAttackButtonHovered(false)}
+                disabled={
+                  disabled ||
+                  isRoomOver ||
+                  player.equipment.weapon === null ||
+                  (player.equipment.weapon &&
+                    player.actionPoints < player.equipment.weapon.cost)
+                }
+              >
+                Attack
+              </Button>
+            </div>
+
             <Button
               onClick={() => {
                 setPlayerState({
@@ -169,7 +172,9 @@ const Button: FC<{
   children: string;
   onClick: () => void;
   disabled?: boolean | undefined | null;
-}> = ({ children, onClick, disabled }) => {
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+}> = ({ children, onClick, disabled, onMouseEnter, onMouseLeave }) => {
   return (
     <button
       className={clsx(
@@ -180,6 +185,8 @@ const Button: FC<{
       onClick={() => {
         if (!disabled) onClick();
       }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       disabled={disabled || false}
     >
       {children}
