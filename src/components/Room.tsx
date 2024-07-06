@@ -75,7 +75,15 @@ export const Room: FC<{
         type: "info",
       });
       setIsRoomOver(true);
-      setPlayerActionPoints(STARTING_ACTION_POINTS);
+      setPlayer({
+        ...player,
+        actionPoints: STARTING_ACTION_POINTS,
+        skills: player.skills.map((skill) => ({
+          ...skill,
+          cooldownCounter: skill.cooldown,
+        })),
+        statuses: [],
+      });
     }
   }, [enemies.length]);
 
