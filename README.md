@@ -14,9 +14,9 @@ Combat simulator for Return to Olympus
 - [ ] Player skills
   - [x] Buff Up
   - [x] Petrify (Gorgon's Gaze)
-  - [ ] Lightning
-  - [ ] Teleport
-  - [ ] Cleave
+  - [x] Lightning
+  - [x] Teleport
+  - [ ] Whirlwind
   - [ ] Fireball
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
