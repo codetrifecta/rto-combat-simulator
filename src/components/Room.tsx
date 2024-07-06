@@ -3,6 +3,7 @@ import { Tile } from "./Tile";
 import {
   ENTITY_TYPE,
   ROOM_LENGTH,
+  SKILL_ID,
   SKILL_TYPE,
   STARTING_ACTION_POINTS,
   TILE_SIZE,
@@ -731,13 +732,30 @@ export const Room: FC<{
                 // If skill is single target, highlight tiles that can be affected by the skill
                 const range = skill.range;
 
-                if (
-                  rowIndex >= playerRow - range &&
-                  rowIndex <= playerRow + range &&
-                  columnIndex >= playerCol - range &&
-                  columnIndex <= playerCol + range
-                ) {
-                  isEffectZone = true;
+                // Check for the specific skill's effect zone
+                switch (skill.id) {
+                  case SKILL_ID.GORGONS_GAZE:
+                    // Effect zone is a 5x5 around the player (not including the player)
+                    if (
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
+                  default:
+                    if (
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
                 }
               }
             }
