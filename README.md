@@ -19,7 +19,7 @@ Combat simulator for Return to Olympus
   - [ ] Cleave
   - [ ] Fireball
 - [ ] Enemy attack
-- [ ] Enemy movement (naive)
+- [x] Enemy movement (naive)
 - [ ] Sprites for each of the above
 - [ ] Animations for each of the above
 - [ ] Multiple rooms (floor)

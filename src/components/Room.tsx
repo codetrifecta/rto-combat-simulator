@@ -150,22 +150,35 @@ export const Room: FC<{
     const handleEnemyEndTurn = () => {
       if (
         turnCycle.length > 0 &&
-        turnCycle[0].entityType === ENTITY_TYPE.ENEMY
+        turnCycle[0].entityType === ENTITY_TYPE.ENEMY &&
+        isEnemy(turnCycle[0])
       ) {
         // Simulate enemy action with a timeout
+        const enemy = enemies.find((e) => e.id === turnCycle[0].id);
+
+        if (!enemy) {
+          addLog({ message: "Enemy not found!", type: "error" });
+          return;
+        }
+
+        // For now, end enemy's turn after moving twice to a random adjacent tile
         setTimeout(() => {
-          // End enemy's turn
+          handleEnemyMovement(enemy);
+        }, 1000);
+
+        // End enemy's turn after moving
+        setTimeout(() => {
           addLog({
             message: (
               <>
-                <span className="text-red-500">{turnCycle[0].name}</span> ended
-                their turn.
+                <span className="text-red-500">{enemy.name}</span> ended their
+                turn.
               </>
             ),
             type: "info",
           });
           endTurn();
-        }, 1500);
+        }, 2000);
       }
     };
     handleEnemyEndTurn();
@@ -366,6 +379,89 @@ export const Room: FC<{
       ...player.state,
       isUsingSkill: false,
     });
+  };
+
+  // Handle enemy movement (naive)
+  // For now, just move the enemy to a random adjacent tile
+  const handleEnemyMovement = (enemy: IEnemy) => {
+    const [enemyRow, enemyCol] = roomMatrix.reduce(
+      (acc, row, rowIndex) => {
+        const colIndex = row.findIndex(([tileType, id]) => {
+          if (tileType === TILE_TYPE.ENEMY && id === enemy.id) {
+            return true;
+          }
+          return false;
+        });
+        if (colIndex !== -1) {
+          return [rowIndex, colIndex];
+        }
+        return acc;
+      },
+      [-1, -1]
+    );
+
+    if (enemyRow === -1 || enemyCol === -1) {
+      addLog({ message: "Enemy not found in room matrix!", type: "error" });
+      return;
+    }
+
+    const possibleMoves = [
+      [enemyRow - 1, enemyCol], // Up
+      [enemyRow + 1, enemyCol], // Down
+      [enemyRow, enemyCol - 1], // Left
+      [enemyRow, enemyCol + 1], // Right
+    ];
+
+    let randomMove = possibleMoves[Math.floor(Math.random() * 4)];
+
+    console.log(enemy, [enemyRow, enemyCol], randomMove);
+
+    // Check if random move is outside bounds (ie. outside the room matrix bounds and not an empty tile)
+    // If so, do nothing
+    if (
+      randomMove[0] < 0 ||
+      randomMove[0] >= ROOM_LENGTH ||
+      randomMove[1] < 0 ||
+      randomMove[1] >= ROOM_LENGTH ||
+      roomMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.EMPTY
+    ) {
+      // Do nothing if random move is out of bounds or not an empty tile
+      randomMove = [enemyRow, enemyCol];
+      return;
+    }
+
+    // Update room matrix to move enemy to random adjacent tile
+    if (randomMove[0] >= 0 && randomMove[0] < ROOM_LENGTH) {
+      if (randomMove[1] >= 0 && randomMove[1] < ROOM_LENGTH) {
+        setRoomMatrix((prevRoomMatrix) => {
+          const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
+            (row, rowIndex) => {
+              return row.map(([tileType, id], columnIndex) => {
+                if (rowIndex === enemyRow && columnIndex === enemyCol) {
+                  return [TILE_TYPE.EMPTY, 0];
+                } else if (
+                  rowIndex === randomMove[0] &&
+                  columnIndex === randomMove[1]
+                ) {
+                  return [TILE_TYPE.ENEMY, enemy.id];
+                }
+                return [tileType, id];
+              });
+            }
+          );
+          return newRoomMatrix;
+        });
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{enemy.name}</span> moved to tile (
+              {randomMove[1]}, {randomMove[0]}).
+            </>
+          ),
+          type: "info",
+        });
+      }
+    }
   };
 
   return (
