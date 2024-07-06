@@ -136,7 +136,7 @@ export const Room: FC<{
   }, [player.actionPoints, isRoomOver, enemies.length]);
 
   // When turn cycle changes,
-  // Handle enemy turn (for now, just end their turn after a timeout)
+  // Handle enemy turn (for now, move to a random adjacent tile and attack player if in range)
   useEffect(() => {
     // Handle enemy's action and end turn
     const handleEnemyEndTurn = () => {
@@ -153,71 +153,117 @@ export const Room: FC<{
           return;
         }
 
-        let totalTime = 0;
+        // console.log(enemy);
 
         // For now, end enemy's turn after moving once to a random adjacent tile and attacking the player if they are in range
+        let totalTime = 0; // Total time for enemy's turn
 
         // Check if enemy has a status effect that prevents them from moving
-        const cannotMove = enemy.statuses.find(
+        const cannotMove = enemy.statuses.some(
           (status) => status.effect.canMove === false
         );
 
+        // Check if enemy has a status effect that prevents them from attacking
+        const cannotAttack = enemy.statuses.some(
+          (status) => status.effect.canAttack === false
+        );
+
+        // console.log("before moving", getEntityPosition(enemy, roomMatrix));
+
+        let enemyPosition: [number, number] | undefined = getEntityPosition(
+          enemy,
+          roomMatrix
+        );
+
+        const moveTime = 1000;
+        const attackTime = 1000;
+        const endTurnTime = 2000;
+
         // Move enemy if they can move
-        totalTime += 1500;
-        if (!cannotMove) {
-          setTimeout(() => {
-            handleEnemyMovement(enemy);
-          }, totalTime);
-        } else {
+        totalTime += moveTime;
+
+        if (cannotMove && cannotAttack) {
           setTimeout(() => {
             addLog({
               message: (
                 <>
                   <span className="text-red-500">{enemy.name}</span> is unable
-                  to move.
+                  to move or attack.
                 </>
               ),
               type: "info",
             });
-          }, totalTime);
-        }
+          }, moveTime);
+        } else {
+          if (!cannotMove) {
+            setTimeout(() => {
+              enemyPosition = handleEnemyMovement(enemy);
 
-        // Check if enemy is in range to attack player
-        const [playerRow, playerCol] = playerPosition;
-        const [enemyRow, enemyCol] = getEntityPosition(enemy, roomMatrix);
+              // Make enemy attack player if they can attack
+              if (!cannotAttack) {
+                totalTime += attackTime;
 
-        const canAttackPlayer =
-          Math.abs(playerRow - enemyRow) <= enemy.range &&
-          Math.abs(playerCol - enemyCol) <= enemy.range;
+                setTimeout(() => {
+                  if (!enemyPosition) {
+                    console.error("Enemy position not found!");
+                    return;
+                  }
+                  handleEnemyAttack(enemy, enemyPosition, playerPosition);
+                }, attackTime);
+              } else {
+                console.log("enemy cannot attack");
+                setTimeout(() => {
+                  addLog({
+                    message: (
+                      <>
+                        <span className="text-red-500">{enemy.name}</span> is
+                        unable to attack.
+                      </>
+                    ),
+                    type: "info",
+                  });
+                }, attackTime);
+              }
+            }, moveTime);
+          } else {
+            setTimeout(() => {
+              addLog({
+                message: (
+                  <>
+                    <span className="text-red-500">{enemy.name}</span> is unable
+                    to move.
+                  </>
+                ),
+                type: "info",
+              });
 
-        // Attack player if they are in enemy's range
-        if (canAttackPlayer) {
-          totalTime += 1500;
-          setTimeout(() => {
-            const baseDamage = enemy.damage;
+              // Make enemy attack player if they can attack
+              if (!cannotAttack) {
+                totalTime += attackTime;
 
-            const statusDamageBonus = enemy.statuses.reduce((acc, status) => {
-              return acc + status.effect.damageBonus;
-            }, 0);
-
-            const totalDamage = baseDamage + statusDamageBonus;
-
-            setPlayer({
-              ...player,
-              health: player.health - totalDamage,
-            });
-
-            addLog({
-              message: (
-                <>
-                  <span className="text-red-500">{enemy.name}</span> attacked{" "}
-                  <span className="text-green-500">{player.name}</span> for{" "}
-                  {totalDamage} damage.
-                </>
-              ),
-              type: "info",
-            });
-          }, totalTime);
+                setTimeout(() => {
+                  if (!enemyPosition) {
+                    console.error("Enemy position not found!");
+                    return;
+                  }
+                  handleEnemyAttack(enemy, enemyPosition, playerPosition);
+                }, attackTime);
+              } else {
+                console.log("enemy cannot attack");
+                setTimeout(() => {
+                  addLog({
+                    message: (
+                      <>
+                        <span className="text-red-500">{enemy.name}</span> is
+                        unable to attack.
+                      </>
+                    ),
+                    type: "info",
+                  });
+                }, attackTime);
+              }
+            }, moveTime);
+          }
         }
 
         // End enemy's turn after moving and attacking (if they can)
@@ -232,7 +278,7 @@ export const Room: FC<{
             type: "info",
           });
           endTurn();
-        }, totalTime + 1000);
+        }, totalTime + endTurnTime);
       }
     };
     handleEnemyEndTurn();
@@ -437,7 +483,7 @@ export const Room: FC<{
 
   // Handle enemy movement (naive)
   // For now, just move the enemy to a random adjacent tile
-  const handleEnemyMovement = (enemy: IEnemy) => {
+  const handleEnemyMovement = (enemy: IEnemy): [number, number] | undefined => {
     const [enemyRow, enemyCol] = roomMatrix.reduce(
       (acc, row, rowIndex) => {
         const colIndex = row.findIndex(([tileType, id]) => {
@@ -459,16 +505,16 @@ export const Room: FC<{
       return;
     }
 
-    const possibleMoves = [
+    const possibleMoves: [number, number][] = [
       [enemyRow - 1, enemyCol], // Up
       [enemyRow + 1, enemyCol], // Down
       [enemyRow, enemyCol - 1], // Left
       [enemyRow, enemyCol + 1], // Right
     ];
 
-    let randomMove = possibleMoves[Math.floor(Math.random() * 4)];
+    const randomMove = possibleMoves[Math.floor(Math.random() * 4)];
 
-    console.log(enemy, [enemyRow, enemyCol], randomMove);
+    // console.log("handling enemy movement", enemy, randomMove);
 
     // Check if random move is outside bounds (ie. outside the room matrix bounds and not an empty tile)
     // If so, do nothing
@@ -480,7 +526,6 @@ export const Room: FC<{
       roomMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.EMPTY
     ) {
       // Do nothing if random move is out of bounds or not an empty tile
-      randomMove = [enemyRow, enemyCol];
       return;
     }
 
@@ -515,6 +560,56 @@ export const Room: FC<{
           type: "info",
         });
       }
+    }
+
+    return randomMove;
+  };
+
+  // Handle enemy attack (naive)
+  // For now, just attack the player if they are in range
+  const handleEnemyAttack = (
+    enemy: IEnemy,
+    enemyPosition: [number, number],
+    playerPosition: [number, number]
+  ) => {
+    const [enemyRow, enemyCol] = enemyPosition;
+    const [playerRow, playerCol] = playerPosition;
+
+    if (!enemyRow || !enemyCol || !playerRow || !playerCol) {
+      addLog({ message: "Enemy or player position not found!", type: "error" });
+      return;
+    }
+
+    // console.log("enemy attack position", enemyRow, enemyCol);
+
+    const canAttackPlayer =
+      Math.abs(playerRow - enemyRow) <= enemy.range &&
+      Math.abs(playerCol - enemyCol) <= enemy.range;
+
+    if (canAttackPlayer) {
+      const baseDamage = enemy.damage;
+
+      const statusDamageBonus = enemy.statuses.reduce((acc, status) => {
+        return acc + status.effect.damageBonus;
+      }, 0);
+
+      const totalDamage = baseDamage + statusDamageBonus;
+
+      setPlayer({
+        ...player,
+        health: player.health - totalDamage,
+      });
+
+      addLog({
+        message: (
+          <>
+            <span className="text-red-500">{enemy.name}</span> attacked{" "}
+            <span className="text-green-500">{player.name}</span> for{" "}
+            {totalDamage} damage.
+          </>
+        ),
+        type: "info",
+      });
     }
   };
 

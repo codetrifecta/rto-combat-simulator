@@ -91,7 +91,7 @@ export const STATUSES: IStatus[] = [
     effect: {
       damageBonus: 0,
       canMove: false,
-      canAttack: true,
+      canAttack: false,
     },
   },
 ];
