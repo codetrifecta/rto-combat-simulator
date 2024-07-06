@@ -70,11 +70,11 @@ export const PlayerControlPanel: FC = () => {
                 <Tooltip active={areSkillButtonsHovered[skill.id]}>
                   <h2>{skill.name}</h2>
                   <p>{skill.description}</p>
-                  {skill.damage && <p>Base DMG: {skill.damage}</p>}
-                  {skill.damage && <p>Bonus DMG: {bonusDamage}</p>}
-                  {skill.damage && (
+                  {skill.damage ? <p>Base DMG: {skill.damage}</p> : null}
+                  {skill.damage ? <p>Bonus DMG: {bonusDamage}</p> : null}
+                  {skill.damage ? (
                     <p>Total DMG: {skill.damage + bonusDamage}</p>
-                  )}
+                  ) : null}
                   <p>Cost: {skill.cost} AP</p>
                   <p>Cooldown: {skill.cooldown} turns</p>
                   {skill.cooldownCounter > 0 && (
