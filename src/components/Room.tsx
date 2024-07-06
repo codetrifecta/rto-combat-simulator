@@ -6,6 +6,8 @@ import {
   SKILL_ID,
   SKILL_TYPE,
   STARTING_ACTION_POINTS,
+  STATUSES,
+  STATUS_ID,
   TILE_SIZE,
   TILE_TYPE,
 } from "../constants";
@@ -323,6 +325,10 @@ export const Room: FC<{
       return;
     }
 
+    const statusDamageBonus = player.statuses.reduce((acc, status) => {
+      return acc + status.effect.damageBonus;
+    }, 0);
+
     if (player.state.isAttacking) {
       if (!player.equipment.weapon) {
         addLog({ message: "Player has no weapon equipped!", type: "error" });
@@ -330,10 +336,6 @@ export const Room: FC<{
       }
 
       const weaponDamage = player.equipment.weapon.damage;
-
-      const statusDamageBonus = player.statuses.reduce((acc, status) => {
-        return acc + status.effect.damageBonus;
-      }, 0);
 
       const totalDamage = weaponDamage + statusDamageBonus;
 
@@ -380,26 +382,34 @@ export const Room: FC<{
         return;
       }
 
-      const affectedEnemy = skill.effect(enemy);
+      const totalDamage = skill.damage + statusDamageBonus;
 
-      if (!affectedEnemy) {
-        addLog({ message: "Skill did not return anything!", type: "error" });
-        return;
-      }
+      const affectedEnemy = { ...enemy };
 
-      if (!isEnemy(affectedEnemy)) {
-        addLog({ message: "Skill effect did not return enemy", type: "error" });
-        return;
-      }
+      switch (skill.id) {
+        case SKILL_ID.GORGONS_GAZE: {
+          // Petrify enemy
+          const petrifedStatus = STATUSES.find(
+            (s) => s.id === STATUS_ID.PETRIFIED
+          );
 
-      setEnemies(
-        enemies.map((e) => {
-          if (e.id === id) {
-            return affectedEnemy;
+          if (!petrifedStatus) {
+            addLog({ message: "Petrified status not found!", type: "error" });
+            return;
           }
-          return e;
-        })
-      );
+
+          affectedEnemy.statuses.push(petrifedStatus);
+          break;
+        }
+        case SKILL_ID.LIGHTNING: {
+          // Deal damage to enemy
+          affectedEnemy.health = affectedEnemy.health - totalDamage;
+          break;
+        }
+        default:
+          break;
+      }
+
       addLog({
         message: (
           <>
@@ -410,6 +420,40 @@ export const Room: FC<{
         ),
         type: "info",
       });
+
+      // Check if enemy is defeated
+      if (affectedEnemy.health <= 0) {
+        setEnemies(enemies.filter((e) => e.id !== id));
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{affectedEnemy.name}</span> took{" "}
+              {totalDamage} damage and has been defeated!
+            </>
+          ),
+          type: "info",
+        });
+      } else {
+        setEnemies(
+          enemies.map((e) => {
+            if (e.id === id) {
+              return affectedEnemy;
+            }
+            return e;
+          })
+        );
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{affectedEnemy.name}</span> took{" "}
+              {totalDamage} damage.
+            </>
+          ),
+          type: "info",
+        });
+      }
+
+      // Decrease player's action points and set skill cooldown
       setPlayer({
         ...player,
         actionPoints: player.actionPoints - skill.cost,
@@ -476,7 +520,26 @@ export const Room: FC<{
       return;
     }
 
-    const newPlayer = skill.effect(player);
+    const newPlayer = {
+      ...player,
+    };
+
+    // Handle skill effect
+    switch (skill.id) {
+      case SKILL_ID.BUFF_UP: {
+        const buffedStatus = STATUSES.find((s) => s.id === STATUS_ID.BUFFED);
+
+        if (!buffedStatus) {
+          addLog({ message: "Buffed status not found!", type: "error" });
+          return;
+        }
+
+        newPlayer.statuses.push(buffedStatus);
+        break;
+      }
+      default:
+        break;
+    }
 
     if (!newPlayer) {
       addLog({ message: "Skill did not return anything!", type: "error" });
@@ -734,24 +797,13 @@ export const Room: FC<{
 
                 // Check for the specific skill's effect zone
                 switch (skill.id) {
-                  case SKILL_ID.GORGONS_GAZE:
-                    // Effect zone is a 5x5 around the player (not including the player)
+                  default:
                     if (
                       rowIndex >= playerRow - range &&
                       rowIndex <= playerRow + range &&
                       columnIndex >= playerCol - range &&
                       columnIndex <= playerCol + range &&
                       !(rowIndex === playerRow && columnIndex === playerCol)
-                    ) {
-                      isEffectZone = true;
-                    }
-                    break;
-                  default:
-                    if (
-                      rowIndex >= playerRow - range &&
-                      rowIndex <= playerRow + range &&
-                      columnIndex >= playerCol - range &&
-                      columnIndex <= playerCol + range
                     ) {
                       isEffectZone = true;
                     }
