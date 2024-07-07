@@ -53,22 +53,22 @@ export const TurnInfo: FC<{
 
     if (entity.entityType === ENTITY_TYPE.PLAYER) {
       return (
-        <h3>
+        <>
           <span className="text-green-500">{entity.name}'s</span> turn
-        </h3>
+        </>
       );
     } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
       return (
-        <h3>
+        <>
           <span className="text-red-500">{entity.name}'s</span> turn
-        </h3>
+        </>
       );
     }
 
     return (
-      <h3>
+      <>
         <span>{entity.name}'s</span> turn
-      </h3>
+      </>
     );
   };
 
