@@ -135,7 +135,9 @@ const EntityCard: FC<{ entity: IEntity | null; active: boolean }> = ({
         })}
       >
         <h3>{entity.name}</h3>
-        <h4>Health: {entity.health}</h4>
+        <h4>
+          HP: {entity.health} / {entity.maxHealth}
+        </h4>
       </div>
       {/* Display statuses if present */}
       <div className="mt-3 flex flex-wrap justify-center items-center">

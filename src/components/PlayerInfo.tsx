@@ -31,12 +31,14 @@ export const PlayerInfo: FC = () => {
             "mr-10": !isRoomOver,
           })}
         >
-          <p className="mr-2">Health:</p>
-          <p>{player.health} / 10</p>
+          <p className="mr-2">HP:</p>
+          <p>
+            {player.health} / {player.maxHealth}
+          </p>
         </div>
         {!isRoomOver && (
           <div className="flex items-center">
-            <p className="mr-2">Action Points: </p>
+            <p className="mr-2">AP: </p>
             <ActionPoints />
           </div>
         )}
