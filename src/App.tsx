@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PlayerControlPanel } from "./components/PlayerControlPanel";
 import { IEntity } from "./types";
 import { Room } from "./components/Room";
-import { GameInfo } from "./components/GameInfo";
-// import { ENTITY_TYPE } from "./constants";
+import { TurnInfo } from "./components/TurnInfo";
 import { PlayerInfo } from "./components/PlayerInfo";
 import { useGameStateStore } from "./store/game";
 import { usePlayerStore } from "./store/player";
@@ -70,8 +69,8 @@ function App() {
       </header>
 
       {/* Game Info (Currently only displays turn cycle) */}
-      <section className="mt-10 mb-8">
-        <GameInfo
+      <section className="mt-10 mb-6">
+        <TurnInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
         />

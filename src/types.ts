@@ -5,6 +5,7 @@ export interface IEntity {
   name: string;
   entityType: ENTITY_TYPE;
   health: number;
+  maxHealth: number;
   statuses: IStatus[];
   damageBonus: number;
 }
