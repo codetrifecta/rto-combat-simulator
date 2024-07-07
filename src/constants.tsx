@@ -126,10 +126,16 @@ export const STATUSES: IStatus[] = [
   },
 ];
 
+export enum WEAPON_TYPE {
+  MELEE = "melee",
+  RANGED = "ranged",
+}
+
 export const WEAPONS: IWeapon[] = [
   {
     id: 1,
     name: "Fists",
+    type: WEAPON_TYPE.MELEE,
     damage: 1,
     range: 1,
     cost: 1,
@@ -137,6 +143,7 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 2,
     name: "Club",
+    type: WEAPON_TYPE.MELEE,
     damage: 2,
     range: 1,
     cost: 1,
@@ -144,6 +151,7 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 3,
     name: "Greatsword",
+    type: WEAPON_TYPE.MELEE,
     damage: 3,
     range: 2,
     cost: 2,
@@ -151,6 +159,7 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 4,
     name: "Bow",
+    type: WEAPON_TYPE.RANGED,
     damage: 2,
     range: 4,
     cost: 2,
@@ -158,6 +167,7 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 5,
     name: "Magic Staff",
+    type: WEAPON_TYPE.RANGED,
     damage: 1,
     range: 3,
     cost: 1,
@@ -165,6 +175,7 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 6,
     name: "Test Hammer of Doom",
+    type: WEAPON_TYPE.MELEE,
     damage: 100,
     range: 100,
     cost: 1,
