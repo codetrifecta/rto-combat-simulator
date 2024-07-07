@@ -921,7 +921,8 @@ export const Room: FC<{
                   rowIndex >= playerRow - range &&
                   rowIndex <= playerRow + range &&
                   columnIndex >= playerCol - range &&
-                  columnIndex <= playerCol + range
+                  columnIndex <= playerCol + range &&
+                  !(rowIndex === playerRow && columnIndex === playerCol)
                 ) {
                   isEffectZone = true;
                 }
