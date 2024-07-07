@@ -193,6 +193,11 @@ export const PlayerControlPanel: FC = () => {
             <Button
               onClick={() => {
                 setOpenSkills(true);
+                setPlayerState({
+                  isAttacking: false,
+                  isMoving: false,
+                  isUsingSkill: false,
+                });
               }}
               disabled={disabled || isRoomOver}
             >
