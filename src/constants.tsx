@@ -31,6 +31,7 @@ export enum SKILL_ID {
   GORGONS_GAZE = 2,
   LIGHTNING = 3,
   TELEPORT = 4,
+  WHIRLWIND = 5,
 }
 
 export const SKILLS: ISkill[] = [
@@ -61,7 +62,7 @@ export const SKILLS: ISkill[] = [
     id: SKILL_ID.LIGHTNING,
     name: "Lightning",
     skillType: SKILL_TYPE.ST,
-    description: "Strike lightning dealing damage from the skies.",
+    description: "Strike enemies with lighning from the skies.",
     damage: 3,
     range: 3,
     cooldown: 1,
@@ -78,6 +79,18 @@ export const SKILLS: ISkill[] = [
     cooldown: 4,
     cooldownCounter: 0,
     cost: 1,
+  },
+  {
+    id: SKILL_ID.WHIRLWIND,
+    name: "Whirlwind",
+    skillType: SKILL_TYPE.AOE,
+    description:
+      "Spin around dealing damage to all adjacent enemies. Damage and range is dependent on the player's current weapon.",
+    damage: 1,
+    range: 1,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
   },
 ];
 
