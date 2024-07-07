@@ -41,7 +41,11 @@ export const InventoryChooser: FC = () => {
                   key={weapon.id}
                   weapon={weapon}
                   active
-                  onClick={() => setPlayerWeapon(null)}
+                  onClick={() => {
+                    if (player.state.isAttacking === false) {
+                      setPlayerWeapon(null);
+                    }
+                  }}
                 />
               );
             } else {
@@ -50,7 +54,11 @@ export const InventoryChooser: FC = () => {
                   key={weapon.id}
                   weapon={weapon}
                   active={false}
-                  onClick={() => setPlayerWeapon(weapon)}
+                  onClick={() => {
+                    if (player.state.isAttacking === false) {
+                      setPlayerWeapon(weapon);
+                    }
+                  }}
                 />
               );
             }

@@ -81,16 +81,22 @@ export const Tile: FC<{
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
       className={clsx("relative border-2 border-gray ", classNames, {
-        // Only use cursor-pointer non-wall tiles
-        "cursor-pointer": tileType !== TILE_TYPE.WALL,
+        // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
+        "cursor-pointer":
+          (tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR) ||
+          (tileType === TILE_TYPE.DOOR && isRoomOver),
+        // "cursor-default": tileType === TILE_TYPE.DOOR && !isRoomOver,
 
         // Only put border black on wall tiles
-        "hover:border-black": tileType == TILE_TYPE.EMPTY,
+        "hover:border-black":
+          tileType == TILE_TYPE.EMPTY ||
+          (tileType == TILE_TYPE.DOOR && isRoomOver),
 
         // Tile type color
         "bg-white": tileType === TILE_TYPE.EMPTY,
         "bg-gray-500": tileType === TILE_TYPE.WALL,
         "bg-yellow-500": tileType === TILE_TYPE.DOOR,
+
         "bg-green-500 z-10 hover:shadow-intense-green":
           tileType === TILE_TYPE.PLAYER,
         "bg-red-500 z-10 hover:shadow-intense-red":
