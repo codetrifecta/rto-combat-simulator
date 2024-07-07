@@ -69,7 +69,7 @@ function App() {
       </header>
 
       {/* Game Info (Currently only displays turn cycle) */}
-      <section className="mt-10 mb-8">
+      <section className="mt-10 mb-6">
         <TurnInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
