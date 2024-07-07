@@ -1,4 +1,4 @@
-import { ISkill, IStatus } from "./types";
+import { ISkill, IStatus, IWeapon } from "./types";
 
 export const TILE_SIZE = 45; // Default to 50
 
@@ -123,5 +123,50 @@ export const STATUSES: IStatus[] = [
       canMove: false,
       canAttack: false,
     },
+  },
+];
+
+export const WEAPONS: IWeapon[] = [
+  {
+    id: 1,
+    name: "Fists",
+    damage: 1,
+    range: 1,
+    cost: 1,
+  },
+  {
+    id: 2,
+    name: "Club",
+    damage: 2,
+    range: 1,
+    cost: 1,
+  },
+  {
+    id: 3,
+    name: "Greatsword",
+    damage: 3,
+    range: 2,
+    cost: 2,
+  },
+  {
+    id: 4,
+    name: "Bow",
+    damage: 2,
+    range: 4,
+    cost: 2,
+  },
+  {
+    id: 5,
+    name: "Magic Staff",
+    damage: 1,
+    range: 3,
+    cost: 1,
+  },
+  {
+    id: 6,
+    name: "Test Hammer of Doom",
+    damage: 100,
+    range: 100,
+    cost: 1,
   },
 ];
