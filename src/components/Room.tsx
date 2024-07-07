@@ -10,6 +10,7 @@ import {
   STATUS_ID,
   TILE_SIZE,
   TILE_TYPE,
+  WEAPON_TYPE,
 } from "../constants";
 import { IEnemy, IEntity } from "../types";
 import { useGameStateStore } from "../store/game";
@@ -898,6 +899,31 @@ export const Room: FC<{
                       isEffectZone = true;
                     }
                     break;
+                }
+              } else if (skill.skillType === SKILL_TYPE.AOE) {
+                // If skill is AOE, highlight tiles that can be affected by the skill
+                let range = skill.range;
+
+                const weapon = player.equipment.weapon;
+
+                // Range for weapon dependent skills
+                if (weapon) {
+                  if (weapon.type === WEAPON_TYPE.MELEE) {
+                    if (skill.id === SKILL_ID.WHIRLWIND) {
+                      range = weapon.range;
+                    }
+                  } else {
+                    range = 1;
+                  }
+                }
+
+                if (
+                  rowIndex >= playerRow - range &&
+                  rowIndex <= playerRow + range &&
+                  columnIndex >= playerCol - range &&
+                  columnIndex <= playerCol + range
+                ) {
+                  isEffectZone = true;
                 }
               }
             }
