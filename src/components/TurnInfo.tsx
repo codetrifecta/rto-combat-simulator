@@ -7,7 +7,7 @@ import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
 import { StatusEffect } from "./StatusEffect";
 
-export const GameInfo: FC<{
+export const TurnInfo: FC<{
   currentHoveredEntity: IEntity | null;
   setCurrentHoveredEntity: (entity: IEntity | null) => void;
 }> = ({ currentHoveredEntity, setCurrentHoveredEntity }) => {
