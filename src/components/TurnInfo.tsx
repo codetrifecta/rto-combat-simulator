@@ -46,38 +46,67 @@ export const TurnInfo: FC<{
     });
   }, [enemies, player, turnCycle]);
 
-  return (
-    <div className="w-full mx-auto flex justify-center">
-      <div
-        className="mr-5"
-        onMouseEnter={() => setCurrentHoveredEntity(currentTurnEntity)}
-        onMouseLeave={() => setCurrentHoveredEntity(null)}
-      >
-        <EntityCard entity={currentTurnEntity} active={true} />
-      </div>
-      {nextTurnEnties.length >= 1 &&
-        nextTurnEnties.map((entity) => {
-          if (!entity) {
-            return null;
-          }
+  const renderEntityTurnText = (entity: IEntity | null) => {
+    if (!entity) {
+      return "";
+    }
 
-          return (
-            <div
-              key={entity.entityType + entity.id}
-              className="mr-1"
-              onMouseEnter={() => setCurrentHoveredEntity(entity)}
-              onMouseLeave={() => setCurrentHoveredEntity(null)}
-            >
-              <EntityCard
-                entity={entity}
-                active={
-                  currentHoveredEntity?.entityType === entity.entityType &&
-                  currentHoveredEntity?.id === entity.id
-                }
-              />
-            </div>
-          );
-        })}
+    if (entity.entityType === ENTITY_TYPE.PLAYER) {
+      return (
+        <h3>
+          <span className="text-green-500">{entity.name}'s</span> turn
+        </h3>
+      );
+    } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
+      return (
+        <h3>
+          <span className="text-red-500">{entity.name}'s</span> turn
+        </h3>
+      );
+    }
+
+    return (
+      <h3>
+        <span>{entity.name}'s</span> turn
+      </h3>
+    );
+  };
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="w-full h-[130px] mx-auto flex justify-center">
+        <div
+          className="mr-5"
+          onMouseEnter={() => setCurrentHoveredEntity(currentTurnEntity)}
+          onMouseLeave={() => setCurrentHoveredEntity(null)}
+        >
+          <EntityCard entity={currentTurnEntity} active={true} />
+        </div>
+        {nextTurnEnties.length >= 1 &&
+          nextTurnEnties.map((entity) => {
+            if (!entity) {
+              return null;
+            }
+
+            return (
+              <div
+                key={entity.entityType + entity.id}
+                className="mr-1"
+                onMouseEnter={() => setCurrentHoveredEntity(entity)}
+                onMouseLeave={() => setCurrentHoveredEntity(null)}
+              >
+                <EntityCard
+                  entity={entity}
+                  active={
+                    currentHoveredEntity?.entityType === entity.entityType &&
+                    currentHoveredEntity?.id === entity.id
+                  }
+                />
+              </div>
+            );
+          })}
+      </div>
+      <h2>{renderEntityTurnText(currentTurnEntity)}</h2>
     </div>
   );
 };
@@ -109,13 +138,12 @@ const EntityCard: FC<{ entity: IEntity | null; active: boolean }> = ({
         <h4>Health: {entity.health}</h4>
       </div>
       {/* Display statuses if present */}
-      {entity.statuses.length > 0 && (
-        <div className="mt-3 flex flex-wrap justify-center items-center">
-          {entity.statuses.map((status) => (
+      <div className="mt-3 flex flex-wrap justify-center items-center">
+        {entity.statuses.length > 0 &&
+          entity.statuses.map((status) => (
             <StatusEffect key={status.id} status={status} />
           ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
