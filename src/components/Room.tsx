@@ -164,6 +164,55 @@ export const Room: FC<{
           return;
         }
 
+        // Apply any status effects that affect the enemy at the start of their turn (e.g. damage over time)
+        const affectedEnemy = { ...enemy };
+
+        const burnedDoT = affectedEnemy.statuses.find(
+          (status) => status.id === STATUS_ID.BURNED
+        );
+
+        if (burnedDoT) {
+          const totalDamage = burnedDoT.effect.damageOverTime;
+
+          affectedEnemy.health -= totalDamage;
+
+          if (affectedEnemy.health <= 0) {
+            setTimeout(() => {
+              setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+              addLog({
+                message: (
+                  <>
+                    <span className="text-red-500">{affectedEnemy.name}</span>{" "}
+                    took {totalDamage} damage from burn and has been defeated!
+                  </>
+                ),
+                type: "info",
+              });
+              endTurn();
+            }, 1000);
+
+            return;
+          } else {
+            setEnemies(
+              enemies.map((e) => {
+                if (e.id === affectedEnemy.id) {
+                  return affectedEnemy;
+                }
+                return e;
+              })
+            );
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{affectedEnemy.name}</span>{" "}
+                  took {totalDamage} damage from burn.
+                </>
+              ),
+              type: "info",
+            });
+          }
+        }
+
         // console.log(enemy);
 
         // For now, end enemy's turn after moving once to a random adjacent tile and attacking the player if they are in range
@@ -208,7 +257,7 @@ export const Room: FC<{
         } else {
           if (!cannotMove) {
             setTimeout(() => {
-              enemyPosition = handleEnemyMovement(enemy);
+              enemyPosition = handleEnemyMovement(affectedEnemy);
 
               // Make enemy attack player if they can attack
               if (!cannotAttack) {
@@ -219,7 +268,11 @@ export const Room: FC<{
                     console.error("Enemy position not found!");
                     return;
                   }
-                  handleEnemyAttack(enemy, enemyPosition, playerPosition);
+                  handleEnemyAttack(
+                    affectedEnemy,
+                    enemyPosition,
+                    playerPosition
+                  );
                 }, attackTime);
               } else {
                 console.log("enemy cannot attack");
@@ -257,7 +310,11 @@ export const Room: FC<{
                     console.error("Enemy position not found!");
                     return;
                   }
-                  handleEnemyAttack(enemy, enemyPosition, playerPosition);
+                  handleEnemyAttack(
+                    affectedEnemy,
+                    enemyPosition,
+                    playerPosition
+                  );
                 }, attackTime);
               } else {
                 console.log("enemy cannot attack");
@@ -294,7 +351,7 @@ export const Room: FC<{
 
           // Update enemy with new statuses
           const newEnemy = {
-            ...enemy,
+            ...affectedEnemy,
             statuses: filteredStatuses,
           };
 
@@ -623,7 +680,7 @@ export const Room: FC<{
     switch (skill.id) {
       case SKILL_ID.WHIRLWIND: {
         // Within target zones, deal damage to enemies
-        console.log("target zones", targetZones.current);
+        // console.log("target zones", targetZones.current);
 
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
         const enemiesInTargetZones: IEnemy[] = [];
@@ -711,7 +768,7 @@ export const Room: FC<{
       }
       case SKILL_ID.FIREBALL: {
         // Within target zones, deal damage to enemies
-        console.log("target zones for fireball", targetZones.current);
+        // console.log("target zones for fireball", targetZones.current);
 
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
         const enemiesInTargetZones: IEnemy[] = [];
