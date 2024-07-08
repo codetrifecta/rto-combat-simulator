@@ -11,14 +11,14 @@ Combat simulator for Return to Olympus
 - [x] Logging
 - [x] Inventory
 - [x] Player movement (naive)
-- [ ] Player skills
+- [x] Player skills
   - [x] Buff Up
-  - [ ] Ironflesh
+  - [x] Ironflesh
   - [x] Petrify (Gorgon's Gaze)
   - [x] Lightning
   - [x] Teleport
   - [x] Whirlwind
-  - [ ] Fireball
+  - [x] Fireball
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
 - [ ] Sprites for each of the above
