@@ -546,6 +546,19 @@ export const Room: FC<{
         newPlayer.statuses.push(buffedStatus);
         break;
       }
+      case SKILL_ID.IRONFLESH: {
+        const stoneSkinStatus = STATUSES.find(
+          (s) => s.id === STATUS_ID.STONE_SKIN
+        );
+
+        if (!stoneSkinStatus) {
+          addLog({ message: "Stone Skin status not found!", type: "error" });
+          return;
+        }
+
+        newPlayer.statuses.push(stoneSkinStatus);
+        break;
+      }
       default:
         break;
     }
@@ -896,7 +909,17 @@ export const Room: FC<{
         return acc + status.effect.damageBonus;
       }, 0);
 
-      const totalDamage = baseDamage + statusDamageBonus;
+      const playerIncomingDamageReduction = player.statuses.reduce(
+        (acc, status) => {
+          return acc + status.effect.incomingDamageReduction;
+        },
+        0
+      );
+
+      let totalDamage =
+        baseDamage + statusDamageBonus - playerIncomingDamageReduction;
+
+      if (totalDamage < 0) totalDamage = 0;
 
       setPlayer({
         ...player,
