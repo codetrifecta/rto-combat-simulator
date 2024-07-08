@@ -32,6 +32,7 @@ export enum SKILL_ID {
   LIGHTNING = 3,
   TELEPORT = 4,
   WHIRLWIND = 5,
+  IRONFLESH = 6,
 }
 
 export const SKILLS: ISkill[] = [
@@ -92,11 +93,24 @@ export const SKILLS: ISkill[] = [
     cooldownCounter: 0,
     cost: 2,
   },
+  {
+    id: SKILL_ID.IRONFLESH,
+    name: "Ironflesh",
+    skillType: SKILL_TYPE.SELF,
+    description:
+      "Applies Stone Skin on self for 3 turns. Stone Skin decreases all incoming damage by 3.",
+    damage: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
 ];
 
 export const STATUS_ID = {
   BUFFED: 1,
   PETRIFIED: 2,
+  STONE_SKIN: 3,
 };
 
 export const STATUSES: IStatus[] = [
@@ -108,6 +122,7 @@ export const STATUSES: IStatus[] = [
     durationCounter: 3,
     effect: {
       damageBonus: 2,
+      incomingDamageReduction: 0,
       canMove: true,
       canAttack: true,
     },
@@ -120,8 +135,22 @@ export const STATUSES: IStatus[] = [
     durationCounter: 3,
     effect: {
       damageBonus: 0,
+      incomingDamageReduction: 0,
       canMove: false,
       canAttack: false,
+    },
+  },
+  {
+    id: STATUS_ID.STONE_SKIN,
+    name: "Stone Skin",
+    description: "Decreases all incoming damage by 3 for 3 turns.",
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      damageBonus: 0,
+      incomingDamageReduction: 3,
+      canMove: true,
+      canAttack: true,
     },
   },
 ];
