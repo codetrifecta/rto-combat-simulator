@@ -560,13 +560,6 @@ export const Room: FC<{
       return;
     }
 
-    setPlayer({
-      ...newPlayer,
-      actionPoints: player.actionPoints - skill.cost,
-      skills: player.skills.map((s) =>
-        s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
-      ),
-    });
     addLog({
       message: (
         <>
@@ -576,9 +569,16 @@ export const Room: FC<{
       ),
       type: "info",
     });
-    setPlayerState({
-      ...player.state,
-      isUsingSkill: false,
+    setPlayer({
+      ...newPlayer,
+      state: {
+        ...player.state,
+        isUsingSkill: false,
+      },
+      actionPoints: player.actionPoints - skill.cost,
+      skills: player.skills.map((s) =>
+        s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+      ),
     });
   };
 
@@ -624,8 +624,6 @@ export const Room: FC<{
             enemiesInTargetZones.push(enemy);
           }
         });
-
-        console.log("enemies in target zones", enemiesInTargetZones);
 
         // Update the enemies with the damage dealt
 
@@ -681,6 +679,17 @@ export const Room: FC<{
         });
 
         setEnemies(newEnemies);
+        setPlayer({
+          ...player,
+          state: {
+            ...player.state,
+            isUsingSkill: false,
+          },
+          actionPoints: player.actionPoints - skill.cost,
+          skills: player.skills.map((s) =>
+            s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+          ),
+        });
 
         break;
       }
