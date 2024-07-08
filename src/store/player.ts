@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { ENTITY_TYPE, SKILLS, STARTING_ACTION_POINTS } from "../constants";
+import {
+  ENTITY_TYPE,
+  SKILLS,
+  STARTING_ACTION_POINTS,
+  WEAPON_TYPE,
+} from "../constants";
 import {
   IChestpiece,
   IHelmet,
@@ -44,6 +49,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     weapon: {
       id: 1,
       name: "Fists",
+      type: WEAPON_TYPE.MELEE,
       damage: 1,
       range: 1,
       cost: 1,
