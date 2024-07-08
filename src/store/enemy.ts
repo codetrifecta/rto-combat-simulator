@@ -35,6 +35,17 @@ export const useEnemyStore = create<IEnemyStore>((set, get) => ({
       damageBonus: 0,
       statuses: [],
     },
+    {
+      id: 3,
+      name: "Shade",
+      entityType: ENTITY_TYPE.ENEMY,
+      health: 3,
+      maxHealth: 3,
+      range: 1,
+      damage: 2,
+      damageBonus: 0,
+      statuses: [],
+    },
   ],
 
   getEnemies: () => {

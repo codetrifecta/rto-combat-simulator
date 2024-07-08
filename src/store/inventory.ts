@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { IChestpiece, IHelmet, ILegging, IWeapon } from "../types";
+import { WEAPONS } from "../constants";
 
 interface IPlayerInventoryStore {
   weapons: IWeapon[];
@@ -14,50 +15,7 @@ interface IPlayerInventoryStore {
 }
 
 export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
-  weapons: [
-    {
-      id: 1,
-      name: "Fists",
-      damage: 1,
-      range: 1,
-      cost: 1,
-    },
-    {
-      id: 2,
-      name: "Club",
-      damage: 2,
-      range: 1,
-      cost: 1,
-    },
-    {
-      id: 3,
-      name: "Sword",
-      damage: 3,
-      range: 1,
-      cost: 2,
-    },
-    {
-      id: 4,
-      name: "Bow",
-      damage: 2,
-      range: 4,
-      cost: 2,
-    },
-    {
-      id: 5,
-      name: "Magic Staff",
-      damage: 1,
-      range: 3,
-      cost: 1,
-    },
-    {
-      id: 6,
-      name: "Test Hammer of Doom",
-      damage: 100,
-      range: 100,
-      cost: 1,
-    },
-  ],
+  weapons: WEAPONS,
   helmets: [
     {
       id: 1,

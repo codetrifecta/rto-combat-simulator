@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { Tile } from "./Tile";
 import {
   ENTITY_TYPE,
@@ -10,6 +10,7 @@ import {
   STATUS_ID,
   TILE_SIZE,
   TILE_TYPE,
+  WEAPON_TYPE,
 } from "../constants";
 import { IEnemy, IEntity } from "../types";
 import { useGameStateStore } from "../store/game";
@@ -31,6 +32,10 @@ export const Room: FC<{
   const [roomMatrix, setRoomMatrix] = useState<[TILE_TYPE, number][][]>(
     generateRoomMatrix(ROOM_LENGTH)
   );
+
+  // For handling AOE skill effects
+  const [isEffectZoneHovered, setIsEffectZoneHovered] = useState(false);
+  const targetZones = useRef<[number, number][]>([]); // saves the target zones (row, col) for AOE skills
 
   const { turnCycle, setTurnCycle, endTurn, isRoomOver, setIsRoomOver } =
     useGameStateStore();
@@ -555,13 +560,6 @@ export const Room: FC<{
       return;
     }
 
-    setPlayer({
-      ...newPlayer,
-      actionPoints: player.actionPoints - skill.cost,
-      skills: player.skills.map((s) =>
-        s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
-      ),
-    });
     addLog({
       message: (
         <>
@@ -571,10 +569,133 @@ export const Room: FC<{
       ),
       type: "info",
     });
-    setPlayerState({
-      ...player.state,
-      isUsingSkill: false,
+    setPlayer({
+      ...newPlayer,
+      state: {
+        ...player.state,
+        isUsingSkill: false,
+      },
+      actionPoints: player.actionPoints - skill.cost,
+      skills: player.skills.map((s) =>
+        s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+      ),
     });
+  };
+
+  // Function to handle player using an AOE skill
+  // This function is called when player uses a skill that targets an area
+  // Skills that affect enemies are handled in the handleEnemyClick function
+  const handlePlayerUseAOESkill = (skillId: number) => {
+    const skill = player.skills.find((skill) => skill.id === skillId);
+
+    if (!skill) {
+      addLog({ message: "Skill not found!", type: "error" });
+      return;
+    }
+
+    addLog({
+      message: (
+        <>
+          <span className="text-green-500">{player.name}</span> used{" "}
+          <span className="text-green-500">{skill.name}</span>.
+        </>
+      ),
+      type: "info",
+    });
+
+    // Handle individual skill effect
+    switch (skill.id) {
+      case SKILL_ID.WHIRLWIND: {
+        // Within target zones, deal damage to enemies
+        console.log("target zones", targetZones.current);
+
+        // First find the enemies, then update them with the damage at the same time to avoid multiple renders
+        const enemiesInTargetZones: IEnemy[] = [];
+        targetZones.current.forEach(([row, col]) => {
+          const tile = roomMatrix[row][col];
+          console.log(tile);
+          if (tile[0] === TILE_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === tile[1]);
+            if (!enemy) {
+              addLog({ message: "Enemy not found!", type: "error" });
+              return;
+            }
+
+            enemiesInTargetZones.push(enemy);
+          }
+        });
+
+        // Update the enemies with the damage dealt
+
+        if (player.equipment.weapon === null) {
+          addLog({
+            message: "Player has no weapon equipped!",
+            type: "error",
+          });
+          return;
+        }
+
+        const statusDamageBonus = player.statuses.reduce((acc, status) => {
+          return acc + status.effect.damageBonus;
+        }, 0);
+
+        const totalDamage =
+          skill.damage + player.equipment.weapon.damage + statusDamageBonus;
+
+        // Create a new array of enemies with the damage dealt to be updated in the store
+        const newEnemies = [...enemies];
+
+        enemiesInTargetZones.forEach((enemy) => {
+          // Find enemy index
+          const enemyIndex = newEnemies.findIndex((e) => e.id === enemy.id);
+
+          const newEnemy = { ...enemy };
+          newEnemy.health -= totalDamage;
+
+          // Check if enemy is defeated
+          if (newEnemy.health <= 0) {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> took{" "}
+                  {totalDamage} damage and has been defeated!
+                </>
+              ),
+              type: "info",
+            });
+            newEnemies.splice(enemyIndex, 1);
+          } else {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> took{" "}
+                  {totalDamage} damage.
+                </>
+              ),
+              type: "info",
+            });
+            newEnemies[enemyIndex] = newEnemy;
+          }
+        });
+
+        setEnemies(newEnemies);
+        setPlayer({
+          ...player,
+          state: {
+            ...player.state,
+            isUsingSkill: false,
+          },
+          actionPoints: player.actionPoints - skill.cost,
+          skills: player.skills.map((s) =>
+            s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+          ),
+        });
+
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   // This function is called when player uses a skill that targets an empty tile
@@ -830,11 +951,13 @@ export const Room: FC<{
             active = true;
           }
 
+          // Check if tile is an effect zone
           let isEffectZone: boolean = false;
+          let isTargetZone: boolean = false;
           const [playerRow, playerCol] = playerPosition;
 
           // Check if player is attacking (basic attack)
-          // Highlight tiles that can be attacked by player (3x3 area around player)
+          // Highlight tiles that can be attacked by player based on weapon range
           if (player.state.isAttacking && player.equipment.weapon) {
             const range = player.equipment.weapon.range;
 
@@ -848,8 +971,9 @@ export const Room: FC<{
             }
           }
 
-          // Check if player is (in the process of) moving
-          // Highlight tiles that can be moved to by player (5x5 area around player not including wall or door tiles)
+          // Check if player is moving (move state)
+          // Highlight tiles that can be moved to by player (5x5 area around player not including wall or door tiles).
+          // If room is over, then the player can move anywhere in the room.
           if (player.state.isMoving) {
             if (isRoomOver) {
               isEffectZone = true;
@@ -865,7 +989,7 @@ export const Room: FC<{
             }
           }
 
-          // Check if player is using a skill
+          // Check if player is using a skill (isUsingSkill state)
           // Highlight tiles that can be affected by player's skill
           if (player.state.isUsingSkill && player.state.skillId) {
             const skill = player.skills.find(
@@ -899,6 +1023,61 @@ export const Room: FC<{
                     }
                     break;
                 }
+              } else if (skill.skillType === SKILL_TYPE.AOE) {
+                // If skill is AOE, highlight tiles that can be affected by the skill
+                // For AOE skills, there are effect zones (which are how far the skill can reach) and target zones (defined above, which are the tiles that are affected by the skill's effect)
+
+                // Compute effect zone based on skill range
+                let range = skill.range;
+
+                const weapon = player.equipment.weapon;
+
+                // Range for weapon dependent skills
+                if (weapon) {
+                  if (weapon.type === WEAPON_TYPE.MELEE) {
+                    if (skill.id === SKILL_ID.WHIRLWIND) {
+                      range = weapon.range;
+                    }
+                  } else {
+                    range = 1;
+                  }
+                }
+
+                if (
+                  rowIndex >= playerRow - range &&
+                  rowIndex <= playerRow + range &&
+                  columnIndex >= playerCol - range &&
+                  columnIndex <= playerCol + range &&
+                  !(rowIndex === playerRow && columnIndex === playerCol)
+                ) {
+                  // console.log("effect zone", rowIndex, columnIndex);
+                  isEffectZone = true;
+                }
+
+                // Compute target zone based on the specific skill requirement
+                if (skill.id === SKILL_ID.WHIRLWIND) {
+                  if (isEffectZone && isEffectZoneHovered) {
+                    // console.log("effect zone hovered", rowIndex, columnIndex);
+                    // Add tiles to target zone to use to compute the effect of the skill
+
+                    const currentTargetZones = targetZones.current;
+
+                    // Check if tile is in target zone
+                    let isTileInTargetZone = false;
+                    currentTargetZones.forEach(([row, col]) => {
+                      if (row === rowIndex && col === columnIndex) {
+                        isTileInTargetZone = true;
+                      }
+                    });
+
+                    if (!isTileInTargetZone) {
+                      currentTargetZones.push([rowIndex, columnIndex]);
+                      targetZones.current = currentTargetZones;
+                    }
+
+                    isTargetZone = true;
+                  }
+                }
               }
             }
           }
@@ -911,6 +1090,7 @@ export const Room: FC<{
               active={active}
               isEffectZone={isEffectZone}
               isRoomOver={isRoomOver}
+              isTargetZone={isTargetZone}
               onClick={() => {
                 if (isEffectZone) {
                   if (
@@ -940,7 +1120,11 @@ export const Room: FC<{
                     player.state.skillId
                   ) {
                     // Check tile clicked
-                    if (tileType === TILE_TYPE.PLAYER) {
+                    // If skill is an AOE, then check if the tile is in the target zone
+                    if (isTargetZone) {
+                      // console.log("target zone clicked", columnIndex, rowIndex);
+                      handlePlayerUseAOESkill(player.state.skillId);
+                    } else if (tileType === TILE_TYPE.PLAYER) {
                       // Skills that uses the player tile
                       handlePlayerUseSkill(player.state.skillId);
                     } else if (tileType === TILE_TYPE.ENEMY) {
@@ -958,7 +1142,18 @@ export const Room: FC<{
                 }
               }}
               onMouseEnter={() => {
+                if (
+                  isEffectZone &&
+                  tileType !== TILE_TYPE.WALL &&
+                  tileType !== TILE_TYPE.DOOR
+                ) {
+                  // Set isEffectZoneHovered to true when mouse enters effect zone
+
+                  setIsEffectZoneHovered(true);
+                }
+
                 if (tileType === TILE_TYPE.ENEMY) {
+                  // Set currentHoveredEntity to the enemy when mouse enters enemy tile
                   const enemy = enemies.find((enemy) => enemy.id === id);
                   if (!enemy) {
                     console.error("Enemy not found!");
@@ -967,11 +1162,26 @@ export const Room: FC<{
 
                   setCurrentHoveredEntity(enemy);
                 } else if (tileType === TILE_TYPE.PLAYER) {
+                  // Set currentHoveredEntity to the player when mouse enters player tile
                   setCurrentHoveredEntity(player);
                 }
               }}
               onMouseLeave={() => {
-                setCurrentHoveredEntity(null);
+                if (isEffectZone) {
+                  // Set isEffectZoneHovered to true when mouse leaves effect zone
+                  // and reset saved target zones
+                  // console.log("targetZones", targetZones.current);
+                  setIsEffectZoneHovered(false);
+                  targetZones.current = [];
+                }
+
+                if (
+                  tileType === TILE_TYPE.ENEMY ||
+                  tileType === TILE_TYPE.PLAYER
+                ) {
+                  // Set currentHoveredEntity to null when mouse leaves enemy or player tile
+                  setCurrentHoveredEntity(null);
+                }
               }}
             />
           );

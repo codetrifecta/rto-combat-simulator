@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState, type FC } from "react";
 import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
-import { ENTITY_TYPE } from "../constants";
+import { ENTITY_TYPE, SKILL_ID } from "../constants";
 import { handlePlayerEndTurn } from "../utils";
 import { useLogStore } from "../store/log";
 import { Tooltip } from "./Tooltip";
+import { ISkill } from "../types";
 
 export const PlayerControlPanel: FC = () => {
   const [isAttackButtonHovered, setIsAttackButtonHovered] = useState(false);
@@ -46,6 +47,47 @@ export const PlayerControlPanel: FC = () => {
     handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
   };
 
+  const renderWeaponButtonTooltip = (skill: ISkill) => {
+    if (skill.id === SKILL_ID.WHIRLWIND) {
+      return (
+        <Tooltip active={areSkillButtonsHovered[skill.id]}>
+          <h2>{skill.name}</h2>
+          <p>{skill.description}</p>
+          {player.equipment.weapon ? (
+            <p>Base DMG: {player.equipment.weapon.damage + skill.damage}</p>
+          ) : null}
+          {player.equipment.weapon ? <p>Bonus DMG: {bonusDamage}</p> : null}
+          {player.equipment.weapon ? (
+            <p>
+              Total DMG:{" "}
+              {player.equipment.weapon.damage + skill.damage + bonusDamage}
+            </p>
+          ) : null}
+          <p>Cost: {skill.cost} AP</p>
+          <p>Cooldown: {skill.cooldown} turns</p>
+          {skill.cooldownCounter > 0 && (
+            <p>Turns until active: {skill.cooldownCounter}</p>
+          )}
+        </Tooltip>
+      );
+    } else {
+      return (
+        <Tooltip active={areSkillButtonsHovered[skill.id]}>
+          <h2>{skill.name}</h2>
+          <p>{skill.description}</p>
+          {skill.damage ? <p>Base DMG: {skill.damage}</p> : null}
+          {skill.damage ? <p>Bonus DMG: {bonusDamage}</p> : null}
+          {skill.damage ? <p>Total DMG: {skill.damage + bonusDamage}</p> : null}
+          <p>Cost: {skill.cost} AP</p>
+          <p>Cooldown: {skill.cooldown} turns</p>
+          {skill.cooldownCounter > 0 && (
+            <p>Turns until active: {skill.cooldownCounter}</p>
+          )}
+        </Tooltip>
+      );
+    }
+  };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const disabled = useMemo(() => {
     return (
@@ -67,20 +109,7 @@ export const PlayerControlPanel: FC = () => {
           <>
             {player.skills.map((skill) => (
               <div key={skill.id} className="relative">
-                <Tooltip active={areSkillButtonsHovered[skill.id]}>
-                  <h2>{skill.name}</h2>
-                  <p>{skill.description}</p>
-                  {skill.damage ? <p>Base DMG: {skill.damage}</p> : null}
-                  {skill.damage ? <p>Bonus DMG: {bonusDamage}</p> : null}
-                  {skill.damage ? (
-                    <p>Total DMG: {skill.damage + bonusDamage}</p>
-                  ) : null}
-                  <p>Cost: {skill.cost} AP</p>
-                  <p>Cooldown: {skill.cooldown} turns</p>
-                  {skill.cooldownCounter > 0 && (
-                    <p>Turns until active: {skill.cooldownCounter}</p>
-                  )}
-                </Tooltip>
+                {renderWeaponButtonTooltip(skill)}
 
                 <Button
                   onClick={() => {
@@ -106,7 +135,9 @@ export const PlayerControlPanel: FC = () => {
                   disabled={
                     disabled ||
                     player.actionPoints < skill.cost ||
-                    skill.cooldownCounter > 0
+                    skill.cooldownCounter > 0 ||
+                    (skill.id === SKILL_ID.WHIRLWIND &&
+                      player.equipment.weapon === null)
                   }
                 >
                   {skill.name}

@@ -52,7 +52,7 @@ export const generateRoomMatrix = (roomLength: number) => {
           col === Math.floor((roomLength / 4) * 3))
       ) {
         if (col === Math.floor(roomLength / 4)) {
-          // initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
+          // initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 2];
         } else {
           initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
         }
@@ -66,6 +66,7 @@ export const generateRoomMatrix = (roomLength: number) => {
   // Manually modify room matrix
   // initialRoomMatrix[8][5] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 13x13 room
   initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
+  initialRoomMatrix[6][6] = [TILE_TYPE.ENEMY, 3]; // Enemy in 2n1e of player in a 11x11 room
 
   return initialRoomMatrix;
 };
