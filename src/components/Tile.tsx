@@ -8,6 +8,7 @@ export const Tile: FC<{
   playerState: IPlayerState;
   active: boolean;
   isEffectZone: boolean;
+  isTargetZone: boolean | null;
   isRoomOver: boolean;
   onClick: () => void;
   onMouseEnter: () => void;
@@ -18,6 +19,7 @@ export const Tile: FC<{
   playerState,
   active,
   isEffectZone,
+  isTargetZone = false,
   isRoomOver,
   onClick,
   onMouseEnter,
@@ -110,6 +112,9 @@ export const Tile: FC<{
         [effectBorderClasses]:
           isEffectZone &&
           (isAttackEffectTile || isMovingEffectTile || isSkillEffectTile),
+
+        // Target zone
+        "opacity-80": isTargetZone && isSkillEffectTile,
       })}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
