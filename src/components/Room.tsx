@@ -1216,9 +1216,9 @@ export const Room: FC<{
                   if (weapon.type === WEAPON_TYPE.MELEE) {
                     if (skill.id === SKILL_ID.WHIRLWIND) {
                       range = weapon.range;
+                    } else {
+                      range = 1;
                     }
-                  } else {
-                    range = 1;
                   }
                 }
 
