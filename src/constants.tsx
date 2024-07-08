@@ -33,6 +33,7 @@ export enum SKILL_ID {
   TELEPORT = 4,
   WHIRLWIND = 5,
   IRONFLESH = 6,
+  FIREBALL = 7,
 }
 
 export const SKILLS: ISkill[] = [
@@ -41,6 +42,18 @@ export const SKILLS: ISkill[] = [
     name: "Buff Up",
     skillType: SKILL_TYPE.SELF,
     description: "Increase damage for all attacks by 2 for 3 turns.",
+    damage: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.IRONFLESH,
+    name: "Ironflesh",
+    skillType: SKILL_TYPE.SELF,
+    description:
+      "Applies Stone Skin on self for 3 turns. Stone Skin decreases all incoming damage by 3.",
     damage: 0,
     range: 0,
     cooldown: 3,
@@ -71,15 +84,15 @@ export const SKILLS: ISkill[] = [
     cost: 2,
   },
   {
-    id: SKILL_ID.TELEPORT,
-    name: "Teleport",
-    skillType: SKILL_TYPE.ST,
-    description: "Teleport to an empty tile in the room.",
-    damage: 0,
-    range: 4,
-    cooldown: 4,
+    id: SKILL_ID.FIREBALL,
+    name: "Fireball",
+    skillType: SKILL_TYPE.AOE,
+    description: "Launch a fireball at a target area. Burns enemies hit.",
+    damage: 2,
+    range: 3,
+    cooldown: 2,
     cooldownCounter: 0,
-    cost: 1,
+    cost: 2,
   },
   {
     id: SKILL_ID.WHIRLWIND,
@@ -94,16 +107,15 @@ export const SKILLS: ISkill[] = [
     cost: 2,
   },
   {
-    id: SKILL_ID.IRONFLESH,
-    name: "Ironflesh",
-    skillType: SKILL_TYPE.SELF,
-    description:
-      "Applies Stone Skin on self for 3 turns. Stone Skin decreases all incoming damage by 3.",
+    id: SKILL_ID.TELEPORT,
+    name: "Teleport",
+    skillType: SKILL_TYPE.ST,
+    description: "Teleport to an empty tile in the room.",
     damage: 0,
-    range: 0,
-    cooldown: 3,
+    range: 4,
+    cooldown: 4,
     cooldownCounter: 0,
-    cost: 2,
+    cost: 1,
   },
 ];
 
@@ -111,6 +123,7 @@ export const STATUS_ID = {
   BUFFED: 1,
   PETRIFIED: 2,
   STONE_SKIN: 3,
+  BURNED: 4,
 };
 
 export const STATUSES: IStatus[] = [
@@ -123,6 +136,7 @@ export const STATUSES: IStatus[] = [
     effect: {
       damageBonus: 2,
       incomingDamageReduction: 0,
+      damageOverTime: 0,
       canMove: true,
       canAttack: true,
     },
@@ -136,6 +150,7 @@ export const STATUSES: IStatus[] = [
     effect: {
       damageBonus: 0,
       incomingDamageReduction: 0,
+      damageOverTime: 0,
       canMove: false,
       canAttack: false,
     },
@@ -149,6 +164,21 @@ export const STATUSES: IStatus[] = [
     effect: {
       damageBonus: 0,
       incomingDamageReduction: 3,
+      damageOverTime: 0,
+      canMove: true,
+      canAttack: true,
+    },
+  },
+  {
+    id: STATUS_ID.BURNED,
+    name: "Burned",
+    description: "Takes 1 damage at the start of the turn for 3 turns.",
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      damageBonus: 0,
+      incomingDamageReduction: 0,
+      damageOverTime: 1,
       canMove: true,
       canAttack: true,
     },

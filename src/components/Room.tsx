@@ -35,6 +35,9 @@ export const Room: FC<{
 
   // For handling AOE skill effects
   const [isEffectZoneHovered, setIsEffectZoneHovered] = useState(false);
+  const [effectZoneHovered, setEffectZoneHovered] = useState<
+    [number, number] | null
+  >(null);
   const targetZones = useRef<[number, number][]>([]); // saves the target zones (row, col) for AOE skills
 
   const { turnCycle, setTurnCycle, endTurn, isRoomOver, setIsRoomOver } =
@@ -161,6 +164,55 @@ export const Room: FC<{
           return;
         }
 
+        // Apply any status effects that affect the enemy at the start of their turn (e.g. damage over time)
+        const affectedEnemy = { ...enemy };
+
+        const burnedDoT = affectedEnemy.statuses.find(
+          (status) => status.id === STATUS_ID.BURNED
+        );
+
+        if (burnedDoT) {
+          const totalDamage = burnedDoT.effect.damageOverTime;
+
+          affectedEnemy.health -= totalDamage;
+
+          if (affectedEnemy.health <= 0) {
+            setTimeout(() => {
+              setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+              addLog({
+                message: (
+                  <>
+                    <span className="text-red-500">{affectedEnemy.name}</span>{" "}
+                    took {totalDamage} damage from burn and has been defeated!
+                  </>
+                ),
+                type: "info",
+              });
+              endTurn();
+            }, 1000);
+
+            return;
+          } else {
+            setEnemies(
+              enemies.map((e) => {
+                if (e.id === affectedEnemy.id) {
+                  return affectedEnemy;
+                }
+                return e;
+              })
+            );
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{affectedEnemy.name}</span>{" "}
+                  took {totalDamage} damage from burn.
+                </>
+              ),
+              type: "info",
+            });
+          }
+        }
+
         // console.log(enemy);
 
         // For now, end enemy's turn after moving once to a random adjacent tile and attacking the player if they are in range
@@ -205,7 +257,7 @@ export const Room: FC<{
         } else {
           if (!cannotMove) {
             setTimeout(() => {
-              enemyPosition = handleEnemyMovement(enemy);
+              enemyPosition = handleEnemyMovement(affectedEnemy);
 
               // Make enemy attack player if they can attack
               if (!cannotAttack) {
@@ -216,7 +268,11 @@ export const Room: FC<{
                     console.error("Enemy position not found!");
                     return;
                   }
-                  handleEnemyAttack(enemy, enemyPosition, playerPosition);
+                  handleEnemyAttack(
+                    affectedEnemy,
+                    enemyPosition,
+                    playerPosition
+                  );
                 }, attackTime);
               } else {
                 console.log("enemy cannot attack");
@@ -254,7 +310,11 @@ export const Room: FC<{
                     console.error("Enemy position not found!");
                     return;
                   }
-                  handleEnemyAttack(enemy, enemyPosition, playerPosition);
+                  handleEnemyAttack(
+                    affectedEnemy,
+                    enemyPosition,
+                    playerPosition
+                  );
                 }, attackTime);
               } else {
                 console.log("enemy cannot attack");
@@ -291,7 +351,7 @@ export const Room: FC<{
 
           // Update enemy with new statuses
           const newEnemy = {
-            ...enemy,
+            ...affectedEnemy,
             statuses: filteredStatuses,
           };
 
@@ -620,13 +680,13 @@ export const Room: FC<{
     switch (skill.id) {
       case SKILL_ID.WHIRLWIND: {
         // Within target zones, deal damage to enemies
-        console.log("target zones", targetZones.current);
+        // console.log("target zones", targetZones.current);
 
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
         const enemiesInTargetZones: IEnemy[] = [];
         targetZones.current.forEach(([row, col]) => {
           const tile = roomMatrix[row][col];
-          console.log(tile);
+          // console.log(tile);
           if (tile[0] === TILE_TYPE.ENEMY) {
             const enemy = enemies.find((e) => e.id === tile[1]);
             if (!enemy) {
@@ -664,6 +724,102 @@ export const Room: FC<{
 
           const newEnemy = { ...enemy };
           newEnemy.health -= totalDamage;
+
+          // Check if enemy is defeated
+          if (newEnemy.health <= 0) {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> took{" "}
+                  {totalDamage} damage and has been defeated!
+                </>
+              ),
+              type: "info",
+            });
+            newEnemies.splice(enemyIndex, 1);
+          } else {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> took{" "}
+                  {totalDamage} damage.
+                </>
+              ),
+              type: "info",
+            });
+            newEnemies[enemyIndex] = newEnemy;
+          }
+        });
+
+        setEnemies(newEnemies);
+        setPlayer({
+          ...player,
+          state: {
+            ...player.state,
+            isUsingSkill: false,
+          },
+          actionPoints: player.actionPoints - skill.cost,
+          skills: player.skills.map((s) =>
+            s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+          ),
+        });
+
+        break;
+      }
+      case SKILL_ID.FIREBALL: {
+        // Within target zones, deal damage to enemies
+        // console.log("target zones for fireball", targetZones.current);
+
+        // First find the enemies, then update them with the damage at the same time to avoid multiple renders
+        const enemiesInTargetZones: IEnemy[] = [];
+        targetZones.current.forEach(([row, col]) => {
+          const tile = roomMatrix[row][col];
+          // console.log(tile);
+          if (tile[0] === TILE_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === tile[1]);
+            if (!enemy) {
+              addLog({ message: "Enemy not found!", type: "error" });
+              return;
+            }
+
+            enemiesInTargetZones.push(enemy);
+          }
+        });
+
+        // Update the enemies with the damage dealt
+
+        if (player.equipment.weapon === null) {
+          addLog({
+            message: "Player has no weapon equipped!",
+            type: "error",
+          });
+          return;
+        }
+
+        const statusDamageBonus = player.statuses.reduce((acc, status) => {
+          return acc + status.effect.damageBonus;
+        }, 0);
+
+        const totalDamage = skill.damage + statusDamageBonus;
+
+        // Create a new array of enemies with the damage dealt to be updated in the store
+        const newEnemies = [...enemies];
+
+        enemiesInTargetZones.forEach((enemy) => {
+          // Find enemy index
+          const enemyIndex = newEnemies.findIndex((e) => e.id === enemy.id);
+
+          const newEnemy = { ...enemy };
+          newEnemy.health -= totalDamage;
+
+          const burnedStatus = STATUSES.find((s) => s.id === STATUS_ID.BURNED);
+
+          if (!burnedStatus) {
+            addLog({ message: "Burned status not found!", type: "error" });
+            return;
+          }
+
+          newEnemy.statuses.push(burnedStatus);
 
           // Check if enemy is defeated
           if (newEnemy.health <= 0) {
@@ -1071,7 +1227,8 @@ export const Room: FC<{
                   rowIndex <= playerRow + range &&
                   columnIndex >= playerCol - range &&
                   columnIndex <= playerCol + range &&
-                  !(rowIndex === playerRow && columnIndex === playerCol)
+                  (!(rowIndex === playerRow && columnIndex === playerCol) ||
+                    skill.id === SKILL_ID.FIREBALL) // For fireball, player can target themselves
                 ) {
                   // console.log("effect zone", rowIndex, columnIndex);
                   isEffectZone = true;
@@ -1098,7 +1255,45 @@ export const Room: FC<{
                       targetZones.current = currentTargetZones;
                     }
 
+                    // For whirlwind, the target zone is the same as the effect zone
                     isTargetZone = true;
+                  }
+                } else if (skill.id === SKILL_ID.FIREBALL) {
+                  // For fireball, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
+                  if (isEffectZoneHovered) {
+                    // console.log("effect zone hovered", rowIndex, columnIndex);
+                    // Add tiles to target zone to use to compute the effect of the skill
+
+                    // For fireball, the target zone is a 3x3 area around the hovered effect zone tile
+                    if (
+                      effectZoneHovered &&
+                      rowIndex >= effectZoneHovered[0] - 1 &&
+                      rowIndex <= effectZoneHovered[0] + 1 &&
+                      columnIndex >= effectZoneHovered[1] - 1 &&
+                      columnIndex <= effectZoneHovered[1] + 1
+                    ) {
+                      const currentTargetZones = targetZones.current;
+
+                      // Check if tile is in target zone
+                      const isTileInTargetZone = currentTargetZones.some(
+                        ([row, col]) => {
+                          return row === rowIndex && col === columnIndex;
+                        }
+                      );
+
+                      if (!isTileInTargetZone) {
+                        // console.log(
+                        //   "adding to target zone",
+                        //   rowIndex,
+                        //   columnIndex,
+                        //   effectZoneHovered
+                        // );
+                        currentTargetZones.push([rowIndex, columnIndex]);
+                        targetZones.current = currentTargetZones;
+                      }
+
+                      isTargetZone = true;
+                    }
                   }
                 }
               }
@@ -1171,8 +1366,10 @@ export const Room: FC<{
                   tileType !== TILE_TYPE.DOOR
                 ) {
                   // Set isEffectZoneHovered to true when mouse enters effect zone
-
                   setIsEffectZoneHovered(true);
+
+                  // Set target zones for skills that require them
+                  setEffectZoneHovered([rowIndex, columnIndex]);
                 }
 
                 if (tileType === TILE_TYPE.ENEMY) {
@@ -1192,10 +1389,11 @@ export const Room: FC<{
               onMouseLeave={() => {
                 if (isEffectZone) {
                   // Set isEffectZoneHovered to true when mouse leaves effect zone
-                  // and reset saved target zones
+                  // and reset saved target zones and effect zone hovered
                   // console.log("targetZones", targetZones.current);
                   setIsEffectZoneHovered(false);
                   targetZones.current = [];
+                  setEffectZoneHovered(null);
                 }
 
                 if (
