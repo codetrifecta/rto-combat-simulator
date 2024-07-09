@@ -27,10 +27,10 @@ export enum SKILL_TYPE {
 }
 
 export enum SKILL_ID {
-  BUFF_UP = 1,
+  FLEX = 1,
   GORGONS_GAZE = 2,
   LIGHTNING = 3,
-  TELEPORT = 4,
+  FLY = 4,
   WHIRLWIND = 5,
   IRONFLESH = 6,
   FIREBALL = 7,
@@ -38,8 +38,8 @@ export enum SKILL_ID {
 
 export const SKILLS: ISkill[] = [
   {
-    id: SKILL_ID.BUFF_UP,
-    name: "Buff Up",
+    id: SKILL_ID.FLEX,
+    name: "Flex",
     skillType: SKILL_TYPE.SELF,
     description: "Increase damage for all attacks by 2 for 3 turns.",
     damage: 0,
@@ -107,12 +107,12 @@ export const SKILLS: ISkill[] = [
     cost: 2,
   },
   {
-    id: SKILL_ID.TELEPORT,
-    name: "Teleport",
+    id: SKILL_ID.FLY,
+    name: "Fly",
     skillType: SKILL_TYPE.ST,
-    description: "Teleport to an empty tile in the room.",
+    description: "Fly to an empty tile in the room.",
     damage: 0,
-    range: 4,
+    range: 5,
     cooldown: 4,
     cooldownCounter: 0,
     cost: 1,
@@ -120,7 +120,7 @@ export const SKILLS: ISkill[] = [
 ];
 
 export const STATUS_ID = {
-  BUFFED: 1,
+  FLEXED: 1,
   PETRIFIED: 2,
   STONE_SKIN: 3,
   BURNED: 4,
@@ -128,8 +128,8 @@ export const STATUS_ID = {
 
 export const STATUSES: IStatus[] = [
   {
-    id: STATUS_ID.BUFFED,
-    name: "Buffed",
+    id: STATUS_ID.FLEXED,
+    name: "Flexed",
     description: "Increased damage for all attacks by 2 for 3 turns.",
     duration: 3,
     durationCounter: 3,

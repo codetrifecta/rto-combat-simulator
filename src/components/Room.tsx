@@ -652,8 +652,8 @@ export const Room: FC<{
 
     // Handle skill effect
     switch (skill.id) {
-      case SKILL_ID.BUFF_UP: {
-        const buffedStatus = STATUSES.find((s) => s.id === STATUS_ID.BUFFED);
+      case SKILL_ID.FLEX: {
+        const buffedStatus = STATUSES.find((s) => s.id === STATUS_ID.FLEXED);
 
         if (!buffedStatus) {
           addLog({ message: "Buffed status not found!", type: "error" });
@@ -986,7 +986,7 @@ export const Room: FC<{
 
     // Handle skill effect
     switch (skill.id) {
-      case SKILL_ID.TELEPORT: {
+      case SKILL_ID.FLY: {
         // Teleport player to empty tile
         // Set player's current tile to empty and new tile to player
         setRoomMatrix((prevRoomMatrix) => {
@@ -1028,7 +1028,7 @@ export const Room: FC<{
         s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
       ),
     });
-    if (skill.id === SKILL_ID.TELEPORT) {
+    if (skill.id === SKILL_ID.FLY) {
       addLog({
         message: (
           <>
