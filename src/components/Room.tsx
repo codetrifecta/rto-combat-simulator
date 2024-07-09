@@ -12,7 +12,7 @@ import {
   TILE_TYPE,
   WEAPON_TYPE,
 } from "../constants";
-import { IEnemy, IEntity } from "../types";
+import { IEnemy, IEntity, IPlayer } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
@@ -787,6 +787,8 @@ export const Room: FC<{
 
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
         const enemiesInTargetZones: IEnemy[] = [];
+        const playerInTargetZones: IPlayer[] = [];
+
         targetZones.current.forEach(([row, col]) => {
           const tile = roomMatrix[row][col];
           // console.log(tile);
@@ -798,6 +800,8 @@ export const Room: FC<{
             }
 
             enemiesInTargetZones.push(enemy);
+          } else if (tile[0] === TILE_TYPE.PLAYER) {
+            playerInTargetZones.push(player);
           }
         });
 
@@ -861,6 +865,46 @@ export const Room: FC<{
             newEnemies[enemyIndex] = newEnemy;
           }
         });
+
+        // Update player with the damage dealt if they are in the target zone
+
+        if (playerInTargetZones.length > 0) {
+          const newPlayer = { ...player };
+          newPlayer.health -= totalDamage;
+
+          const burnedStatus = STATUSES.find((s) => s.id === STATUS_ID.BURNED);
+
+          if (!burnedStatus) {
+            addLog({ message: "Burned status not found!", type: "error" });
+            return;
+          }
+
+          newPlayer.statuses.push(burnedStatus);
+
+          if (newPlayer.health <= 0) {
+            addLog({
+              message: (
+                <>
+                  <span className="text-green-500">{player.name}</span> took{" "}
+                  {totalDamage} damage and has been defeated!
+                </>
+              ),
+              type: "info",
+            });
+          } else {
+            addLog({
+              message: (
+                <>
+                  <span className="text-green-500">{player.name}</span> took{" "}
+                  {totalDamage} damage.
+                </>
+              ),
+              type: "info",
+            });
+          }
+
+          setPlayer(newPlayer);
+        }
 
         setEnemies(newEnemies);
         setPlayer({
