@@ -45,7 +45,7 @@ function App() {
   }
 
   return (
-    <div className="relative w-full h-screen flex flex-col justify-start">
+    <div className="relative w-screen h-screen flex flex-col justify-start">
       <header className="absolute top-0 w-full z-20">
         <div
           className="absolute h-[20px] w-full z-20"
@@ -69,7 +69,7 @@ function App() {
       </header>
 
       {/* Game Info (Currently only displays turn cycle) */}
-      <section className="mt-10 mb-6">
+      <section className="absolute w-full z-50 mt-10 mb-6">
         <TurnInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
@@ -77,32 +77,38 @@ function App() {
       </section>
 
       {/* Middle Section */}
-      <section className="mb-6 grid grid-rows-1 grid-cols-8 w-full lg:px-4 xl:px-16  gap-5">
-        <div className="col-span-2">
-          <InventoryChooser />
+      <section className="relative mb-6 w-full">
+        <div className="absolute left-2 bottom-10 w-[500px] z-50">
+          <Logger />
         </div>
 
         {/* Combat Room */}
-        <div className="col-span-4 flex justify-center items-center">
+        <div
+          className="flex justify-center items-center"
+          style={{ maxHeight: "100vh" }}
+        >
           <Room
             currentHoveredEntity={currentHoveredEntity}
             setCurrentHoveredEntity={setCurrentHoveredEntity}
           />
         </div>
-        <div className="relative col-span-2">
-          <Logger />
+
+        <div className="absolute top-0 right-2 w-[300px] z-50">
+          <InventoryChooser />
         </div>
       </section>
 
-      {/* Player Info */}
-      <section className="mb-6">
-        <PlayerInfo />
-      </section>
+      <div className="absolute bottom-0">
+        {/* Player Info */}
+        <section className="mb-6">
+          <PlayerInfo />
+        </section>
 
-      {/* Player Control Panel */}
-      <section>
-        <PlayerControlPanel />
-      </section>
+        {/* Player Control Panel */}
+        <section>
+          <PlayerControlPanel />
+        </section>
+      </div>
     </div>
   );
 }
