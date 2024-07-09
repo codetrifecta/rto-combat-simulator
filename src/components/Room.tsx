@@ -150,7 +150,7 @@ export const Room: FC<{
   // Handle enemy turn (for now, move to a random adjacent tile and attack player if in range)
   useEffect(() => {
     // Handle DoT check first
-    const handleEnemyDoT = () => {
+    const handleDoT = () => {
       if (
         turnCycle.length > 0 &&
         turnCycle[0].entityType === ENTITY_TYPE.ENEMY &&
@@ -210,6 +210,48 @@ export const Room: FC<{
           }, 1000);
         } else {
           handleEnemyEndTurn(affectedEnemy);
+        }
+      } else if (
+        turnCycle.length > 0 &&
+        turnCycle[0].entityType === ENTITY_TYPE.PLAYER &&
+        isPlayer(turnCycle[0])
+      ) {
+        // Simulate enemy action with a timeout
+
+        const affectedPlayer = { ...player };
+
+        const burnedDoT = affectedPlayer.statuses.find(
+          (status) => status.id === STATUS_ID.BURNED
+        );
+
+        if (burnedDoT) {
+          const totalDamage = burnedDoT.effect.damageOverTime;
+
+          affectedPlayer.health -= totalDamage;
+
+          if (affectedPlayer.health <= 0) {
+            addLog({
+              message: (
+                <>
+                  <span className="text-green-500">{affectedPlayer.name}</span>{" "}
+                  took 1 damage from burn and has been defeated!
+                </>
+              ),
+              type: "info",
+            });
+          } else {
+            addLog({
+              message: (
+                <>
+                  <span className="text-green-500">{affectedPlayer.name}</span>{" "}
+                  took 1 damage from burn.
+                </>
+              ),
+              type: "info",
+            });
+          }
+
+          setPlayer(affectedPlayer);
         }
       }
     };
@@ -392,7 +434,7 @@ export const Room: FC<{
       }
     };
     // handleEnemyEndTurn();
-    handleEnemyDoT();
+    handleDoT();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turnCycle, turnCycle.length]);
 
@@ -824,6 +866,9 @@ export const Room: FC<{
         // Create a new array of enemies with the damage dealt to be updated in the store
         const newEnemies = [...enemies];
 
+        // Create a new player with the damage dealt to be updated in the store
+        const newPlayer = { ...player };
+
         enemiesInTargetZones.forEach((enemy) => {
           // Find enemy index
           const enemyIndex = newEnemies.findIndex((e) => e.id === enemy.id);
@@ -869,7 +914,6 @@ export const Room: FC<{
         // Update player with the damage dealt if they are in the target zone
 
         if (playerInTargetZones.length > 0) {
-          const newPlayer = { ...player };
           newPlayer.health -= totalDamage;
 
           const burnedStatus = STATUSES.find((s) => s.id === STATUS_ID.BURNED);
@@ -903,12 +947,12 @@ export const Room: FC<{
             });
           }
 
-          setPlayer(newPlayer);
+          console.log(newPlayer);
         }
 
         setEnemies(newEnemies);
         setPlayer({
-          ...player,
+          ...newPlayer,
           state: {
             ...player.state,
             isUsingSkill: false,
