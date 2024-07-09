@@ -29,11 +29,31 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     },
     {
       id: 2,
-      name: "Iron Helmet",
+      name: "Steel Helmet",
+      stats: {
+        defense: 2,
+        strength: 1,
+        intelligence: 1,
+        constitution: 2,
+      },
+    },
+    {
+      id: 7,
+      name: "Berserker Helmet",
+      stats: {
+        defense: 1,
+        strength: 3,
+        intelligence: 1,
+        constitution: 1,
+      },
+    },
+    {
+      id: 10,
+      name: "Wizard Hat",
       stats: {
         defense: 1,
         strength: 1,
-        intelligence: 1,
+        intelligence: 3,
         constitution: 1,
       },
     },
@@ -51,11 +71,31 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     },
     {
       id: 4,
-      name: "Iron Chestplate",
+      name: "Steel Chestplate",
+      stats: {
+        defense: 2,
+        strength: 1,
+        intelligence: 1,
+        constitution: 2,
+      },
+    },
+    {
+      id: 8,
+      name: "Berserker Chestplate",
+      stats: {
+        defense: 1,
+        strength: 3,
+        intelligence: 1,
+        constitution: 1,
+      },
+    },
+    {
+      id: 11,
+      name: "Wizard Robes",
       stats: {
         defense: 1,
         strength: 1,
-        intelligence: 1,
+        intelligence: 3,
         constitution: 1,
       },
     },
@@ -73,11 +113,31 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     },
     {
       id: 6,
-      name: "Iron Leggings",
+      name: "Steel Leggings",
+      stats: {
+        defense: 2,
+        strength: 1,
+        intelligence: 1,
+        constitution: 2,
+      },
+    },
+    {
+      id: 9,
+      name: "Berserker Leggings",
+      stats: {
+        defense: 1,
+        strength: 3,
+        intelligence: 1,
+        constitution: 1,
+      },
+    },
+    {
+      id: 12,
+      name: "Wizard Pants",
       stats: {
         defense: 1,
         strength: 1,
-        intelligence: 1,
+        intelligence: 3,
         constitution: 1,
       },
     },
