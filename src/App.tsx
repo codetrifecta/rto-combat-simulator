@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PlayerControlPanel } from "./components/PlayerControlPanel";
 import { IEntity } from "./types";
 import { Room } from "./components/Room";
@@ -16,6 +16,8 @@ function App() {
   const [currentHoveredEntity, setCurrentHoveredEntity] =
     useState<IEntity | null>(null);
 
+  const roomContainerRef = useRef<HTMLDivElement>(null);
+
   const { turnCycle, setTurnCycle, setIsLoading } = useGameStateStore();
 
   const { getPlayer } = usePlayerStore();
@@ -31,6 +33,21 @@ function App() {
     setIsLoading(false);
   }, []);
 
+  // When room container ref value changes, (in this case when the room container is mounted).
+  // Scroll into the middle of the room container (to view the room)
+  useEffect(() => {
+    if (roomContainerRef.current !== null) {
+      setTimeout(() => {
+        if (roomContainerRef.current !== null) {
+          roomContainerRef.current.scrollIntoView({
+            inline: "center",
+            block: "center",
+          });
+        }
+      }, 100);
+    }
+  }, [roomContainerRef.current]);
+
   const isInitialized = useMemo(() => {
     return turnCycle.length > 0;
   }, [turnCycle]);
@@ -45,7 +62,8 @@ function App() {
   }
 
   return (
-    <div className="relative w-screen h-screen flex flex-col justify-start">
+    <div className="relative max-w-screen h-screen flex flex-col justify-start overflow-hidden">
+      <div></div>
       <header className="absolute top-0 w-full z-20">
         <div
           className="absolute h-[20px] w-full z-20"
@@ -69,36 +87,39 @@ function App() {
       </header>
 
       {/* Game Info (Currently only displays turn cycle) */}
-      <section className="absolute w-full z-50 mt-10 mb-6">
+      <section className="fixed w-full z-50 mt-10 mb-6">
         <TurnInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
       </section>
 
-      {/* Middle Section */}
-      <section className="relative mb-6 w-full">
-        <div className="absolute left-2 bottom-10 w-[500px] z-50">
-          <Logger />
-        </div>
+      <div className="fixed left-2 bottom-60 w-[350px] z-50">
+        <Logger />
+      </div>
 
-        {/* Combat Room */}
-        <div
-          className="flex justify-center items-center"
-          style={{ maxHeight: "100vh" }}
-        >
-          <Room
-            currentHoveredEntity={currentHoveredEntity}
-            setCurrentHoveredEntity={setCurrentHoveredEntity}
-          />
-        </div>
+      {/* Combat Room */}
 
-        <div className="absolute top-0 right-2 w-[300px] z-50">
-          <InventoryChooser />
+      <section className="relative max-w-screen max-h-screen">
+        <div className="relative max-w-screen max-h-screen pr-10 hidden-scrollbar overflow-scroll">
+          <div
+            className="relative min-w-[2000px] min-h-[2000px] flex justify-center items-center"
+            ref={roomContainerRef}
+          >
+            <Room
+              currentHoveredEntity={currentHoveredEntity}
+              setCurrentHoveredEntity={setCurrentHoveredEntity}
+              pr-2
+            />
+          </div>
         </div>
       </section>
 
-      <div className="absolute bottom-0">
+      <div className="fixed bottom-60 right-2 w-[350px] z-50">
+        <InventoryChooser />
+      </div>
+
+      <div className="fixed bottom-0 z-50">
         {/* Player Info */}
         <section className="mb-6">
           <PlayerInfo />
