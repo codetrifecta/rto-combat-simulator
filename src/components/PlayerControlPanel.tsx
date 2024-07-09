@@ -14,10 +14,18 @@ export const PlayerControlPanel: FC = () => {
 
   const { turnCycle, endTurn, isRoomOver } = useGameStateStore();
 
-  const { setPlayerState, getPlayer, getPlayerBonusDamage, setPlayer } =
-    usePlayerStore();
+  const {
+    getPlayer,
+    getPlayerBaseAttackDamage,
+    getPlayerTotalIntelligence,
+    getPlayerBonusDamage,
+    setPlayer,
+    setPlayerState,
+  } = usePlayerStore();
 
   const player = getPlayer();
+  const baseAttackDamage = getPlayerBaseAttackDamage();
+  const totalIntelligence = getPlayerTotalIntelligence();
 
   const [areSkillButtonsHovered, setAreSkillButtonsHovered] = useState<
     Record<number, boolean>
@@ -54,13 +62,16 @@ export const PlayerControlPanel: FC = () => {
           <h2>{skill.name}</h2>
           <p>{skill.description}</p>
           {player.equipment.weapon ? (
-            <p>Base DMG: {player.equipment.weapon.damage + skill.damage}</p>
+            <p>
+              Base DMG: {Math.round(baseAttackDamage * skill.damageMultiplier)}
+            </p>
           ) : null}
           {player.equipment.weapon ? <p>Bonus DMG: {bonusDamage}</p> : null}
           {player.equipment.weapon ? (
             <p>
               Total DMG:{" "}
-              {player.equipment.weapon.damage + skill.damage + bonusDamage}
+              {Math.round(baseAttackDamage * skill.damageMultiplier) +
+                bonusDamage}
             </p>
           ) : null}
           <p>Cost: {skill.cost} AP</p>
@@ -75,9 +86,19 @@ export const PlayerControlPanel: FC = () => {
         <Tooltip active={areSkillButtonsHovered[skill.id]}>
           <h2>{skill.name}</h2>
           <p>{skill.description}</p>
-          {skill.damage ? <p>Base DMG: {skill.damage}</p> : null}
-          {skill.damage ? <p>Bonus DMG: {bonusDamage}</p> : null}
-          {skill.damage ? <p>Total DMG: {skill.damage + bonusDamage}</p> : null}
+          {skill.damageMultiplier ? (
+            <p>
+              Base DMG: {Math.round(totalIntelligence * skill.damageMultiplier)}
+            </p>
+          ) : null}
+          {skill.damageMultiplier ? <p>Bonus DMG: {bonusDamage}</p> : null}
+          {skill.damageMultiplier ? (
+            <p>
+              Total DMG:{" "}
+              {Math.round(totalIntelligence * skill.damageMultiplier) +
+                bonusDamage}
+            </p>
+          ) : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
           {skill.cooldownCounter > 0 && (
@@ -166,11 +187,9 @@ export const PlayerControlPanel: FC = () => {
                   <>
                     <h2>Weapon attack</h2>
                     <h3>Weapon Equipped: {player.equipment.weapon.name}</h3>
-                    <p>Base DMG: {player.equipment.weapon?.damage}</p>
+                    <p>Base DMG: {baseAttackDamage}</p>
                     <p>Bonus DMG: {bonusDamage}</p>
-                    <p>
-                      Total DMG: {player.equipment.weapon?.damage + bonusDamage}
-                    </p>
+                    <p>Total DMG: {baseAttackDamage + bonusDamage}</p>
                   </>
                 ) : (
                   <h2>No weapon equipped</h2>

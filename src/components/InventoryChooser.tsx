@@ -167,7 +167,26 @@ const WeaponCard: FC<{
       onClick={onClick}
     >
       <h3>{weapon.name}</h3>
-      <p className={clsx(cardParagraphClasses)}>Damage: {weapon.damage}</p>
+      {weapon.stats.strength > 0 && (
+        <p className={clsx(cardParagraphClasses)}>
+          Strength: {weapon.stats.strength}
+        </p>
+      )}
+      {weapon.stats.intelligence > 0 && (
+        <p className={clsx(cardParagraphClasses)}>
+          Intelligence: {weapon.stats.intelligence}
+        </p>
+      )}
+      {weapon.stats.defense > 0 && (
+        <p className={clsx(cardParagraphClasses)}>
+          Defense: {weapon.stats.defense}
+        </p>
+      )}
+      {weapon.stats.constitution > 0 && (
+        <p className={clsx(cardParagraphClasses)}>
+          Constitution: {weapon.stats.constitution}
+        </p>
+      )}
       <p className={clsx(cardParagraphClasses)}>Range: {weapon.range}</p>
       <p className={clsx(cardParagraphClasses)}>Cost: {weapon.cost}</p>
     </div>
@@ -188,7 +207,26 @@ const ArmorCard: FC<{
       onClick={onClick}
     >
       <h3>{armor.name}</h3>
-      <p className={clsx(cardParagraphClasses)}>Defense: {armor.defense}</p>
+      {armor.stats.strength > 0 && (
+        <p className={clsx(cardParagraphClasses)}>
+          Strength: {armor.stats.strength}
+        </p>
+      )}
+      {armor.stats.intelligence > 0 && (
+        <p className={clsx(cardParagraphClasses)}>
+          Intelligence: {armor.stats.intelligence}
+        </p>
+      )}
+      {armor.stats.defense > 0 && (
+        <p className={clsx(cardParagraphClasses)}>
+          Defense: {armor.stats.defense}
+        </p>
+      )}
+      {armor.stats.constitution > 0 && (
+        <p className={clsx(cardParagraphClasses)}>
+          Constitution: {armor.stats.constitution}
+        </p>
+      )}
     </div>
   );
 };

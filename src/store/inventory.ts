@@ -20,36 +20,126 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     {
       id: 1,
       name: "Leather Cap",
-      defense: 1,
+      stats: {
+        defense: 1,
+        strength: 1,
+        intelligence: 1,
+        constitution: 1,
+      },
     },
     {
       id: 2,
-      name: "Iron Helmet",
-      defense: 2,
+      name: "Steel Helmet",
+      stats: {
+        defense: 2,
+        strength: 1,
+        intelligence: 1,
+        constitution: 2,
+      },
+    },
+    {
+      id: 7,
+      name: "Berserker Helmet",
+      stats: {
+        defense: 1,
+        strength: 3,
+        intelligence: 1,
+        constitution: 1,
+      },
+    },
+    {
+      id: 10,
+      name: "Wizard Hat",
+      stats: {
+        defense: 1,
+        strength: 1,
+        intelligence: 3,
+        constitution: 1,
+      },
     },
   ],
   chestpieces: [
     {
       id: 3,
       name: "Leather Vest",
-      defense: 1,
+      stats: {
+        defense: 1,
+        strength: 1,
+        intelligence: 1,
+        constitution: 1,
+      },
     },
     {
       id: 4,
-      name: "Iron Chestplate",
-      defense: 2,
+      name: "Steel Chestplate",
+      stats: {
+        defense: 2,
+        strength: 1,
+        intelligence: 1,
+        constitution: 2,
+      },
+    },
+    {
+      id: 8,
+      name: "Berserker Chestplate",
+      stats: {
+        defense: 1,
+        strength: 3,
+        intelligence: 1,
+        constitution: 1,
+      },
+    },
+    {
+      id: 11,
+      name: "Wizard Robes",
+      stats: {
+        defense: 1,
+        strength: 1,
+        intelligence: 3,
+        constitution: 1,
+      },
     },
   ],
   leggings: [
     {
       id: 5,
       name: "Leather Pants",
-      defense: 1,
+      stats: {
+        defense: 1,
+        strength: 1,
+        intelligence: 1,
+        constitution: 1,
+      },
     },
     {
       id: 6,
-      name: "Iron Leggings",
-      defense: 2,
+      name: "Steel Leggings",
+      stats: {
+        defense: 2,
+        strength: 1,
+        intelligence: 1,
+        constitution: 2,
+      },
+    },
+    {
+      id: 9,
+      name: "Berserker Leggings",
+      stats: {
+        defense: 1,
+        strength: 3,
+        intelligence: 1,
+        constitution: 1,
+      },
+    },
+    {
+      id: 12,
+      name: "Wizard Pants",
+      stats: {
+        defense: 1,
+        strength: 1,
+        intelligence: 3,
+        constitution: 1,
+      },
     },
   ],
 

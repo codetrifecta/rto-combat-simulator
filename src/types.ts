@@ -1,4 +1,9 @@
-import { ENTITY_TYPE, SKILL_TYPE, WEAPON_TYPE } from "./constants";
+import {
+  ENTITY_TYPE,
+  SKILL_TYPE,
+  WEAPON_ATTACK_TYPE,
+  WEAPON_TYPE,
+} from "./constants";
 
 export interface IEntity {
   id: number;
@@ -47,7 +52,7 @@ export interface ISkill {
   name: string;
   skillType: SKILL_TYPE;
   description: string;
-  damage: number;
+  damageMultiplier: number;
   range: number;
   cooldown: number;
   cooldownCounter: number;
@@ -74,16 +79,24 @@ export interface IStatusEffect {
 export interface IWeapon {
   id: number;
   name: string;
-  type: WEAPON_TYPE.MELEE | WEAPON_TYPE.RANGED;
-  damage: number;
+  attackType: WEAPON_ATTACK_TYPE.MELEE | WEAPON_ATTACK_TYPE.RANGED;
+  type: WEAPON_TYPE;
+  stats: IStats;
   range: number;
   cost: number;
+}
+
+export interface IStats {
+  strength: number;
+  intelligence: number;
+  defense: number;
+  constitution: number;
 }
 
 export interface IArmor {
   id: number;
   name: string;
-  defense: number;
+  stats: IStats;
 }
 
 export interface IHelmet extends IArmor {}

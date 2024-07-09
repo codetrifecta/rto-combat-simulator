@@ -10,7 +10,7 @@ import {
   STATUS_ID,
   TILE_SIZE,
   TILE_TYPE,
-  WEAPON_TYPE,
+  WEAPON_ATTACK_TYPE,
 } from "../constants";
 import { IEnemy, IEntity, IPlayer } from "../types";
 import { useGameStateStore } from "../store/game";
@@ -42,9 +42,18 @@ export const Room: FC<{
 
   const { turnCycle, setTurnCycle, endTurn, isRoomOver, setIsRoomOver } =
     useGameStateStore();
-  const { getPlayer, setPlayer, setPlayerActionPoints, setPlayerState } =
-    usePlayerStore();
+  const {
+    getPlayer,
+    getPlayerBaseAttackDamage,
+    getPlayerTotalIntelligence,
+    getPlayerTotalDefense,
+    setPlayer,
+    setPlayerActionPoints,
+    setPlayerState,
+  } = usePlayerStore();
   const player = getPlayer();
+  const playerBaseAttackDamage = getPlayerBaseAttackDamage();
+  const playerTotalIntelligence = getPlayerTotalIntelligence();
 
   const { enemies, setEnemies } = useEnemyStore();
 
@@ -193,7 +202,10 @@ export const Room: FC<{
             } else {
               addLog({
                 message: (
-                  <span className="text-red-500">{affectedEnemy.name}</span>
+                  <>
+                    <span className="text-red-500">{affectedEnemy.name}</span>{" "}
+                    took 1 damage from burn.
+                  </>
                 ),
                 type: "info",
               });
@@ -457,9 +469,9 @@ export const Room: FC<{
         return;
       }
 
-      const weaponDamage = player.equipment.weapon.damage;
+      // Compute base attack damage based on the higher of player's strength or intelligence
 
-      const totalDamage = weaponDamage + statusDamageBonus;
+      const totalDamage = playerBaseAttackDamage + statusDamageBonus;
 
       enemy.health = enemy.health - totalDamage;
 
@@ -504,7 +516,9 @@ export const Room: FC<{
         return;
       }
 
-      const totalDamage = skill.damage + statusDamageBonus;
+      const totalDamage =
+        Math.round(skill.damageMultiplier * playerTotalIntelligence) +
+        statusDamageBonus;
       let doesDamage = false;
 
       const affectedEnemy = { ...enemy };
@@ -652,8 +666,8 @@ export const Room: FC<{
 
     // Handle skill effect
     switch (skill.id) {
-      case SKILL_ID.BUFF_UP: {
-        const buffedStatus = STATUSES.find((s) => s.id === STATUS_ID.BUFFED);
+      case SKILL_ID.FLEX: {
+        const buffedStatus = STATUSES.find((s) => s.id === STATUS_ID.FLEXED);
 
         if (!buffedStatus) {
           addLog({ message: "Buffed status not found!", type: "error" });
@@ -769,8 +783,11 @@ export const Room: FC<{
           return acc + status.effect.damageBonus;
         }, 0);
 
+        // Calculate total damage dealt
+        // Damage scaled based off player's strength stat
         const totalDamage =
-          skill.damage + player.equipment.weapon.damage + statusDamageBonus;
+          Math.round(skill.damageMultiplier * playerBaseAttackDamage) +
+          statusDamageBonus;
 
         // Create a new array of enemies with the damage dealt to be updated in the store
         const newEnemies = [...enemies];
@@ -861,7 +878,9 @@ export const Room: FC<{
           return acc + status.effect.damageBonus;
         }, 0);
 
-        const totalDamage = skill.damage + statusDamageBonus;
+        const totalDamage =
+          Math.round(skill.damageMultiplier * playerTotalIntelligence) +
+          statusDamageBonus;
 
         // Create a new array of enemies with the damage dealt to be updated in the store
         const newEnemies = [...enemies];
@@ -986,7 +1005,7 @@ export const Room: FC<{
 
     // Handle skill effect
     switch (skill.id) {
-      case SKILL_ID.TELEPORT: {
+      case SKILL_ID.FLY: {
         // Teleport player to empty tile
         // Set player's current tile to empty and new tile to player
         setRoomMatrix((prevRoomMatrix) => {
@@ -1028,7 +1047,7 @@ export const Room: FC<{
         s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
       ),
     });
-    if (skill.id === SKILL_ID.TELEPORT) {
+    if (skill.id === SKILL_ID.FLY) {
       addLog({
         message: (
           <>
@@ -1168,17 +1187,12 @@ export const Room: FC<{
         return acc + status.effect.damageBonus;
       }, 0);
 
-      const playerIncomingDamageReduction = player.statuses.reduce(
-        (acc, status) => {
-          return acc + status.effect.incomingDamageReduction;
-        },
-        0
-      );
+      const playerTotalDefense = getPlayerTotalDefense();
 
-      let totalDamage =
-        baseDamage + statusDamageBonus - playerIncomingDamageReduction;
+      let totalDamage = baseDamage + statusDamageBonus;
+      totalDamage -= playerTotalDefense;
 
-      if (totalDamage < 0) totalDamage = 0;
+      if (totalDamage <= 0) totalDamage = 1;
 
       setPlayer({
         ...player,
@@ -1316,7 +1330,7 @@ export const Room: FC<{
 
                 // Range for weapon dependent skills
                 if (weapon) {
-                  if (weapon.type === WEAPON_TYPE.MELEE) {
+                  if (weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
                     if (skill.id === SKILL_ID.WHIRLWIND) {
                       range = weapon.range;
                     }

@@ -27,10 +27,10 @@ export enum SKILL_TYPE {
 }
 
 export enum SKILL_ID {
-  BUFF_UP = 1,
+  FLEX = 1,
   GORGONS_GAZE = 2,
   LIGHTNING = 3,
-  TELEPORT = 4,
+  FLY = 4,
   WHIRLWIND = 5,
   IRONFLESH = 6,
   FIREBALL = 7,
@@ -38,11 +38,11 @@ export enum SKILL_ID {
 
 export const SKILLS: ISkill[] = [
   {
-    id: SKILL_ID.BUFF_UP,
-    name: "Buff Up",
+    id: SKILL_ID.FLEX,
+    name: "Flex",
     skillType: SKILL_TYPE.SELF,
     description: "Increase damage for all attacks by 2 for 3 turns.",
-    damage: 0,
+    damageMultiplier: 0,
     range: 0,
     cooldown: 3,
     cooldownCounter: 0,
@@ -54,7 +54,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.SELF,
     description:
       "Applies Stone Skin on self for 3 turns. Stone Skin decreases all incoming damage by 3.",
-    damage: 0,
+    damageMultiplier: 0,
     range: 0,
     cooldown: 3,
     cooldownCounter: 0,
@@ -66,7 +66,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     description:
       "Petrify an enemy for 3 turns. Petrified enemies cannot move or attack.",
-    damage: 0,
+    damageMultiplier: 0,
     range: 3,
     cooldown: 3,
     cooldownCounter: 0,
@@ -77,7 +77,7 @@ export const SKILLS: ISkill[] = [
     name: "Lightning",
     skillType: SKILL_TYPE.ST,
     description: "Strike enemies with lighning from the skies.",
-    damage: 3,
+    damageMultiplier: 2,
     range: 3,
     cooldown: 1,
     cooldownCounter: 0,
@@ -88,7 +88,7 @@ export const SKILLS: ISkill[] = [
     name: "Fireball",
     skillType: SKILL_TYPE.AOE,
     description: "Launch a fireball at a target area. Burns enemies hit.",
-    damage: 2,
+    damageMultiplier: 1.5,
     range: 3,
     cooldown: 2,
     cooldownCounter: 0,
@@ -100,19 +100,19 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     description:
       "Spin around dealing damage to all adjacent enemies. Damage and range is dependent on the player's current weapon.",
-    damage: 1,
+    damageMultiplier: 2,
     range: 1,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
   },
   {
-    id: SKILL_ID.TELEPORT,
-    name: "Teleport",
+    id: SKILL_ID.FLY,
+    name: "Fly",
     skillType: SKILL_TYPE.ST,
-    description: "Teleport to an empty tile in the room.",
-    damage: 0,
-    range: 4,
+    description: "Fly to an empty tile in the room.",
+    damageMultiplier: 0,
+    range: 5,
     cooldown: 4,
     cooldownCounter: 0,
     cost: 1,
@@ -120,7 +120,7 @@ export const SKILLS: ISkill[] = [
 ];
 
 export const STATUS_ID = {
-  BUFFED: 1,
+  FLEXED: 1,
   PETRIFIED: 2,
   STONE_SKIN: 3,
   BURNED: 4,
@@ -128,8 +128,8 @@ export const STATUS_ID = {
 
 export const STATUSES: IStatus[] = [
   {
-    id: STATUS_ID.BUFFED,
-    name: "Buffed",
+    id: STATUS_ID.FLEXED,
+    name: "Flexed",
     description: "Increased damage for all attacks by 2 for 3 turns.",
     duration: 3,
     durationCounter: 3,
@@ -185,65 +185,115 @@ export const STATUSES: IStatus[] = [
   },
 ];
 
-export enum WEAPON_TYPE {
+export enum WEAPON_ATTACK_TYPE {
   MELEE = "melee",
   RANGED = "ranged",
+}
+
+export enum WEAPON_TYPE {
+  ONE_HANDED = "one-handed",
+  TWO_HANDED = "two-handed",
+  BOW = "bow",
+  WAND = "wand",
+  STAFF = "staff",
 }
 
 export const WEAPONS: IWeapon[] = [
   {
     id: 1,
     name: "Fists",
-    type: WEAPON_TYPE.MELEE,
-    damage: 1,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.ONE_HANDED,
+    stats: {
+      strength: 1,
+      intelligence: 0,
+      defense: 0,
+      constitution: 0,
+    },
     range: 1,
     cost: 1,
   },
   {
     id: 2,
     name: "Club",
-    type: WEAPON_TYPE.MELEE,
-    damage: 2,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.ONE_HANDED,
+    stats: {
+      strength: 2,
+      intelligence: 0,
+      defense: 0,
+      constitution: 0,
+    },
     range: 1,
     cost: 1,
   },
   {
     id: 3,
     name: "Blade of Olympus",
-    type: WEAPON_TYPE.MELEE,
-    damage: 5,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.TWO_HANDED,
+    stats: {
+      strength: 5,
+      intelligence: 3,
+      defense: 0,
+      constitution: 0,
+    },
     range: 2,
     cost: 2,
   },
   {
     id: 4,
     name: "Blades of Chaos",
-    type: WEAPON_TYPE.MELEE,
-    damage: 2,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.ONE_HANDED,
+    stats: {
+      strength: 2,
+      intelligence: 1,
+      defense: 0,
+      constitution: 0,
+    },
     range: 3,
     cost: 1,
   },
   {
     id: 5,
     name: "Bow",
-    type: WEAPON_TYPE.RANGED,
-    damage: 2,
+    attackType: WEAPON_ATTACK_TYPE.RANGED,
+    type: WEAPON_TYPE.BOW,
+    stats: {
+      strength: 2,
+      intelligence: 0,
+      defense: 0,
+      constitution: 0,
+    },
     range: 4,
     cost: 2,
   },
   {
     id: 6,
     name: "Magic Staff",
-    type: WEAPON_TYPE.RANGED,
-    damage: 1,
+    attackType: WEAPON_ATTACK_TYPE.RANGED,
+    type: WEAPON_TYPE.STAFF,
+    stats: {
+      strength: 0,
+      intelligence: 3,
+      defense: 0,
+      constitution: 0,
+    },
     range: 3,
     cost: 1,
   },
   {
     id: 7,
     name: "Doom Hammer",
-    type: WEAPON_TYPE.MELEE,
-    damage: 100,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.TWO_HANDED,
+    stats: {
+      strength: 100,
+      intelligence: 100,
+      defense: 0,
+      constitution: 0,
+    },
     range: 100,
     cost: 1,
   },
