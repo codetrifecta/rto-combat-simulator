@@ -8,7 +8,7 @@ import { usePlayerStore } from "../store/player";
 const equipmentTypeClasses = "mb-4";
 const equipmentTitleClasses = "mb-0";
 const cardContainerClasses = "flex gap-3 overflow-y-auto pb-5 p-3";
-const cardClasses = "p-3 border border-white min-w-[150px] cursor-pointer";
+const cardClasses = "p-3 border border-white min-w-[175px] cursor-pointer";
 const cardParagraphClasses = "text-base";
 
 export const InventoryChooser: FC = () => {

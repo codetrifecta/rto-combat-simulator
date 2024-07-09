@@ -12,7 +12,7 @@ import {
   TILE_TYPE,
   WEAPON_TYPE,
 } from "../constants";
-import { IEnemy, IEntity } from "../types";
+import { IEnemy, IEntity, IPlayer } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
@@ -149,8 +149,8 @@ export const Room: FC<{
   // When turn cycle changes,
   // Handle enemy turn (for now, move to a random adjacent tile and attack player if in range)
   useEffect(() => {
-    // Handle enemy's action and end turn
-    const handleEnemyEndTurn = () => {
+    // Handle DoT check first
+    const handleDoT = () => {
       if (
         turnCycle.length > 0 &&
         turnCycle[0].entityType === ENTITY_TYPE.ENEMY &&
@@ -164,7 +164,8 @@ export const Room: FC<{
           return;
         }
 
-        // Apply any status effects that affect the enemy at the start of their turn (e.g. damage over time)
+        // console.log("enemy", enemy);
+
         const affectedEnemy = { ...enemy };
 
         const burnedDoT = affectedEnemy.statuses.find(
@@ -172,48 +173,103 @@ export const Room: FC<{
         );
 
         if (burnedDoT) {
-          const totalDamage = burnedDoT.effect.damageOverTime;
+          setTimeout(() => {
+            const totalDamage = burnedDoT.effect.damageOverTime;
 
-          affectedEnemy.health -= totalDamage;
+            affectedEnemy.health -= totalDamage;
 
-          if (affectedEnemy.health <= 0) {
-            setTimeout(() => {
-              setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+            if (affectedEnemy.health <= 0) {
               addLog({
                 message: (
                   <>
                     <span className="text-red-500">{affectedEnemy.name}</span>{" "}
-                    took {totalDamage} damage from burn and has been defeated!
+                    took 1 damage from burn and has been defeated!
                   </>
                 ),
                 type: "info",
               });
-              endTurn();
-            }, 1000);
+              setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+              // endTurn();
+            } else {
+              addLog({
+                message: (
+                  <span className="text-red-500">{affectedEnemy.name}</span>
+                ),
+                type: "info",
+              });
+              handleEnemyEndTurn(affectedEnemy);
+              // setEnemies(
+              //   enemies.map((e) => {
+              //     if (e.id === affectedEnemy.id) {
+              //       return affectedEnemy;
+              //     }
+              //     return e;
+              //   })
+              // );
+            }
+          }, 1000);
+        } else {
+          handleEnemyEndTurn(affectedEnemy);
+        }
+      } else if (
+        turnCycle.length > 0 &&
+        turnCycle[0].entityType === ENTITY_TYPE.PLAYER &&
+        isPlayer(turnCycle[0])
+      ) {
+        // Simulate enemy action with a timeout
 
-            return;
-          } else {
-            setEnemies(
-              enemies.map((e) => {
-                if (e.id === affectedEnemy.id) {
-                  return affectedEnemy;
-                }
-                return e;
-              })
-            );
+        const affectedPlayer = { ...player };
+
+        const burnedDoT = affectedPlayer.statuses.find(
+          (status) => status.id === STATUS_ID.BURNED
+        );
+
+        if (burnedDoT) {
+          const totalDamage = burnedDoT.effect.damageOverTime;
+
+          affectedPlayer.health -= totalDamage;
+
+          if (affectedPlayer.health <= 0) {
             addLog({
               message: (
                 <>
-                  <span className="text-red-500">{affectedEnemy.name}</span>{" "}
-                  took {totalDamage} damage from burn.
+                  <span className="text-green-500">{affectedPlayer.name}</span>{" "}
+                  took 1 damage from burn and has been defeated!
+                </>
+              ),
+              type: "info",
+            });
+          } else {
+            addLog({
+              message: (
+                <>
+                  <span className="text-green-500">{affectedPlayer.name}</span>{" "}
+                  took 1 damage from burn.
                 </>
               ),
               type: "info",
             });
           }
-        }
 
-        // console.log(enemy);
+          setPlayer(affectedPlayer);
+        }
+      }
+    };
+
+    // Handle enemy's action and end turn
+    const handleEnemyEndTurn = (affectedEnemy: IEnemy) => {
+      if (
+        turnCycle.length > 0 &&
+        turnCycle[0].entityType === ENTITY_TYPE.ENEMY &&
+        isEnemy(turnCycle[0])
+      ) {
+        // Simulate enemy action with a timeout
+        const enemy = enemies.find((e) => e.id === turnCycle[0].id);
+
+        if (!enemy) {
+          addLog({ message: "Enemy not found!", type: "error" });
+          return;
+        }
 
         // For now, end enemy's turn after moving once to a random adjacent tile and attacking the player if they are in range
         let totalTime = 0; // Total time for enemy's turn
@@ -377,7 +433,8 @@ export const Room: FC<{
         }, totalTime + endTurnTime);
       }
     };
-    handleEnemyEndTurn();
+    // handleEnemyEndTurn();
+    handleDoT();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turnCycle, turnCycle.length]);
 
@@ -772,6 +829,8 @@ export const Room: FC<{
 
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
         const enemiesInTargetZones: IEnemy[] = [];
+        const playerInTargetZones: IPlayer[] = [];
+
         targetZones.current.forEach(([row, col]) => {
           const tile = roomMatrix[row][col];
           // console.log(tile);
@@ -783,6 +842,8 @@ export const Room: FC<{
             }
 
             enemiesInTargetZones.push(enemy);
+          } else if (tile[0] === TILE_TYPE.PLAYER) {
+            playerInTargetZones.push(player);
           }
         });
 
@@ -804,6 +865,9 @@ export const Room: FC<{
 
         // Create a new array of enemies with the damage dealt to be updated in the store
         const newEnemies = [...enemies];
+
+        // Create a new player with the damage dealt to be updated in the store
+        const newPlayer = { ...player };
 
         enemiesInTargetZones.forEach((enemy) => {
           // Find enemy index
@@ -847,9 +911,48 @@ export const Room: FC<{
           }
         });
 
+        // Update player with the damage dealt if they are in the target zone
+
+        if (playerInTargetZones.length > 0) {
+          newPlayer.health -= totalDamage;
+
+          const burnedStatus = STATUSES.find((s) => s.id === STATUS_ID.BURNED);
+
+          if (!burnedStatus) {
+            addLog({ message: "Burned status not found!", type: "error" });
+            return;
+          }
+
+          newPlayer.statuses.push(burnedStatus);
+
+          if (newPlayer.health <= 0) {
+            addLog({
+              message: (
+                <>
+                  <span className="text-green-500">{player.name}</span> took{" "}
+                  {totalDamage} damage and has been defeated!
+                </>
+              ),
+              type: "info",
+            });
+          } else {
+            addLog({
+              message: (
+                <>
+                  <span className="text-green-500">{player.name}</span> took{" "}
+                  {totalDamage} damage.
+                </>
+              ),
+              type: "info",
+            });
+          }
+
+          console.log(newPlayer);
+        }
+
         setEnemies(newEnemies);
         setPlayer({
-          ...player,
+          ...newPlayer,
           state: {
             ...player.state,
             isUsingSkill: false,
@@ -1218,7 +1321,9 @@ export const Room: FC<{
                       range = weapon.range;
                     }
                   } else {
-                    range = 1;
+                    if (skill.id === SKILL_ID.WHIRLWIND) {
+                      range = 1;
+                    }
                   }
                 }
 
