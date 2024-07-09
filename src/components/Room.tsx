@@ -164,7 +164,7 @@ export const Room: FC<{
           return;
         }
 
-        console.log("enemy", enemy);
+        // console.log("enemy", enemy);
 
         const affectedEnemy = { ...enemy };
 
