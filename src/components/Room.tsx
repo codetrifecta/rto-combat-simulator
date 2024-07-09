@@ -10,7 +10,7 @@ import {
   STATUS_ID,
   TILE_SIZE,
   TILE_TYPE,
-  WEAPON_TYPE,
+  WEAPON_ATTACK_TYPE,
 } from "../constants";
 import { IEnemy, IEntity, IPlayer } from "../types";
 import { useGameStateStore } from "../store/game";
@@ -44,12 +44,16 @@ export const Room: FC<{
     useGameStateStore();
   const {
     getPlayer,
+    getPlayerBaseDamage,
+    getPlayerTotalStrength,
+    getPlayerTotalIntelligence,
     getPlayerTotalDefense,
     setPlayer,
     setPlayerActionPoints,
     setPlayerState,
   } = usePlayerStore();
   const player = getPlayer();
+  const playerBaseDamage = getPlayerBaseDamage();
 
   const { enemies, setEnemies } = useEnemyStore();
 
@@ -462,9 +466,13 @@ export const Room: FC<{
         return;
       }
 
-      const weaponDamage = player.equipment.weapon.damage;
+      // Compute base attack damage based on the higher of player's strength or intelligence
+      const totalStrength = getPlayerTotalStrength();
+      const totalIntelligence = getPlayerTotalIntelligence();
+      const statDamage =
+        totalStrength > totalIntelligence ? totalStrength : totalIntelligence;
 
-      const totalDamage = weaponDamage + statusDamageBonus;
+      const totalDamage = statDamage + statusDamageBonus;
 
       enemy.health = enemy.health - totalDamage;
 
@@ -776,8 +784,7 @@ export const Room: FC<{
 
         // Calculate total damage dealt
         // Damage scaled based off player's strength stat
-        const totalDamage =
-          skill.damage + player.equipment.weapon.damage + statusDamageBonus;
+        const totalDamage = skill.damage + playerBaseDamage + statusDamageBonus;
 
         // Create a new array of enemies with the damage dealt to be updated in the store
         const newEnemies = [...enemies];
@@ -1175,13 +1182,6 @@ export const Room: FC<{
         return acc + status.effect.damageBonus;
       }, 0);
 
-      // const playerIncomingDamageReduction = player.statuses.reduce(
-      //   (acc, status) => {
-      //     return acc + status.effect.incomingDamageReduction;
-      //   },
-      //   0
-      // );
-
       const playerTotalDefense = getPlayerTotalDefense();
 
       let totalDamage = baseDamage + statusDamageBonus;
@@ -1325,7 +1325,7 @@ export const Room: FC<{
 
                 // Range for weapon dependent skills
                 if (weapon) {
-                  if (weapon.type === WEAPON_TYPE.MELEE) {
+                  if (weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
                     if (skill.id === SKILL_ID.WHIRLWIND) {
                       range = weapon.range;
                     }

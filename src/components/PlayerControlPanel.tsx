@@ -14,8 +14,13 @@ export const PlayerControlPanel: FC = () => {
 
   const { turnCycle, endTurn, isRoomOver } = useGameStateStore();
 
-  const { setPlayerState, getPlayer, getPlayerBonusDamage, setPlayer } =
-    usePlayerStore();
+  const {
+    getPlayer,
+    getPlayerBaseDamage,
+    getPlayerBonusDamage,
+    setPlayer,
+    setPlayerState,
+  } = usePlayerStore();
 
   const player = getPlayer();
 
@@ -47,6 +52,8 @@ export const PlayerControlPanel: FC = () => {
     handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
   };
 
+  const baseAttackDamage = getPlayerBaseDamage();
+
   const renderWeaponButtonTooltip = (skill: ISkill) => {
     if (skill.id === SKILL_ID.WHIRLWIND) {
       return (
@@ -54,14 +61,11 @@ export const PlayerControlPanel: FC = () => {
           <h2>{skill.name}</h2>
           <p>{skill.description}</p>
           {player.equipment.weapon ? (
-            <p>Base DMG: {player.equipment.weapon.damage + skill.damage}</p>
+            <p>Base DMG: {baseAttackDamage + skill.damage}</p>
           ) : null}
           {player.equipment.weapon ? <p>Bonus DMG: {bonusDamage}</p> : null}
           {player.equipment.weapon ? (
-            <p>
-              Total DMG:{" "}
-              {player.equipment.weapon.damage + skill.damage + bonusDamage}
-            </p>
+            <p>Total DMG: {baseAttackDamage + skill.damage + bonusDamage}</p>
           ) : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
@@ -166,11 +170,9 @@ export const PlayerControlPanel: FC = () => {
                   <>
                     <h2>Weapon attack</h2>
                     <h3>Weapon Equipped: {player.equipment.weapon.name}</h3>
-                    <p>Base DMG: {player.equipment.weapon?.damage}</p>
+                    <p>Base DMG: {baseAttackDamage}</p>
                     <p>Bonus DMG: {bonusDamage}</p>
-                    <p>
-                      Total DMG: {player.equipment.weapon?.damage + bonusDamage}
-                    </p>
+                    <p>Total DMG: {baseAttackDamage + bonusDamage}</p>
                   </>
                 ) : (
                   <h2>No weapon equipped</h2>

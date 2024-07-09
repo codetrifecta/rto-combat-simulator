@@ -1,4 +1,9 @@
-import { ENTITY_TYPE, SKILL_TYPE, WEAPON_TYPE } from "./constants";
+import {
+  ENTITY_TYPE,
+  SKILL_TYPE,
+  WEAPON_ATTACK_TYPE,
+  WEAPON_TYPE,
+} from "./constants";
 
 export interface IEntity {
   id: number;
@@ -74,7 +79,8 @@ export interface IStatusEffect {
 export interface IWeapon {
   id: number;
   name: string;
-  type: WEAPON_TYPE.MELEE | WEAPON_TYPE.RANGED;
+  attackType: WEAPON_ATTACK_TYPE.MELEE | WEAPON_ATTACK_TYPE.RANGED;
+  type: WEAPON_TYPE;
   stats: IStats;
   range: number;
   cost: number;

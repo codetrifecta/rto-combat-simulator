@@ -185,16 +185,25 @@ export const STATUSES: IStatus[] = [
   },
 ];
 
-export enum WEAPON_TYPE {
+export enum WEAPON_ATTACK_TYPE {
   MELEE = "melee",
   RANGED = "ranged",
+}
+
+export enum WEAPON_TYPE {
+  ONE_HANDED = "one-handed",
+  TWO_HANDED = "two-handed",
+  BOW = "bow",
+  WAND = "wand",
+  STAFF = "staff",
 }
 
 export const WEAPONS: IWeapon[] = [
   {
     id: 1,
     name: "Fists",
-    type: WEAPON_TYPE.MELEE,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.ONE_HANDED,
     stats: {
       strength: 1,
       intelligence: 0,
@@ -207,7 +216,8 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 2,
     name: "Club",
-    type: WEAPON_TYPE.MELEE,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.ONE_HANDED,
     stats: {
       strength: 2,
       intelligence: 0,
@@ -220,7 +230,8 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 3,
     name: "Blade of Olympus",
-    type: WEAPON_TYPE.MELEE,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.TWO_HANDED,
     stats: {
       strength: 5,
       intelligence: 3,
@@ -233,7 +244,8 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 4,
     name: "Blades of Chaos",
-    type: WEAPON_TYPE.MELEE,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.ONE_HANDED,
     stats: {
       strength: 2,
       intelligence: 1,
@@ -246,7 +258,8 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 5,
     name: "Bow",
-    type: WEAPON_TYPE.RANGED,
+    attackType: WEAPON_ATTACK_TYPE.RANGED,
+    type: WEAPON_TYPE.BOW,
     stats: {
       strength: 2,
       intelligence: 0,
@@ -259,7 +272,8 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 6,
     name: "Magic Staff",
-    type: WEAPON_TYPE.RANGED,
+    attackType: WEAPON_ATTACK_TYPE.RANGED,
+    type: WEAPON_TYPE.STAFF,
     stats: {
       strength: 0,
       intelligence: 3,
@@ -272,7 +286,8 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 7,
     name: "Doom Hammer",
-    type: WEAPON_TYPE.MELEE,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.TWO_HANDED,
     stats: {
       strength: 100,
       intelligence: 100,
