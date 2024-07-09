@@ -188,7 +188,26 @@ const ArmorCard: FC<{
       onClick={onClick}
     >
       <h3>{armor.name}</h3>
-      <p className={clsx(cardParagraphClasses)}>Defense: {armor.defense}</p>
+      {armor.stats.defense && (
+        <p className={clsx(cardParagraphClasses)}>
+          Defense: {armor.stats.defense}
+        </p>
+      )}
+      {armor.stats.strength && (
+        <p className={clsx(cardParagraphClasses)}>
+          Strength: {armor.stats.strength}
+        </p>
+      )}
+      {armor.stats.intelligence && (
+        <p className={clsx(cardParagraphClasses)}>
+          Intelligence: {armor.stats.intelligence}
+        </p>
+      )}
+      {armor.stats.constitution && (
+        <p className={clsx(cardParagraphClasses)}>
+          Constitution: {armor.stats.constitution}
+        </p>
+      )}
     </div>
   );
 };

@@ -45,6 +45,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     isMoving: false,
     isUsingSkill: false,
   },
+
   equipment: {
     weapon: {
       id: 1,

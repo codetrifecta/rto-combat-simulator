@@ -80,10 +80,17 @@ export interface IWeapon {
   cost: number;
 }
 
+export interface IStats {
+  defense: number;
+  strength: number;
+  intelligence: number;
+  constitution: number;
+}
+
 export interface IArmor {
   id: number;
   name: string;
-  defense: number;
+  stats: IStats;
 }
 
 export interface IHelmet extends IArmor {}
