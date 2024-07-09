@@ -1185,12 +1185,9 @@ export const Room: FC<{
       const playerTotalDefense = getPlayerTotalDefense();
 
       let totalDamage = baseDamage + statusDamageBonus;
-      const blockedDamage = Math.ceil(totalDamage * (playerTotalDefense / 100));
-      totalDamage -= blockedDamage;
+      totalDamage -= playerTotalDefense;
 
-      console.log(baseDamage, blockedDamage, playerTotalDefense, totalDamage);
-
-      if (totalDamage < 0) totalDamage = 0;
+      if (totalDamage <= 0) totalDamage = 1;
 
       setPlayer({
         ...player,
