@@ -51,7 +51,12 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       id: 1,
       name: "Fists",
       type: WEAPON_TYPE.MELEE,
-      damage: 1,
+      stats: {
+        strength: 1,
+        intelligence: 0,
+        defense: 0,
+        constitution: 0,
+      },
       range: 1,
       cost: 1,
     },

@@ -75,15 +75,15 @@ export interface IWeapon {
   id: number;
   name: string;
   type: WEAPON_TYPE.MELEE | WEAPON_TYPE.RANGED;
-  damage: number;
+  stats: IStats;
   range: number;
   cost: number;
 }
 
 export interface IStats {
-  defense: number;
   strength: number;
   intelligence: number;
+  defense: number;
   constitution: number;
 }
 
