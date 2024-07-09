@@ -16,13 +16,16 @@ export const PlayerControlPanel: FC = () => {
 
   const {
     getPlayer,
-    getPlayerBaseDamage,
+    getPlayerBaseAttackDamage,
+    getPlayerTotalIntelligence,
     getPlayerBonusDamage,
     setPlayer,
     setPlayerState,
   } = usePlayerStore();
 
   const player = getPlayer();
+  const baseAttackDamage = getPlayerBaseAttackDamage();
+  const totalIntelligence = getPlayerTotalIntelligence();
 
   const [areSkillButtonsHovered, setAreSkillButtonsHovered] = useState<
     Record<number, boolean>
@@ -52,8 +55,6 @@ export const PlayerControlPanel: FC = () => {
     handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
   };
 
-  const baseAttackDamage = getPlayerBaseDamage();
-
   const renderWeaponButtonTooltip = (skill: ISkill) => {
     if (skill.id === SKILL_ID.WHIRLWIND) {
       return (
@@ -61,11 +62,17 @@ export const PlayerControlPanel: FC = () => {
           <h2>{skill.name}</h2>
           <p>{skill.description}</p>
           {player.equipment.weapon ? (
-            <p>Base DMG: {baseAttackDamage + skill.damage}</p>
+            <p>
+              Base DMG: {Math.round(baseAttackDamage * skill.damageMultiplier)}
+            </p>
           ) : null}
           {player.equipment.weapon ? <p>Bonus DMG: {bonusDamage}</p> : null}
           {player.equipment.weapon ? (
-            <p>Total DMG: {baseAttackDamage + skill.damage + bonusDamage}</p>
+            <p>
+              Total DMG:{" "}
+              {Math.round(baseAttackDamage * skill.damageMultiplier) +
+                bonusDamage}
+            </p>
           ) : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
@@ -79,9 +86,19 @@ export const PlayerControlPanel: FC = () => {
         <Tooltip active={areSkillButtonsHovered[skill.id]}>
           <h2>{skill.name}</h2>
           <p>{skill.description}</p>
-          {skill.damage ? <p>Base DMG: {skill.damage}</p> : null}
-          {skill.damage ? <p>Bonus DMG: {bonusDamage}</p> : null}
-          {skill.damage ? <p>Total DMG: {skill.damage + bonusDamage}</p> : null}
+          {skill.damageMultiplier ? (
+            <p>
+              Base DMG: {Math.round(totalIntelligence * skill.damageMultiplier)}
+            </p>
+          ) : null}
+          {skill.damageMultiplier ? <p>Bonus DMG: {bonusDamage}</p> : null}
+          {skill.damageMultiplier ? (
+            <p>
+              Total DMG:{" "}
+              {Math.round(totalIntelligence * skill.damageMultiplier) +
+                bonusDamage}
+            </p>
+          ) : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
           {skill.cooldownCounter > 0 && (

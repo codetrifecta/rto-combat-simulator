@@ -44,8 +44,7 @@ export const Room: FC<{
     useGameStateStore();
   const {
     getPlayer,
-    getPlayerBaseDamage,
-    getPlayerTotalStrength,
+    getPlayerBaseAttackDamage,
     getPlayerTotalIntelligence,
     getPlayerTotalDefense,
     setPlayer,
@@ -53,7 +52,8 @@ export const Room: FC<{
     setPlayerState,
   } = usePlayerStore();
   const player = getPlayer();
-  const playerBaseDamage = getPlayerBaseDamage();
+  const playerBaseAttackDamage = getPlayerBaseAttackDamage();
+  const playerTotalIntelligence = getPlayerTotalIntelligence();
 
   const { enemies, setEnemies } = useEnemyStore();
 
@@ -467,12 +467,8 @@ export const Room: FC<{
       }
 
       // Compute base attack damage based on the higher of player's strength or intelligence
-      const totalStrength = getPlayerTotalStrength();
-      const totalIntelligence = getPlayerTotalIntelligence();
-      const statDamage =
-        totalStrength > totalIntelligence ? totalStrength : totalIntelligence;
 
-      const totalDamage = statDamage + statusDamageBonus;
+      const totalDamage = playerBaseAttackDamage + statusDamageBonus;
 
       enemy.health = enemy.health - totalDamage;
 
@@ -517,7 +513,9 @@ export const Room: FC<{
         return;
       }
 
-      const totalDamage = skill.damage + statusDamageBonus;
+      const totalDamage =
+        Math.round(skill.damageMultiplier * playerTotalIntelligence) +
+        statusDamageBonus;
       let doesDamage = false;
 
       const affectedEnemy = { ...enemy };
@@ -784,7 +782,9 @@ export const Room: FC<{
 
         // Calculate total damage dealt
         // Damage scaled based off player's strength stat
-        const totalDamage = skill.damage + playerBaseDamage + statusDamageBonus;
+        const totalDamage =
+          Math.round(skill.damageMultiplier * playerBaseAttackDamage) +
+          statusDamageBonus;
 
         // Create a new array of enemies with the damage dealt to be updated in the store
         const newEnemies = [...enemies];
@@ -875,7 +875,9 @@ export const Room: FC<{
           return acc + status.effect.damageBonus;
         }, 0);
 
-        const totalDamage = skill.damage + statusDamageBonus;
+        const totalDamage =
+          Math.round(skill.damageMultiplier * playerTotalIntelligence) +
+          statusDamageBonus;
 
         // Create a new array of enemies with the damage dealt to be updated in the store
         const newEnemies = [...enemies];

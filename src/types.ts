@@ -52,7 +52,7 @@ export interface ISkill {
   name: string;
   skillType: SKILL_TYPE;
   description: string;
-  damage: number;
+  damageMultiplier: number;
   range: number;
   cooldown: number;
   cooldownCounter: number;
