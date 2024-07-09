@@ -149,8 +149,8 @@ export const Room: FC<{
   // When turn cycle changes,
   // Handle enemy turn (for now, move to a random adjacent tile and attack player if in range)
   useEffect(() => {
-    // Handle enemy's action and end turn
-    const handleEnemyEndTurn = () => {
+    // Handle DoT check first
+    const handleEnemyDoT = () => {
       if (
         turnCycle.length > 0 &&
         turnCycle[0].entityType === ENTITY_TYPE.ENEMY &&
@@ -164,7 +164,8 @@ export const Room: FC<{
           return;
         }
 
-        // Apply any status effects that affect the enemy at the start of their turn (e.g. damage over time)
+        console.log("enemy", enemy);
+
         const affectedEnemy = { ...enemy };
 
         const burnedDoT = affectedEnemy.statuses.find(
@@ -172,48 +173,61 @@ export const Room: FC<{
         );
 
         if (burnedDoT) {
-          const totalDamage = burnedDoT.effect.damageOverTime;
+          setTimeout(() => {
+            const totalDamage = burnedDoT.effect.damageOverTime;
 
-          affectedEnemy.health -= totalDamage;
+            affectedEnemy.health -= totalDamage;
 
-          if (affectedEnemy.health <= 0) {
-            setTimeout(() => {
-              setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+            if (affectedEnemy.health <= 0) {
               addLog({
                 message: (
                   <>
                     <span className="text-red-500">{affectedEnemy.name}</span>{" "}
-                    took {totalDamage} damage from burn and has been defeated!
+                    took 1 damage from burn and has been defeated!
                   </>
                 ),
                 type: "info",
               });
-              endTurn();
-            }, 1000);
-
-            return;
-          } else {
-            setEnemies(
-              enemies.map((e) => {
-                if (e.id === affectedEnemy.id) {
-                  return affectedEnemy;
-                }
-                return e;
-              })
-            );
-            addLog({
-              message: (
-                <>
-                  <span className="text-red-500">{affectedEnemy.name}</span>{" "}
-                  took {totalDamage} damage from burn.
-                </>
-              ),
-              type: "info",
-            });
-          }
+              setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+              // endTurn();
+            } else {
+              addLog({
+                message: (
+                  <span className="text-red-500">{affectedEnemy.name}</span>
+                ),
+                type: "info",
+              });
+              handleEnemyEndTurn(affectedEnemy);
+              // setEnemies(
+              //   enemies.map((e) => {
+              //     if (e.id === affectedEnemy.id) {
+              //       return affectedEnemy;
+              //     }
+              //     return e;
+              //   })
+              // );
+            }
+          }, 1000);
+        } else {
+          handleEnemyEndTurn(affectedEnemy);
         }
+      }
+    };
 
-        // console.log(enemy);
+    // Handle enemy's action and end turn
+    const handleEnemyEndTurn = (affectedEnemy: IEnemy) => {
+      if (
+        turnCycle.length > 0 &&
+        turnCycle[0].entityType === ENTITY_TYPE.ENEMY &&
+        isEnemy(turnCycle[0])
+      ) {
+        // Simulate enemy action with a timeout
+        const enemy = enemies.find((e) => e.id === turnCycle[0].id);
+
+        if (!enemy) {
+          addLog({ message: "Enemy not found!", type: "error" });
+          return;
+        }
 
         // For now, end enemy's turn after moving once to a random adjacent tile and attacking the player if they are in range
         let totalTime = 0; // Total time for enemy's turn
@@ -377,7 +391,8 @@ export const Room: FC<{
         }, totalTime + endTurnTime);
       }
     };
-    handleEnemyEndTurn();
+    // handleEnemyEndTurn();
+    handleEnemyDoT();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turnCycle, turnCycle.length]);
 
@@ -1216,7 +1231,9 @@ export const Room: FC<{
                   if (weapon.type === WEAPON_TYPE.MELEE) {
                     if (skill.id === SKILL_ID.WHIRLWIND) {
                       range = weapon.range;
-                    } else {
+                    }
+                  } else {
+                    if (skill.id === SKILL_ID.WHIRLWIND) {
                       range = 1;
                     }
                   }
