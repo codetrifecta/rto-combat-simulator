@@ -42,8 +42,13 @@ export const Room: FC<{
 
   const { turnCycle, setTurnCycle, endTurn, isRoomOver, setIsRoomOver } =
     useGameStateStore();
-  const { getPlayer, setPlayer, setPlayerActionPoints, setPlayerState } =
-    usePlayerStore();
+  const {
+    getPlayer,
+    getPlayerTotalDefense,
+    setPlayer,
+    setPlayerActionPoints,
+    setPlayerState,
+  } = usePlayerStore();
   const player = getPlayer();
 
   const { enemies, setEnemies } = useEnemyStore();
@@ -769,6 +774,8 @@ export const Room: FC<{
           return acc + status.effect.damageBonus;
         }, 0);
 
+        // Calculate total damage dealt
+        // Damage scaled based off player's strength stat
         const totalDamage =
           skill.damage + player.equipment.weapon.damage + statusDamageBonus;
 
@@ -1168,15 +1175,20 @@ export const Room: FC<{
         return acc + status.effect.damageBonus;
       }, 0);
 
-      const playerIncomingDamageReduction = player.statuses.reduce(
-        (acc, status) => {
-          return acc + status.effect.incomingDamageReduction;
-        },
-        0
-      );
+      // const playerIncomingDamageReduction = player.statuses.reduce(
+      //   (acc, status) => {
+      //     return acc + status.effect.incomingDamageReduction;
+      //   },
+      //   0
+      // );
 
-      let totalDamage =
-        baseDamage + statusDamageBonus - playerIncomingDamageReduction;
+      const playerTotalDefense = getPlayerTotalDefense();
+
+      let totalDamage = baseDamage + statusDamageBonus;
+      const blockedDamage = Math.ceil(totalDamage * (playerTotalDefense / 100));
+      totalDamage -= blockedDamage;
+
+      console.log(baseDamage, blockedDamage, playerTotalDefense, totalDamage);
 
       if (totalDamage < 0) totalDamage = 0;
 

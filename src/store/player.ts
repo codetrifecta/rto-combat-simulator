@@ -19,6 +19,7 @@ import {
 interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
   getPlayerBonusDamage: () => number;
+  getPlayerTotalDefense: () => number;
   setPlayer: (player: IPlayer) => void;
   setPlayerActionPoints: (actionPoints: number) => void;
   setPlayerSkills: (skills: ISkill[]) => void;
@@ -88,6 +89,16 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       0
     );
     return bonusDamage;
+  },
+
+  getPlayerTotalDefense: () => {
+    const helmetDefense = get().equipment.helmet?.stats.defense || 0;
+    const chestpieceDefense = get().equipment.chestpiece?.stats.defense || 0;
+    const leggingDefense = get().equipment.legging?.stats.defense || 0;
+
+    const totalDefense = helmetDefense + chestpieceDefense + leggingDefense;
+
+    return totalDefense;
   },
 
   setPlayer: (player: IPlayer) => set({ ...player }),
