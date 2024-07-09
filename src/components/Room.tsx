@@ -202,7 +202,10 @@ export const Room: FC<{
             } else {
               addLog({
                 message: (
-                  <span className="text-red-500">{affectedEnemy.name}</span>
+                  <>
+                    <span className="text-red-500">{affectedEnemy.name}</span>{" "}
+                    took 1 damage from burn.
+                  </>
                 ),
                 type: "info",
               });
