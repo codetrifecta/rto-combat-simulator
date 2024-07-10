@@ -6,6 +6,7 @@ interface IGameStateStore extends IGameState {
   endTurn: () => void;
   setIsInventoryOpen: (isInventoryOpen: boolean) => void;
   setIsGameLogOpen: (isGameLogOpen: boolean) => void;
+  setIsCharacterSheetOpen: (isCharacterSheetOpen: boolean) => void;
   setTurnCycle: (turnCycle: IEntity[]) => void;
   setIsRoomOver: (isRoomOver: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
@@ -17,6 +18,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   isLoading: true,
   isInventoryOpen: false,
   isGameLogOpen: true,
+  isCharacterSheetOpen: false,
 
   getCurrentTurnEntity: () => {
     const currentTurnEntity = get().turnCycle[0];
@@ -49,6 +51,9 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   setIsInventoryOpen: (isInventoryOpen: boolean) => set({ isInventoryOpen }),
 
   setIsGameLogOpen: (isGameLogOpen: boolean) => set({ isGameLogOpen }),
+
+  setIsCharacterSheetOpen: (isCharacterSheetOpen: boolean) =>
+    set({ isCharacterSheetOpen }),
 
   setTurnCycle: (turnCycle: IEntity[]) => set({ turnCycle }),
 

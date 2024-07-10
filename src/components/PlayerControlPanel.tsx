@@ -18,6 +18,8 @@ export const PlayerControlPanel: FC = () => {
     isRoomOver,
     isInventoryOpen,
     isGameLogOpen,
+    isCharacterSheetOpen,
+    setIsCharacterSheetOpen,
     setIsInventoryOpen,
     setIsGameLogOpen,
   } = useGameStateStore();
@@ -193,14 +195,23 @@ export const PlayerControlPanel: FC = () => {
           </div>
         ) : (
           <div className="grid grid-flow-col grid-rows-1 grid-cols-3 w-full">
-            <div className="flex justify-center col-span-1">
-              <div className="mr-10">
+            <div className="flex justify-center gap-5 col-span-1">
+              <div>
                 <Button
                   onClick={() => {
                     setIsGameLogOpen(!isGameLogOpen);
                   }}
                 >
-                  Log
+                  Log (L)
+                </Button>
+              </div>
+              <div>
+                <Button
+                  onClick={() => {
+                    setIsCharacterSheetOpen(!isCharacterSheetOpen);
+                  }}
+                >
+                  Character Sheet (C)
                 </Button>
               </div>
               <Button
@@ -208,13 +219,13 @@ export const PlayerControlPanel: FC = () => {
                   setIsInventoryOpen(!isInventoryOpen);
                 }}
               >
-                Inventory
+                Inventory (I)
               </Button>
             </div>
 
             {/* Combat buttons */}
             <div
-              className={clsx("flex justify-between col-span-1", {
+              className={clsx("flex justify-center gap-5 col-span-1", {
                 "pointer-events-none": disabled,
               })}
             >
@@ -331,7 +342,7 @@ const Button: FC<{
   return (
     <button
       className={clsx(
-        " text-white font-bold py-2 px-4 rounded",
+        " text-white font-bold py-2 px-4 rounded text-lg",
         { "bg-blue-500": !neutral },
         { "bg-neutral-500": neutral },
         { "hover:bg-blue-700": !disabled && !neutral },

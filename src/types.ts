@@ -47,6 +47,7 @@ export interface IGameState {
   isLoading: boolean;
   isInventoryOpen: boolean;
   isGameLogOpen: boolean;
+  isCharacterSheetOpen: boolean;
 }
 
 export interface ISkill {

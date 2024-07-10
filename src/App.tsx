@@ -10,13 +10,14 @@ import { useEnemyStore } from "./store/enemy";
 import { Logger } from "./components/Logger";
 import clsx from "clsx";
 import { InventoryChooser } from "./components/InventoryChooser";
+import { CharacterSheet } from "./components/CharacterSheet";
 
 let firstRoomRender = true;
 
 const cameraStraightMoveSpeed = 7;
 const cameraDiagonalMoveSpeed = Math.sqrt(cameraStraightMoveSpeed ** 2 / 2);
 
-const availableKeys = ["w", "a", "s", "d", "+", "=", "-"];
+const availableKeys = ["w", "a", "s", "d", "l", "c", "i", "+", "=", "-"];
 
 let currentScale = 1;
 const scaleStep = 0.02;
@@ -34,7 +35,10 @@ function App() {
     turnCycle,
     isInventoryOpen,
     isGameLogOpen,
+    isCharacterSheetOpen,
     setIsInventoryOpen,
+    setIsGameLogOpen,
+    setIsCharacterSheetOpen,
     setTurnCycle,
     setIsLoading,
   } = useGameStateStore();
@@ -141,6 +145,14 @@ function App() {
             roomContainerRef.current.style.transform = `scale(${currentScale})`;
           }
         }
+
+        if (keyPressed["l"] === true) {
+          setIsGameLogOpen(!isGameLogOpen);
+        } else if (keyPressed["c"] === true) {
+          setIsCharacterSheetOpen(!isCharacterSheetOpen);
+        } else if (keyPressed["i"] === true) {
+          setIsInventoryOpen(!isInventoryOpen);
+        }
       }
     }, 10);
 
@@ -208,6 +220,19 @@ function App() {
         <Logger />
       </div>
 
+      <div
+        className={clsx(
+          "fixed left-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0 z-30"
+        )}
+        style={{
+          height: "calc(100vh - 80px)",
+          left: isCharacterSheetOpen ? 0 : -400,
+          visibility: isCharacterSheetOpen ? "visible" : "hidden",
+        }}
+      >
+        <CharacterSheet />
+      </div>
+
       {/* Combat Room */}
 
       <section className="relative max-w-screen max-h-screen">
@@ -229,17 +254,19 @@ function App() {
       </section>
 
       {/* Inventory Chooser */}
-      {isInventoryOpen === true && (
-        <section
-          className="fixed z-50 flex justify-center items-center w-full h-full p-48"
-          onClick={() => {
-            setIsInventoryOpen(false);
-          }}
-        >
-          <InventoryChooser />
-          <div></div>
-        </section>
-      )}
+      {/* {isInventoryOpen === true && ( */}
+      <section
+        className="fixed z-50 top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
+        style={{
+          height: "calc(100vh - 80px)",
+          right: isInventoryOpen ? 0 : -400,
+          visibility: isInventoryOpen ? "visible" : "hidden",
+        }}
+      >
+        <InventoryChooser />
+        <div></div>
+      </section>
+      {/* )} */}
 
       <div className="fixed bottom-0 z-40 flex flex-col justify-between items-center">
         {/* Player Info */}

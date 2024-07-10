@@ -4,15 +4,19 @@ import { IArmor, IWeapon } from "../types";
 import { usePlayerInventoryStore } from "../store/inventory";
 import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
+import { useGameStateStore } from "../store/game";
 
 const equipmentTypeClasses = "mb-4";
 const equipmentTitleClasses = "mb-0";
 const cardContainerClasses = "flex gap-3 overflow-y-auto pb-5 p-3";
-const cardClasses = "p-3 border border-white min-w-[175px] cursor-pointer";
+const cardClasses =
+  "p-3 bg-zinc-700 border border-white min-w-[175px] cursor-pointer";
 const cardParagraphClasses = "text-base";
 
 export const InventoryChooser: FC = () => {
   const { weapons, helmets, chestpieces, leggings } = usePlayerInventoryStore();
+
+  const { setIsInventoryOpen } = useGameStateStore();
 
   const {
     getPlayer,
@@ -25,129 +29,139 @@ export const InventoryChooser: FC = () => {
   const player = getPlayer();
 
   return (
-    <div
-      className="bg-zinc-900 overflow-auto p-5 border-white border h-full"
-      // style={{ maxHeight: ROOM_LENGTH * TILE_SIZE }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <h2 className="mb-5 pb-3 w-full border-b">Inventory Chooser</h2>
-      {/* Weapons */}
-      <div className={clsx(equipmentTypeClasses)}>
-        <h2 className={clsx(equipmentTitleClasses)}>Weapons</h2>
-        <div className={clsx(cardContainerClasses)}>
-          {weapons.map((weapon) => {
-            if (player.equipment.weapon?.id === weapon.id) {
-              return (
-                <WeaponCard
-                  key={weapon.id}
-                  weapon={weapon}
-                  active
-                  onClick={() => {
-                    if (player.state.isAttacking === false) {
-                      setPlayerWeapon(null);
-                    }
-                  }}
-                />
-              );
-            } else {
-              return (
-                <WeaponCard
-                  key={weapon.id}
-                  weapon={weapon}
-                  active={false}
-                  onClick={() => {
-                    if (player.state.isAttacking === false) {
-                      setPlayerWeapon(weapon);
-                    }
-                  }}
-                />
-              );
-            }
-          })}
+    <div className="bg-zinc-900 p-5 border-l border-white h-full">
+      <div className="relative">
+        <div
+          className="absolute top-0 right-0 cursor-pointer text-red-500"
+          onClick={() => setIsInventoryOpen(false)}
+        >
+          X
         </div>
+        <h2 className="mb-5 pb-3 w-full border-b">Inventory Chooser</h2>
       </div>
 
-      {/* Helmets */}
-      <div className={clsx(equipmentTypeClasses)}>
-        <h2 className={clsx(equipmentTitleClasses)}>Helmets</h2>
-        <div className={clsx(cardContainerClasses)}>
-          {helmets.map((helmet) => {
-            if (player.equipment.helmet?.id === helmet.id) {
-              return (
-                <ArmorCard
-                  key={helmet.id}
-                  armor={helmet}
-                  active
-                  onClick={() => setPlayerWeapon(null)}
-                />
-              );
-            } else {
-              return (
-                <ArmorCard
-                  key={helmet.id}
-                  armor={helmet}
-                  active={false}
-                  onClick={() => setPlayerHelmet(helmet)}
-                />
-              );
-            }
-          })}
+      <div
+        className="relative overflow-auto"
+        style={{ maxHeight: "calc(100% - 70px)" }}
+      >
+        {/* Weapons */}
+        <div className={clsx(equipmentTypeClasses)}>
+          <h2 className={clsx(equipmentTitleClasses)}>Weapons</h2>
+          <div className={clsx(cardContainerClasses)}>
+            {weapons.map((weapon) => {
+              if (player.equipment.weapon?.id === weapon.id) {
+                return (
+                  <WeaponCard
+                    key={weapon.id}
+                    weapon={weapon}
+                    active
+                    onClick={() => {
+                      if (player.state.isAttacking === false) {
+                        setPlayerWeapon(null);
+                      }
+                    }}
+                  />
+                );
+              } else {
+                return (
+                  <WeaponCard
+                    key={weapon.id}
+                    weapon={weapon}
+                    active={false}
+                    onClick={() => {
+                      if (player.state.isAttacking === false) {
+                        setPlayerWeapon(weapon);
+                      }
+                    }}
+                  />
+                );
+              }
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* Chestpieces */}
-      <div className={clsx(equipmentTypeClasses)}>
-        <h2 className={clsx(equipmentTitleClasses)}>Chestpieces</h2>
-        <div className={clsx(cardContainerClasses)}>
-          {chestpieces.map((chestpiece) => {
-            if (player.equipment.chestpiece?.id === chestpiece.id) {
-              return (
-                <ArmorCard
-                  key={chestpiece.id}
-                  armor={chestpiece}
-                  active
-                  onClick={() => setPlayerWeapon(null)}
-                />
-              );
-            } else {
-              return (
-                <ArmorCard
-                  key={chestpiece.id}
-                  armor={chestpiece}
-                  active={false}
-                  onClick={() => setPlayerChestpiece(chestpiece)}
-                />
-              );
-            }
-          })}
+        {/* Helmets */}
+        <div className={clsx(equipmentTypeClasses)}>
+          <h2 className={clsx(equipmentTitleClasses)}>Helmets</h2>
+          <div className={clsx(cardContainerClasses)}>
+            {helmets.map((helmet) => {
+              if (player.equipment.helmet?.id === helmet.id) {
+                return (
+                  <ArmorCard
+                    key={helmet.id}
+                    armor={helmet}
+                    active
+                    onClick={() => setPlayerWeapon(null)}
+                  />
+                );
+              } else {
+                return (
+                  <ArmorCard
+                    key={helmet.id}
+                    armor={helmet}
+                    active={false}
+                    onClick={() => setPlayerHelmet(helmet)}
+                  />
+                );
+              }
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* Leggings */}
-      <div className="mb-2">
-        <h2 className={clsx(equipmentTitleClasses)}>Leggings</h2>
-        <div className={clsx(cardContainerClasses)}>
-          {leggings.map((legging) => {
-            if (player.equipment.legging?.id === legging.id) {
-              return (
-                <ArmorCard
-                  key={legging.id}
-                  armor={legging}
-                  active
-                  onClick={() => setPlayerWeapon(null)}
-                />
-              );
-            } else {
-              return (
-                <ArmorCard
-                  key={legging.id}
-                  armor={legging}
-                  active={false}
-                  onClick={() => setPlayerLegging(legging)}
-                />
-              );
-            }
-          })}
+        {/* Chestpieces */}
+        <div className={clsx(equipmentTypeClasses)}>
+          <h2 className={clsx(equipmentTitleClasses)}>Chestpieces</h2>
+          <div className={clsx(cardContainerClasses)}>
+            {chestpieces.map((chestpiece) => {
+              if (player.equipment.chestpiece?.id === chestpiece.id) {
+                return (
+                  <ArmorCard
+                    key={chestpiece.id}
+                    armor={chestpiece}
+                    active
+                    onClick={() => setPlayerWeapon(null)}
+                  />
+                );
+              } else {
+                return (
+                  <ArmorCard
+                    key={chestpiece.id}
+                    armor={chestpiece}
+                    active={false}
+                    onClick={() => setPlayerChestpiece(chestpiece)}
+                  />
+                );
+              }
+            })}
+          </div>
+        </div>
+
+        {/* Leggings */}
+        <div className="mb-2">
+          <h2 className={clsx(equipmentTitleClasses)}>Leggings</h2>
+          <div className={clsx(cardContainerClasses)}>
+            {leggings.map((legging) => {
+              if (player.equipment.legging?.id === legging.id) {
+                return (
+                  <ArmorCard
+                    key={legging.id}
+                    armor={legging}
+                    active
+                    onClick={() => setPlayerWeapon(null)}
+                  />
+                );
+              } else {
+                return (
+                  <ArmorCard
+                    key={legging.id}
+                    armor={legging}
+                    active={false}
+                    onClick={() => setPlayerLegging(legging)}
+                  />
+                );
+              }
+            })}
+          </div>
         </div>
       </div>
     </div>
