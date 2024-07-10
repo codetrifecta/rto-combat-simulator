@@ -35,6 +35,7 @@ function App() {
     turnCycle,
     isInventoryOpen,
     isGameLogOpen,
+    isCharacterSheetOpen,
     setTurnCycle,
     setIsLoading,
   } = useGameStateStore();
@@ -214,8 +215,8 @@ function App() {
         )}
         style={{
           height: "calc(100vh - 80px)",
-          left: isInventoryOpen ? 0 : 0,
-          visibility: isInventoryOpen ? "visible" : "visible",
+          left: isCharacterSheetOpen ? 0 : -400,
+          visibility: isCharacterSheetOpen ? "visible" : "hidden",
         }}
       >
         <CharacterSheet />

@@ -13,6 +13,7 @@ import {
   IPlayer,
   IPlayerState,
   ISkill,
+  IStats,
   IStatus,
   IWeapon,
 } from "../types";
@@ -21,7 +22,7 @@ interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
   getPlayerBaseAttackDamage: () => number;
   getPlayerBonusDamage: () => number;
-  getPlayerTotalStats: () => Record<string, number>;
+  getPlayerTotalStats: () => IStats;
   getPlayerTotalStrength: () => number;
   getPlayerTotalIntelligence: () => number;
   getPlayerTotalDefense: () => number;
@@ -125,10 +126,10 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     const totalConstitution = get().getPlayerTotalConstitution();
 
     return {
-      totalStrength,
-      totalIntelligence,
-      totalDefense,
-      totalConstitution,
+      strength: totalStrength,
+      intelligence: totalIntelligence,
+      defense: totalDefense,
+      constitution: totalConstitution,
     };
   },
 

@@ -18,6 +18,8 @@ export const PlayerControlPanel: FC = () => {
     isRoomOver,
     isInventoryOpen,
     isGameLogOpen,
+    isCharacterSheetOpen,
+    setIsCharacterSheetOpen,
     setIsInventoryOpen,
     setIsGameLogOpen,
   } = useGameStateStore();
@@ -201,6 +203,15 @@ export const PlayerControlPanel: FC = () => {
                   }}
                 >
                   Log
+                </Button>
+              </div>
+              <div className="mr-10">
+                <Button
+                  onClick={() => {
+                    setIsCharacterSheetOpen(!isCharacterSheetOpen);
+                  }}
+                >
+                  Character Sheet
                 </Button>
               </div>
               <Button
