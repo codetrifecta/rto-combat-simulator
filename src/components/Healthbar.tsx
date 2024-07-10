@@ -10,7 +10,7 @@ export const Healthbar: FC<{ entity: IEntity }> = ({ entity }) => {
     <div className="flex flex-col gap-1 w-full">
       <div className="relative w-full h-7 bg-gray-300 rounded-full flex justify-center items-center">
         <div
-          className="absolute top-0 left-0 h-full bg-red-700 rounded-full"
+          className="absolute top-0 left-0 h-full bg-red-700 rounded-full transition-all ease-in-out duration-300 delay-0"
           style={{ width: `${healthPercentage}%` }}
         ></div>
         <span className="text-black z-10 font-bold cursor-default">
