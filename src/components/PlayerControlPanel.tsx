@@ -17,7 +17,9 @@ export const PlayerControlPanel: FC = () => {
     endTurn,
     isRoomOver,
     isInventoryOpen,
+    isGameLogOpen,
     setIsInventoryOpen,
+    setIsGameLogOpen,
   } = useGameStateStore();
 
   const {
@@ -127,13 +129,16 @@ export const PlayerControlPanel: FC = () => {
       <div
         className={clsx(
           "w-screen p-4 flex justify-center items-center gap-5 box-border",
-          { "bg-neutral-900": !disabled },
-          { "opacity-50": disabled },
-          { "pointer-events-none": disabled }
+          { "bg-neutral-900": !disabled }
+          // { "opacity-50": disabled }
         )}
       >
         {openSkills ? (
-          <>
+          <div
+            className={clsx("flex justify-center items-center gap-5", {
+              "pointer-events-none": disabled,
+            })}
+          >
             {player.skills.map((skill) => (
               <div key={skill.id} className="relative">
                 {renderWeaponButtonTooltip(skill)}
@@ -181,16 +186,25 @@ export const PlayerControlPanel: FC = () => {
                 setOpenSkills(false);
               }}
               disabled={disabled}
+              neutral
             >
               Cancel
             </Button>
-          </>
+          </div>
         ) : (
           <div className="grid grid-flow-col grid-rows-1 grid-cols-3 w-full">
-            <div className="col-span-1">
+            <div className="flex justify-center col-span-1">
+              <div className="mr-10">
+                <Button
+                  onClick={() => {
+                    setIsGameLogOpen(!isGameLogOpen);
+                  }}
+                >
+                  Log
+                </Button>
+              </div>
               <Button
                 onClick={() => {
-                  console.log("Inventory button clicked");
                   setIsInventoryOpen(!isInventoryOpen);
                 }}
               >
@@ -199,7 +213,11 @@ export const PlayerControlPanel: FC = () => {
             </div>
 
             {/* Combat buttons */}
-            <div className="flex justify-between col-span-1">
+            <div
+              className={clsx("flex justify-between col-span-1", {
+                "pointer-events-none": disabled,
+              })}
+            >
               <div className="relative">
                 <Tooltip active={isAttackButtonHovered}>
                   {player.equipment.weapon ? (
@@ -308,12 +326,16 @@ const Button: FC<{
   disabled?: boolean | undefined | null;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
-}> = ({ children, onClick, disabled, onMouseEnter, onMouseLeave }) => {
+  neutral?: boolean;
+}> = ({ children, onClick, disabled, onMouseEnter, onMouseLeave, neutral }) => {
   return (
     <button
       className={clsx(
-        "bg-blue-500  text-white font-bold py-2 px-4 rounded",
-        { "hover:bg-blue-700": !disabled },
+        " text-white font-bold py-2 px-4 rounded",
+        { "bg-blue-500": !neutral },
+        { "bg-neutral-500": neutral },
+        { "hover:bg-blue-700": !disabled && !neutral },
+        { "hover:bg-neutral-700": !disabled && neutral },
         { "opacity-50 pointer-event-none cursor-default": disabled }
       )}
       onClick={() => {

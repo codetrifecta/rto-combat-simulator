@@ -25,6 +25,7 @@ function App() {
   const {
     turnCycle,
     isInventoryOpen,
+    isGameLogOpen,
     setIsInventoryOpen,
     setTurnCycle,
     setIsLoading,
@@ -153,7 +154,12 @@ function App() {
         />
       </section>
 
-      <div className="fixed left-2 bottom-60 w-[350px] z-30">
+      <div
+        className={clsx("fixed left-10 bottom-60 w-[25%]", {
+          "z-40": isGameLogOpen,
+          "z-[-10] opacity-0": !isGameLogOpen,
+        })}
+      >
         <Logger />
       </div>
 
