@@ -17,7 +17,7 @@ let firstRoomRender = true;
 const cameraStraightMoveSpeed = 7;
 const cameraDiagonalMoveSpeed = Math.sqrt(cameraStraightMoveSpeed ** 2 / 2);
 
-const availableKeys = ["w", "a", "s", "d", "+", "=", "-"];
+const availableKeys = ["w", "a", "s", "d", "l", "c", "i", "+", "=", "-"];
 
 let currentScale = 1;
 const scaleStep = 0.02;
@@ -36,6 +36,9 @@ function App() {
     isInventoryOpen,
     isGameLogOpen,
     isCharacterSheetOpen,
+    setIsInventoryOpen,
+    setIsGameLogOpen,
+    setIsCharacterSheetOpen,
     setTurnCycle,
     setIsLoading,
   } = useGameStateStore();
@@ -141,6 +144,14 @@ function App() {
             currentScale -= scaleStep;
             roomContainerRef.current.style.transform = `scale(${currentScale})`;
           }
+        }
+
+        if (keyPressed["l"] === true) {
+          setIsGameLogOpen(!isGameLogOpen);
+        } else if (keyPressed["c"] === true) {
+          setIsCharacterSheetOpen(!isCharacterSheetOpen);
+        } else if (keyPressed["i"] === true) {
+          setIsInventoryOpen(!isInventoryOpen);
         }
       }
     }, 10);
