@@ -13,6 +13,11 @@ import { InventoryChooser } from "./components/InventoryChooser";
 
 let firstRoomRender = true;
 
+const cameraStraightMoveSpeed = 7;
+const cameraDiagonalMoveSpeed = Math.sqrt(cameraStraightMoveSpeed ** 2 / 2);
+
+console.log("cameraDiagonalMoveSpeed", cameraDiagonalMoveSpeed);
+
 function App() {
   const [headerOpen, setHeaderOpen] = useState(false);
   const [currentHoveredEntity, setCurrentHoveredEntity] =
@@ -79,22 +84,26 @@ function App() {
   useEffect(() => {
     const keyboardInputCheckInterval = setInterval(() => {
       if (roomContainerRef.current && roomScrollRef.current) {
-        const cameraMoveSpeed = 8;
-
-        if (keyPressed["w"] === true) {
-          roomScrollRef.current.scrollTop -= cameraMoveSpeed;
-        }
-
-        if (keyPressed["a"] === true) {
-          roomScrollRef.current.scrollLeft -= cameraMoveSpeed;
-        }
-
-        if (keyPressed["s"] === true) {
-          roomScrollRef.current.scrollTop += cameraMoveSpeed;
-        }
-
-        if (keyPressed["d"] === true) {
-          roomScrollRef.current.scrollLeft += cameraMoveSpeed;
+        if (keyPressed["w"] === true && keyPressed["a"] === true) {
+          roomScrollRef.current.scrollTop -= cameraDiagonalMoveSpeed;
+          roomScrollRef.current.scrollLeft -= cameraDiagonalMoveSpeed;
+        } else if (keyPressed["w"] === true && keyPressed["d"] === true) {
+          roomScrollRef.current.scrollTop -= cameraDiagonalMoveSpeed;
+          roomScrollRef.current.scrollLeft += cameraDiagonalMoveSpeed;
+        } else if (keyPressed["s"] === true && keyPressed["a"] === true) {
+          roomScrollRef.current.scrollTop += cameraDiagonalMoveSpeed;
+          roomScrollRef.current.scrollLeft -= cameraDiagonalMoveSpeed;
+        } else if (keyPressed["s"] === true && keyPressed["d"] === true) {
+          roomScrollRef.current.scrollTop += cameraDiagonalMoveSpeed;
+          roomScrollRef.current.scrollLeft += cameraDiagonalMoveSpeed;
+        } else if (keyPressed["w"] === true) {
+          roomScrollRef.current.scrollTop -= cameraStraightMoveSpeed;
+        } else if (keyPressed["a"] === true) {
+          roomScrollRef.current.scrollLeft -= cameraStraightMoveSpeed;
+        } else if (keyPressed["s"] === true) {
+          roomScrollRef.current.scrollTop += cameraStraightMoveSpeed;
+        } else if (keyPressed["d"] === true) {
+          roomScrollRef.current.scrollLeft += cameraStraightMoveSpeed;
         }
       }
     }, 10);
