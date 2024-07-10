@@ -11,12 +11,16 @@ import { Logger } from "./components/Logger";
 import clsx from "clsx";
 import { InventoryChooser } from "./components/InventoryChooser";
 
+let firstRoomRender = true;
+
 function App() {
   const [headerOpen, setHeaderOpen] = useState(false);
   const [currentHoveredEntity, setCurrentHoveredEntity] =
     useState<IEntity | null>(null);
+  const [keyPressed, setKeyPressed] = useState<Record<string, boolean>>({});
 
   const roomContainerRef = useRef<HTMLDivElement>(null);
+  const roomScrollRef = useRef<HTMLDivElement>(null);
 
   const { turnCycle, setTurnCycle, setIsLoading } = useGameStateStore();
 
@@ -31,12 +35,28 @@ function App() {
     // Set turn cycle and loading state in game store
     setTurnCycle([player, ...enemies]);
     setIsLoading(false);
+    document.body.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (["w", "a", "s", "d"].includes(e.key.toLowerCase()))
+        setKeyPressed((prevKeyPressed) => ({
+          ...prevKeyPressed,
+          [e.key]: true,
+        }));
+    });
+    document.body.addEventListener("keyup", (e: KeyboardEvent) => {
+      if (["w", "a", "s", "d"].includes(e.key.toLowerCase()))
+        setKeyPressed((prevKeyPressed) => {
+          const newKeyPressed = { ...prevKeyPressed };
+          delete newKeyPressed[e.key];
+          return newKeyPressed;
+        });
+    });
   }, []);
 
   // When room container ref value changes, (in this case when the room container is mounted).
   // Scroll into the middle of the room container (to view the room)
   useEffect(() => {
-    if (roomContainerRef.current !== null) {
+    if (roomContainerRef.current !== null && firstRoomRender) {
+      firstRoomRender = false;
       setTimeout(() => {
         if (roomContainerRef.current !== null) {
           roomContainerRef.current.scrollIntoView({
@@ -47,6 +67,35 @@ function App() {
       }, 100);
     }
   }, [roomContainerRef.current]);
+
+  // Check every 50ms to check input to move camera
+  useEffect(() => {
+    const keyboardInputCheckInterval = setInterval(() => {
+      if (roomContainerRef.current && roomScrollRef.current) {
+        const cameraMoveSpeed = 8;
+
+        if (keyPressed["w"] === true) {
+          roomScrollRef.current.scrollTop -= cameraMoveSpeed;
+        }
+
+        if (keyPressed["a"] === true) {
+          roomScrollRef.current.scrollLeft -= cameraMoveSpeed;
+        }
+
+        if (keyPressed["s"] === true) {
+          roomScrollRef.current.scrollTop += cameraMoveSpeed;
+        }
+
+        if (keyPressed["d"] === true) {
+          roomScrollRef.current.scrollLeft += cameraMoveSpeed;
+        }
+      }
+    }, 10);
+
+    return () => {
+      clearInterval(keyboardInputCheckInterval);
+    };
+  }, [keyPressed]);
 
   const isInitialized = useMemo(() => {
     return turnCycle.length > 0;
@@ -62,9 +111,13 @@ function App() {
   }
 
   return (
-    <div className="relative max-w-screen h-screen flex flex-col justify-start overflow-hidden">
+    <div
+      className="relative max-w-screen h-screen flex flex-col justify-start overflow-hidden"
+      // onKeyDown={handleRoomKeyDown}
+      // tabIndex={0}
+    >
       <div></div>
-      <header className="absolute top-0 w-full z-20">
+      <header className="absolute top-0 w-full z-[100]">
         <div
           className="absolute h-[20px] w-full z-20"
           onMouseEnter={() => setHeaderOpen(true)}
@@ -101,7 +154,10 @@ function App() {
       {/* Combat Room */}
 
       <section className="relative max-w-screen max-h-screen">
-        <div className="relative max-w-screen max-h-screen pr-10 hidden-scrollbar overflow-scroll">
+        <div
+          className="relative max-w-screen max-h-screen pr-10 hidden-scrollbar overflow-scroll"
+          ref={roomScrollRef}
+        >
           <div
             className="relative min-w-[2000px] min-h-[2000px] flex justify-center items-center"
             ref={roomContainerRef}
