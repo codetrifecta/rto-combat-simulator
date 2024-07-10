@@ -16,8 +16,6 @@ let firstRoomRender = true;
 const cameraStraightMoveSpeed = 7;
 const cameraDiagonalMoveSpeed = Math.sqrt(cameraStraightMoveSpeed ** 2 / 2);
 
-console.log("cameraDiagonalMoveSpeed", cameraDiagonalMoveSpeed);
-
 function App() {
   const [headerOpen, setHeaderOpen] = useState(false);
   const [currentHoveredEntity, setCurrentHoveredEntity] =
@@ -164,8 +162,8 @@ function App() {
       </section>
 
       <div
-        className={clsx("fixed left-10 bottom-60 w-[25%]", {
-          "z-40": isGameLogOpen,
+        className={clsx("fixed left-10 top-60 w-[23%] max-h-[200px]", {
+          "z-20": isGameLogOpen,
           "z-[-10] opacity-0": !isGameLogOpen,
         })}
       >
@@ -195,7 +193,7 @@ function App() {
       {/* Inventory Chooser */}
       {isInventoryOpen === true && (
         <section
-          className="fixed z-40 flex justify-center items-center w-full h-full p-48"
+          className="fixed z-50 flex justify-center items-center w-full h-full p-48"
           onClick={() => {
             setIsInventoryOpen(false);
           }}
@@ -205,9 +203,9 @@ function App() {
         </section>
       )}
 
-      <div className="fixed bottom-0 z-30">
+      <div className="fixed bottom-0 z-40 flex flex-col justify-between items-center">
         {/* Player Info */}
-        <section className="mb-6">
+        <section className="mb-1 max-w-[3400px]">
           <PlayerInfo />
         </section>
 
