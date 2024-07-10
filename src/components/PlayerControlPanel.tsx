@@ -12,7 +12,13 @@ export const PlayerControlPanel: FC = () => {
   const [isAttackButtonHovered, setIsAttackButtonHovered] = useState(false);
   const [isMoveButtonHovered, setIsMoveButtonHovered] = useState(false);
 
-  const { turnCycle, endTurn, isRoomOver } = useGameStateStore();
+  const {
+    turnCycle,
+    endTurn,
+    isRoomOver,
+    isInventoryOpen,
+    setIsInventoryOpen,
+  } = useGameStateStore();
 
   const {
     getPlayer,
@@ -180,97 +186,111 @@ export const PlayerControlPanel: FC = () => {
             </Button>
           </>
         ) : (
-          <>
-            <div className="relative">
-              <Tooltip active={isAttackButtonHovered}>
-                {player.equipment.weapon ? (
-                  <>
-                    <h2>Weapon attack</h2>
-                    <h3>Weapon Equipped: {player.equipment.weapon.name}</h3>
-                    <p>Base DMG: {baseAttackDamage}</p>
-                    <p>Bonus DMG: {bonusDamage}</p>
-                    <p>Total DMG: {baseAttackDamage + bonusDamage}</p>
-                  </>
-                ) : (
-                  <h2>No weapon equipped</h2>
-                )}
-              </Tooltip>
+          <div className="grid grid-flow-col grid-rows-1 grid-cols-3">
+            <div className="col-span-1">
               <Button
                 onClick={() => {
+                  console.log("Inventory button clicked");
+                  setIsInventoryOpen(!isInventoryOpen);
+                }}
+              >
+                Inventory
+              </Button>
+            </div>
+
+            {/* Combat buttons */}
+            <div className="flex gap-5">
+              <div className="relative col-span-1 gap-5">
+                <Tooltip active={isAttackButtonHovered}>
+                  {player.equipment.weapon ? (
+                    <>
+                      <h2>Weapon attack</h2>
+                      <h3>Weapon Equipped: {player.equipment.weapon.name}</h3>
+                      <p>Base DMG: {baseAttackDamage}</p>
+                      <p>Bonus DMG: {bonusDamage}</p>
+                      <p>Total DMG: {baseAttackDamage + bonusDamage}</p>
+                    </>
+                  ) : (
+                    <h2>No weapon equipped</h2>
+                  )}
+                </Tooltip>
+                <Button
+                  onClick={() => {
+                    setPlayerState({
+                      isAttacking: !player.state.isAttacking,
+                      isMoving: false,
+                      isUsingSkill: false,
+                    });
+                  }}
+                  onMouseEnter={() => setIsAttackButtonHovered(true)}
+                  onMouseLeave={() => setIsAttackButtonHovered(false)}
+                  disabled={
+                    disabled ||
+                    isRoomOver ||
+                    player.equipment.weapon === null ||
+                    (player.equipment.weapon &&
+                      player.actionPoints < player.equipment.weapon.cost)
+                  }
+                >
+                  Attack
+                </Button>
+              </div>
+
+              <div className="relative">
+                <Tooltip active={isMoveButtonHovered}>
+                  <h2>Move</h2>
+                  <p>Move within a range of 2 tiles.</p>
+                  <p>Cost: 1 AP</p>
+                  <p></p>
+                </Tooltip>
+                <Button
+                  onClick={() => {
+                    setPlayerState({
+                      isAttacking: false,
+                      isMoving: !player.state.isMoving,
+                      isUsingSkill: false,
+                    });
+                  }}
+                  onMouseEnter={() => setIsMoveButtonHovered(true)}
+                  onMouseLeave={() => setIsMoveButtonHovered(false)}
+                  disabled={disabled}
+                >
+                  Move
+                </Button>
+              </div>
+
+              <Button
+                onClick={() => {
+                  setOpenSkills(true);
                   setPlayerState({
-                    isAttacking: !player.state.isAttacking,
+                    isAttacking: false,
                     isMoving: false,
                     isUsingSkill: false,
                   });
                 }}
-                onMouseEnter={() => setIsAttackButtonHovered(true)}
-                onMouseLeave={() => setIsAttackButtonHovered(false)}
-                disabled={
-                  disabled ||
-                  isRoomOver ||
-                  player.equipment.weapon === null ||
-                  (player.equipment.weapon &&
-                    player.actionPoints < player.equipment.weapon.cost)
-                }
+                disabled={disabled || isRoomOver}
               >
-                Attack
+                Skills
               </Button>
-            </div>
-
-            <div className="relative">
-              <Tooltip active={isMoveButtonHovered}>
-                <h2>Move</h2>
-                <p>Move within a range of 2 tiles.</p>
-                <p>Cost: 1 AP</p>
-                <p></p>
-              </Tooltip>
               <Button
                 onClick={() => {
-                  setPlayerState({
-                    isAttacking: false,
-                    isMoving: !player.state.isMoving,
-                    isUsingSkill: false,
+                  handleEndTurnClick();
+                  addLog({
+                    message: (
+                      <>
+                        <span className="text-green-500">{player.name}</span>{" "}
+                        ended their turn.
+                      </>
+                    ),
+                    type: "info",
                   });
                 }}
-                onMouseEnter={() => setIsMoveButtonHovered(true)}
-                onMouseLeave={() => setIsMoveButtonHovered(false)}
-                disabled={disabled}
+                disabled={disabled || isRoomOver}
               >
-                Move
+                End Turn
               </Button>
             </div>
-
-            <Button
-              onClick={() => {
-                setOpenSkills(true);
-                setPlayerState({
-                  isAttacking: false,
-                  isMoving: false,
-                  isUsingSkill: false,
-                });
-              }}
-              disabled={disabled || isRoomOver}
-            >
-              Skills
-            </Button>
-            <Button
-              onClick={() => {
-                handleEndTurnClick();
-                addLog({
-                  message: (
-                    <>
-                      <span className="text-green-500">{player.name}</span>{" "}
-                      ended their turn.
-                    </>
-                  ),
-                  type: "info",
-                });
-              }}
-              disabled={disabled || isRoomOver}
-            >
-              End Turn
-            </Button>
-          </>
+          </div>
         )}
       </div>
     </div>

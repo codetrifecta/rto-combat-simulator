@@ -45,6 +45,8 @@ export interface IGameState {
   turnCycle: IEntity[];
   isRoomOver: boolean;
   isLoading: boolean;
+  isInventoryOpen: boolean;
+  isGameLogOpen: boolean;
 }
 
 export interface ISkill {

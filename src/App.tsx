@@ -22,7 +22,13 @@ function App() {
   const roomContainerRef = useRef<HTMLDivElement>(null);
   const roomScrollRef = useRef<HTMLDivElement>(null);
 
-  const { turnCycle, setTurnCycle, setIsLoading } = useGameStateStore();
+  const {
+    turnCycle,
+    isInventoryOpen,
+    setIsInventoryOpen,
+    setTurnCycle,
+    setIsLoading,
+  } = useGameStateStore();
 
   const { getPlayer } = usePlayerStore();
 
@@ -140,14 +146,14 @@ function App() {
       </header>
 
       {/* Game Info (Currently only displays turn cycle) */}
-      <section className="fixed w-full z-50 mt-10 mb-6">
+      <section className="fixed w-full z-30 mt-10 mb-6">
         <TurnInfo
           currentHoveredEntity={currentHoveredEntity}
           setCurrentHoveredEntity={setCurrentHoveredEntity}
         />
       </section>
 
-      <div className="fixed left-2 bottom-60 w-[350px] z-50">
+      <div className="fixed left-2 bottom-60 w-[350px] z-30">
         <Logger />
       </div>
 
@@ -171,11 +177,20 @@ function App() {
         </div>
       </section>
 
-      <div className="fixed bottom-60 right-2 w-[350px] z-50">
-        <InventoryChooser />
-      </div>
+      {/* Inventory Chooser */}
+      {isInventoryOpen === true && (
+        <section
+          className="fixed z-40 flex justify-center items-center w-full h-full p-48"
+          onClick={() => {
+            setIsInventoryOpen(false);
+          }}
+        >
+          <InventoryChooser />
+          <div></div>
+        </section>
+      )}
 
-      <div className="fixed bottom-0 z-50">
+      <div className="fixed bottom-0 z-30">
         {/* Player Info */}
         <section className="mb-6">
           <PlayerInfo />
