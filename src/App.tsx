@@ -10,6 +10,7 @@ import { useEnemyStore } from "./store/enemy";
 import { Logger } from "./components/Logger";
 import clsx from "clsx";
 import { InventoryChooser } from "./components/InventoryChooser";
+import { CharacterSheet } from "./components/CharacterSheet";
 
 let firstRoomRender = true;
 
@@ -205,6 +206,19 @@ function App() {
         })}
       >
         <Logger />
+      </div>
+
+      <div
+        className={clsx(
+          "fixed left-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0 z-30"
+        )}
+        style={{
+          height: "calc(100vh - 80px)",
+          left: isInventoryOpen ? 0 : 0,
+          visibility: isInventoryOpen ? "visible" : "visible",
+        }}
+      >
+        <CharacterSheet />
       </div>
 
       {/* Combat Room */}

@@ -21,6 +21,7 @@ interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
   getPlayerBaseAttackDamage: () => number;
   getPlayerBonusDamage: () => number;
+  getPlayerTotalStats: () => Record<string, number>;
   getPlayerTotalStrength: () => number;
   getPlayerTotalIntelligence: () => number;
   getPlayerTotalDefense: () => number;
@@ -115,6 +116,20 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       0
     );
     return bonusDamage;
+  },
+
+  getPlayerTotalStats: () => {
+    const totalStrength = get().getPlayerTotalStrength();
+    const totalIntelligence = get().getPlayerTotalIntelligence();
+    const totalDefense = get().getPlayerTotalDefense();
+    const totalConstitution = get().getPlayerTotalConstitution();
+
+    return {
+      totalStrength,
+      totalIntelligence,
+      totalDefense,
+      totalConstitution,
+    };
   },
 
   getPlayerTotalStrength: () => {
