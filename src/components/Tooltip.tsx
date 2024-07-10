@@ -41,7 +41,7 @@ export const Tooltip: FC<{ children: ReactNode; active: boolean }> = ({
       className={clsx(
         "absolute inline-block bg-neutral-900 text-white p-2 rounded-lg shadow-lg transition-all ease duration-200 w-[300px]",
         { "opacity-100 z-50": active },
-        { "opacity-0 z-[-10]": !active }
+        { "opacity-0 z-[-10] invisible": !active }
       )}
       ref={ref}
     >
