@@ -16,7 +16,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   isRoomOver: false,
   isLoading: true,
   isInventoryOpen: false,
-  isGameLogOpen: false,
+  isGameLogOpen: true,
 
   getCurrentTurnEntity: () => {
     const currentTurnEntity = get().turnCycle[0];
