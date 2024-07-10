@@ -13,6 +13,14 @@ import { InventoryChooser } from "./components/InventoryChooser";
 
 let firstRoomRender = true;
 
+const cameraStraightMoveSpeed = 7;
+const cameraDiagonalMoveSpeed = Math.sqrt(cameraStraightMoveSpeed ** 2 / 2);
+
+const availableKeys = ["w", "a", "s", "d", "+", "=", "-"];
+
+let currentScale = 1;
+const scaleStep = 0.02;
+
 function App() {
   const [headerOpen, setHeaderOpen] = useState(false);
   const [currentHoveredEntity, setCurrentHoveredEntity] =
@@ -42,21 +50,42 @@ function App() {
     // Set turn cycle and loading state in game store
     setTurnCycle([player, ...enemies]);
     setIsLoading(false);
+
+    // Add event listeners for keyboard input
     document.body.addEventListener("keydown", (e: KeyboardEvent) => {
-      if (["w", "a", "s", "d"].includes(e.key.toLowerCase()))
+      if (availableKeys.includes(e.key.toLowerCase()))
         setKeyPressed((prevKeyPressed) => ({
           ...prevKeyPressed,
           [e.key]: true,
         }));
     });
     document.body.addEventListener("keyup", (e: KeyboardEvent) => {
-      if (["w", "a", "s", "d"].includes(e.key.toLowerCase()))
+      if (availableKeys.includes(e.key.toLowerCase()))
         setKeyPressed((prevKeyPressed) => {
           const newKeyPressed = { ...prevKeyPressed };
           delete newKeyPressed[e.key];
           return newKeyPressed;
         });
     });
+
+    // Remove event listeners on unmount
+    return () => {
+      document.body.removeEventListener("keydown", (e: KeyboardEvent) => {
+        if (availableKeys.includes(e.key.toLowerCase()))
+          setKeyPressed((prevKeyPressed) => ({
+            ...prevKeyPressed,
+            [e.key]: true,
+          }));
+      });
+      document.body.removeEventListener("keyup", (e: KeyboardEvent) => {
+        if (availableKeys.includes(e.key.toLowerCase()))
+          setKeyPressed((prevKeyPressed) => {
+            const newKeyPressed = { ...prevKeyPressed };
+            delete newKeyPressed[e.key];
+            return newKeyPressed;
+          });
+      });
+    };
   }, []);
 
   // When room container ref value changes, (in this case when the room container is mounted).
@@ -79,22 +108,38 @@ function App() {
   useEffect(() => {
     const keyboardInputCheckInterval = setInterval(() => {
       if (roomContainerRef.current && roomScrollRef.current) {
-        const cameraMoveSpeed = 8;
-
-        if (keyPressed["w"] === true) {
-          roomScrollRef.current.scrollTop -= cameraMoveSpeed;
+        if (keyPressed["w"] === true && keyPressed["a"] === true) {
+          roomScrollRef.current.scrollTop -= cameraDiagonalMoveSpeed;
+          roomScrollRef.current.scrollLeft -= cameraDiagonalMoveSpeed;
+        } else if (keyPressed["w"] === true && keyPressed["d"] === true) {
+          roomScrollRef.current.scrollTop -= cameraDiagonalMoveSpeed;
+          roomScrollRef.current.scrollLeft += cameraDiagonalMoveSpeed;
+        } else if (keyPressed["s"] === true && keyPressed["a"] === true) {
+          roomScrollRef.current.scrollTop += cameraDiagonalMoveSpeed;
+          roomScrollRef.current.scrollLeft -= cameraDiagonalMoveSpeed;
+        } else if (keyPressed["s"] === true && keyPressed["d"] === true) {
+          roomScrollRef.current.scrollTop += cameraDiagonalMoveSpeed;
+          roomScrollRef.current.scrollLeft += cameraDiagonalMoveSpeed;
+        } else if (keyPressed["w"] === true) {
+          roomScrollRef.current.scrollTop -= cameraStraightMoveSpeed;
+        } else if (keyPressed["a"] === true) {
+          roomScrollRef.current.scrollLeft -= cameraStraightMoveSpeed;
+        } else if (keyPressed["s"] === true) {
+          roomScrollRef.current.scrollTop += cameraStraightMoveSpeed;
+        } else if (keyPressed["d"] === true) {
+          roomScrollRef.current.scrollLeft += cameraStraightMoveSpeed;
         }
 
-        if (keyPressed["a"] === true) {
-          roomScrollRef.current.scrollLeft -= cameraMoveSpeed;
-        }
-
-        if (keyPressed["s"] === true) {
-          roomScrollRef.current.scrollTop += cameraMoveSpeed;
-        }
-
-        if (keyPressed["d"] === true) {
-          roomScrollRef.current.scrollLeft += cameraMoveSpeed;
+        if (keyPressed["+"] === true || keyPressed["="] === true) {
+          if (currentScale < 1.6) {
+            currentScale += scaleStep;
+            roomContainerRef.current.style.transform = `scale(${currentScale})`;
+          }
+        } else if (keyPressed["-"] === true) {
+          if (currentScale > 0.7) {
+            currentScale -= scaleStep;
+            roomContainerRef.current.style.transform = `scale(${currentScale})`;
+          }
         }
       }
     }, 10);
@@ -155,8 +200,8 @@ function App() {
       </section>
 
       <div
-        className={clsx("fixed left-10 bottom-60 w-[25%]", {
-          "z-40": isGameLogOpen,
+        className={clsx("fixed left-10 top-60 w-[23%] max-h-[200px]", {
+          "z-20": isGameLogOpen,
           "z-[-10] opacity-0": !isGameLogOpen,
         })}
       >
@@ -186,7 +231,7 @@ function App() {
       {/* Inventory Chooser */}
       {isInventoryOpen === true && (
         <section
-          className="fixed z-40 flex justify-center items-center w-full h-full p-48"
+          className="fixed z-50 flex justify-center items-center w-full h-full p-48"
           onClick={() => {
             setIsInventoryOpen(false);
           }}
@@ -196,9 +241,9 @@ function App() {
         </section>
       )}
 
-      <div className="fixed bottom-0 z-30">
+      <div className="fixed bottom-0 z-40 flex flex-col justify-between items-center">
         {/* Player Info */}
-        <section className="mb-6">
+        <section className="mb-1 max-w-[3400px]">
           <PlayerInfo />
         </section>
 

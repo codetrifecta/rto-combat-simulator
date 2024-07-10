@@ -60,17 +60,17 @@ export const ActionPoints: FC = () => {
       {Array.from({ length: availableActionPoints }).map((_, index) => (
         <div
           key={index}
-          className="w-4 h-4 border-2 bg-yellow-300 rounded-full"
+          className="w-4 h-4 border bg-green-700 rounded-full"
         ></div>
       ))}
       {Array.from({ length: usedActionPoints }).map((_, index) => (
         <div
           key={index}
-          className="w-4 h-4 border-2 bg-red-500 rounded-full"
+          className="w-4 h-4 border bg-red-500 rounded-full"
         ></div>
       ))}
       {Array.from({ length: emptyActionPoints }).map((_, index) => (
-        <div key={index} className="w-4 h-4 border-2 rounded-full"></div>
+        <div key={index} className="w-4 h-4 border rounded-full"></div>
       ))}
     </div>
   );

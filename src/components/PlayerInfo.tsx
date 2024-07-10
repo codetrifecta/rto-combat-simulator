@@ -4,6 +4,7 @@ import { useGameStateStore } from "../store/game";
 import clsx from "clsx";
 import { StatusEffect } from "./StatusEffect";
 import { usePlayerStore } from "../store/player";
+import { Healthbar } from "./Healthbar";
 
 export const PlayerInfo: FC = () => {
   const { getPlayer } = usePlayerStore();
@@ -11,38 +12,31 @@ export const PlayerInfo: FC = () => {
   const { isRoomOver } = useGameStateStore();
 
   return (
-    <>
-      <div className="flex justify-center items-center w-full">
-        <h2 className="mb-1">{player.name}</h2>
-        {/* Display statuses */}
-        {player.statuses.length > 0 && (
-          <div className="flex justify-center items-center ml-3">
-            {player.statuses.map((status) => (
-              <StatusEffect key={status.id} status={status} />
-            ))}
-          </div>
-        )}
-      </div>
+    <div className="flex flex-col justify-center  w-full">
+      {/* Display statuses */}
+      {player.statuses.length > 0 && (
+        <div className="flex justify-center items-center mb-3">
+          {player.statuses.map((status) => (
+            <StatusEffect key={status.id} status={status} />
+          ))}
+        </div>
+      )}
 
       {/* Player health and action points */}
-      <div className="w-[600px] ml-auto mr-auto text-left flex justify-center items-center">
-        <div
-          className={clsx("flex items-center", {
-            "mr-10": !isRoomOver,
-          })}
-        >
-          <p className="mr-2">HP:</p>
-          <p>
-            {player.health} / {player.maxHealth}
-          </p>
-        </div>
+      <div className="w-full ml-auto mr-auto text-left flex flex-col justify-center items-center">
         {!isRoomOver && (
-          <div className="flex items-center">
-            <p className="mr-2">AP: </p>
+          <div className="mb-3">
             <ActionPoints />
           </div>
         )}
+        <div
+          className={clsx(
+            "flex items-center w-[400px] border border-white py-2 px-3 bg-neutral-900"
+          )}
+        >
+          <Healthbar entity={player} />
+        </div>
       </div>
-    </>
+    </div>
   );
 };

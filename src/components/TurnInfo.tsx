@@ -74,13 +74,14 @@ export const TurnInfo: FC<{
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-full h-[130px] mx-auto flex justify-center">
-        <div
-          className="mr-5"
-          onMouseEnter={() => setCurrentHoveredEntity(currentTurnEntity)}
-          onMouseLeave={() => setCurrentHoveredEntity(null)}
-        >
-          <EntityCard entity={currentTurnEntity} active={true} />
+      <div className="w-full h-[135px] mx-auto flex justify-center">
+        <div className="mr-5">
+          <EntityCard
+            entity={currentTurnEntity}
+            active={true}
+            onMouseEnter={() => setCurrentHoveredEntity(currentTurnEntity)}
+            onMouseLeave={() => setCurrentHoveredEntity(null)}
+          />
         </div>
         {nextTurnEnties.length >= 1 &&
           nextTurnEnties.map((entity) => {
@@ -89,31 +90,32 @@ export const TurnInfo: FC<{
             }
 
             return (
-              <div
-                key={entity.entityType + entity.id}
-                className="mr-1"
-                onMouseEnter={() => setCurrentHoveredEntity(entity)}
-                onMouseLeave={() => setCurrentHoveredEntity(null)}
-              >
+              <div key={entity.entityType + entity.id} className="mr-1">
                 <EntityCard
                   entity={entity}
                   active={
                     currentHoveredEntity?.entityType === entity.entityType &&
                     currentHoveredEntity?.id === entity.id
                   }
+                  onMouseEnter={() => setCurrentHoveredEntity(entity)}
+                  onMouseLeave={() => setCurrentHoveredEntity(null)}
                 />
               </div>
             );
           })}
       </div>
-      <h2>{renderEntityTurnText(currentTurnEntity)}</h2>
+      <div className="flex justify-center items-center bg-neutral-900 px-5 py-1 border border-white">
+        <h2>{renderEntityTurnText(currentTurnEntity)}</h2>
+      </div>
     </div>
   );
 };
-const EntityCard: FC<{ entity: IEntity | null; active: boolean }> = ({
-  entity,
-  active,
-}) => {
+const EntityCard: FC<{
+  entity: IEntity | null;
+  active: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}> = ({ entity, active, onMouseEnter, onMouseLeave }) => {
   if (!entity) {
     return null;
   }
@@ -133,6 +135,8 @@ const EntityCard: FC<{ entity: IEntity | null; active: boolean }> = ({
           "shadow-intense-red z-10":
             entity.entityType === ENTITY_TYPE.ENEMY && active,
         })}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
         <h3>{entity.name}</h3>
         <h4>
