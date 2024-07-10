@@ -87,6 +87,17 @@ button:focus-visible {
   min-height: 100vh;
 }
 
+/* Hide the scrollbar for all browsers */
+.hidden-scrollbar {
+  overflow: scroll; /* Allow scrolling */
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

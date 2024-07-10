@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { ROOM_LENGTH, TILE_SIZE } from "../constants";
+// import { ROOM_LENGTH, TILE_SIZE } from "../constants";
 import { IArmor, IWeapon } from "../types";
 import { usePlayerInventoryStore } from "../store/inventory";
 import clsx from "clsx";
@@ -26,8 +26,9 @@ export const InventoryChooser: FC = () => {
 
   return (
     <div
-      className="bg-zinc-900 overflow-auto p-5 border-white border"
-      style={{ maxHeight: ROOM_LENGTH * TILE_SIZE }}
+      className="bg-zinc-900 overflow-auto p-5 border-white border h-full"
+      // style={{ maxHeight: ROOM_LENGTH * TILE_SIZE }}
+      onClick={(e) => e.stopPropagation()}
     >
       <h2 className="mb-5 pb-3 w-full border-b">Inventory Chooser</h2>
       {/* Weapons */}

@@ -3,9 +3,12 @@ import { ROOM_LENGTH, TILE_SIZE } from "../constants";
 import { useLogStore } from "../store/log";
 import { ILog } from "../types";
 import clsx from "clsx";
+import { useGameStateStore } from "../store/game";
 
 export const Logger: FC = () => {
   const { logs } = useLogStore();
+
+  const { setIsGameLogOpen } = useGameStateStore();
 
   const loggerRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -19,11 +22,20 @@ export const Logger: FC = () => {
 
   return (
     <div
-      className="bg-zinc-900 overflow-auto p-5 border-white border"
+      className="bg-zinc-900 overflow-auto p-5 border-white border w-full"
       style={{ maxHeight: ROOM_LENGTH * TILE_SIZE }}
       ref={(ref) => (loggerRef.current = ref)}
     >
-      <h2 className="mb-5 pb-3 w-full border-b">Game Log</h2>
+      <div className="relative">
+        <div
+          className="absolute top-0 right-0 cursor-pointer text-red-500"
+          onClick={() => setIsGameLogOpen(false)}
+        >
+          X
+        </div>
+        <h2 className="mb-5 pb-3 w-full border-b">Game Log</h2>
+      </div>
+
       {logs.map((log, index) => (
         <LogItem key={index} log={log} />
       ))}
