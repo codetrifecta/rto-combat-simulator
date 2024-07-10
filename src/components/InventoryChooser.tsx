@@ -4,6 +4,7 @@ import { IArmor, IWeapon } from "../types";
 import { usePlayerInventoryStore } from "../store/inventory";
 import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
+import { useGameStateStore } from "../store/game";
 
 const equipmentTypeClasses = "mb-4";
 const equipmentTitleClasses = "mb-0";
@@ -13,6 +14,8 @@ const cardParagraphClasses = "text-base";
 
 export const InventoryChooser: FC = () => {
   const { weapons, helmets, chestpieces, leggings } = usePlayerInventoryStore();
+
+  const { setIsInventoryOpen } = useGameStateStore();
 
   const {
     getPlayer,
@@ -26,11 +29,18 @@ export const InventoryChooser: FC = () => {
 
   return (
     <div
-      className="bg-zinc-900 overflow-auto p-5 border-white border h-full"
-      // style={{ maxHeight: ROOM_LENGTH * TILE_SIZE }}
-      onClick={(e) => e.stopPropagation()}
+      className="bg-zinc-900 overflow-auto p-5 border-l border-white h-full"
+      // onClick={(e) => e.stopPropagation()}
     >
-      <h2 className="mb-5 pb-3 w-full border-b">Inventory Chooser</h2>
+      <div className="relative">
+        <div
+          className="absolute top-0 right-0 cursor-pointer text-red-500"
+          onClick={() => setIsInventoryOpen(false)}
+        >
+          X
+        </div>
+        <h2 className="mb-5 pb-3 w-full border-b">Inventory Chooser</h2>
+      </div>
       {/* Weapons */}
       <div className={clsx(equipmentTypeClasses)}>
         <h2 className={clsx(equipmentTitleClasses)}>Weapons</h2>

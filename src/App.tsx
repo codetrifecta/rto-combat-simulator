@@ -34,7 +34,6 @@ function App() {
     turnCycle,
     isInventoryOpen,
     isGameLogOpen,
-    setIsInventoryOpen,
     setTurnCycle,
     setIsLoading,
   } = useGameStateStore();
@@ -229,17 +228,19 @@ function App() {
       </section>
 
       {/* Inventory Chooser */}
-      {isInventoryOpen === true && (
-        <section
-          className="fixed z-50 flex justify-center items-center w-full h-full p-48"
-          onClick={() => {
-            setIsInventoryOpen(false);
-          }}
-        >
-          <InventoryChooser />
-          <div></div>
-        </section>
-      )}
+      {/* {isInventoryOpen === true && ( */}
+      <section
+        className="fixed z-50 top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
+        style={{
+          height: "calc(100vh - 80px)",
+          right: isInventoryOpen ? 0 : -400,
+          visibility: isInventoryOpen ? "visible" : "hidden",
+        }}
+      >
+        <InventoryChooser />
+        <div></div>
+      </section>
+      {/* )} */}
 
       <div className="fixed bottom-0 z-40 flex flex-col justify-between items-center">
         {/* Player Info */}
