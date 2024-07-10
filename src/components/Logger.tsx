@@ -1,5 +1,5 @@
 import { FC, forwardRef, useEffect, useRef } from "react";
-import { ROOM_LENGTH, TILE_SIZE } from "../constants";
+// import { ROOM_LENGTH, TILE_SIZE } from "../constants";
 import { useLogStore } from "../store/log";
 import { ILog } from "../types";
 import clsx from "clsx";
@@ -21,11 +21,7 @@ export const Logger: FC = () => {
   }, [logs]);
 
   return (
-    <div
-      className="bg-zinc-900 overflow-auto p-5 border-white border w-full"
-      style={{ maxHeight: ROOM_LENGTH * TILE_SIZE }}
-      ref={(ref) => (loggerRef.current = ref)}
-    >
+    <div className="relative bg-zinc-900 p-5 border-white border w-full h-full max-h-[465px]">
       <div className="relative">
         <div
           className="absolute top-0 right-0 cursor-pointer text-red-500"
@@ -36,17 +32,22 @@ export const Logger: FC = () => {
         <h2 className="mb-5 pb-3 w-full border-b">Game Log</h2>
       </div>
 
-      {logs.map((log, index) => (
-        <LogItem key={index} log={log} />
-      ))}
       <div
-        tabIndex={0}
-        ref={(ref) => {
-          if (ref) {
-            bottomRef.current = ref;
-          }
-        }}
-      ></div>
+        className="overflow-auto max-h-[360px]"
+        ref={(ref) => (loggerRef.current = ref)}
+      >
+        {logs.map((log, index) => (
+          <LogItem key={index} log={log} />
+        ))}
+        <div
+          tabIndex={0}
+          ref={(ref) => {
+            if (ref) {
+              bottomRef.current = ref;
+            }
+          }}
+        ></div>
+      </div>
     </div>
   );
 };
