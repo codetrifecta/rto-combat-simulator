@@ -21,7 +21,7 @@ export const Logger: FC = () => {
   }, [logs]);
 
   return (
-    <div className="relative bg-zinc-900 p-5 border-white border w-full h-full max-h-[465px]">
+    <div className="relative group opacity-30 hover:opacity-100 bg-zinc-900 p-5 border-white border w-full h-full max-h-[465px] transition-all ease-in-out duration-300">
       <div className="relative">
         <div
           className="absolute top-0 right-0 cursor-pointer text-red-500"
