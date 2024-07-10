@@ -186,7 +186,7 @@ export const PlayerControlPanel: FC = () => {
             </Button>
           </>
         ) : (
-          <div className="grid grid-flow-col grid-rows-1 grid-cols-3">
+          <div className="grid grid-flow-col grid-rows-1 grid-cols-3 w-full">
             <div className="col-span-1">
               <Button
                 onClick={() => {
@@ -199,8 +199,8 @@ export const PlayerControlPanel: FC = () => {
             </div>
 
             {/* Combat buttons */}
-            <div className="flex gap-5">
-              <div className="relative col-span-1 gap-5">
+            <div className="flex justify-between col-span-1">
+              <div className="relative">
                 <Tooltip active={isAttackButtonHovered}>
                   {player.equipment.weapon ? (
                     <>
@@ -259,36 +259,41 @@ export const PlayerControlPanel: FC = () => {
                 </Button>
               </div>
 
-              <Button
-                onClick={() => {
-                  setOpenSkills(true);
-                  setPlayerState({
-                    isAttacking: false,
-                    isMoving: false,
-                    isUsingSkill: false,
-                  });
-                }}
-                disabled={disabled || isRoomOver}
-              >
-                Skills
-              </Button>
-              <Button
-                onClick={() => {
-                  handleEndTurnClick();
-                  addLog({
-                    message: (
-                      <>
-                        <span className="text-green-500">{player.name}</span>{" "}
-                        ended their turn.
-                      </>
-                    ),
-                    type: "info",
-                  });
-                }}
-                disabled={disabled || isRoomOver}
-              >
-                End Turn
-              </Button>
+              <div className="relative">
+                <Button
+                  onClick={() => {
+                    setOpenSkills(true);
+                    setPlayerState({
+                      isAttacking: false,
+                      isMoving: false,
+                      isUsingSkill: false,
+                    });
+                  }}
+                  disabled={disabled || isRoomOver}
+                >
+                  Skills
+                </Button>
+              </div>
+
+              <div className="relative">
+                <Button
+                  onClick={() => {
+                    handleEndTurnClick();
+                    addLog({
+                      message: (
+                        <>
+                          <span className="text-green-500">{player.name}</span>{" "}
+                          ended their turn.
+                        </>
+                      ),
+                      type: "info",
+                    });
+                  }}
+                  disabled={disabled || isRoomOver}
+                >
+                  End Turn
+                </Button>
+              </div>
             </div>
           </div>
         )}
