@@ -91,7 +91,7 @@ export const InventoryChooser: FC = () => {
                     key={helmet.id}
                     armor={helmet}
                     active
-                    onClick={() => setPlayerWeapon(null)}
+                    onClick={() => setPlayerHelmet(null)}
                   />
                 );
               } else {
@@ -119,7 +119,7 @@ export const InventoryChooser: FC = () => {
                     key={chestpiece.id}
                     armor={chestpiece}
                     active
-                    onClick={() => setPlayerWeapon(null)}
+                    onClick={() => setPlayerChestpiece(null)}
                   />
                 );
               } else {
@@ -147,7 +147,7 @@ export const InventoryChooser: FC = () => {
                     key={legging.id}
                     armor={legging}
                     active
-                    onClick={() => setPlayerWeapon(null)}
+                    onClick={() => setPlayerLegging(null)}
                   />
                 );
               } else {
