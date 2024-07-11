@@ -50,8 +50,6 @@ function App() {
 
   const { enemies } = useEnemyStore();
 
-  console.log(isGenerateRoomOpen);
-
   // Initialize game state
   useEffect(() => {
     // Set turn cycle and loading state in game store
@@ -255,9 +253,9 @@ function App() {
       <section
         className="fixed z-50 top-0 w-[400px] shadow-lg"
         style={{
-          height: "calc(100vh - 80px)",
           left: "50%",
-          transform: "translateX(-100%)",
+          top: "50%",
+          transform: "translateX(-50%) translateY(-50%)",
           visibility: isGenerateRoomOpen ? "visible" : "hidden",
         }}
       >
