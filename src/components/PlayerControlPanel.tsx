@@ -211,7 +211,7 @@ export const PlayerControlPanel: FC = () => {
                     setIsCharacterSheetOpen(!isCharacterSheetOpen);
                   }}
                 >
-                  Character Sheet (C)
+                  Character (C)
                 </Button>
               </div>
               <Button
