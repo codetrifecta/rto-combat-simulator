@@ -72,6 +72,13 @@ export const generateRoomMatrix = (roomLength: number) => {
   return initialRoomMatrix;
 };
 
+/**
+ * Handle player end turn
+ * @param turnCycle IEntity[] representing the turn cycle
+ * @param getPlayer function to get the player
+ * @param setPlayer function to set the player
+ * @param endTurn   function to end the turn
+ */
 export const handlePlayerEndTurn = (
   turnCycle: IEntity[],
   getPlayer: () => IPlayer,

@@ -1,12 +1,20 @@
 import { create } from "zustand";
-import { IEntity, IGameState } from "../types";
+import { IEntity } from "../types";
 
-interface IGameStateStore extends IGameState {
+interface IGameStateStore {
+  turnCycle: IEntity[];
+  isRoomOver: boolean;
+  isLoading: boolean;
+  isInventoryOpen: boolean;
+  isGameLogOpen: boolean;
+  isCharacterSheetOpen: boolean;
+  isGenerateRoomOpen: boolean;
   getCurrentTurnEntity: () => IEntity | null;
   endTurn: () => void;
   setIsInventoryOpen: (isInventoryOpen: boolean) => void;
   setIsGameLogOpen: (isGameLogOpen: boolean) => void;
   setIsCharacterSheetOpen: (isCharacterSheetOpen: boolean) => void;
+  setIsGenerateRoomOpen: (isGenerateRoomOpen: boolean) => void;
   setTurnCycle: (turnCycle: IEntity[]) => void;
   setIsRoomOver: (isRoomOver: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
@@ -19,6 +27,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   isInventoryOpen: false,
   isGameLogOpen: true,
   isCharacterSheetOpen: false,
+  isGenerateRoomOpen: false,
 
   getCurrentTurnEntity: () => {
     const currentTurnEntity = get().turnCycle[0];
@@ -54,6 +63,9 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
 
   setIsCharacterSheetOpen: (isCharacterSheetOpen: boolean) =>
     set({ isCharacterSheetOpen }),
+
+  setIsGenerateRoomOpen: (isGenerateRoomOpen: boolean) =>
+    set({ isGenerateRoomOpen }),
 
   setTurnCycle: (turnCycle: IEntity[]) => set({ turnCycle }),
 

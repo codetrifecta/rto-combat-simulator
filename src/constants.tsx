@@ -5,6 +5,7 @@ export const TILE_SIZE = 50; // Default to 50
 export const ROOM_LENGTH = 11; // Default to 11
 
 export enum TILE_TYPE {
+  NULL = -1,
   EMPTY = 0,
   WALL = 1,
   DOOR = 2,
