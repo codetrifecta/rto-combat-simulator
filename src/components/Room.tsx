@@ -17,7 +17,8 @@ import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
 import {
-  generateRoomMatrix,
+  generateRoomEntityPositions,
+  generateRoomTileMatrix,
   getEntityPosition,
   handlePlayerEndTurn,
   isEnemy,
@@ -29,9 +30,14 @@ export const Room: FC<{
   currentHoveredEntity: IEntity | null;
   setCurrentHoveredEntity: (enemy: IEntity | null) => void;
 }> = ({ currentHoveredEntity, setCurrentHoveredEntity }) => {
-  const [roomMatrix, setRoomMatrix] = useState<[TILE_TYPE, number][][]>(
-    generateRoomMatrix(ROOM_LENGTH)
+  const [roomTileMatrix, setRoomTileMatrix] = useState<[TILE_TYPE, number][][]>(
+    generateRoomTileMatrix(ROOM_LENGTH)
   );
+  const [roomEntityPositions, setRoomEntityPositions] = useState<
+    Map<string, [ENTITY_TYPE, number]>
+  >(generateRoomEntityPositions());
+
+  console.log(roomEntityPositions);
 
   // For handling AOE skill effects
   const [isEffectZoneHovered, setIsEffectZoneHovered] = useState(false);
@@ -61,10 +67,10 @@ export const Room: FC<{
 
   // Get player's position in the room matrix
   const playerPosition = useMemo(() => {
-    return getEntityPosition(player, roomMatrix);
+    return getEntityPosition(player, roomTileMatrix);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomMatrix]);
+  }, [roomTileMatrix]);
 
   // When an enemy is defeated (i.e. removed from the game),
   // remove it from the room matrix,
@@ -73,7 +79,7 @@ export const Room: FC<{
   useEffect(() => {
     // Update room matrix to remove defeated enemy tiles
     const updateRoomMatrixWhenEnemyDefeated = () => {
-      setRoomMatrix((prevRoomMatrix) => {
+      setRoomTileMatrix((prevRoomMatrix) => {
         return prevRoomMatrix.map((row) => {
           return row.map(([tileType, id]) => {
             if (tileType === TILE_TYPE.ENEMY) {
@@ -296,11 +302,11 @@ export const Room: FC<{
           (status) => status.effect.canAttack === false
         );
 
-        // console.log("before moving", getEntityPosition(enemy, roomMatrix));
+        // console.log("before moving", getEntityPosition(enemy, roomTileMatrix));
 
         let enemyPosition: [number, number] | undefined = getEntityPosition(
           enemy,
-          roomMatrix
+          roomTileMatrix
         );
 
         const moveTime = 1000;
@@ -614,7 +620,7 @@ export const Room: FC<{
   // Update room matrix when player moves
   // x = column, y = row
   const handlePlayerMove = (x: number, y: number) => {
-    setRoomMatrix((prevRoomMatrix) => {
+    setRoomTileMatrix((prevRoomMatrix) => {
       const [playerRow, playerCol] = playerPosition;
       const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
         (row, rowIndex) => {
@@ -756,7 +762,7 @@ export const Room: FC<{
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
         const enemiesInTargetZones: IEnemy[] = [];
         targetZones.current.forEach(([row, col]) => {
-          const tile = roomMatrix[row][col];
+          const tile = roomTileMatrix[row][col];
           // console.log(tile);
           if (tile[0] === TILE_TYPE.ENEMY) {
             const enemy = enemies.find((e) => e.id === tile[1]);
@@ -849,7 +855,7 @@ export const Room: FC<{
         const playerInTargetZones: IPlayer[] = [];
 
         targetZones.current.forEach(([row, col]) => {
-          const tile = roomMatrix[row][col];
+          const tile = roomTileMatrix[row][col];
           // console.log(tile);
           if (tile[0] === TILE_TYPE.ENEMY) {
             const enemy = enemies.find((e) => e.id === tile[1]);
@@ -1008,7 +1014,7 @@ export const Room: FC<{
       case SKILL_ID.FLY: {
         // Teleport player to empty tile
         // Set player's current tile to empty and new tile to player
-        setRoomMatrix((prevRoomMatrix) => {
+        setRoomTileMatrix((prevRoomMatrix) => {
           const [playerRow, playerCol] = playerPosition;
           const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
             (row, rowIndex) => {
@@ -1078,7 +1084,7 @@ export const Room: FC<{
   // Handle enemy movement (naive)
   // For now, just move the enemy to a random adjacent tile
   const handleEnemyMovement = (enemy: IEnemy): [number, number] | undefined => {
-    const [enemyRow, enemyCol] = roomMatrix.reduce(
+    const [enemyRow, enemyCol] = roomTileMatrix.reduce(
       (acc, row, rowIndex) => {
         const colIndex = row.findIndex(([tileType, id]) => {
           if (tileType === TILE_TYPE.ENEMY && id === enemy.id) {
@@ -1117,7 +1123,7 @@ export const Room: FC<{
       randomMove[0] >= ROOM_LENGTH ||
       randomMove[1] < 0 ||
       randomMove[1] >= ROOM_LENGTH ||
-      roomMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.EMPTY
+      roomTileMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.EMPTY
     ) {
       // Do nothing if random move is out of bounds or not an empty tile
       return;
@@ -1126,7 +1132,7 @@ export const Room: FC<{
     // Update room matrix to move enemy to random adjacent tile
     if (randomMove[0] >= 0 && randomMove[0] < ROOM_LENGTH) {
       if (randomMove[1] >= 0 && randomMove[1] < ROOM_LENGTH) {
-        setRoomMatrix((prevRoomMatrix) => {
+        setRoomTileMatrix((prevRoomMatrix) => {
           const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
             (row, rowIndex) => {
               return row.map(([tileType, id], columnIndex) => {
@@ -1222,7 +1228,7 @@ export const Room: FC<{
         gridTemplateRows: `repeat(${ROOM_LENGTH}, ${TILE_SIZE}px)`,
       }}
     >
-      {roomMatrix.map((row, rowIndex) => {
+      {roomTileMatrix.map((row, rowIndex) => {
         return row.map(([tileType, id], columnIndex) => {
           // Parse tile type to entity type
           let entityType: ENTITY_TYPE | null;
@@ -1401,12 +1407,6 @@ export const Room: FC<{
                       );
 
                       if (!isTileInTargetZone) {
-                        // console.log(
-                        //   "adding to target zone",
-                        //   rowIndex,
-                        //   columnIndex,
-                        //   effectZoneHovered
-                        // );
                         currentTargetZones.push([rowIndex, columnIndex]);
                         targetZones.current = currentTargetZones;
                       }
@@ -1422,6 +1422,9 @@ export const Room: FC<{
           return (
             <Tile
               tileType={tileType}
+              entityIfExist={roomEntityPositions.get(
+                `${rowIndex},${columnIndex}`
+              )}
               key={`${rowIndex}-${columnIndex}`}
               playerState={player.state}
               active={active}

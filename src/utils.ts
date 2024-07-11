@@ -14,9 +14,9 @@ import { IEnemy, IEntity, IPlayer } from "./types";
  *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.DOOR, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1]]
  *          ]
  */
-export const generateRoomMatrix = (roomLength: number) => {
+export const generateRoomTileMatrix = (roomLength: number) => {
   // Initialize room matrix
-  const initialRoomMatrix: [TILE_TYPE, number][][] = Array.from(
+  const roomTileMatrix: [TILE_TYPE, number][][] = Array.from(
     { length: roomLength },
     () => Array.from({ length: roomLength }, () => [TILE_TYPE.EMPTY, 0])
   );
@@ -32,44 +32,41 @@ export const generateRoomMatrix = (roomLength: number) => {
         col === roomLength - 1
       ) {
         if (col === Math.floor(roomLength / 2)) {
-          initialRoomMatrix[row][col] = [TILE_TYPE.DOOR, 1];
+          roomTileMatrix[row][col] = [TILE_TYPE.DOOR, 1];
         } else {
-          initialRoomMatrix[row][col] = [TILE_TYPE.WALL, 1];
+          roomTileMatrix[row][col] = [TILE_TYPE.WALL, 1];
         }
       }
-      // Place player in the bottom middle
-      else if (
-        row === Math.floor((roomLength / 4) * 3) &&
-        col === Math.floor(roomLength / 2)
-      ) {
-        initialRoomMatrix[row][col] = [TILE_TYPE.PLAYER, 1];
-      }
-      // Place two enemies in quadrant 1 and 2
-      else if (
-        (row === Math.floor(roomLength / 4) &&
-          col === Math.floor(roomLength / 4)) ||
-        (row === Math.floor(roomLength / 4) &&
-          col === Math.floor((roomLength / 4) * 3))
-      ) {
-        if (col === Math.floor(roomLength / 4)) {
-          // initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 2];
-        } else {
-          initialRoomMatrix[row][col] = [TILE_TYPE.ENEMY, 1];
-        }
+      // Place walls in the middle of the room
+      else if (row === 5 && col < 7) {
+        roomTileMatrix[row][col] = [TILE_TYPE.WALL, 1];
       } else {
         // Place walls everywhere else
-        initialRoomMatrix[row][col] = [TILE_TYPE.EMPTY, 1];
+        roomTileMatrix[row][col] = [TILE_TYPE.EMPTY, 1];
       }
     }
   }
 
-  // Manually modify room matrix
-  // initialRoomMatrix[8][5] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 13x13 room
-  initialRoomMatrix[7][4] = [TILE_TYPE.ENEMY, 2]; // Enemy in direct top-left of player in a 11x11 room
-  initialRoomMatrix[6][6] = [TILE_TYPE.ENEMY, 3]; // Enemy in 2n1e of player in a 11x11 room
-  initialRoomMatrix[2][2] = [TILE_TYPE.ENEMY, 4]; // Enemy in top left of room in a 11x11 room
+  return roomTileMatrix;
+};
 
-  return initialRoomMatrix;
+export const generateRoomEntityPositions: () => Map<
+  string,
+  [ENTITY_TYPE, number]
+> = () => {
+  const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(); // Map of entity type and id to position
+
+  // Place entities in the room
+  // Place player
+  roomEntityPositions.set(`8,5`, [ENTITY_TYPE.PLAYER, 1]);
+
+  // Place enemies (that match the number of enemies specified in enemy store)
+  roomEntityPositions.set(`7,4`, [ENTITY_TYPE.ENEMY, 1]); // Enemy in direct top-left of player in a 11x11 room
+  roomEntityPositions.set(`6,6`, [ENTITY_TYPE.ENEMY, 2]); // Enemy in direct top-left of player in a 11x11 room
+  roomEntityPositions.set(`8,8`, [ENTITY_TYPE.ENEMY, 3]); // Enemy in 2n1e of player in a 11x11 room
+  roomEntityPositions.set(`2,2`, [ENTITY_TYPE.ENEMY, 4]); // Enemy in top left of room in a 11x11 room
+
+  return roomEntityPositions;
 };
 
 /**
