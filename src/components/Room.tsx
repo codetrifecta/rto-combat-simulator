@@ -37,7 +37,7 @@ export const Room: FC<{
     Map<string, [ENTITY_TYPE, number]>
   >(generateRoomEntityPositions());
 
-  console.log(roomEntityPositions);
+  // console.log(roomEntityPositions);
 
   // For handling AOE skill effects
   const [isEffectZoneHovered, setIsEffectZoneHovered] = useState(false);
@@ -67,10 +67,9 @@ export const Room: FC<{
 
   // Get player's position in the room matrix
   const playerPosition = useMemo(() => {
-    return getEntityPosition(player, roomTileMatrix);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomTileMatrix]);
+    const playerPos = getEntityPosition(player, roomEntityPositions);
+    return playerPos;
+  }, [player, roomEntityPositions]);
 
   // When an enemy is defeated (i.e. removed from the game),
   // remove it from the room matrix,

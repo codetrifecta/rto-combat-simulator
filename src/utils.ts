@@ -147,25 +147,37 @@ export const isEnemy = (
 
 export const getEntityPosition = (
   entity: IEntity,
-  roomMatrix: [TILE_TYPE, number][][]
+  entityPositions: Map<string, [ENTITY_TYPE, number]>
+  // roomMatrix: [TILE_TYPE, number][][]
 ): [number, number] => {
-  for (let row = 0; row < roomMatrix.length; row++) {
-    for (let col = 0; col < roomMatrix.length; col++) {
-      const tile = roomMatrix[row][col];
-      if (tile[1] === entity.id) {
-        if (
-          tile[0] === TILE_TYPE.PLAYER &&
-          entity.entityType === ENTITY_TYPE.PLAYER
-        ) {
-          return [row, col];
-        } else if (
-          tile[0] === TILE_TYPE.ENEMY &&
-          entity.entityType === ENTITY_TYPE.ENEMY
-        ) {
-          return [row, col];
-        }
-      }
+  // Get entity position from entity positions map
+
+  for (const [key, value] of entityPositions.entries()) {
+    if (value[0] === entity.entityType && value[1] === entity.id) {
+      const [row, col] = key.split(",").map((num) => parseInt(num));
+      return [row, col];
     }
   }
+
   return [-1, -1];
+
+  // for (let row = 0; row < roomMatrix.length; row++) {
+  //   for (let col = 0; col < roomMatrix.length; col++) {
+  //     const tile = roomMatrix[row][col];
+  //     if (tile[1] === entity.id) {
+  //       if (
+  //         tile[0] === TILE_TYPE.PLAYER &&
+  //         entity.entityType === ENTITY_TYPE.PLAYER
+  //       ) {
+  //         return [row, col];
+  //       } else if (
+  //         tile[0] === TILE_TYPE.ENEMY &&
+  //         entity.entityType === ENTITY_TYPE.ENEMY
+  //       ) {
+  //         return [row, col];
+  //       }
+  //     }
+  //   }
+  // }
+  // return [-1, -1];
 };
