@@ -457,7 +457,11 @@ export const Room: FC<{
   }, [turnCycle, turnCycle.length]);
 
   // Handle player attacking an enemy
-  const handleEnemyClick = (id: number) => {
+  const handleEnemyClick = (id: number | null) => {
+    if (id === null) {
+      return;
+    }
+
     const enemy = enemies.find((enemy) => enemy.id === id);
 
     if (!enemy) {
@@ -1229,15 +1233,18 @@ export const Room: FC<{
       }}
     >
       {roomTileMatrix.map((row, rowIndex) => {
-        return row.map(([tileType, id], columnIndex) => {
+        return row.map(([tileType], columnIndex) => {
           // Parse tile type to entity type
-          let entityType: ENTITY_TYPE | null;
-          if (tileType === TILE_TYPE.PLAYER) {
-            entityType = ENTITY_TYPE.PLAYER;
-          } else if (tileType === TILE_TYPE.ENEMY) {
-            entityType = ENTITY_TYPE.ENEMY;
-          } else {
-            entityType = null;
+          const entityIfExists = roomEntityPositions.get(
+            `${rowIndex},${columnIndex}`
+          );
+
+          let entityType: ENTITY_TYPE | null = null;
+          let entityId: number | null = null;
+
+          if (entityIfExists) {
+            entityType = entityIfExists[0];
+            entityId = entityIfExists[1];
           }
 
           // Check if tile is active (i.e. it's the entity's turn)
@@ -1246,9 +1253,9 @@ export const Room: FC<{
             (entityType !== null &&
               turnCycle[0] !== null &&
               turnCycle[0].entityType === entityType &&
-              turnCycle[0].id === id) ||
+              turnCycle[0].id === entityId) ||
             (currentHoveredEntity?.entityType === entityType &&
-              currentHoveredEntity?.id === id)
+              currentHoveredEntity?.id === entityId)
           ) {
             active = true;
           }
@@ -1437,7 +1444,7 @@ export const Room: FC<{
                     player.state.isAttacking &&
                     tileType === TILE_TYPE.ENEMY
                   ) {
-                    handleEnemyClick(id);
+                    handleEnemyClick(entityId);
                   } else if (
                     player.state.isMoving &&
                     tileType === TILE_TYPE.EMPTY
@@ -1469,7 +1476,7 @@ export const Room: FC<{
                       handlePlayerUseSkill(player.state.skillId);
                     } else if (tileType === TILE_TYPE.ENEMY) {
                       // Skills that uses the enemy tile
-                      handleEnemyClick(id);
+                      handleEnemyClick(entityId);
                     } else if (tileType === TILE_TYPE.EMPTY) {
                       // Skills that uses the empty tile
                       handleEmptyTileClick(
@@ -1496,7 +1503,7 @@ export const Room: FC<{
 
                 if (tileType === TILE_TYPE.ENEMY) {
                   // Set currentHoveredEntity to the enemy when mouse enters enemy tile
-                  const enemy = enemies.find((enemy) => enemy.id === id);
+                  const enemy = enemies.find((enemy) => enemy.id === entityId);
                   if (!enemy) {
                     console.error("Enemy not found!");
                     return;
