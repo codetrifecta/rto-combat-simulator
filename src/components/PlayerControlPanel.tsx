@@ -7,6 +7,7 @@ import { handlePlayerEndTurn } from "../utils";
 import { useLogStore } from "../store/log";
 import { Tooltip } from "./Tooltip";
 import { ISkill } from "../types";
+import { Button } from "./Button";
 
 export const PlayerControlPanel: FC = () => {
   const [isAttackButtonHovered, setIsAttackButtonHovered] = useState(false);
@@ -19,9 +20,11 @@ export const PlayerControlPanel: FC = () => {
     isInventoryOpen,
     isGameLogOpen,
     isCharacterSheetOpen,
+    isGenerateRoomOpen,
     setIsCharacterSheetOpen,
     setIsInventoryOpen,
     setIsGameLogOpen,
+    setIsGenerateRoomOpen,
   } = useGameStateStore();
 
   const {
@@ -127,7 +130,7 @@ export const PlayerControlPanel: FC = () => {
   }, [turnCycle]);
 
   return (
-    <div>
+    <div className="h-[80px]">
       <div
         className={clsx(
           "w-screen p-4 flex justify-center items-center gap-5 box-border",
@@ -195,6 +198,7 @@ export const PlayerControlPanel: FC = () => {
           </div>
         ) : (
           <div className="grid grid-flow-col grid-rows-1 grid-cols-3 w-full">
+            {/* Logger, Character, Inventory buttons */}
             <div className="flex justify-center gap-5 col-span-1">
               <div>
                 <Button
@@ -211,7 +215,7 @@ export const PlayerControlPanel: FC = () => {
                     setIsCharacterSheetOpen(!isCharacterSheetOpen);
                   }}
                 >
-                  Character Sheet (C)
+                  Character (C)
                 </Button>
               </div>
               <Button
@@ -324,39 +328,22 @@ export const PlayerControlPanel: FC = () => {
                 </Button>
               </div>
             </div>
+
+            {/* Tool buttons */}
+            <div className="flex justify-center gap-5 col-span-1">
+              <Button
+                onClick={() => {
+                  setIsCharacterSheetOpen(false);
+                  setIsInventoryOpen(false);
+                  setIsGenerateRoomOpen(!isGenerateRoomOpen);
+                }}
+              >
+                Generate Room
+              </Button>
+            </div>
           </div>
         )}
       </div>
     </div>
-  );
-};
-
-const Button: FC<{
-  children: string;
-  onClick: () => void;
-  disabled?: boolean | undefined | null;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
-  neutral?: boolean;
-}> = ({ children, onClick, disabled, onMouseEnter, onMouseLeave, neutral }) => {
-  return (
-    <button
-      className={clsx(
-        " text-white font-bold py-2 px-4 rounded text-lg",
-        { "bg-blue-500": !neutral },
-        { "bg-neutral-500": neutral },
-        { "hover:bg-blue-700": !disabled && !neutral },
-        { "hover:bg-neutral-700": !disabled && neutral },
-        { "opacity-50 pointer-event-none cursor-default": disabled }
-      )}
-      onClick={() => {
-        if (!disabled) onClick();
-      }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      // disabled={disabled || false}
-    >
-      {children}
-    </button>
   );
 };

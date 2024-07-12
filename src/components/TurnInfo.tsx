@@ -18,22 +18,10 @@ export const TurnInfo: FC<{
 
   const { enemies } = useEnemyStore();
 
-  const currentTurnEntity = useMemo(() => {
-    const first = turnCycle[0];
-
-    if (first.entityType === ENTITY_TYPE.PLAYER) {
-      return player;
-    } else {
-      const enemy = enemies.find((enemy) => enemy.id === first.id);
-      if (enemy) {
-        return enemy;
-      }
-      return null;
-    }
-  }, [enemies, player, turnCycle]);
-
-  const nextTurnEnties = useMemo(() => {
-    return turnCycle.slice(1).map((entity) => {
+  // Map turn cycle to entities (player and enemies)
+  // This is to ensure that the correct entity is displayed in the turn cycle as the player and enemies are updated
+  const turnEntities = useMemo(() => {
+    return turnCycle.map((entity) => {
       if (entity.entityType === ENTITY_TYPE.PLAYER) {
         return player;
       } else {
@@ -75,37 +63,28 @@ export const TurnInfo: FC<{
   return (
     <div className="flex flex-col items-center">
       <div className="w-full h-[135px] mx-auto flex justify-center">
-        <div className="mr-5">
-          <EntityCard
-            entity={currentTurnEntity}
-            active={true}
-            onMouseEnter={() => setCurrentHoveredEntity(currentTurnEntity)}
-            onMouseLeave={() => setCurrentHoveredEntity(null)}
-          />
-        </div>
-        {nextTurnEnties.length >= 1 &&
-          nextTurnEnties.map((entity) => {
-            if (!entity) {
-              return null;
-            }
+        {turnEntities.map((entity) => {
+          if (!entity) {
+            return null;
+          }
 
-            return (
-              <div key={entity.entityType + entity.id} className="mr-1">
-                <EntityCard
-                  entity={entity}
-                  active={
-                    currentHoveredEntity?.entityType === entity.entityType &&
-                    currentHoveredEntity?.id === entity.id
-                  }
-                  onMouseEnter={() => setCurrentHoveredEntity(entity)}
-                  onMouseLeave={() => setCurrentHoveredEntity(null)}
-                />
-              </div>
-            );
-          })}
+          return (
+            <div key={entity.entityType + entity.id} className="mr-1">
+              <EntityCard
+                entity={entity}
+                active={
+                  currentHoveredEntity?.entityType === entity.entityType &&
+                  currentHoveredEntity?.id === entity.id
+                }
+                onMouseEnter={() => setCurrentHoveredEntity(entity)}
+                onMouseLeave={() => setCurrentHoveredEntity(null)}
+              />
+            </div>
+          );
+        })}
       </div>
       <div className="flex justify-center items-center bg-neutral-900 px-5 py-1 border border-white">
-        <h2>{renderEntityTurnText(currentTurnEntity)}</h2>
+        <h2>{renderEntityTurnText(turnEntities[0])}</h2>
       </div>
     </div>
   );
@@ -124,8 +103,6 @@ const EntityCard: FC<{
     <div>
       <div
         className={clsx("relative border p-3 cursor-default", {
-          "bg-green-700": entity.entityType === ENTITY_TYPE.PLAYER,
-          "bg-red-700": entity.entityType === ENTITY_TYPE.ENEMY,
           "z-0 hover:shadow-intense-green hover:z-10":
             entity.entityType === ENTITY_TYPE.PLAYER && !active,
           "z-0 hover:shadow-intense-red hover:z-10":
@@ -138,6 +115,16 @@ const EntityCard: FC<{
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
+        <div
+          className={clsx(
+            "absolute z-[-10] bottom-0 left-0 w-full transition-all ease-in-out duration-300 delay-0",
+            {
+              "bg-green-700": entity.entityType === ENTITY_TYPE.PLAYER,
+              "bg-red-700": entity.entityType === ENTITY_TYPE.ENEMY,
+            }
+          )}
+          style={{ height: (entity.health / entity.maxHealth) * 100 + "%" }}
+        ></div>
         <h3>{entity.name}</h3>
         <h4>
           HP: {entity.health} / {entity.maxHealth}

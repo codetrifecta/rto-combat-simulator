@@ -41,15 +41,6 @@ export interface IEnemy extends IEntity {
   damage: number;
 }
 
-export interface IGameState {
-  turnCycle: IEntity[];
-  isRoomOver: boolean;
-  isLoading: boolean;
-  isInventoryOpen: boolean;
-  isGameLogOpen: boolean;
-  isCharacterSheetOpen: boolean;
-}
-
 export interface ISkill {
   id: number;
   name: string;

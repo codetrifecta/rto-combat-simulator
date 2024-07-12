@@ -11,6 +11,7 @@ import { Logger } from "./components/Logger";
 import clsx from "clsx";
 import { InventoryChooser } from "./components/InventoryChooser";
 import { CharacterSheet } from "./components/CharacterSheet";
+import { GenerateRoomModal } from "./components/GenerateRoomModal";
 
 let firstRoomRender = true;
 
@@ -36,6 +37,7 @@ function App() {
     isInventoryOpen,
     isGameLogOpen,
     isCharacterSheetOpen,
+    isGenerateRoomOpen,
     setIsInventoryOpen,
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
@@ -44,7 +46,6 @@ function App() {
   } = useGameStateStore();
 
   const { getPlayer } = usePlayerStore();
-
   const player = getPlayer();
 
   const { enemies } = useEnemyStore();
@@ -175,11 +176,7 @@ function App() {
   }
 
   return (
-    <div
-      className="relative max-w-screen h-screen flex flex-col justify-start overflow-hidden"
-      // onKeyDown={handleRoomKeyDown}
-      // tabIndex={0}
-    >
+    <div className="relative max-w-screen h-screen flex flex-col justify-start overflow-hidden">
       <div></div>
       <header className="absolute top-0 w-full z-[100]">
         <div
@@ -234,7 +231,6 @@ function App() {
       </div>
 
       {/* Combat Room */}
-
       <section className="relative max-w-screen max-h-screen">
         <div
           className="relative max-w-screen max-h-screen pr-10 hidden-scrollbar overflow-scroll"
@@ -253,8 +249,20 @@ function App() {
         </div>
       </section>
 
+      {/* Generate Room */}
+      <section
+        className="fixed z-50 top-0 w-[400px] shadow-lg"
+        style={{
+          left: "50%",
+          top: "50%",
+          transform: "translateX(-50%) translateY(-50%)",
+          visibility: isGenerateRoomOpen ? "visible" : "hidden",
+        }}
+      >
+        <GenerateRoomModal />
+      </section>
+
       {/* Inventory Chooser */}
-      {/* {isInventoryOpen === true && ( */}
       <section
         className="fixed z-50 top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
         style={{

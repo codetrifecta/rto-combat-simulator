@@ -1,10 +1,11 @@
 import { FC, useMemo } from "react";
-import { TILE_SIZE, TILE_TYPE } from "../constants";
+import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "../constants";
 import clsx from "clsx";
 import { IPlayerState } from "../types";
 
 export const Tile: FC<{
   tileType: number;
+  entityIfExist?: [ENTITY_TYPE, number] | undefined;
   playerState: IPlayerState;
   active: boolean;
   isEffectZone: boolean;
@@ -16,6 +17,7 @@ export const Tile: FC<{
   classNames?: string;
 }> = ({
   tileType,
+  entityIfExist,
   playerState,
   active,
   isEffectZone,
@@ -26,31 +28,37 @@ export const Tile: FC<{
   onMouseLeave,
   classNames = "",
 }) => {
+  const hasPlayer = useMemo(() => {
+    if (entityIfExist) {
+      return entityIfExist[0] === ENTITY_TYPE.PLAYER;
+    }
+  }, [entityIfExist]);
+
+  const hasEnemy = useMemo(() => {
+    if (entityIfExist) {
+      return entityIfExist[0] === ENTITY_TYPE.ENEMY;
+    }
+  }, [entityIfExist]);
+
   const isAttackEffectTile = useMemo(() => {
     return (
-      tileType !== TILE_TYPE.WALL &&
-      tileType !== TILE_TYPE.DOOR &&
-      tileType !== TILE_TYPE.PLAYER
+      tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR && !hasPlayer
     );
-  }, [tileType]);
+  }, [hasPlayer, tileType]);
 
   const isMovingEffectTile = useMemo(() => {
     if (isRoomOver) {
       // Player can move to the door when the room is over (door restriction is lifted)
-      return (
-        tileType !== TILE_TYPE.WALL &&
-        tileType !== TILE_TYPE.PLAYER &&
-        tileType !== TILE_TYPE.ENEMY
-      );
+      return tileType !== TILE_TYPE.WALL && !hasPlayer && !hasEnemy;
     } else {
       return (
         tileType !== TILE_TYPE.WALL &&
         tileType !== TILE_TYPE.DOOR &&
-        tileType !== TILE_TYPE.PLAYER &&
-        tileType !== TILE_TYPE.ENEMY
+        !hasPlayer &&
+        !hasEnemy
       );
     }
-  }, [isRoomOver, tileType]);
+  }, [hasEnemy, hasPlayer, isRoomOver, tileType]);
 
   const isSkillEffectTile = useMemo(() => {
     return tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR;
@@ -79,6 +87,24 @@ export const Tile: FC<{
     isSkillEffectTile,
   ]);
 
+  const renderEntity = () => {
+    if (hasPlayer) {
+      return (
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+          <div className="bg-green-500 w-[16px] h-[16px]"></div>
+        </div>
+      );
+    }
+
+    if (hasEnemy) {
+      return (
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+          <div className="bg-red-500 w-[16px] h-[16px]"></div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
@@ -99,14 +125,16 @@ export const Tile: FC<{
         "bg-gray-500": tileType === TILE_TYPE.WALL,
         "bg-yellow-500": tileType === TILE_TYPE.DOOR,
 
-        "bg-green-500 z-10 hover:shadow-intense-green":
-          tileType === TILE_TYPE.PLAYER,
-        "bg-red-500 z-10 hover:shadow-intense-red":
-          tileType === TILE_TYPE.ENEMY,
+        // Player and enemy tile
+        "hover:shadow-intense-green": hasPlayer,
+        "hover:shadow-intense-red": hasEnemy,
 
         // Active tile
-        "shadow-intense-green z-10": tileType === TILE_TYPE.PLAYER && active,
-        "shadow-intense-red z-10": tileType === TILE_TYPE.ENEMY && active,
+        "shadow-intense-green z-10": hasPlayer && active,
+        "shadow-intense-red z-10": hasEnemy && active,
+
+        // Non-active tile
+        "z-0": !active,
 
         // Effect zone
         [effectBorderClasses]:
@@ -119,6 +147,8 @@ export const Tile: FC<{
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-    ></div>
+    >
+      {renderEntity()}
+    </div>
   );
 };
