@@ -44,6 +44,7 @@ export const Room: FC<{
   const targetZones = useRef<[number, number][]>([]); // saves the target zones (row, col) for AOE skills
 
   const {
+    roomLength,
     roomTileMatrix,
     roomEntityPositions,
     // setRoomTileMatrix,
@@ -1207,11 +1208,11 @@ export const Room: FC<{
   return (
     <div
       style={{
-        width: ROOM_LENGTH * TILE_SIZE,
-        height: ROOM_LENGTH * TILE_SIZE,
+        width: roomLength * TILE_SIZE,
+        height: roomLength * TILE_SIZE,
         display: "grid",
-        gridTemplateColumns: `repeat(${ROOM_LENGTH}, ${TILE_SIZE}px)`,
-        gridTemplateRows: `repeat(${ROOM_LENGTH}, ${TILE_SIZE}px)`,
+        gridTemplateColumns: `repeat(${roomLength}, ${TILE_SIZE}px)`,
+        gridTemplateRows: `repeat(${roomLength}, ${TILE_SIZE}px)`,
       }}
     >
       {roomTileMatrix.map((row, rowIndex) => {

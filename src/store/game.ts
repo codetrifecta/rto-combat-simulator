@@ -4,6 +4,7 @@ import { ENTITY_TYPE, TILE_TYPE } from "../constants";
 import { generateRoomEntityPositions, generateRoomTileMatrix } from "../utils";
 
 interface IGameStateStore {
+  roomLength: number;
   roomTileMatrix: [TILE_TYPE, number][][];
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>;
   turnCycle: IEntity[];
@@ -13,6 +14,7 @@ interface IGameStateStore {
   isGameLogOpen: boolean;
   isCharacterSheetOpen: boolean;
   isGenerateRoomOpen: boolean;
+  setRoomLength: (roomLength: number) => void;
   setRoomTileMatrix: (roomTileMatrix: [TILE_TYPE, number][][]) => void;
   setRoomEntityPositions: (
     roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
@@ -29,6 +31,7 @@ interface IGameStateStore {
 }
 
 export const useGameStateStore = create<IGameStateStore>((set, get) => ({
+  roomLength: 11,
   roomTileMatrix: generateRoomTileMatrix(11),
   roomEntityPositions: generateRoomEntityPositions(),
   turnCycle: [],
@@ -38,6 +41,8 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   isGameLogOpen: true,
   isCharacterSheetOpen: false,
   isGenerateRoomOpen: false,
+
+  setRoomLength: (roomLength: number) => set({ roomLength }),
 
   setRoomTileMatrix: (roomTileMatrix: [TILE_TYPE, number][][]): void =>
     set({ roomTileMatrix }),

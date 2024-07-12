@@ -5,7 +5,12 @@ import { Button } from "./Button";
 const maxRoomLength = 100;
 
 export const GenerateRoomModal: FC = () => {
-  const { setIsGenerateRoomOpen } = useGameStateStore();
+  const {
+    setRoomLength,
+    setRoomTileMatrix,
+    setRoomEntityPositions,
+    setIsGenerateRoomOpen,
+  } = useGameStateStore();
   const [roomLengthInput, setRoomLengthInput] = useState<string>("3"); // Default room length
   const [roomMatrix, setRoomMatrix] = useState<string>("[\n[],\n[],\n[]\n]");
 
@@ -14,6 +19,10 @@ export const GenerateRoomModal: FC = () => {
     const parsedRoomMatrix = JSON.parse(roomMatrix);
     console.log("Room Parsed", parsedRoomMatrix);
     // generateRoom(roomMatrix, roomDifficulty);
+    setRoomLength(parseInt(roomLengthInput));
+    setRoomEntityPositions(new Map());
+    setRoomTileMatrix(parsedRoomMatrix);
+    setIsGenerateRoomOpen(false);
   };
 
   useEffect(() => {
@@ -23,7 +32,25 @@ export const GenerateRoomModal: FC = () => {
     for (let i = 0; i < roomLength; i++) {
       roomMatrixString += "[";
       for (let j = 0; j < roomLength; j++) {
-        roomMatrixString += "[0,1]";
+        // Surround room with walls and place door in the middle of the top wall and bottom wall
+        if (
+          i === 0 ||
+          i === roomLength - 1 ||
+          j === 0 ||
+          j === roomLength - 1
+        ) {
+          if (j === Math.floor(roomLength / 2)) {
+            // Place door in the middle of the top wall and bottom wall
+            roomMatrixString += "[2,1]";
+          } else {
+            // Place walls everywhere else
+            roomMatrixString += "[1,1]";
+          }
+        } else {
+          // Place empty tiles everywhere else
+          roomMatrixString += "[0,1]";
+        }
+
         if (j !== roomLength - 1) {
           roomMatrixString += ", ";
         }
