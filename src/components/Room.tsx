@@ -17,8 +17,6 @@ import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
 import { useEnemyStore } from "../store/enemy";
 import {
-  generateRoomEntityPositions,
-  generateRoomTileMatrix,
   getEntityPosition,
   handlePlayerEndTurn,
   isEnemy,
@@ -31,12 +29,12 @@ export const Room: FC<{
   currentHoveredEntity: IEntity | null;
   setCurrentHoveredEntity: (enemy: IEntity | null) => void;
 }> = ({ currentHoveredEntity, setCurrentHoveredEntity }) => {
-  const [roomTileMatrix, setRoomTileMatrix] = useState<[TILE_TYPE, number][][]>(
-    generateRoomTileMatrix(ROOM_LENGTH)
-  );
-  const [roomEntityPositions, setRoomEntityPositions] = useState<
-    Map<string, [ENTITY_TYPE, number]>
-  >(generateRoomEntityPositions());
+  // const [roomTileMatrix, setRoomTileMatrix] = useState<[TILE_TYPE, number][][]>(
+  //   generateRoomTileMatrix(ROOM_LENGTH)
+  // );
+  // const [roomEntityPositions, setRoomEntityPositions] = useState<
+  //   Map<string, [ENTITY_TYPE, number]>
+  // >(generateRoomEntityPositions());
 
   // For handling AOE skill effects
   const [isEffectZoneHovered, setIsEffectZoneHovered] = useState(false);
@@ -45,8 +43,18 @@ export const Room: FC<{
   >(null);
   const targetZones = useRef<[number, number][]>([]); // saves the target zones (row, col) for AOE skills
 
-  const { turnCycle, setTurnCycle, endTurn, isRoomOver, setIsRoomOver } =
-    useGameStateStore();
+  const {
+    roomLength,
+    roomTileMatrix,
+    roomEntityPositions,
+    // setRoomTileMatrix,
+    setRoomEntityPositions,
+    turnCycle,
+    setTurnCycle,
+    endTurn,
+    isRoomOver,
+    setIsRoomOver,
+  } = useGameStateStore();
   const {
     getPlayer,
     getPlayerBaseAttackDamage,
@@ -65,9 +73,14 @@ export const Room: FC<{
   const { addLog } = useLogStore();
 
   // Get player's position in the room matrix
-  const playerPosition = useMemo(() => {
-    const playerPos = getEntityPosition(player, roomEntityPositions);
-    return playerPos;
+  const playerPosition: [number, number] = useMemo(() => {
+    if (roomEntityPositions) {
+      const playerPos = getEntityPosition(player, roomEntityPositions);
+      return playerPos;
+    } else {
+      console.error("Room entity positions not found!");
+      return [-1, -1];
+    }
   }, [player, roomEntityPositions]);
 
   // When an enemy is defeated (i.e. removed from the game),
@@ -94,22 +107,38 @@ export const Room: FC<{
 
     // Update enemy positions when enemy is defeated
     const updateEnemyPositionsWhenEnemyDefeated = () => {
-      setRoomEntityPositions((prevRoomEntityPositions) => {
-        const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
-          prevRoomEntityPositions
-        );
+      // Delete enemy from room entity positions
+      const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
+        roomEntityPositions
+      );
 
-        newRoomEntityPositions.forEach((value, key) => {
-          if (value[0] === ENTITY_TYPE.ENEMY) {
-            const enemy = enemies.find((e) => e.id === value[1]);
-            if (!enemy) {
-              newRoomEntityPositions.delete(key);
-            }
+      newRoomEntityPositions.forEach((value, key) => {
+        if (value[0] === ENTITY_TYPE.ENEMY) {
+          const enemy = enemies.find((e) => e.id === value[1]);
+          if (!enemy) {
+            newRoomEntityPositions.delete(key);
           }
-        });
-
-        return newRoomEntityPositions;
+        }
       });
+
+      setRoomEntityPositions(newRoomEntityPositions);
+
+      // setRoomEntityPositions((prevRoomEntityPositions) => {
+      //   const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
+      //     prevRoomEntityPositions
+      //   );
+
+      //   newRoomEntityPositions.forEach((value, key) => {
+      //     if (value[0] === ENTITY_TYPE.ENEMY) {
+      //       const enemy = enemies.find((e) => e.id === value[1]);
+      //       if (!enemy) {
+      //         newRoomEntityPositions.delete(key);
+      //       }
+      //     }
+      //   });
+
+      //   return newRoomEntityPositions;
+      // });
     };
 
     // Update turn cycle to remove defeated enemies
@@ -312,8 +341,6 @@ export const Room: FC<{
           (status) => status.effect.canAttack === false
         );
 
-        // console.log("before moving", getEntityPosition(enemy, roomTileMatrix));
-
         let enemyPosition: [number, number] | undefined = getEntityPosition(
           enemy,
           roomEntityPositions
@@ -359,7 +386,6 @@ export const Room: FC<{
                   );
                 }, attackTime);
               } else {
-                console.log("enemy cannot attack");
                 setTimeout(() => {
                   addLog({
                     message: (
@@ -401,7 +427,6 @@ export const Room: FC<{
                   );
                 }, attackTime);
               } else {
-                console.log("enemy cannot attack");
                 setTimeout(() => {
                   addLog({
                     message: (
@@ -633,14 +658,9 @@ export const Room: FC<{
   // x = column, y = row
   const handlePlayerMove = (row: number, col: number) => {
     // Update player's position in the entity positions map
-    setRoomEntityPositions((prevRoomEntityPositions) => {
-      // Update player's position in the entity positions map
-      return updateRoomEntityPositions(
-        [row, col],
-        playerPosition,
-        prevRoomEntityPositions
-      );
-    });
+    setRoomEntityPositions(
+      updateRoomEntityPositions([row, col], playerPosition, roomEntityPositions)
+    );
 
     addLog({
       message: (
@@ -761,14 +781,12 @@ export const Room: FC<{
     switch (skill.id) {
       case SKILL_ID.WHIRLWIND: {
         // Within target zones, deal damage to enemies
-        // console.log("target zones", targetZones.current);
 
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
         const enemiesInTargetZones: IEnemy[] = [];
         targetZones.current.forEach(([row, col]) => {
           const entitiyIfExists = roomEntityPositions.get(`${row},${col}`);
 
-          // console.log(tile);
           if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
             const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
             if (!enemy) {
@@ -853,7 +871,6 @@ export const Room: FC<{
       }
       case SKILL_ID.FIREBALL: {
         // Within target zones, deal damage to enemies
-        // console.log("target zones for fireball", targetZones.current);
 
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
         const enemiesInTargetZones: IEnemy[] = [];
@@ -862,7 +879,6 @@ export const Room: FC<{
         targetZones.current.forEach(([row, col]) => {
           const entitiyIfExists = roomEntityPositions.get(`${row},${col}`);
 
-          // console.log(tile);
           if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
             const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
             if (!enemy) {
@@ -980,8 +996,6 @@ export const Room: FC<{
               type: "info",
             });
           }
-
-          console.log(newPlayer);
         }
 
         setEnemies(newEnemies);
@@ -1006,7 +1020,7 @@ export const Room: FC<{
 
   // This function is called when player uses a skill that targets an empty tile
   // Skills that affect enemies are handled in the handleEnemyClick function
-  const handleEmptyTileClick = (skillId: number, x: number, y: number) => {
+  const handleEmptyTileClick = (skillId: number, row: number, col: number) => {
     const skill = player.skills.find((skill) => skill.id === skillId);
 
     if (!skill) {
@@ -1022,23 +1036,14 @@ export const Room: FC<{
     switch (skill.id) {
       case SKILL_ID.FLY: {
         // Teleport player to empty tile
-        // Set player's current tile to empty and new tile to player
-        setRoomTileMatrix((prevRoomMatrix) => {
-          const [playerRow, playerCol] = playerPosition;
-          const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
-            (row, rowIndex) => {
-              return row.map(([tileType, id], columnIndex) => {
-                if (rowIndex === playerRow && columnIndex === playerCol) {
-                  return [TILE_TYPE.EMPTY, 0];
-                } else if (rowIndex === y && columnIndex === x) {
-                  return [TILE_TYPE.PLAYER, player.id];
-                }
-                return [tileType, id];
-              });
-            }
-          );
-          return newRoomMatrix;
-        });
+        // Set player's position in the entity positions map
+        setRoomEntityPositions(
+          updateRoomEntityPositions(
+            [row, col],
+            playerPosition,
+            roomEntityPositions
+          )
+        );
         break;
       }
       default:
@@ -1068,7 +1073,7 @@ export const Room: FC<{
           <>
             <span className="text-green-500">{player.name}</span> used{" "}
             <span className="text-green-500">{skill.name}</span> to teleport to
-            tile ({x}, {y}).
+            tile ({col}, {row}).
           </>
         ),
         type: "info",
@@ -1109,8 +1114,6 @@ export const Room: FC<{
 
     const randomMove = possibleMoves[Math.floor(Math.random() * 4)];
 
-    // console.log("handling enemy movement", enemy, randomMove);
-
     // Check if random move is outside bounds (ie. outside the room matrix bounds and not an empty tile) and also if it doesnt have another entity
     // If so, do nothing
     if (
@@ -1128,13 +1131,13 @@ export const Room: FC<{
     // Update room matrix to move enemy to random adjacent tile
     if (randomMove[0] >= 0 && randomMove[0] < ROOM_LENGTH) {
       if (randomMove[1] >= 0 && randomMove[1] < ROOM_LENGTH) {
-        setRoomEntityPositions((prevRoomEntityPositions) => {
-          return updateRoomEntityPositions(
+        setRoomEntityPositions(
+          updateRoomEntityPositions(
             randomMove,
             [enemyRow, enemyCol],
-            prevRoomEntityPositions
-          );
-        });
+            roomEntityPositions
+          )
+        );
 
         addLog({
           message: (
@@ -1205,11 +1208,11 @@ export const Room: FC<{
   return (
     <div
       style={{
-        width: ROOM_LENGTH * TILE_SIZE,
-        height: ROOM_LENGTH * TILE_SIZE,
+        width: roomLength * TILE_SIZE,
+        height: roomLength * TILE_SIZE,
         display: "grid",
-        gridTemplateColumns: `repeat(${ROOM_LENGTH}, ${TILE_SIZE}px)`,
-        gridTemplateRows: `repeat(${ROOM_LENGTH}, ${TILE_SIZE}px)`,
+        gridTemplateColumns: `repeat(${roomLength}, ${TILE_SIZE}px)`,
+        gridTemplateRows: `repeat(${roomLength}, ${TILE_SIZE}px)`,
       }}
     >
       {roomTileMatrix.map((row, rowIndex) => {
@@ -1243,6 +1246,11 @@ export const Room: FC<{
           // Check if tile is an effect zone
           let isEffectZone: boolean = false;
           let isTargetZone: boolean = false;
+          if (!playerPosition) {
+            addLog({ message: "Player position not found!", type: "error" });
+            return;
+          }
+
           const [playerRow, playerCol] = playerPosition;
 
           // Check if player is attacking (basic attack)
@@ -1342,14 +1350,12 @@ export const Room: FC<{
                   (!(rowIndex === playerRow && columnIndex === playerCol) ||
                     skill.id === SKILL_ID.FIREBALL) // For fireball, player can target themselves
                 ) {
-                  // console.log("effect zone", rowIndex, columnIndex);
                   isEffectZone = true;
                 }
 
                 // Compute target zone based on the specific skill requirement
                 if (skill.id === SKILL_ID.WHIRLWIND) {
                   if (isEffectZone && isEffectZoneHovered) {
-                    // console.log("effect zone hovered", rowIndex, columnIndex);
                     // Add tiles to target zone to use to compute the effect of the skill
 
                     const currentTargetZones = targetZones.current;
@@ -1373,7 +1379,6 @@ export const Room: FC<{
                 } else if (skill.id === SKILL_ID.FIREBALL) {
                   // For fireball, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
                   if (isEffectZoneHovered) {
-                    // console.log("effect zone hovered", rowIndex, columnIndex);
                     // Add tiles to target zone to use to compute the effect of the skill
 
                     // For fireball, the target zone is a 3x3 area around the hovered effect zone tile
@@ -1430,7 +1435,6 @@ export const Room: FC<{
                     player.state.isMoving &&
                     !entityIfExists &&
                     tileType !== TILE_TYPE.WALL &&
-                    !isRoomOver &&
                     tileType !== TILE_TYPE.DOOR
                   ) {
                     handlePlayerMove(rowIndex, columnIndex);
@@ -1451,7 +1455,6 @@ export const Room: FC<{
                     // Check tile clicked
                     // If skill is an AOE, then check if the tile is in the target zone
                     if (isTargetZone) {
-                      // console.log("target zone clicked", columnIndex, rowIndex);
                       handlePlayerUseAOESkill(player.state.skillId);
                     } else if (
                       entityIfExists &&
@@ -1469,8 +1472,8 @@ export const Room: FC<{
                       // Skills that uses the empty tile
                       handleEmptyTileClick(
                         player.state.skillId,
-                        columnIndex,
-                        rowIndex
+                        rowIndex,
+                        columnIndex
                       );
                     }
                   }
@@ -1510,7 +1513,6 @@ export const Room: FC<{
                 if (isEffectZone) {
                   // Set isEffectZoneHovered to true when mouse leaves effect zone
                   // and reset saved target zones and effect zone hovered
-                  // console.log("targetZones", targetZones.current);
                   setIsEffectZoneHovered(false);
                   targetZones.current = [];
                   setEffectZoneHovered(null);

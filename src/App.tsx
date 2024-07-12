@@ -112,6 +112,8 @@ function App() {
   // Check every 50ms to check input to move camera
   useEffect(() => {
     const keyboardInputCheckInterval = setInterval(() => {
+      if (isGenerateRoomOpen) return;
+
       if (roomContainerRef.current && roomScrollRef.current) {
         if (keyPressed["w"] === true && keyPressed["a"] === true) {
           roomScrollRef.current.scrollTop -= cameraDiagonalMoveSpeed;
@@ -160,7 +162,7 @@ function App() {
     return () => {
       clearInterval(keyboardInputCheckInterval);
     };
-  }, [keyPressed]);
+  }, [keyPressed, isGenerateRoomOpen]);
 
   const isInitialized = useMemo(() => {
     return turnCycle.length > 0;
@@ -251,11 +253,9 @@ function App() {
 
       {/* Generate Room */}
       <section
-        className="fixed z-50 top-0 w-[400px] shadow-lg"
+        className="fixed z-50 top-0 w-screen shadow-lg"
         style={{
-          left: "50%",
-          top: "50%",
-          transform: "translateX(-50%) translateY(-50%)",
+          height: "calc(100vh - 80px)",
           visibility: isGenerateRoomOpen ? "visible" : "hidden",
         }}
       >
