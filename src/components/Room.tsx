@@ -38,8 +38,6 @@ export const Room: FC<{
     Map<string, [ENTITY_TYPE, number]>
   >(generateRoomEntityPositions());
 
-  // console.log(roomEntityPositions);
-
   // For handling AOE skill effects
   const [isEffectZoneHovered, setIsEffectZoneHovered] = useState(false);
   const [effectZoneHovered, setEffectZoneHovered] = useState<
@@ -62,7 +60,7 @@ export const Room: FC<{
   const playerBaseAttackDamage = getPlayerBaseAttackDamage();
   const playerTotalIntelligence = getPlayerTotalIntelligence();
 
-  const { enemies, setEnemies } = useEnemyStore();
+  const { enemies, setEnemies, setEnemy } = useEnemyStore();
 
   const { addLog } = useLogStore();
 
@@ -183,6 +181,7 @@ export const Room: FC<{
   }, [player.actionPoints, isRoomOver, enemies.length]);
 
   // When turn cycle changes,
+  // Handle DoT effects,
   // Handle enemy turn (for now, move to a random adjacent tile and attack player if in range)
   useEffect(() => {
     // Handle DoT check first
@@ -199,8 +198,6 @@ export const Room: FC<{
           addLog({ message: "Enemy not found!", type: "error" });
           return;
         }
-
-        // console.log("enemy", enemy);
 
         const affectedEnemy = { ...enemy };
 
@@ -225,7 +222,6 @@ export const Room: FC<{
                 type: "info",
               });
               setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
-              // endTurn();
             } else {
               addLog({
                 message: (
@@ -236,15 +232,10 @@ export const Room: FC<{
                 ),
                 type: "info",
               });
-              handleEnemyEndTurn(affectedEnemy);
-              // setEnemies(
-              //   enemies.map((e) => {
-              //     if (e.id === affectedEnemy.id) {
-              //       return affectedEnemy;
-              //     }
-              //     return e;
-              //   })
-              // );
+
+              const damagedEnemy = setEnemy(affectedEnemy);
+
+              handleEnemyEndTurn(damagedEnemy);
             }
           }, 1000);
         } else {
@@ -255,8 +246,6 @@ export const Room: FC<{
         turnCycle[0].entityType === ENTITY_TYPE.PLAYER &&
         isPlayer(turnCycle[0])
       ) {
-        // Simulate enemy action with a timeout
-
         const affectedPlayer = { ...player };
 
         const burnedDoT = affectedPlayer.statuses.find(

@@ -9,6 +9,7 @@ interface IEnemies {
 interface IEnemyStore extends IEnemies {
   getEnemies: () => IEnemy[];
   setEnemies: (enemies: IEnemy[]) => void;
+  setEnemy: (enemy: IEnemy) => IEnemy;
 }
 
 export const useEnemyStore = create<IEnemyStore>((set, get) => ({
@@ -64,4 +65,18 @@ export const useEnemyStore = create<IEnemyStore>((set, get) => ({
     return enemies;
   },
   setEnemies: (enemies: IEnemy[]) => set({ enemies }),
+
+  setEnemy: (enemy: IEnemy): IEnemy => {
+    let updatedEnemy: IEnemy = enemy;
+    const enemies = get().enemies.map((e) => {
+      if (e.id === enemy.id) {
+        updatedEnemy = enemy;
+        return enemy;
+      }
+      return e;
+    });
+
+    set({ enemies });
+    return updatedEnemy;
+  },
 }));
