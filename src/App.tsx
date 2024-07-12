@@ -13,21 +13,27 @@ import { InventoryChooser } from "./components/InventoryChooser";
 import { CharacterSheet } from "./components/CharacterSheet";
 import { GenerateRoomModal } from "./components/GenerateRoomModal";
 
+// Flag for first room render
 let firstRoomRender = true;
 
+// Camera movement speed
 const cameraStraightMoveSpeed = 7;
 const cameraDiagonalMoveSpeed = Math.sqrt(cameraStraightMoveSpeed ** 2 / 2);
 
+// Keys that are available for camera movement
 const availableKeys = ["w", "a", "s", "d", "l", "c", "i", "+", "=", "-"];
 
+// Camera scale and scale step
 let currentScale = 1;
 const scaleStep = 0.02;
+
+// Record of keys that are currently pressed
+const keyPressed: Record<string, boolean> = {};
 
 function App() {
   const [headerOpen, setHeaderOpen] = useState(false);
   const [currentHoveredEntity, setCurrentHoveredEntity] =
     useState<IEntity | null>(null);
-  const [keyPressed, setKeyPressed] = useState<Record<string, boolean>>({});
 
   const roomContainerRef = useRef<HTMLDivElement>(null);
   const roomScrollRef = useRef<HTMLDivElement>(null);
@@ -56,40 +62,28 @@ function App() {
     setTurnCycle([player, ...enemies]);
     setIsLoading(false);
 
+    const handleKeydownEvent = (e: KeyboardEvent) => {
+      if (availableKeys.includes(e.key.toLowerCase())) {
+        if (keyPressed[e.key] === undefined) {
+          keyPressed[e.key] = true;
+        }
+      }
+    };
+
+    const handleKeyupEvent = (e: KeyboardEvent) => {
+      if (availableKeys.includes(e.key.toLowerCase())) {
+        delete keyPressed[e.key];
+      }
+    };
+
     // Add event listeners for keyboard input
-    document.body.addEventListener("keydown", (e: KeyboardEvent) => {
-      if (availableKeys.includes(e.key.toLowerCase()))
-        setKeyPressed((prevKeyPressed) => ({
-          ...prevKeyPressed,
-          [e.key]: true,
-        }));
-    });
-    document.body.addEventListener("keyup", (e: KeyboardEvent) => {
-      if (availableKeys.includes(e.key.toLowerCase()))
-        setKeyPressed((prevKeyPressed) => {
-          const newKeyPressed = { ...prevKeyPressed };
-          delete newKeyPressed[e.key];
-          return newKeyPressed;
-        });
-    });
+    document.body.addEventListener("keydown", handleKeydownEvent);
+    document.body.addEventListener("keyup", handleKeyupEvent);
 
     // Remove event listeners on unmount
     return () => {
-      document.body.removeEventListener("keydown", (e: KeyboardEvent) => {
-        if (availableKeys.includes(e.key.toLowerCase()))
-          setKeyPressed((prevKeyPressed) => ({
-            ...prevKeyPressed,
-            [e.key]: true,
-          }));
-      });
-      document.body.removeEventListener("keyup", (e: KeyboardEvent) => {
-        if (availableKeys.includes(e.key.toLowerCase()))
-          setKeyPressed((prevKeyPressed) => {
-            const newKeyPressed = { ...prevKeyPressed };
-            delete newKeyPressed[e.key];
-            return newKeyPressed;
-          });
-      });
+      document.body.removeEventListener("keydown", handleKeydownEvent);
+      document.body.removeEventListener("keyup", handleKeyupEvent);
     };
   }, []);
 
@@ -105,7 +99,7 @@ function App() {
             block: "center",
           });
         }
-      }, 100);
+      }, 50);
     }
   }, [roomContainerRef.current]);
 
