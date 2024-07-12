@@ -641,30 +641,33 @@ export const Room: FC<{
 
   // Update room matrix when player moves
   // x = column, y = row
-  const handlePlayerMove = (x: number, y: number) => {
-    setRoomTileMatrix((prevRoomMatrix) => {
-      const [playerRow, playerCol] = playerPosition;
-      const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
-        (row, rowIndex) => {
-          return row.map(([tileType, id], columnIndex) => {
-            if (rowIndex === playerRow && columnIndex === playerCol) {
-              // Set player's current tile to empty
-              return [TILE_TYPE.EMPTY, 0];
-            } else if (rowIndex === y && columnIndex === x) {
-              // Set player's new tile to player
-              return [TILE_TYPE.PLAYER, player.id];
-            }
-            return [tileType, id];
-          });
-        }
+  const handlePlayerMove = (row: number, col: number) => {
+    // Update player's position in the entity positions map
+    setRoomEntityPositions((prevRoomEntityPositions) => {
+      const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
+        prevRoomEntityPositions
       );
-      return newRoomMatrix;
+
+      for (const [key, value] of newRoomEntityPositions.entries()) {
+        if (value[0] === ENTITY_TYPE.PLAYER) {
+          newRoomEntityPositions.delete(key);
+          break;
+        }
+      }
+
+      newRoomEntityPositions.set(`${row},${col}`, [
+        ENTITY_TYPE.PLAYER,
+        player.id,
+      ]);
+
+      return newRoomEntityPositions;
     });
+
     addLog({
       message: (
         <>
           <span className="text-green-500">{player.name}</span> moved to tile (
-          {x}, {y}).
+          {col}, {row}).
         </>
       ),
       type: "info",
@@ -1468,10 +1471,7 @@ export const Room: FC<{
                     player.state.isMoving &&
                     tileType === TILE_TYPE.EMPTY
                   ) {
-                    handlePlayerMove(
-                      columnIndex, // x
-                      rowIndex // y
-                    );
+                    handlePlayerMove(rowIndex, columnIndex);
                   } else if (
                     player.state.isMoving &&
                     tileType === TILE_TYPE.DOOR
