@@ -17,6 +17,7 @@ export const GenerateRoomModal: FC = () => {
   const [playerPosition, setPlayerPosition] = useState<[number, number]>([
     0, 0,
   ]);
+  const [enemyPositions, setEnemyPositions] = useState<[number, number][]>([]);
 
   const handleGenerateRoom = () => {
     const parsedRoomMatrix = JSON.parse(roomMatrix);
@@ -38,6 +39,24 @@ export const GenerateRoomModal: FC = () => {
       ENTITY_TYPE.PLAYER,
       1,
     ]);
+
+    // Place enemies
+    enemyPositions.forEach((enemyPosition, index) => {
+      if (
+        enemyPosition[0] < 0 ||
+        enemyPosition[1] < 0 ||
+        enemyPosition[0] >= parsedRoomMatrix.length ||
+        enemyPosition[1] >= parsedRoomMatrix[0].length
+      ) {
+        console.error(`Enemy ${index + 1} position is out of bounds!`);
+        return;
+      }
+
+      newRoomEntityPositions.set(`${enemyPosition[0]},${enemyPosition[1]}`, [
+        ENTITY_TYPE.ENEMY,
+        index + 1,
+      ]);
+    });
 
     setRoomLength(parseInt(roomLengthInput));
     setRoomEntityPositions(newRoomEntityPositions);
@@ -156,6 +175,67 @@ export const GenerateRoomModal: FC = () => {
               setPlayerPosition([playerPosition[0], parseInt(e.target.value)])
             }
           ></input>
+        </div>
+
+        <div className="mb-5">
+          <p className="mb-3">Enemy Position(s) (0-indexed)</p>
+          {enemyPositions.map((enemyPosition, index) => (
+            <div className="flex justify-center items-center mb-3" key={index}>
+              <p className="mr-3">Enemy {index + 1}</p>
+              <input
+                className="bg-zinc-700 w-16 px-2 mr-3"
+                placeholder="Row"
+                value={enemyPosition[0]}
+                onChange={(e) =>
+                  setEnemyPositions((prevEnemyPositions) => {
+                    const newEnemyPositions = [...prevEnemyPositions];
+                    newEnemyPositions[index] = [
+                      parseInt(e.target.value),
+                      enemyPosition[1],
+                    ];
+                    return newEnemyPositions;
+                  })
+                }
+              ></input>
+              <input
+                className="bg-zinc-700 w-16 px-2"
+                placeholder="Column"
+                value={enemyPosition[1]}
+                onChange={(e) =>
+                  setEnemyPositions((prevEnemyPositions) => {
+                    const newEnemyPositions = [...prevEnemyPositions];
+                    newEnemyPositions[index] = [
+                      enemyPosition[0],
+                      parseInt(e.target.value),
+                    ];
+                    return newEnemyPositions;
+                  })
+                }
+              ></input>
+              <div
+                className="cursor-pointer text-red-500 ml-3"
+                onClick={() =>
+                  setEnemyPositions((prevEnemyPositions) => {
+                    const newEnemyPositions = [...prevEnemyPositions];
+                    newEnemyPositions.splice(index, 1);
+                    return newEnemyPositions;
+                  })
+                }
+              >
+                X
+              </div>
+            </div>
+          ))}
+          <Button
+            onClick={() =>
+              setEnemyPositions((prevEnemyPositions) => [
+                ...prevEnemyPositions,
+                [prevEnemyPositions.length, prevEnemyPositions.length],
+              ])
+            }
+          >
+            Add More Enemies
+          </Button>
         </div>
 
         <Button onClick={handleGenerateRoom}>Generate</Button>
