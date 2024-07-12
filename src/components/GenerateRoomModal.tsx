@@ -1,7 +1,9 @@
 import { FC, useEffect, useState } from "react";
 import { useGameStateStore } from "../store/game";
 import { Button } from "./Button";
-import { ENTITY_TYPE } from "../constants";
+import { ENEMY_PRESET_ID, ENEMY_PRESETS, ENTITY_TYPE } from "../constants";
+import { IEnemy } from "../types";
+import { useEnemyStore } from "../store/enemy";
 
 const maxRoomLength = 100;
 
@@ -12,19 +14,23 @@ export const GenerateRoomModal: FC = () => {
     setRoomEntityPositions,
     setIsGenerateRoomOpen,
   } = useGameStateStore();
+
+  const { setEnemies } = useEnemyStore();
+
   const [roomLengthInput, setRoomLengthInput] = useState<string>("11"); // Default room length
   const [roomMatrix, setRoomMatrix] = useState<string>("[\n[],\n[],\n[]\n]");
   const [playerPositionInput, setPlayerPositionInput] = useState<
     [string, string]
   >(["5", "5"]);
   const [enemyPositionsInput, setEnemyPositionsInput] = useState<
-    [string, string][]
+    [string, string, ENEMY_PRESET_ID][]
   >([]);
 
   const handleGenerateRoom = () => {
     const parsedRoomMatrix = JSON.parse(roomMatrix);
 
     const newRoomEntityPositions = new Map(); // Map of entity type and id to position
+    const newEnemies: IEnemy[] = [];
 
     // Validate player position
     const playerPosition: [number, number] = [
@@ -61,7 +67,7 @@ export const GenerateRoomModal: FC = () => {
       ];
 
       if (enemyPosition.some((pos) => isNaN(pos))) {
-        console.error("Player position is invalid!");
+        console.error("Enemy position is invalid!");
         return;
       }
 
@@ -79,9 +85,18 @@ export const GenerateRoomModal: FC = () => {
         ENTITY_TYPE.ENEMY,
         index + 1,
       ]);
+
+      const enemyPreset = ENEMY_PRESETS[enemyPositionInput[2]];
+
+      newEnemies.push({
+        ...enemyPreset,
+        id: index + 1,
+      });
     });
 
+    // Set room length, room entity positions, enemies, and room tile matrix
     setRoomLength(parseInt(roomLengthInput));
+    setEnemies(newEnemies);
     setRoomEntityPositions(newRoomEntityPositions);
     setRoomTileMatrix(parsedRoomMatrix);
     setIsGenerateRoomOpen(false);
@@ -218,13 +233,14 @@ export const GenerateRoomModal: FC = () => {
                     newEnemyPositions[index] = [
                       e.target.value,
                       enemyPosition[1],
+                      enemyPosition[2],
                     ];
                     return newEnemyPositions;
                   })
                 }
               ></input>
               <input
-                className="bg-zinc-700 w-16 px-2"
+                className="bg-zinc-700 w-16 px-2 mr-3"
                 placeholder="Column"
                 value={enemyPosition[1]}
                 onChange={(e) =>
@@ -233,11 +249,36 @@ export const GenerateRoomModal: FC = () => {
                     newEnemyPositions[index] = [
                       enemyPosition[0],
                       e.target.value,
+                      enemyPosition[2],
                     ];
                     return newEnemyPositions;
                   })
                 }
               ></input>
+              <select
+                name="enemyPreset"
+                id="enemyPreset-select"
+                className="bg-zinc-700 h-6"
+                onChange={(e) =>
+                  setEnemyPositionsInput((prevEnemyPositions) => {
+                    const newEnemyPositions = [...prevEnemyPositions];
+                    newEnemyPositions[index] = [
+                      enemyPosition[0],
+                      enemyPosition[1],
+                      parseInt(e.target.value) as ENEMY_PRESET_ID,
+                    ];
+                    return newEnemyPositions;
+                  })
+                }
+              >
+                {Object.entries(ENEMY_PRESETS).map((enemyPreset, index) => {
+                  return (
+                    <option key={index} value={enemyPreset[0]}>
+                      {enemyPreset[1].name}
+                    </option>
+                  );
+                })}
+              </select>
               <div
                 className="cursor-pointer text-red-500 ml-3"
                 onClick={() =>
@@ -259,6 +300,7 @@ export const GenerateRoomModal: FC = () => {
                 [
                   prevEnemyPositions.length.toString(),
                   prevEnemyPositions.length.toString(),
+                  ENEMY_PRESET_ID.SHADE,
                 ],
               ])
             }

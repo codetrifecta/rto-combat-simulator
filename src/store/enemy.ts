@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { IEnemy } from "../types";
-import { ENTITY_TYPE } from "../constants";
+import { ENEMY_PRESET_ID, ENEMY_PRESETS } from "../constants";
 
 interface IEnemies {
   enemies: IEnemy[];
@@ -15,48 +15,20 @@ interface IEnemyStore extends IEnemies {
 export const useEnemyStore = create<IEnemyStore>((set, get) => ({
   enemies: [
     {
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.SHADE],
       id: 1,
-      name: "Shade",
-      entityType: ENTITY_TYPE.ENEMY,
-      health: 3,
-      maxHealth: 3,
-      range: 1,
-      damage: 2,
-      damageBonus: 0,
-      statuses: [],
     },
     {
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.SHADE],
       id: 2,
-      name: "Shade",
-      entityType: ENTITY_TYPE.ENEMY,
-      health: 3,
-      maxHealth: 3,
-      range: 1,
-      damage: 2,
-      damageBonus: 0,
-      statuses: [],
     },
     {
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.GORGON],
       id: 3,
-      name: "Gorgon",
-      entityType: ENTITY_TYPE.ENEMY,
-      health: 6,
-      maxHealth: 6,
-      range: 2,
-      damage: 3,
-      damageBonus: 0,
-      statuses: [],
     },
     {
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.CYCLOPS],
       id: 4,
-      name: "Cyclops",
-      entityType: ENTITY_TYPE.ENEMY,
-      health: 10,
-      maxHealth: 10,
-      range: 2,
-      damage: 5,
-      damageBonus: 0,
-      statuses: [],
     },
   ],
 
