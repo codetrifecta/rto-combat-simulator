@@ -125,12 +125,16 @@ export const Tile: FC<{
         "bg-gray-500": tileType === TILE_TYPE.WALL,
         "bg-yellow-500": tileType === TILE_TYPE.DOOR,
 
-        "bg-green-500 z-10 hover:shadow-intense-green": hasPlayer,
-        "bg-red-500 z-10 hover:shadow-intense-red": hasEnemy,
+        // Player and enemy tile
+        "hover:shadow-intense-green": hasPlayer,
+        "hover:shadow-intense-red": hasEnemy,
 
         // Active tile
         "shadow-intense-green z-10": hasPlayer && active,
         "shadow-intense-red z-10": hasEnemy && active,
+
+        // Non-active tile
+        "z-0": !active,
 
         // Effect zone
         [effectBorderClasses]:

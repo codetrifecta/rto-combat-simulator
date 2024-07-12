@@ -1122,14 +1122,15 @@ export const Room: FC<{
 
     // console.log("handling enemy movement", enemy, randomMove);
 
-    // Check if random move is outside bounds (ie. outside the room matrix bounds and not an empty tile)
+    // Check if random move is outside bounds (ie. outside the room matrix bounds and not an empty tile) and also if it doesnt have another entity
     // If so, do nothing
     if (
       randomMove[0] < 0 ||
       randomMove[0] >= ROOM_LENGTH ||
       randomMove[1] < 0 ||
       randomMove[1] >= ROOM_LENGTH ||
-      roomTileMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.EMPTY
+      roomTileMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.EMPTY ||
+      roomEntityPositions.get(`${randomMove[0]},${randomMove[1]}`)
     ) {
       // Do nothing if random move is out of bounds or not an empty tile
       return;
