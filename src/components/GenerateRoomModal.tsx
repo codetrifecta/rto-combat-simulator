@@ -4,6 +4,7 @@ import { Button } from "./Button";
 import { ENEMY_PRESET_ID, ENEMY_PRESETS, ENTITY_TYPE } from "../constants";
 import { IEnemy } from "../types";
 import { useEnemyStore } from "../store/enemy";
+import { usePlayerStore } from "../store/player";
 
 const maxRoomLength = 100;
 
@@ -12,10 +13,14 @@ export const GenerateRoomModal: FC = () => {
     setRoomLength,
     setRoomTileMatrix,
     setRoomEntityPositions,
+    setTurnCycle,
     setIsGenerateRoomOpen,
   } = useGameStateStore();
 
   const { setEnemies } = useEnemyStore();
+
+  const { getPlayer } = usePlayerStore();
+  const player = getPlayer();
 
   const [roomLengthInput, setRoomLengthInput] = useState<string>("11"); // Default room length
   const [roomMatrix, setRoomMatrix] = useState<string>("[\n[],\n[],\n[]\n]");
@@ -97,6 +102,7 @@ export const GenerateRoomModal: FC = () => {
     // Set room length, room entity positions, enemies, and room tile matrix
     setRoomLength(parseInt(roomLengthInput));
     setEnemies(newEnemies);
+    setTurnCycle([player, ...newEnemies]);
     setRoomEntityPositions(newRoomEntityPositions);
     setRoomTileMatrix(parsedRoomMatrix);
     setIsGenerateRoomOpen(false);
