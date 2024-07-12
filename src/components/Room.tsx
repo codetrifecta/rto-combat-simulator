@@ -1487,10 +1487,16 @@ export const Room: FC<{
                     if (isTargetZone) {
                       // console.log("target zone clicked", columnIndex, rowIndex);
                       handlePlayerUseAOESkill(player.state.skillId);
-                    } else if (tileType === TILE_TYPE.PLAYER) {
+                    } else if (
+                      entityIfExists &&
+                      entityIfExists[0] === ENTITY_TYPE.PLAYER
+                    ) {
                       // Skills that uses the player tile
                       handlePlayerUseSkill(player.state.skillId);
-                    } else if (tileType === TILE_TYPE.ENEMY) {
+                    } else if (
+                      entityIfExists &&
+                      entityIfExists[0] === ENTITY_TYPE.ENEMY
+                    ) {
                       // Skills that uses the enemy tile
                       handleEnemyClick(entityId);
                     } else if (tileType === TILE_TYPE.EMPTY) {
