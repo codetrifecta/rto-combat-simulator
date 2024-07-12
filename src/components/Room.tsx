@@ -787,10 +787,11 @@ export const Room: FC<{
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
         const enemiesInTargetZones: IEnemy[] = [];
         targetZones.current.forEach(([row, col]) => {
-          const tile = roomTileMatrix[row][col];
+          const entitiyIfExists = roomEntityPositions.get(`${row},${col}`);
+
           // console.log(tile);
-          if (tile[0] === TILE_TYPE.ENEMY) {
-            const enemy = enemies.find((e) => e.id === tile[1]);
+          if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
             if (!enemy) {
               addLog({ message: "Enemy not found!", type: "error" });
               return;
@@ -880,17 +881,21 @@ export const Room: FC<{
         const playerInTargetZones: IPlayer[] = [];
 
         targetZones.current.forEach(([row, col]) => {
-          const tile = roomTileMatrix[row][col];
+          const entitiyIfExists = roomEntityPositions.get(`${row},${col}`);
+
           // console.log(tile);
-          if (tile[0] === TILE_TYPE.ENEMY) {
-            const enemy = enemies.find((e) => e.id === tile[1]);
+          if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
             if (!enemy) {
               addLog({ message: "Enemy not found!", type: "error" });
               return;
             }
 
             enemiesInTargetZones.push(enemy);
-          } else if (tile[0] === TILE_TYPE.PLAYER) {
+          } else if (
+            entitiyIfExists &&
+            entitiyIfExists[0] === ENTITY_TYPE.PLAYER
+          ) {
             playerInTargetZones.push(player);
           }
         });
@@ -1523,7 +1528,7 @@ export const Room: FC<{
                   setEffectZoneHovered([rowIndex, columnIndex]);
                 }
 
-                if (tileType === TILE_TYPE.ENEMY) {
+                if (entityIfExists && entityIfExists[0] === ENTITY_TYPE.ENEMY) {
                   // Set currentHoveredEntity to the enemy when mouse enters enemy tile
                   const enemy = enemies.find((enemy) => enemy.id === entityId);
                   if (!enemy) {
@@ -1532,7 +1537,10 @@ export const Room: FC<{
                   }
 
                   setCurrentHoveredEntity(enemy);
-                } else if (tileType === TILE_TYPE.PLAYER) {
+                } else if (
+                  entityIfExists &&
+                  entityIfExists[0] === ENTITY_TYPE.PLAYER
+                ) {
                   // Set currentHoveredEntity to the player when mouse enters player tile
                   setCurrentHoveredEntity(player);
                 }
