@@ -91,7 +91,7 @@ export const Tile: FC<{
     if (hasPlayer) {
       return (
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-          <div className="bg-green-500 w-1/2 h-1/2"></div>
+          <div className="bg-green-500 w-[16px] h-[16px]"></div>
         </div>
       );
     }
@@ -99,7 +99,7 @@ export const Tile: FC<{
     if (hasEnemy) {
       return (
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-          <div className="bg-red-500 w-1/2 h-1/2"></div>
+          <div className="bg-red-500 w-[16px] h-[16px]"></div>
         </div>
       );
     }

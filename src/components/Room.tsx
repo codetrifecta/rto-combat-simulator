@@ -1467,10 +1467,7 @@ export const Room: FC<{
                     entityIfExists[0] === ENTITY_TYPE.ENEMY
                   ) {
                     handleEnemyClick(entityId);
-                  } else if (
-                    player.state.isMoving &&
-                    tileType === TILE_TYPE.EMPTY
-                  ) {
+                  } else if (player.state.isMoving && !entityIfExists) {
                     handlePlayerMove(rowIndex, columnIndex);
                   } else if (
                     player.state.isMoving &&
