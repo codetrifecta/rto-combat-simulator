@@ -30,17 +30,15 @@ export const Tile: FC<{
 }) => {
   const hasPlayer = useMemo(() => {
     if (entityIfExist) {
-      console.log("player", entityIfExist, active);
       return entityIfExist[0] === ENTITY_TYPE.PLAYER;
     }
-  }, [active, entityIfExist]);
+  }, [entityIfExist]);
 
   const hasEnemy = useMemo(() => {
     if (entityIfExist) {
-      console.log("enemy", entityIfExist, active);
       return entityIfExist[0] === ENTITY_TYPE.ENEMY;
     }
-  }, [active, entityIfExist]);
+  }, [entityIfExist]);
 
   const isAttackEffectTile = useMemo(() => {
     return (

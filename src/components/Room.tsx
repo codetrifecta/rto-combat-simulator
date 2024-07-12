@@ -77,19 +77,39 @@ export const Room: FC<{
   // check if the room is over and log a message if it is.
   useEffect(() => {
     // Update room matrix to remove defeated enemy tiles
-    const updateRoomMatrixWhenEnemyDefeated = () => {
-      setRoomTileMatrix((prevRoomMatrix) => {
-        return prevRoomMatrix.map((row) => {
-          return row.map(([tileType, id]) => {
-            if (tileType === TILE_TYPE.ENEMY) {
-              const enemy = enemies.find((enemy) => enemy.id === id);
-              if (!enemy) {
-                return [TILE_TYPE.EMPTY, 0];
-              }
+    // const updateRoomMatrixWhenEnemyDefeated = () => {
+    //   setRoomTileMatrix((prevRoomMatrix) => {
+    //     return prevRoomMatrix.map((row) => {
+    //       return row.map(([tileType, id]) => {
+    //         if (tileType === TILE_TYPE.ENEMY) {
+    //           const enemy = enemies.find((enemy) => enemy.id === id);
+    //           if (!enemy) {
+    //             return [TILE_TYPE.EMPTY, 0];
+    //           }
+    //         }
+    //         return [tileType, id];
+    //       });
+    //     });
+    //   });
+    // };
+
+    // Update enemy positions when enemy is defeated
+    const updateEnemyPositionsWhenEnemyDefeated = () => {
+      setRoomEntityPositions((prevRoomEntityPositions) => {
+        const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
+          prevRoomEntityPositions
+        );
+
+        newRoomEntityPositions.forEach((value, key) => {
+          if (value[0] === ENTITY_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === value[1]);
+            if (!enemy) {
+              newRoomEntityPositions.delete(key);
             }
-            return [tileType, id];
-          });
+          }
         });
+
+        return newRoomEntityPositions;
       });
     };
 
@@ -133,7 +153,8 @@ export const Room: FC<{
       }
     };
 
-    updateRoomMatrixWhenEnemyDefeated();
+    // updateRoomMatrixWhenEnemyDefeated();
+    updateEnemyPositionsWhenEnemyDefeated();
     updateTurnCycleWhenEnemyDefeated();
     logRoomCompletion();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -305,7 +326,7 @@ export const Room: FC<{
 
         let enemyPosition: [number, number] | undefined = getEntityPosition(
           enemy,
-          roomTileMatrix
+          roomEntityPositions
         );
 
         const moveTime = 1000;
@@ -456,12 +477,12 @@ export const Room: FC<{
   }, [turnCycle, turnCycle.length]);
 
   // Handle player attacking an enemy
-  const handleEnemyClick = (id: number | null) => {
-    if (id === null) {
+  const handleEnemyClick = (entityId: number | null) => {
+    if (entityId === null) {
       return;
     }
 
-    const enemy = enemies.find((enemy) => enemy.id === id);
+    const enemy = enemies.find((enemy) => enemy.id === entityId);
 
     if (!enemy) {
       addLog({ message: "Enemy not found!", type: "error" });
@@ -479,13 +500,11 @@ export const Room: FC<{
       }
 
       // Compute base attack damage based on the higher of player's strength or intelligence
-
       const totalDamage = playerBaseAttackDamage + statusDamageBonus;
-
       enemy.health = enemy.health - totalDamage;
 
       if (enemy.health <= 0) {
-        setEnemies(enemies.filter((e) => e.id !== id));
+        setEnemies(enemies.filter((e) => e.id !== entityId));
         addLog({
           message: (
             <>
@@ -498,7 +517,7 @@ export const Room: FC<{
       } else {
         setEnemies(
           enemies.map((e) => {
-            if (e.id === id) {
+            if (e.id === entityId) {
               return enemy;
             }
             return e;
@@ -571,7 +590,7 @@ export const Room: FC<{
       // Check if enemy is defeated
       if (doesDamage) {
         if (affectedEnemy.health <= 0) {
-          setEnemies(enemies.filter((e) => e.id !== id));
+          setEnemies(enemies.filter((e) => e.id !== entityId));
           addLog({
             message: (
               <>
@@ -584,7 +603,7 @@ export const Room: FC<{
         } else {
           setEnemies(
             enemies.map((e) => {
-              if (e.id === id) {
+              if (e.id === entityId) {
                 return affectedEnemy;
               }
               return e;
@@ -1441,7 +1460,8 @@ export const Room: FC<{
                 if (isEffectZone) {
                   if (
                     player.state.isAttacking &&
-                    tileType === TILE_TYPE.ENEMY
+                    entityIfExists &&
+                    entityIfExists[0] === ENTITY_TYPE.ENEMY
                   ) {
                     handleEnemyClick(entityId);
                   } else if (
