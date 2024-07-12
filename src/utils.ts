@@ -69,6 +69,35 @@ export const generateRoomEntityPositions: () => Map<
   return roomEntityPositions;
 };
 
+export const updateRoomEntityPositions: (
+  newPos: [number, number],
+  currentPos: [number, number],
+  prevEntityPositions: Map<string, [ENTITY_TYPE, number]>
+) => Map<string, [ENTITY_TYPE, number]> = (
+  newPos,
+  currentPos,
+  prevEntityPositions
+) => {
+  const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
+    prevEntityPositions
+  );
+
+  // Get entity at current position
+  const entity = newRoomEntityPositions.get(
+    `${currentPos[0]},${currentPos[1]}`
+  );
+
+  if (!entity) {
+    return newRoomEntityPositions;
+  }
+
+  // Update entity position
+  newRoomEntityPositions.delete(`${currentPos[0]},${currentPos[1]}`);
+  newRoomEntityPositions.set(`${newPos[0]},${newPos[1]}`, entity);
+
+  return newRoomEntityPositions;
+};
+
 /**
  * Handle player end turn
  * @param turnCycle IEntity[] representing the turn cycle

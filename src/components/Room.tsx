@@ -23,6 +23,7 @@ import {
   handlePlayerEndTurn,
   isEnemy,
   isPlayer,
+  updateRoomEntityPositions,
 } from "../utils";
 import { useLogStore } from "../store/log";
 
@@ -644,23 +645,12 @@ export const Room: FC<{
   const handlePlayerMove = (row: number, col: number) => {
     // Update player's position in the entity positions map
     setRoomEntityPositions((prevRoomEntityPositions) => {
-      const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
+      // Update player's position in the entity positions map
+      return updateRoomEntityPositions(
+        [row, col],
+        playerPosition,
         prevRoomEntityPositions
       );
-
-      for (const [key, value] of newRoomEntityPositions.entries()) {
-        if (value[0] === ENTITY_TYPE.PLAYER) {
-          newRoomEntityPositions.delete(key);
-          break;
-        }
-      }
-
-      newRoomEntityPositions.set(`${row},${col}`, [
-        ENTITY_TYPE.PLAYER,
-        player.id,
-      ]);
-
-      return newRoomEntityPositions;
     });
 
     addLog({
@@ -1114,21 +1104,7 @@ export const Room: FC<{
   // Handle enemy movement (naive)
   // For now, just move the enemy to a random adjacent tile
   const handleEnemyMovement = (enemy: IEnemy): [number, number] | undefined => {
-    const [enemyRow, enemyCol] = roomTileMatrix.reduce(
-      (acc, row, rowIndex) => {
-        const colIndex = row.findIndex(([tileType, id]) => {
-          if (tileType === TILE_TYPE.ENEMY && id === enemy.id) {
-            return true;
-          }
-          return false;
-        });
-        if (colIndex !== -1) {
-          return [rowIndex, colIndex];
-        }
-        return acc;
-      },
-      [-1, -1]
-    );
+    const [enemyRow, enemyCol] = getEntityPosition(enemy, roomEntityPositions);
 
     if (enemyRow === -1 || enemyCol === -1) {
       addLog({ message: "Enemy not found in room matrix!", type: "error" });
@@ -1162,24 +1138,14 @@ export const Room: FC<{
     // Update room matrix to move enemy to random adjacent tile
     if (randomMove[0] >= 0 && randomMove[0] < ROOM_LENGTH) {
       if (randomMove[1] >= 0 && randomMove[1] < ROOM_LENGTH) {
-        setRoomTileMatrix((prevRoomMatrix) => {
-          const newRoomMatrix: [TILE_TYPE, number][][] = prevRoomMatrix.map(
-            (row, rowIndex) => {
-              return row.map(([tileType, id], columnIndex) => {
-                if (rowIndex === enemyRow && columnIndex === enemyCol) {
-                  return [TILE_TYPE.EMPTY, 0];
-                } else if (
-                  rowIndex === randomMove[0] &&
-                  columnIndex === randomMove[1]
-                ) {
-                  return [TILE_TYPE.ENEMY, enemy.id];
-                }
-                return [tileType, id];
-              });
-            }
+        setRoomEntityPositions((prevRoomEntityPositions) => {
+          return updateRoomEntityPositions(
+            randomMove,
+            [enemyRow, enemyCol],
+            prevRoomEntityPositions
           );
-          return newRoomMatrix;
         });
+
         addLog({
           message: (
             <>
@@ -1209,8 +1175,6 @@ export const Room: FC<{
       addLog({ message: "Enemy or player position not found!", type: "error" });
       return;
     }
-
-    // console.log("enemy attack position", enemyRow, enemyCol);
 
     const canAttackPlayer =
       Math.abs(playerRow - enemyRow) <= enemy.range &&
@@ -1472,11 +1436,18 @@ export const Room: FC<{
                     entityIfExists[0] === ENTITY_TYPE.ENEMY
                   ) {
                     handleEnemyClick(entityId);
-                  } else if (player.state.isMoving && !entityIfExists) {
+                  } else if (
+                    player.state.isMoving &&
+                    !entityIfExists &&
+                    tileType !== TILE_TYPE.WALL &&
+                    !isRoomOver &&
+                    tileType !== TILE_TYPE.DOOR
+                  ) {
                     handlePlayerMove(rowIndex, columnIndex);
                   } else if (
                     player.state.isMoving &&
-                    tileType === TILE_TYPE.DOOR
+                    tileType === TILE_TYPE.DOOR &&
+                    isRoomOver
                   ) {
                     addLog({
                       message: "Player moved to the next room!",
@@ -1555,10 +1526,7 @@ export const Room: FC<{
                   setEffectZoneHovered(null);
                 }
 
-                if (
-                  tileType === TILE_TYPE.ENEMY ||
-                  tileType === TILE_TYPE.PLAYER
-                ) {
+                if (entityIfExists) {
                   // Set currentHoveredEntity to null when mouse leaves enemy or player tile
                   setCurrentHoveredEntity(null);
                 }
