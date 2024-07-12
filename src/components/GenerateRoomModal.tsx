@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { useGameStateStore } from "../store/game";
 import { Button } from "./Button";
+import { ENTITY_TYPE } from "../constants";
 
 const maxRoomLength = 100;
 
@@ -13,18 +14,38 @@ export const GenerateRoomModal: FC = () => {
   } = useGameStateStore();
   const [roomLengthInput, setRoomLengthInput] = useState<string>("3"); // Default room length
   const [roomMatrix, setRoomMatrix] = useState<string>("[\n[],\n[],\n[]\n]");
+  const [playerPosition, setPlayerPosition] = useState<[number, number]>([
+    0, 0,
+  ]);
 
   const handleGenerateRoom = () => {
-    console.log("Room Raw", roomMatrix);
     const parsedRoomMatrix = JSON.parse(roomMatrix);
-    console.log("Room Parsed", parsedRoomMatrix);
-    // generateRoom(roomMatrix, roomDifficulty);
+
+    const newRoomEntityPositions = new Map(); // Map of entity type and id to position
+
+    if (
+      playerPosition[0] < 0 ||
+      playerPosition[1] < 0 ||
+      playerPosition[0] >= parsedRoomMatrix.length ||
+      playerPosition[1] >= parsedRoomMatrix[0].length
+    ) {
+      console.error("Player position is out of bounds!");
+      return;
+    }
+
+    // Place player
+    newRoomEntityPositions.set(`${playerPosition[0]},${playerPosition[1]}`, [
+      ENTITY_TYPE.PLAYER,
+      1,
+    ]);
+
     setRoomLength(parseInt(roomLengthInput));
-    setRoomEntityPositions(new Map());
+    setRoomEntityPositions(newRoomEntityPositions);
     setRoomTileMatrix(parsedRoomMatrix);
     setIsGenerateRoomOpen(false);
   };
 
+  // When room length input changes, generate default room matrix
   useEffect(() => {
     const roomLength = parseInt(roomLengthInput);
 
@@ -121,11 +142,19 @@ export const GenerateRoomModal: FC = () => {
             id="playerRowPos"
             className="bg-zinc-700 w-16 px-2 mr-3"
             placeholder="Row"
+            value={playerPosition[0]}
+            onChange={(e) =>
+              setPlayerPosition([parseInt(e.target.value), playerPosition[1]])
+            }
           ></input>
           <input
             id="playerRowPos"
             className="bg-zinc-700 w-16 px-2"
             placeholder="Column"
+            value={playerPosition[1]}
+            onChange={(e) =>
+              setPlayerPosition([playerPosition[0], parseInt(e.target.value)])
+            }
           ></input>
         </div>
 
