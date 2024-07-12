@@ -12,17 +12,30 @@ export const GenerateRoomModal: FC = () => {
     setRoomEntityPositions,
     setIsGenerateRoomOpen,
   } = useGameStateStore();
-  const [roomLengthInput, setRoomLengthInput] = useState<string>("3"); // Default room length
+  const [roomLengthInput, setRoomLengthInput] = useState<string>("11"); // Default room length
   const [roomMatrix, setRoomMatrix] = useState<string>("[\n[],\n[],\n[]\n]");
-  const [playerPosition, setPlayerPosition] = useState<[number, number]>([
-    0, 0,
-  ]);
-  const [enemyPositions, setEnemyPositions] = useState<[number, number][]>([]);
+  const [playerPositionInput, setPlayerPositionInput] = useState<
+    [string, string]
+  >(["5", "5"]);
+  const [enemyPositionsInput, setEnemyPositionsInput] = useState<
+    [string, string][]
+  >([]);
 
   const handleGenerateRoom = () => {
     const parsedRoomMatrix = JSON.parse(roomMatrix);
 
     const newRoomEntityPositions = new Map(); // Map of entity type and id to position
+
+    // Validate player position
+    const playerPosition: [number, number] = [
+      parseInt(playerPositionInput[0]),
+      parseInt(playerPositionInput[1]),
+    ];
+
+    if (playerPosition.some((pos) => isNaN(pos))) {
+      console.error("Player position is invalid!");
+      return;
+    }
 
     if (
       playerPosition[0] < 0 ||
@@ -41,7 +54,17 @@ export const GenerateRoomModal: FC = () => {
     ]);
 
     // Place enemies
-    enemyPositions.forEach((enemyPosition, index) => {
+    enemyPositionsInput.forEach((enemyPositionInput, index) => {
+      const enemyPosition: [number, number] = [
+        parseInt(enemyPositionInput[0]),
+        parseInt(enemyPositionInput[1]),
+      ];
+
+      if (enemyPosition.some((pos) => isNaN(pos))) {
+        console.error("Player position is invalid!");
+        return;
+      }
+
       if (
         enemyPosition[0] < 0 ||
         enemyPosition[1] < 0 ||
@@ -118,7 +141,10 @@ export const GenerateRoomModal: FC = () => {
         <h2 className="mb-5 pb-3 w-full border-b">Generate Room Matrix</h2>
       </div>
 
-      <div className="flex flex-col">
+      <div
+        className="flex flex-col overflow-auto"
+        style={{ maxHeight: "calc(100% - 70px)" }}
+      >
         <div className="mb-5 flex items-center justify-center">
           <div className="mr-3">
             <label htmlFor="roomLength ">Room Length</label>
@@ -161,25 +187,25 @@ export const GenerateRoomModal: FC = () => {
             id="playerRowPos"
             className="bg-zinc-700 w-16 px-2 mr-3"
             placeholder="Row"
-            value={playerPosition[0]}
+            value={playerPositionInput[0]}
             onChange={(e) =>
-              setPlayerPosition([parseInt(e.target.value), playerPosition[1]])
+              setPlayerPositionInput([e.target.value, playerPositionInput[1]])
             }
           ></input>
           <input
             id="playerRowPos"
             className="bg-zinc-700 w-16 px-2"
             placeholder="Column"
-            value={playerPosition[1]}
+            value={playerPositionInput[1]}
             onChange={(e) =>
-              setPlayerPosition([playerPosition[0], parseInt(e.target.value)])
+              setPlayerPositionInput([playerPositionInput[0], e.target.value])
             }
           ></input>
         </div>
 
         <div className="mb-5">
           <p className="mb-3">Enemy Position(s) (0-indexed)</p>
-          {enemyPositions.map((enemyPosition, index) => (
+          {enemyPositionsInput.map((enemyPosition, index) => (
             <div className="flex justify-center items-center mb-3" key={index}>
               <p className="mr-3">Enemy {index + 1}</p>
               <input
@@ -187,10 +213,10 @@ export const GenerateRoomModal: FC = () => {
                 placeholder="Row"
                 value={enemyPosition[0]}
                 onChange={(e) =>
-                  setEnemyPositions((prevEnemyPositions) => {
+                  setEnemyPositionsInput((prevEnemyPositions) => {
                     const newEnemyPositions = [...prevEnemyPositions];
                     newEnemyPositions[index] = [
-                      parseInt(e.target.value),
+                      e.target.value,
                       enemyPosition[1],
                     ];
                     return newEnemyPositions;
@@ -202,11 +228,11 @@ export const GenerateRoomModal: FC = () => {
                 placeholder="Column"
                 value={enemyPosition[1]}
                 onChange={(e) =>
-                  setEnemyPositions((prevEnemyPositions) => {
+                  setEnemyPositionsInput((prevEnemyPositions) => {
                     const newEnemyPositions = [...prevEnemyPositions];
                     newEnemyPositions[index] = [
                       enemyPosition[0],
-                      parseInt(e.target.value),
+                      e.target.value,
                     ];
                     return newEnemyPositions;
                   })
@@ -215,7 +241,7 @@ export const GenerateRoomModal: FC = () => {
               <div
                 className="cursor-pointer text-red-500 ml-3"
                 onClick={() =>
-                  setEnemyPositions((prevEnemyPositions) => {
+                  setEnemyPositionsInput((prevEnemyPositions) => {
                     const newEnemyPositions = [...prevEnemyPositions];
                     newEnemyPositions.splice(index, 1);
                     return newEnemyPositions;
@@ -228,9 +254,12 @@ export const GenerateRoomModal: FC = () => {
           ))}
           <Button
             onClick={() =>
-              setEnemyPositions((prevEnemyPositions) => [
+              setEnemyPositionsInput((prevEnemyPositions) => [
                 ...prevEnemyPositions,
-                [prevEnemyPositions.length, prevEnemyPositions.length],
+                [
+                  prevEnemyPositions.length.toString(),
+                  prevEnemyPositions.length.toString(),
+                ],
               ])
             }
           >
