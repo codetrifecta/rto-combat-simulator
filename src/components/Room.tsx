@@ -53,6 +53,8 @@ export const Room: FC<{
     setTurnCycle,
     endTurn,
     isRoomOver,
+    isGameOver,
+    setIsGameOver,
     setIsRoomOver,
   } = useGameStateStore();
   const {
@@ -443,6 +445,10 @@ export const Room: FC<{
           }
         }
 
+        if (isGameOver) {
+          return;
+        }
+
         // End enemy's turn after moving and attacking (if they can)
         setTimeout(() => {
           // Decrease enemy's statuses' duration
@@ -486,10 +492,12 @@ export const Room: FC<{
         }, totalTime + endTurnTime);
       }
     };
-    // handleEnemyEndTurn();
-    handleDoT();
+
+    if (!isGameOver) {
+      handleDoT();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [turnCycle, turnCycle.length]);
+  }, [turnCycle, turnCycle.length, isGameOver]);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (entityId: number | null) => {
@@ -1187,23 +1195,59 @@ export const Room: FC<{
 
       if (totalDamage <= 0) totalDamage = 0;
 
-      setPlayer({
-        ...player,
-        health: player.health - totalDamage,
-      });
+      const playerHealth = player.health - totalDamage;
 
+      if (playerHealth <= 0) {
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{enemy.name}</span> attacked{" "}
+              <span className="text-green-500">{player.name}</span> for{" "}
+              {totalDamage} damage and defeated them!
+            </>
+          ),
+          type: "info",
+        });
+        setPlayer({
+          ...player,
+          health: 0,
+        });
+        setIsGameOver(true);
+      } else {
+        setPlayer({
+          ...player,
+          health: player.health - totalDamage,
+        });
+
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{enemy.name}</span> attacked{" "}
+              <span className="text-green-500">{player.name}</span> for{" "}
+              {totalDamage} damage.
+            </>
+          ),
+          type: "info",
+        });
+      }
+    }
+  };
+
+  // Handle player defeat
+  useEffect(() => {
+    if (player.health <= 0) {
       addLog({
         message: (
           <>
-            <span className="text-red-500">{enemy.name}</span> attacked{" "}
-            <span className="text-green-500">{player.name}</span> for{" "}
-            {totalDamage} damage.
+            <span className="text-green-500">{player.name}</span> has been
+            defeated!
           </>
         ),
         type: "info",
       });
+      // setPlayerDefeated(true);
     }
-  };
+  }, [isGameOver, player.health, player.name, addLog]);
 
   return (
     <div

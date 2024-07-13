@@ -31,6 +31,7 @@ export const PlayerControlPanel: FC = () => {
     turnCycle,
     endTurn,
     isRoomOver,
+    isGameOver,
     isInventoryOpen,
     isGameLogOpen,
     isCharacterSheetOpen,
@@ -138,10 +139,13 @@ export const PlayerControlPanel: FC = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const disabled = useMemo(() => {
+    console.log(isGameOver);
     return (
-      turnCycle[0] !== null && turnCycle[0].entityType !== ENTITY_TYPE.PLAYER
+      (turnCycle[0] !== null &&
+        turnCycle[0].entityType !== ENTITY_TYPE.PLAYER) ||
+      isGameOver
     );
-  }, [turnCycle]);
+  }, [isGameOver, turnCycle]);
 
   return (
     <div className="h-[80px] flex items-center bg-neutral-900">
