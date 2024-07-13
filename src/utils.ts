@@ -1,4 +1,5 @@
-import { ENTITY_TYPE, TILE_TYPE } from "./constants";
+import { ENTITY_TYPE } from "./constants/entity";
+import { TILE_TYPE } from "./constants/tile";
 import { IEnemy, IEntity, IPlayer } from "./types";
 
 /**

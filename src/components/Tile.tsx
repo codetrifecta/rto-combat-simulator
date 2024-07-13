@@ -1,5 +1,6 @@
 import { FC, useMemo } from "react";
-import { ENTITY_TYPE, TILE_SIZE, TILE_TYPE } from "../constants";
+import { ENTITY_TYPE } from "../constants/entity";
+import { TILE_SIZE, TILE_TYPE } from "../constants/tile";
 import clsx from "clsx";
 import { IPlayerState } from "../types";
 

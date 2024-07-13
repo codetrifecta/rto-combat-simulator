@@ -1,7 +1,11 @@
 import { FC, useEffect, useState } from "react";
 import { useGameStateStore } from "../store/game";
 import { Button } from "./Button";
-import { ENEMY_PRESET_ID, ENEMY_PRESETS, ENTITY_TYPE } from "../constants";
+import {
+  ENEMY_PRESET_ID,
+  ENEMY_PRESETS,
+  ENTITY_TYPE,
+} from "../constants/entity";
 import { IEnemy } from "../types";
 import { useEnemyStore } from "../store/enemy";
 import { usePlayerStore } from "../store/player";

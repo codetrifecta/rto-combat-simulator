@@ -1,11 +1,7 @@
 import { create } from "zustand";
-import {
-  ENTITY_TYPE,
-  SKILLS,
-  STARTING_ACTION_POINTS,
-  WEAPON_ATTACK_TYPE,
-  WEAPON_TYPE,
-} from "../constants";
+import { ENTITY_TYPE, STARTING_ACTION_POINTS } from "../constants/entity";
+import { SKILLS } from "../constants/skill";
+import { WEAPON_TYPE, WEAPON_ATTACK_TYPE } from "../constants/weapon";
 import {
   IChestpiece,
   IHelmet,

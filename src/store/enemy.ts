@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { IEnemy } from "../types";
-import { ENEMY_PRESET_ID, ENEMY_PRESETS } from "../constants";
+import { ENEMY_PRESET_ID, ENEMY_PRESETS } from "../constants/entity";
 
 interface IEnemies {
   enemies: IEnemy[];

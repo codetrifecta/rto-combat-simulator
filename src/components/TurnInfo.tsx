@@ -1,6 +1,6 @@
 import { FC, useMemo } from "react";
 import { IEntity } from "../types";
-import { ENTITY_TYPE } from "../constants";
+import { ENTITY_TYPE } from "../constants/entity";
 import clsx from "clsx";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
