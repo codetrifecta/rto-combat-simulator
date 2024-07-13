@@ -1072,8 +1072,8 @@ export const Room: FC<{
         message: (
           <>
             <span className="text-green-500">{player.name}</span> used{" "}
-            <span className="text-green-500">{skill.name}</span> to teleport to
-            tile ({col}, {row}).
+            <span className="text-green-500">{skill.name}</span> to fly to tile
+            ({col}, {row}).
           </>
         ),
         type: "info",
@@ -1182,10 +1182,10 @@ export const Room: FC<{
 
       const playerTotalDefense = getPlayerTotalDefense();
 
-      let totalDamage = baseDamage + statusDamageBonus;
+      let totalDamage = baseDamage + statusDamageBonus - playerTotalDefense;
       totalDamage -= playerTotalDefense;
 
-      if (totalDamage <= 0) totalDamage = 1;
+      if (totalDamage <= 0) totalDamage = 0;
 
       setPlayer({
         ...player,
@@ -1308,6 +1308,20 @@ export const Room: FC<{
 
                 // Check for the specific skill's effect zone
                 switch (skill.id) {
+                  case SKILL_ID.FLY:
+                    // For fly, player can target any empty tile that does not have an entity
+                    if (
+                      tileType === TILE_TYPE.EMPTY &&
+                      !entityIfExists &&
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
                   default:
                     if (
                       rowIndex >= playerRow - range &&
@@ -1468,7 +1482,10 @@ export const Room: FC<{
                     ) {
                       // Skills that uses the enemy tile
                       handleEnemyClick(entityId);
-                    } else if (tileType === TILE_TYPE.EMPTY) {
+                    } else if (
+                      tileType === TILE_TYPE.EMPTY &&
+                      !entityIfExists
+                    ) {
                       // Skills that uses the empty tile
                       handleEmptyTileClick(
                         player.state.skillId,

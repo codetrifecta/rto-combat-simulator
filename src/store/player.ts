@@ -167,7 +167,17 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     const chestpieceDefense = get().equipment.chestpiece?.stats.defense || 0;
     const leggingDefense = get().equipment.legging?.stats.defense || 0;
 
-    const totalDefense = helmetDefense + chestpieceDefense + leggingDefense;
+    // Get defense from status effects
+    const totalDefenseFromStatuses = get().statuses.reduce(
+      (acc, status) => acc + status.effect.incomingDamageReduction,
+      0
+    );
+
+    const totalDefense =
+      helmetDefense +
+      chestpieceDefense +
+      leggingDefense +
+      totalDefenseFromStatuses;
 
     return totalDefense;
   },
