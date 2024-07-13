@@ -15,8 +15,17 @@ import { IconButton } from "./IconButton";
 const ICON_SIZE = 48;
 
 export const PlayerControlPanel: FC = () => {
-  const [isAttackButtonHovered, setIsAttackButtonHovered] = useState(false);
-  const [isMoveButtonHovered, setIsMoveButtonHovered] = useState(false);
+  const [isButtonHovered, setIsButtonHovered] = useState<
+    Record<string, boolean>
+  >({
+    log: false,
+    character: false,
+    inventory: false,
+    attack: false,
+    move: false,
+    skills: false,
+    endTurn: false,
+  });
 
   const {
     turnCycle,
@@ -135,12 +144,11 @@ export const PlayerControlPanel: FC = () => {
   }, [turnCycle]);
 
   return (
-    <div className="h-[80px] flex items-center">
+    <div className="h-[80px] flex items-center bg-neutral-900">
       <div
         className={clsx(
-          "w-screen p-4 flex justify-center items-center gap-5 box-border",
+          "w-screen px-4 flex justify-center items-center gap-5 box-border",
           { "bg-neutral-900": !disabled }
-          // { "opacity-50": disabled }
         )}
       >
         {/* <div>
@@ -211,12 +219,21 @@ export const PlayerControlPanel: FC = () => {
           <div className="grid grid-flow-col grid-rows-1 grid-cols-3 items-center w-full">
             {/* Logger, Character, Inventory buttons */}
             <div className="flex justify-center gap-5 col-span-1">
-              <div>
+              <div className="relative">
+                <Tooltip active={isButtonHovered["log"]}>
+                  <p>Game Log (L)</p>
+                </Tooltip>
                 <IconButton
                   onClick={() => {
                     if (isGenerateRoomOpen) return;
                     setIsGameLogOpen(!isGameLogOpen);
                   }}
+                  onMouseEnter={() =>
+                    setIsButtonHovered({ ...isButtonHovered, log: true })
+                  }
+                  onMouseLeave={() =>
+                    setIsButtonHovered({ ...isButtonHovered, log: false })
+                  }
                 >
                   <Icon
                     icon={ICON_ID.LOG}
@@ -225,12 +242,21 @@ export const PlayerControlPanel: FC = () => {
                   />
                 </IconButton>
               </div>
-              <div>
+              <div className="relative">
+                <Tooltip active={isButtonHovered["character"]}>
+                  <p>Character Sheet (C)</p>
+                </Tooltip>
                 <IconButton
                   onClick={() => {
                     if (isGenerateRoomOpen) return;
                     setIsCharacterSheetOpen(!isCharacterSheetOpen);
                   }}
+                  onMouseEnter={() =>
+                    setIsButtonHovered({ ...isButtonHovered, character: true })
+                  }
+                  onMouseLeave={() =>
+                    setIsButtonHovered({ ...isButtonHovered, character: false })
+                  }
                 >
                   <Icon
                     icon={ICON_ID.CHARACTER}
@@ -239,28 +265,42 @@ export const PlayerControlPanel: FC = () => {
                   />
                 </IconButton>
               </div>
-              <IconButton
-                onClick={() => {
-                  if (isGenerateRoomOpen) return;
-                  setIsInventoryOpen(!isInventoryOpen);
-                }}
-              >
-                <Icon
-                  icon={ICON_ID.INVENTORY}
-                  width={ICON_SIZE}
-                  height={ICON_SIZE}
-                />
-              </IconButton>
+              <div className="relative">
+                <Tooltip active={isButtonHovered["inventory"]}>
+                  <p>Inventory (I)</p>
+                </Tooltip>
+                <IconButton
+                  onClick={() => {
+                    if (isGenerateRoomOpen) return;
+                    setIsInventoryOpen(!isInventoryOpen);
+                  }}
+                  onMouseEnter={() =>
+                    setIsButtonHovered({ ...isButtonHovered, inventory: true })
+                  }
+                  onMouseLeave={() =>
+                    setIsButtonHovered({ ...isButtonHovered, inventory: false })
+                  }
+                >
+                  <Icon
+                    icon={ICON_ID.INVENTORY}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
+                </IconButton>
+              </div>
             </div>
 
             {/* Combat buttons */}
             <div
-              className={clsx("flex justify-center gap-5 col-span-1", {
-                "pointer-events-none": disabled,
-              })}
+              className={clsx(
+                "flex justify-center items-center gap-5 col-span-1",
+                {
+                  "pointer-events-none": disabled,
+                }
+              )}
             >
               <div className="relative">
-                <Tooltip active={isAttackButtonHovered}>
+                <Tooltip active={isButtonHovered["attack"]}>
                   {player.equipment.weapon ? (
                     <>
                       <h2>Weapon attack</h2>
@@ -281,8 +321,12 @@ export const PlayerControlPanel: FC = () => {
                       isUsingSkill: false,
                     });
                   }}
-                  onMouseEnter={() => setIsAttackButtonHovered(true)}
-                  onMouseLeave={() => setIsAttackButtonHovered(false)}
+                  onMouseEnter={() =>
+                    setIsButtonHovered({ ...isButtonHovered, attack: true })
+                  }
+                  onMouseLeave={() =>
+                    setIsButtonHovered({ ...isButtonHovered, attack: false })
+                  }
                   disabled={
                     disabled ||
                     isRoomOver ||
@@ -300,7 +344,7 @@ export const PlayerControlPanel: FC = () => {
               </div>
 
               <div className="relative">
-                <Tooltip active={isMoveButtonHovered}>
+                <Tooltip active={isButtonHovered["move"]}>
                   <h2>Move</h2>
                   <p>Move within a range of 2 tiles.</p>
                   <p>Cost: 1 AP</p>
@@ -314,8 +358,12 @@ export const PlayerControlPanel: FC = () => {
                       isUsingSkill: false,
                     });
                   }}
-                  onMouseEnter={() => setIsMoveButtonHovered(true)}
-                  onMouseLeave={() => setIsMoveButtonHovered(false)}
+                  onMouseEnter={() =>
+                    setIsButtonHovered({ ...isButtonHovered, move: true })
+                  }
+                  onMouseLeave={() =>
+                    setIsButtonHovered({ ...isButtonHovered, move: false })
+                  }
                   disabled={disabled}
                 >
                   <Icon
@@ -327,7 +375,11 @@ export const PlayerControlPanel: FC = () => {
               </div>
 
               <div className="relative">
-                <Button
+                <Tooltip active={isButtonHovered["skills"]}>
+                  <h2>Skills</h2>
+                  <p>See available skills</p>
+                </Tooltip>
+                <IconButton
                   onClick={() => {
                     setOpenSkills(true);
                     setPlayerState({
@@ -337,12 +389,26 @@ export const PlayerControlPanel: FC = () => {
                     });
                   }}
                   disabled={disabled || isRoomOver}
+                  onMouseEnter={() =>
+                    setIsButtonHovered({ ...isButtonHovered, skills: true })
+                  }
+                  onMouseLeave={() =>
+                    setIsButtonHovered({ ...isButtonHovered, skills: false })
+                  }
                 >
-                  Skills
-                </Button>
+                  <Icon
+                    icon={ICON_ID.SKILLS}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
+                </IconButton>
               </div>
 
               <div className="relative">
+                <Tooltip active={isButtonHovered["endTurn"]}>
+                  <h2>End Turn</h2>
+                  <p>End your turn and gain 4 AP</p>
+                </Tooltip>
                 <Button
                   onClick={() => {
                     handleEndTurnClick();
@@ -356,6 +422,12 @@ export const PlayerControlPanel: FC = () => {
                       type: "info",
                     });
                   }}
+                  onMouseEnter={() =>
+                    setIsButtonHovered({ ...isButtonHovered, endTurn: true })
+                  }
+                  onMouseLeave={() =>
+                    setIsButtonHovered({ ...isButtonHovered, endTurn: false })
+                  }
                   disabled={disabled || isRoomOver}
                 >
                   End Turn

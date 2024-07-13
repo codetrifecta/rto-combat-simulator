@@ -11,7 +11,7 @@ export const IconButton: FC<{
   return (
     <button
       className={clsx(
-        "relative p-0 m-0 w-14 h-14 flex items-center justify-center hover:border-white hover:border-2 box-border"
+        "relative p-0 m-0 flex items-center justify-center border-2 hover:border-white hover:border-2 box-border"
       )}
       onClick={() => {
         if (!disabled) onClick();
