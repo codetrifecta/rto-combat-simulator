@@ -29,13 +29,6 @@ export const Room: FC<{
   currentHoveredEntity: IEntity | null;
   setCurrentHoveredEntity: (enemy: IEntity | null) => void;
 }> = ({ currentHoveredEntity, setCurrentHoveredEntity }) => {
-  // const [roomTileMatrix, setRoomTileMatrix] = useState<[TILE_TYPE, number][][]>(
-  //   generateRoomTileMatrix(ROOM_LENGTH)
-  // );
-  // const [roomEntityPositions, setRoomEntityPositions] = useState<
-  //   Map<string, [ENTITY_TYPE, number]>
-  // >(generateRoomEntityPositions());
-
   // For handling AOE skill effects
   const [isEffectZoneHovered, setIsEffectZoneHovered] = useState(false);
   const [effectZoneHovered, setEffectZoneHovered] = useState<
