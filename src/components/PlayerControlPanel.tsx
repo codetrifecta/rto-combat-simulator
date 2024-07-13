@@ -12,6 +12,8 @@ import { Icon } from "./Icon";
 import { ICON_ID } from "../icons";
 import { IconButton } from "./IconButton";
 
+const ICON_SIZE = 48;
+
 export const PlayerControlPanel: FC = () => {
   const [isAttackButtonHovered, setIsAttackButtonHovered] = useState(false);
   const [isMoveButtonHovered, setIsMoveButtonHovered] = useState(false);
@@ -210,30 +212,42 @@ export const PlayerControlPanel: FC = () => {
             {/* Logger, Character, Inventory buttons */}
             <div className="flex justify-center gap-5 col-span-1">
               <div>
-                <Button
+                <IconButton
                   onClick={() => {
                     setIsGameLogOpen(!isGameLogOpen);
                   }}
                 >
-                  Log (L)
-                </Button>
+                  <Icon
+                    icon={ICON_ID.LOG}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
+                </IconButton>
               </div>
               <div>
-                <Button
+                <IconButton
                   onClick={() => {
                     setIsCharacterSheetOpen(!isCharacterSheetOpen);
                   }}
                 >
-                  Character (C)
-                </Button>
+                  <Icon
+                    icon={ICON_ID.CHARACTER}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
+                </IconButton>
               </div>
-              <Button
+              <IconButton
                 onClick={() => {
                   setIsInventoryOpen(!isInventoryOpen);
                 }}
               >
-                Inventory (I)
-              </Button>
+                <Icon
+                  icon={ICON_ID.INVENTORY}
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
+                />
+              </IconButton>
             </div>
 
             {/* Combat buttons */}
@@ -274,7 +288,11 @@ export const PlayerControlPanel: FC = () => {
                       player.actionPoints < player.equipment.weapon.cost)
                   }
                 >
-                  <Icon icon={ICON_ID.BASIC_ATTACK} width={48} height={48} />
+                  <Icon
+                    icon={ICON_ID.BASIC_ATTACK}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
                 </IconButton>
               </div>
 
@@ -285,7 +303,7 @@ export const PlayerControlPanel: FC = () => {
                   <p>Cost: 1 AP</p>
                   <p></p>
                 </Tooltip>
-                <Button
+                <IconButton
                   onClick={() => {
                     setPlayerState({
                       isAttacking: false,
@@ -297,8 +315,12 @@ export const PlayerControlPanel: FC = () => {
                   onMouseLeave={() => setIsMoveButtonHovered(false)}
                   disabled={disabled}
                 >
-                  Move
-                </Button>
+                  <Icon
+                    icon={ICON_ID.MOVE}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
+                </IconButton>
               </div>
 
               <div className="relative">
