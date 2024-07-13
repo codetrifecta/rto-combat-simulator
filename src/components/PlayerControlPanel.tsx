@@ -8,6 +8,9 @@ import { useLogStore } from "../store/log";
 import { Tooltip } from "./Tooltip";
 import { ISkill } from "../types";
 import { Button } from "./Button";
+import { Icon } from "./Icon";
+import { ICON_ID } from "../icons";
+import { IconButton } from "./IconButton";
 
 export const PlayerControlPanel: FC = () => {
   const [isAttackButtonHovered, setIsAttackButtonHovered] = useState(false);
@@ -130,7 +133,7 @@ export const PlayerControlPanel: FC = () => {
   }, [turnCycle]);
 
   return (
-    <div className="h-[80px]">
+    <div className="h-[80px] flex items-center">
       <div
         className={clsx(
           "w-screen p-4 flex justify-center items-center gap-5 box-border",
@@ -138,6 +141,12 @@ export const PlayerControlPanel: FC = () => {
           // { "opacity-50": disabled }
         )}
       >
+        {/* <div>
+          SKill Icon:
+          <div>
+            <Icon icon={ICON_ID.BASIC_ATTACK} width={16} height={16} />
+          </div>
+        </div> */}
         {openSkills ? (
           <div
             className={clsx("flex justify-center items-center gap-5", {
@@ -197,7 +206,7 @@ export const PlayerControlPanel: FC = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-flow-col grid-rows-1 grid-cols-3 w-full">
+          <div className="grid grid-flow-col grid-rows-1 grid-cols-3 items-center w-full">
             {/* Logger, Character, Inventory buttons */}
             <div className="flex justify-center gap-5 col-span-1">
               <div>
@@ -247,7 +256,7 @@ export const PlayerControlPanel: FC = () => {
                     <h2>No weapon equipped</h2>
                   )}
                 </Tooltip>
-                <Button
+                <IconButton
                   onClick={() => {
                     setPlayerState({
                       isAttacking: !player.state.isAttacking,
@@ -265,8 +274,8 @@ export const PlayerControlPanel: FC = () => {
                       player.actionPoints < player.equipment.weapon.cost)
                   }
                 >
-                  Attack
-                </Button>
+                  <Icon icon={ICON_ID.BASIC_ATTACK} width={48} height={48} />
+                </IconButton>
               </div>
 
               <div className="relative">
