@@ -1,3 +1,4 @@
+import { ICON_ID } from "./icons";
 import { IEnemy, ISkill, IStatus, IWeapon } from "./types";
 
 export const TILE_SIZE = 50; // Default to 50
@@ -83,6 +84,7 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.FLEX,
     name: "Flex",
+    icon: ICON_ID.BASIC_ATTACK,
     skillType: SKILL_TYPE.SELF,
     description: "Increase damage for all attacks by 2 for 3 turns.",
     damageMultiplier: 0,
@@ -94,6 +96,7 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.IRONFLESH,
     name: "Ironflesh",
+    icon: ICON_ID.SKILL_DEFENSE_UP,
     skillType: SKILL_TYPE.SELF,
     description:
       "Applies Stone Skin on self for 3 turns. Stone Skin decreases all incoming damage by 3.",
@@ -106,6 +109,7 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.GORGONS_GAZE,
     name: "Gorgon's Gaze",
+    icon: ICON_ID.SKILL_PETRIFY,
     skillType: SKILL_TYPE.ST,
     description:
       "Petrify an enemy for 3 turns. Petrified enemies cannot move or attack.",
@@ -118,6 +122,7 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.LIGHTNING,
     name: "Lightning",
+    icon: ICON_ID.SKILL_LIGHTNING,
     skillType: SKILL_TYPE.ST,
     description: "Strike enemies with lighning from the skies.",
     damageMultiplier: 2,
@@ -129,6 +134,7 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.FIREBALL,
     name: "Fireball",
+    icon: ICON_ID.SKILL_FIREBALL,
     skillType: SKILL_TYPE.AOE,
     description: "Launch a fireball at a target area. Burns enemies hit.",
     damageMultiplier: 1.5,
@@ -140,6 +146,7 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.WHIRLWIND,
     name: "Whirlwind",
+    icon: ICON_ID.SKILL_WHIRLWIND,
     skillType: SKILL_TYPE.AOE,
     description:
       "Spin around dealing damage to all adjacent enemies. Damage and range is dependent on the player's current weapon.",
@@ -152,6 +159,7 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.FLY,
     name: "Fly",
+    icon: ICON_ID.SKILL_TELEPORT,
     skillType: SKILL_TYPE.ST,
     description: "Fly to an empty tile in the room.",
     damageMultiplier: 0,
@@ -173,6 +181,7 @@ export const STATUSES: IStatus[] = [
   {
     id: STATUS_ID.FLEXED,
     name: "Flexed",
+    icon: ICON_ID.EFFECT_ATTACK_UP,
     description: "Increased damage for all attacks by 2 for 3 turns.",
     duration: 3,
     durationCounter: 3,
@@ -187,6 +196,7 @@ export const STATUSES: IStatus[] = [
   {
     id: STATUS_ID.PETRIFIED,
     name: "Petrified",
+    icon: ICON_ID.EFFECT_PETRIFIED,
     description: "Cannot move or attack for 3 turns.",
     duration: 3,
     durationCounter: 3,
@@ -201,6 +211,7 @@ export const STATUSES: IStatus[] = [
   {
     id: STATUS_ID.STONE_SKIN,
     name: "Stone Skin",
+    icon: ICON_ID.EFFECT_DEFENSE_UP,
     description: "Decreases all incoming damage by 3 for 3 turns.",
     duration: 3,
     durationCounter: 3,
@@ -215,6 +226,7 @@ export const STATUSES: IStatus[] = [
   {
     id: STATUS_ID.BURNED,
     name: "Burned",
+    icon: ICON_ID.EFFECT_BURNED,
     description: "Takes 1 damage at the start of the turn for 3 turns.",
     duration: 3,
     durationCounter: 3,

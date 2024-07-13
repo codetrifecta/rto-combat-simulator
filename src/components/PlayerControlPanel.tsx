@@ -151,12 +151,6 @@ export const PlayerControlPanel: FC = () => {
           { "bg-neutral-900": !disabled }
         )}
       >
-        {/* <div>
-          SKill Icon:
-          <div>
-            <Icon icon={ICON_ID.BASIC_ATTACK} width={16} height={16} />
-          </div>
-        </div> */}
         {openSkills ? (
           <div
             className={clsx("flex justify-center items-center gap-5", {
@@ -167,7 +161,7 @@ export const PlayerControlPanel: FC = () => {
               <div key={skill.id} className="relative">
                 {renderWeaponButtonTooltip(skill)}
 
-                <Button
+                <IconButton
                   onClick={() => {
                     setPlayerState({
                       isAttacking: false,
@@ -196,8 +190,12 @@ export const PlayerControlPanel: FC = () => {
                       player.equipment.weapon === null)
                   }
                 >
-                  {skill.name}
-                </Button>
+                  <Icon
+                    icon={skill.icon}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
+                </IconButton>
               </div>
             ))}
             <Button
@@ -387,6 +385,7 @@ export const PlayerControlPanel: FC = () => {
                       isMoving: false,
                       isUsingSkill: false,
                     });
+                    setIsButtonHovered({ ...isButtonHovered, skills: false });
                   }}
                   disabled={disabled || isRoomOver}
                   onMouseEnter={() =>
