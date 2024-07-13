@@ -139,7 +139,6 @@ export const PlayerControlPanel: FC = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const disabled = useMemo(() => {
-    console.log(isGameOver);
     return (
       (turnCycle[0] !== null &&
         turnCycle[0].entityType !== ENTITY_TYPE.PLAYER) ||
