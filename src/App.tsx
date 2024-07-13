@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+
 import { PlayerControlPanel } from "./components/PlayerControlPanel";
 import { IEntity } from "./types";
 import { Room } from "./components/Room";
@@ -105,7 +106,7 @@ function App() {
 
   // Check every 50ms to check input to move camera
   useEffect(() => {
-    const keyboardInputCheckInterval = setInterval(() => {
+    const cameraKeyInputCheckInterval = setInterval(() => {
       if (isGenerateRoomOpen) return;
 
       if (roomContainerRef.current && roomScrollRef.current) {
@@ -142,21 +143,56 @@ function App() {
             roomContainerRef.current.style.transform = `scale(${currentScale})`;
           }
         }
-
-        if (keyPressed["l"] === true) {
-          setIsGameLogOpen(!isGameLogOpen);
-        } else if (keyPressed["c"] === true) {
-          setIsCharacterSheetOpen(!isCharacterSheetOpen);
-        } else if (keyPressed["i"] === true) {
-          setIsInventoryOpen(!isInventoryOpen);
-        }
       }
     }, 10);
 
     return () => {
-      clearInterval(keyboardInputCheckInterval);
+      clearInterval(cameraKeyInputCheckInterval);
     };
-  }, [keyPressed, isGenerateRoomOpen]);
+  }, [isGenerateRoomOpen]);
+
+  // Add event listeres for other shortcuts
+  useEffect(() => {
+    const handleInventoryShortcut = (e: KeyboardEvent) => {
+      if (e.key === "i") {
+        setIsInventoryOpen(!isInventoryOpen);
+      }
+    };
+
+    const handleLogShortcut = (e: KeyboardEvent) => {
+      if (e.key === "l") {
+        setIsGameLogOpen(!isGameLogOpen);
+      }
+    };
+
+    const handleCharacterSheetShortcut = (e: KeyboardEvent) => {
+      if (e.key === "c") {
+        setIsCharacterSheetOpen(!isCharacterSheetOpen);
+      }
+    };
+
+    // Add event listeners for keyboard input
+    document.body.addEventListener("keydown", handleInventoryShortcut);
+    document.body.addEventListener("keydown", handleLogShortcut);
+    document.body.addEventListener("keydown", handleCharacterSheetShortcut);
+
+    // Remove event listeners on unmount
+    return () => {
+      document.body.removeEventListener("keydown", handleInventoryShortcut);
+      document.body.removeEventListener("keydown", handleLogShortcut);
+      document.body.removeEventListener(
+        "keydown",
+        handleCharacterSheetShortcut
+      );
+    };
+  }, [
+    isGameLogOpen,
+    isInventoryOpen,
+    isCharacterSheetOpen,
+    setIsGameLogOpen,
+    setIsCharacterSheetOpen,
+    setIsInventoryOpen,
+  ]);
 
   const isInitialized = useMemo(() => {
     return turnCycle.length > 0;
