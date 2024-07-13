@@ -9,6 +9,7 @@ interface IGameStateStore {
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>;
   turnCycle: IEntity[];
   isRoomOver: boolean;
+  isGameOver: boolean;
   isLoading: boolean;
   isInventoryOpen: boolean;
   isGameLogOpen: boolean;
@@ -27,6 +28,7 @@ interface IGameStateStore {
   setIsGenerateRoomOpen: (isGenerateRoomOpen: boolean) => void;
   setTurnCycle: (turnCycle: IEntity[]) => void;
   setIsRoomOver: (isRoomOver: boolean) => void;
+  setIsGameOver: (isGameOver: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
 }
 
@@ -36,6 +38,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   roomEntityPositions: generateRoomEntityPositions(),
   turnCycle: [],
   isRoomOver: false,
+  isGameOver: false,
   isLoading: true,
   isInventoryOpen: false,
   isGameLogOpen: true,
@@ -92,6 +95,8 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   setTurnCycle: (turnCycle: IEntity[]) => set({ turnCycle }),
 
   setIsRoomOver: (isRoomOver: boolean) => set({ isRoomOver }),
+
+  setIsGameOver: (isGameOver: boolean) => set({ isGameOver }),
 
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
 }));

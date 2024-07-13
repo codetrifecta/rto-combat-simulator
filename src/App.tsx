@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+
 import { PlayerControlPanel } from "./components/PlayerControlPanel";
 import { IEntity } from "./types";
 import { Room } from "./components/Room";
@@ -105,7 +106,7 @@ function App() {
 
   // Check every 50ms to check input to move camera
   useEffect(() => {
-    const keyboardInputCheckInterval = setInterval(() => {
+    const cameraKeyInputCheckInterval = setInterval(() => {
       if (isGenerateRoomOpen) return;
 
       if (roomContainerRef.current && roomScrollRef.current) {
@@ -142,21 +143,57 @@ function App() {
             roomContainerRef.current.style.transform = `scale(${currentScale})`;
           }
         }
-
-        if (keyPressed["l"] === true) {
-          setIsGameLogOpen(!isGameLogOpen);
-        } else if (keyPressed["c"] === true) {
-          setIsCharacterSheetOpen(!isCharacterSheetOpen);
-        } else if (keyPressed["i"] === true) {
-          setIsInventoryOpen(!isInventoryOpen);
-        }
       }
     }, 10);
 
     return () => {
-      clearInterval(keyboardInputCheckInterval);
+      clearInterval(cameraKeyInputCheckInterval);
     };
-  }, [keyPressed, isGenerateRoomOpen]);
+  }, [isGenerateRoomOpen]);
+
+  // Add event listeres for other shortcuts
+  useEffect(() => {
+    const handleShortcutKeys = (e: KeyboardEvent) => {
+      // if (e.key === "Escape") {
+      //   setIsInventoryOpen(false);
+      //   setIsGameLogOpen(false);
+      //   setIsCharacterSheetOpen(false);
+      //   setIsGenerateRoomOpen(false);
+      // }
+
+      if (isGenerateRoomOpen) {
+        return;
+      } else {
+        if (e.key === "i") {
+          setIsInventoryOpen(!isInventoryOpen);
+        }
+
+        if (e.key === "l") {
+          setIsGameLogOpen(!isGameLogOpen);
+        }
+
+        if (e.key === "c") {
+          setIsCharacterSheetOpen(!isCharacterSheetOpen);
+        }
+      }
+    };
+
+    // Add event listeners for keyboard input
+    document.body.addEventListener("keydown", handleShortcutKeys);
+
+    // Remove event listeners on unmount
+    return () => {
+      document.body.removeEventListener("keydown", handleShortcutKeys);
+    };
+  }, [
+    isGameLogOpen,
+    isInventoryOpen,
+    isCharacterSheetOpen,
+    setIsGameLogOpen,
+    setIsCharacterSheetOpen,
+    setIsInventoryOpen,
+    isGenerateRoomOpen,
+  ]);
 
   const isInitialized = useMemo(() => {
     return turnCycle.length > 0;
@@ -258,7 +295,7 @@ function App() {
 
       {/* Inventory Chooser */}
       <section
-        className="fixed z-50 top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
+        className="fixed z-30 top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
         style={{
           height: "calc(100vh - 80px)",
           right: isInventoryOpen ? 0 : -400,

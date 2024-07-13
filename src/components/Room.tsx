@@ -53,6 +53,8 @@ export const Room: FC<{
     setTurnCycle,
     endTurn,
     isRoomOver,
+    isGameOver,
+    setIsGameOver,
     setIsRoomOver,
   } = useGameStateStore();
   const {
@@ -443,6 +445,10 @@ export const Room: FC<{
           }
         }
 
+        if (isGameOver) {
+          return;
+        }
+
         // End enemy's turn after moving and attacking (if they can)
         setTimeout(() => {
           // Decrease enemy's statuses' duration
@@ -486,10 +492,12 @@ export const Room: FC<{
         }, totalTime + endTurnTime);
       }
     };
-    // handleEnemyEndTurn();
-    handleDoT();
+
+    if (!isGameOver) {
+      handleDoT();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [turnCycle, turnCycle.length]);
+  }, [turnCycle, turnCycle.length, isGameOver]);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (entityId: number | null) => {
@@ -1072,8 +1080,8 @@ export const Room: FC<{
         message: (
           <>
             <span className="text-green-500">{player.name}</span> used{" "}
-            <span className="text-green-500">{skill.name}</span> to teleport to
-            tile ({col}, {row}).
+            <span className="text-green-500">{skill.name}</span> to fly to tile
+            ({col}, {row}).
           </>
         ),
         type: "info",
@@ -1182,28 +1190,64 @@ export const Room: FC<{
 
       const playerTotalDefense = getPlayerTotalDefense();
 
-      let totalDamage = baseDamage + statusDamageBonus;
+      let totalDamage = baseDamage + statusDamageBonus - playerTotalDefense;
       totalDamage -= playerTotalDefense;
 
-      if (totalDamage <= 0) totalDamage = 1;
+      if (totalDamage <= 0) totalDamage = 0;
 
-      setPlayer({
-        ...player,
-        health: player.health - totalDamage,
-      });
+      const playerHealth = player.health - totalDamage;
 
+      if (playerHealth <= 0) {
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{enemy.name}</span> attacked{" "}
+              <span className="text-green-500">{player.name}</span> for{" "}
+              {totalDamage} damage and defeated them!
+            </>
+          ),
+          type: "info",
+        });
+        setPlayer({
+          ...player,
+          health: 0,
+        });
+        setIsGameOver(true);
+      } else {
+        setPlayer({
+          ...player,
+          health: player.health - totalDamage,
+        });
+
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{enemy.name}</span> attacked{" "}
+              <span className="text-green-500">{player.name}</span> for{" "}
+              {totalDamage} damage.
+            </>
+          ),
+          type: "info",
+        });
+      }
+    }
+  };
+
+  // Handle player defeat
+  useEffect(() => {
+    if (player.health <= 0) {
       addLog({
         message: (
           <>
-            <span className="text-red-500">{enemy.name}</span> attacked{" "}
-            <span className="text-green-500">{player.name}</span> for{" "}
-            {totalDamage} damage.
+            <span className="text-green-500">{player.name}</span> has been
+            defeated!
           </>
         ),
         type: "info",
       });
+      // setPlayerDefeated(true);
     }
-  };
+  }, [isGameOver, player.health, player.name, addLog]);
 
   return (
     <div
@@ -1308,6 +1352,20 @@ export const Room: FC<{
 
                 // Check for the specific skill's effect zone
                 switch (skill.id) {
+                  case SKILL_ID.FLY:
+                    // For fly, player can target any empty tile that does not have an entity
+                    if (
+                      tileType === TILE_TYPE.EMPTY &&
+                      !entityIfExists &&
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
                   default:
                     if (
                       rowIndex >= playerRow - range &&
@@ -1468,7 +1526,10 @@ export const Room: FC<{
                     ) {
                       // Skills that uses the enemy tile
                       handleEnemyClick(entityId);
-                    } else if (tileType === TILE_TYPE.EMPTY) {
+                    } else if (
+                      tileType === TILE_TYPE.EMPTY &&
+                      !entityIfExists
+                    ) {
                       // Skills that uses the empty tile
                       handleEmptyTileClick(
                         player.state.skillId,

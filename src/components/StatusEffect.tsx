@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { IStatus } from "../types";
 import { Tooltip } from "./Tooltip";
+import { Icon } from "./Icon";
 
 export const StatusEffect: FC<{ status: IStatus }> = ({ status }) => {
   const [isStatusHovered, setIsStatusHovered] = useState(false);
@@ -17,7 +18,7 @@ export const StatusEffect: FC<{ status: IStatus }> = ({ status }) => {
         <p>{status.description}</p>
         <p className="">Lasts {status.durationCounter} more turns.</p>
       </Tooltip>
-      {status.id}
+      <Icon icon={status.icon} width={30} height={30} />
     </div>
   );
 };

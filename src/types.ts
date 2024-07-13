@@ -4,6 +4,7 @@ import {
   WEAPON_ATTACK_TYPE,
   WEAPON_TYPE,
 } from "./constants";
+import { ICON_ID } from "./icons";
 
 export interface IEntity {
   id: number;
@@ -44,6 +45,7 @@ export interface IEnemy extends IEntity {
 export interface ISkill {
   id: number;
   name: string;
+  icon: ICON_ID;
   skillType: SKILL_TYPE;
   description: string;
   damageMultiplier: number;
@@ -56,6 +58,7 @@ export interface ISkill {
 export interface IStatus {
   id: number;
   name: string;
+  icon: ICON_ID;
   description: string;
   duration: number;
   durationCounter: number;
