@@ -153,37 +153,37 @@ function App() {
 
   // Add event listeres for other shortcuts
   useEffect(() => {
-    const handleInventoryShortcut = (e: KeyboardEvent) => {
-      if (e.key === "i") {
-        setIsInventoryOpen(!isInventoryOpen);
-      }
-    };
+    const handleShortcutKeys = (e: KeyboardEvent) => {
+      // if (e.key === "Escape") {
+      //   setIsInventoryOpen(false);
+      //   setIsGameLogOpen(false);
+      //   setIsCharacterSheetOpen(false);
+      //   setIsGenerateRoomOpen(false);
+      // }
 
-    const handleLogShortcut = (e: KeyboardEvent) => {
-      if (e.key === "l") {
-        setIsGameLogOpen(!isGameLogOpen);
-      }
-    };
+      if (isGenerateRoomOpen) {
+        return;
+      } else {
+        if (e.key === "i") {
+          setIsInventoryOpen(!isInventoryOpen);
+        }
 
-    const handleCharacterSheetShortcut = (e: KeyboardEvent) => {
-      if (e.key === "c") {
-        setIsCharacterSheetOpen(!isCharacterSheetOpen);
+        if (e.key === "l") {
+          setIsGameLogOpen(!isGameLogOpen);
+        }
+
+        if (e.key === "c") {
+          setIsCharacterSheetOpen(!isCharacterSheetOpen);
+        }
       }
     };
 
     // Add event listeners for keyboard input
-    document.body.addEventListener("keydown", handleInventoryShortcut);
-    document.body.addEventListener("keydown", handleLogShortcut);
-    document.body.addEventListener("keydown", handleCharacterSheetShortcut);
+    document.body.addEventListener("keydown", handleShortcutKeys);
 
     // Remove event listeners on unmount
     return () => {
-      document.body.removeEventListener("keydown", handleInventoryShortcut);
-      document.body.removeEventListener("keydown", handleLogShortcut);
-      document.body.removeEventListener(
-        "keydown",
-        handleCharacterSheetShortcut
-      );
+      document.body.removeEventListener("keydown", handleShortcutKeys);
     };
   }, [
     isGameLogOpen,
@@ -192,6 +192,7 @@ function App() {
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
     setIsInventoryOpen,
+    isGenerateRoomOpen,
   ]);
 
   const isInitialized = useMemo(() => {
@@ -294,7 +295,7 @@ function App() {
 
       {/* Inventory Chooser */}
       <section
-        className="fixed z-50 top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
+        className="fixed z-30 top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
         style={{
           height: "calc(100vh - 80px)",
           right: isInventoryOpen ? 0 : -400,

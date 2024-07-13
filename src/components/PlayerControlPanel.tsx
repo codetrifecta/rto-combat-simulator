@@ -214,6 +214,7 @@ export const PlayerControlPanel: FC = () => {
               <div>
                 <IconButton
                   onClick={() => {
+                    if (isGenerateRoomOpen) return;
                     setIsGameLogOpen(!isGameLogOpen);
                   }}
                 >
@@ -227,6 +228,7 @@ export const PlayerControlPanel: FC = () => {
               <div>
                 <IconButton
                   onClick={() => {
+                    if (isGenerateRoomOpen) return;
                     setIsCharacterSheetOpen(!isCharacterSheetOpen);
                   }}
                 >
@@ -239,6 +241,7 @@ export const PlayerControlPanel: FC = () => {
               </div>
               <IconButton
                 onClick={() => {
+                  if (isGenerateRoomOpen) return;
                   setIsInventoryOpen(!isInventoryOpen);
                 }}
               >
