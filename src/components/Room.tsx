@@ -109,23 +109,6 @@ export const Room: FC<{
       });
 
       setRoomEntityPositions(newRoomEntityPositions);
-
-      // setRoomEntityPositions((prevRoomEntityPositions) => {
-      //   const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
-      //     prevRoomEntityPositions
-      //   );
-
-      //   newRoomEntityPositions.forEach((value, key) => {
-      //     if (value[0] === ENTITY_TYPE.ENEMY) {
-      //       const enemy = enemies.find((e) => e.id === value[1]);
-      //       if (!enemy) {
-      //         newRoomEntityPositions.delete(key);
-      //       }
-      //     }
-      //   });
-
-      //   return newRoomEntityPositions;
-      // });
     };
 
     // Update turn cycle to remove defeated enemies
@@ -364,6 +347,19 @@ export const Room: FC<{
                 setTimeout(() => {
                   if (!enemyPosition) {
                     console.error("Enemy position not found!");
+                    const oldEnemyPos = getEntityPosition(
+                      enemy,
+                      roomEntityPositions
+                    );
+                    if (oldEnemyPos[0] === -1 && oldEnemyPos[1] === -1) {
+                      console.error("Old enemy position not found!");
+                      return;
+                    }
+                    handleEnemyAttack(
+                      affectedEnemy,
+                      oldEnemyPos,
+                      playerPosition
+                    );
                     return;
                   }
                   handleEnemyAttack(
@@ -1176,7 +1172,6 @@ export const Room: FC<{
       const playerTotalDefense = getPlayerTotalDefense();
 
       let totalDamage = baseDamage + statusDamageBonus - playerTotalDefense;
-      totalDamage -= playerTotalDefense;
 
       if (totalDamage <= 0) totalDamage = 0;
 
