@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { ENTITY_TYPE, STARTING_ACTION_POINTS } from "../constants/entity";
 import { SKILLS } from "../constants/skill";
-import { WEAPON_TYPE, WEAPON_ATTACK_TYPE } from "../constants/weapon";
+import { WEAPONS, WEAPON_TYPE, WEAPON_ATTACK_TYPE } from "../constants/weapon";
 import {
   IChestpiece,
   IHelmet,
@@ -51,20 +51,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   },
 
   equipment: {
-    weapon: {
-      id: 1,
-      name: "Fists",
-      attackType: WEAPON_ATTACK_TYPE.MELEE,
-      type: WEAPON_TYPE.ONE_HANDED,
-      stats: {
-        strength: 1,
-        intelligence: 0,
-        defense: 0,
-        constitution: 0,
-      },
-      range: 1,
-      cost: 1,
-    },
+    weapon: WEAPONS.find((weapon) => weapon.id === 1) || null,
     helmet: null,
     chestpiece: null,
     legging: null,

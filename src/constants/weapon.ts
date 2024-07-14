@@ -21,7 +21,7 @@ export const WEAPONS: IWeapon[] = [
     type: WEAPON_TYPE.ONE_HANDED,
     stats: {
       strength: 1,
-      intelligence: 0,
+      intelligence: 1,
       defense: 0,
       constitution: 0,
     },
