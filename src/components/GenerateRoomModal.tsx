@@ -5,12 +5,13 @@ import {
   ENEMY_PRESET_ID,
   ENEMY_PRESETS,
   ENTITY_TYPE,
+  PLAYER,
 } from "../constants/entity";
 import { IEnemy } from "../types";
 import { useEnemyStore } from "../store/enemy";
 import { usePlayerStore } from "../store/player";
 
-const maxRoomLength = 100;
+const MAX_ROOM_LENGTH = 100;
 
 export const GenerateRoomModal: FC = () => {
   const {
@@ -24,7 +25,7 @@ export const GenerateRoomModal: FC = () => {
 
   const { setEnemies } = useEnemyStore();
 
-  const { getPlayer } = usePlayerStore();
+  const { getPlayer, setPlayer } = usePlayerStore();
   const player = getPlayer();
 
   const [roomLengthInput, setRoomLengthInput] = useState<string>("11"); // Default room length
@@ -106,6 +107,7 @@ export const GenerateRoomModal: FC = () => {
       newEnemies.push({
         ...enemyPreset,
         id: index + 1,
+        statuses: [],
       });
     });
 
@@ -115,6 +117,7 @@ export const GenerateRoomModal: FC = () => {
     setTurnCycle([player, ...newEnemies]);
     setRoomEntityPositions(newRoomEntityPositions);
     setRoomTileMatrix(parsedRoomMatrix);
+    setPlayer({ ...PLAYER, statuses: [] });
     setIsGameOver(false);
     setIsGenerateRoomOpen(false);
   };
@@ -191,8 +194,8 @@ export const GenerateRoomModal: FC = () => {
                 // Only allow numbers (no decimals)
                 // setRoomLengthInput(roomLengthInput);
               } else {
-                if (parseInt(e.target.value) >= maxRoomLength) {
-                  setRoomLengthInput(maxRoomLength + "");
+                if (parseInt(e.target.value) >= MAX_ROOM_LENGTH) {
+                  setRoomLengthInput(MAX_ROOM_LENGTH + "");
                 } else {
                   setRoomLengthInput(e.target.value);
                 }
