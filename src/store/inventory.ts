@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { IChestpiece, IHelmet, ILegging, IWeapon } from "../types";
-import { WEAPONS } from "../constants";
+import { WEAPONS } from "../constants/weapon";
 
 interface IPlayerInventoryStore {
   weapons: IWeapon[];

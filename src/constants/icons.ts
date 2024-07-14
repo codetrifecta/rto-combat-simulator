@@ -1,26 +1,26 @@
 // PLAYER ACTIONS
-import basic_attack from "./assets/icons/icon_basic_attack.png";
-import move from "./assets/icons/icon_move.png";
-import skills from "./assets/icons/icon_skills.png";
+import basic_attack from "../assets/icons/icon_basic_attack.png";
+import move from "../assets/icons/icon_move.png";
+import skills from "../assets/icons/icon_skills.png";
 
 // UI
-import log from "./assets/icons/icon_log.png";
-import character from "./assets/icons/icon_character.png";
-import inventory from "./assets/icons/icon_inventory.png";
+import log from "../assets/icons/icon_log.png";
+import character from "../assets/icons/icon_character.png";
+import inventory from "../assets/icons/icon_inventory.png";
 
 // SKILLS
-import skill_defense_up from "./assets/icons/icon_skill_defense_up.png";
-import skill_petrify from "./assets/icons/icon_skill_petrify.png";
-import skill_lightning from "./assets/icons/icon_skill_lightning.png";
-import skill_fireball from "./assets/icons/icon_skill_fireball.png";
-import skill_whirlwind from "./assets/icons/icon_skill_whirlwind.png";
-import skill_teleport from "./assets/icons/icon_skill_teleport.png";
+import skill_defense_up from "../assets/icons/icon_skill_defense_up.png";
+import skill_petrify from "../assets/icons/icon_skill_petrify.png";
+import skill_lightning from "../assets/icons/icon_skill_lightning.png";
+import skill_fireball from "../assets/icons/icon_skill_fireball.png";
+import skill_whirlwind from "../assets/icons/icon_skill_whirlwind.png";
+import skill_teleport from "../assets/icons/icon_skill_teleport.png";
 
 // EFFECTS
-import effect_defense_up from "./assets/icons/icon_effect_defense_up.png";
-import effect_petrified from "./assets/icons/icon_effect_petrified.png";
-import effect_attack_up from "./assets/icons/icon_effect_attack_up.png";
-import effect_burned from "./assets/icons/icon_effect_burned.png";
+import effect_defense_up from "../assets/icons/icon_effect_defense_up.png";
+import effect_petrified from "../assets/icons/icon_effect_petrified.png";
+import effect_attack_up from "../assets/icons/icon_effect_attack_up.png";
+import effect_burned from "../assets/icons/icon_effect_burned.png";
 
 export enum ICON_ID {
   //   PLAYER ACTIONS

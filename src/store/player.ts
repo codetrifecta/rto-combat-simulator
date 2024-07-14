@@ -1,11 +1,6 @@
 import { create } from "zustand";
-import {
-  ENTITY_TYPE,
-  SKILLS,
-  STARTING_ACTION_POINTS,
-  WEAPON_ATTACK_TYPE,
-  WEAPON_TYPE,
-} from "../constants";
+import { PLAYER } from "../constants/entity";
+import { WEAPON_TYPE, WEAPON_ATTACK_TYPE } from "../constants/weapon";
 import {
   IChestpiece,
   IHelmet,
@@ -39,40 +34,8 @@ interface IPlayerStore extends IPlayer {
 }
 
 export const usePlayerStore = create<IPlayerStore>((set, get) => ({
+  ...PLAYER,
   id: 1,
-  name: "Kratos",
-  entityType: ENTITY_TYPE.PLAYER,
-  health: 10,
-  maxHealth: 10,
-  damageBonus: 0,
-  actionPoints: STARTING_ACTION_POINTS,
-  skills: SKILLS,
-  statuses: [],
-  state: {
-    isAttacking: false,
-    isMoving: false,
-    isUsingSkill: false,
-  },
-
-  equipment: {
-    weapon: {
-      id: 1,
-      name: "Fists",
-      attackType: WEAPON_ATTACK_TYPE.MELEE,
-      type: WEAPON_TYPE.ONE_HANDED,
-      stats: {
-        strength: 1,
-        intelligence: 0,
-        defense: 0,
-        constitution: 0,
-      },
-      range: 1,
-      cost: 1,
-    },
-    helmet: null,
-    chestpiece: null,
-    legging: null,
-  },
 
   getPlayer: () => {
     const player: IPlayer = {

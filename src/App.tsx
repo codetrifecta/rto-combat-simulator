@@ -295,7 +295,7 @@ function App() {
 
       {/* Inventory Chooser */}
       <section
-        className="fixed z-30 top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
+        className="fixed z-[41] top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
         style={{
           height: "calc(100vh - 80px)",
           right: isInventoryOpen ? 0 : -400,

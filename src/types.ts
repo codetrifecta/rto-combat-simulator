@@ -1,10 +1,7 @@
-import {
-  ENTITY_TYPE,
-  SKILL_TYPE,
-  WEAPON_ATTACK_TYPE,
-  WEAPON_TYPE,
-} from "./constants";
-import { ICON_ID } from "./icons";
+import { ENTITY_TYPE } from "./constants/entity";
+import { ICON_ID } from "./constants/icons";
+import { SKILL_TYPE } from "./constants/skill";
+import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from "./constants/weapon";
 
 export interface IEntity {
   id: number;

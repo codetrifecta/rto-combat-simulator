@@ -1,12 +1,17 @@
 import { FC, useEffect, useState } from "react";
 import { useGameStateStore } from "../store/game";
 import { Button } from "./Button";
-import { ENEMY_PRESET_ID, ENEMY_PRESETS, ENTITY_TYPE } from "../constants";
+import {
+  ENEMY_PRESET_ID,
+  ENEMY_PRESETS,
+  ENTITY_TYPE,
+  PLAYER,
+} from "../constants/entity";
 import { IEnemy } from "../types";
 import { useEnemyStore } from "../store/enemy";
 import { usePlayerStore } from "../store/player";
 
-const maxRoomLength = 100;
+const MAX_ROOM_LENGTH = 100;
 
 export const GenerateRoomModal: FC = () => {
   const {
@@ -14,22 +19,28 @@ export const GenerateRoomModal: FC = () => {
     setRoomTileMatrix,
     setRoomEntityPositions,
     setTurnCycle,
+    setIsGameOver,
     setIsGenerateRoomOpen,
   } = useGameStateStore();
 
   const { setEnemies } = useEnemyStore();
 
-  const { getPlayer } = usePlayerStore();
+  const { getPlayer, setPlayer } = usePlayerStore();
   const player = getPlayer();
 
   const [roomLengthInput, setRoomLengthInput] = useState<string>("11"); // Default room length
   const [roomMatrix, setRoomMatrix] = useState<string>("[\n[],\n[],\n[]\n]");
   const [playerPositionInput, setPlayerPositionInput] = useState<
     [string, string]
-  >(["5", "5"]);
+  >(["9", "5"]);
   const [enemyPositionsInput, setEnemyPositionsInput] = useState<
     [string, string, ENEMY_PRESET_ID][]
-  >([]);
+  >([
+    ["7", "4", ENEMY_PRESET_ID.SHADE],
+    ["6", "6", ENEMY_PRESET_ID.SHADE],
+    ["2", "8", ENEMY_PRESET_ID.GORGON],
+    ["2", "2", ENEMY_PRESET_ID.CYCLOPS],
+  ]);
 
   const handleGenerateRoom = () => {
     const parsedRoomMatrix = JSON.parse(roomMatrix);
@@ -96,6 +107,7 @@ export const GenerateRoomModal: FC = () => {
       newEnemies.push({
         ...enemyPreset,
         id: index + 1,
+        statuses: [],
       });
     });
 
@@ -105,6 +117,8 @@ export const GenerateRoomModal: FC = () => {
     setTurnCycle([player, ...newEnemies]);
     setRoomEntityPositions(newRoomEntityPositions);
     setRoomTileMatrix(parsedRoomMatrix);
+    setPlayer({ ...PLAYER, statuses: [] });
+    setIsGameOver(false);
     setIsGenerateRoomOpen(false);
   };
 
@@ -180,8 +194,8 @@ export const GenerateRoomModal: FC = () => {
                 // Only allow numbers (no decimals)
                 // setRoomLengthInput(roomLengthInput);
               } else {
-                if (parseInt(e.target.value) >= maxRoomLength) {
-                  setRoomLengthInput(maxRoomLength + "");
+                if (parseInt(e.target.value) >= MAX_ROOM_LENGTH) {
+                  setRoomLengthInput(MAX_ROOM_LENGTH + "");
                 } else {
                   setRoomLengthInput(e.target.value);
                 }
@@ -265,6 +279,7 @@ export const GenerateRoomModal: FC = () => {
                 name="enemyPreset"
                 id="enemyPreset-select"
                 className="bg-zinc-700 h-6"
+                value={enemyPosition[2]}
                 onChange={(e) =>
                   setEnemyPositionsInput((prevEnemyPositions) => {
                     const newEnemyPositions = [...prevEnemyPositions];

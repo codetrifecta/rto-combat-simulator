@@ -1,8 +1,9 @@
-import { ENTITY_TYPE, TILE_TYPE } from "./constants";
+import { ENTITY_TYPE } from "./constants/entity";
+import { TILE_TYPE } from "./constants/tile";
 import { IEnemy, IEntity, IPlayer } from "./types";
 
 /**
- * Generate a room matrix based on the room length
+ * Generate initial room matrix based on the room length
  * @param roomLength number (integer) representing the length of the room matrix
  * @returns a 2D array of tuples (TILE_TYPE, number) representing the type of tile and the id of whatever the tile is in the  room matrix
  *          ex - 2d array of 5x5 room matrix:
@@ -50,6 +51,10 @@ export const generateRoomTileMatrix = (roomLength: number) => {
   return roomTileMatrix;
 };
 
+/**
+ * Generate initial room entity positions
+ * @returns a map of entity type and id to position
+ */
 export const generateRoomEntityPositions: () => Map<
   string,
   [ENTITY_TYPE, number]
@@ -69,6 +74,13 @@ export const generateRoomEntityPositions: () => Map<
   return roomEntityPositions;
 };
 
+/**
+ * Update room entity positions
+ * @param newPos new position
+ * @param currentPos current position
+ * @param prevEntityPositions previous entity positions
+ * @returns an updated map of entity type and id to position
+ */
 export const updateRoomEntityPositions: (
   newPos: [number, number],
   currentPos: [number, number],

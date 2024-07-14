@@ -1,17 +1,10 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { Tile } from "./Tile";
-import {
-  ENTITY_TYPE,
-  ROOM_LENGTH,
-  SKILL_ID,
-  SKILL_TYPE,
-  STARTING_ACTION_POINTS,
-  STATUSES,
-  STATUS_ID,
-  TILE_SIZE,
-  TILE_TYPE,
-  WEAPON_ATTACK_TYPE,
-} from "../constants";
+import { ENTITY_TYPE, STARTING_ACTION_POINTS } from "../constants/entity";
+import { TILE_SIZE, TILE_TYPE } from "../constants/tile";
+import { SKILL_ID, SKILL_TYPE } from "../constants/skill";
+import { STATUSES, STATUS_ID } from "../constants/status";
+import { WEAPON_ATTACK_TYPE } from "../constants/weapon";
 import { IEnemy, IEntity, IPlayer } from "../types";
 import { useGameStateStore } from "../store/game";
 import { usePlayerStore } from "../store/player";
@@ -29,13 +22,6 @@ export const Room: FC<{
   currentHoveredEntity: IEntity | null;
   setCurrentHoveredEntity: (enemy: IEntity | null) => void;
 }> = ({ currentHoveredEntity, setCurrentHoveredEntity }) => {
-  // const [roomTileMatrix, setRoomTileMatrix] = useState<[TILE_TYPE, number][][]>(
-  //   generateRoomTileMatrix(ROOM_LENGTH)
-  // );
-  // const [roomEntityPositions, setRoomEntityPositions] = useState<
-  //   Map<string, [ENTITY_TYPE, number]>
-  // >(generateRoomEntityPositions());
-
   // For handling AOE skill effects
   const [isEffectZoneHovered, setIsEffectZoneHovered] = useState(false);
   const [effectZoneHovered, setEffectZoneHovered] = useState<
@@ -47,7 +33,6 @@ export const Room: FC<{
     roomLength,
     roomTileMatrix,
     roomEntityPositions,
-    // setRoomTileMatrix,
     setRoomEntityPositions,
     turnCycle,
     setTurnCycle,
@@ -124,23 +109,6 @@ export const Room: FC<{
       });
 
       setRoomEntityPositions(newRoomEntityPositions);
-
-      // setRoomEntityPositions((prevRoomEntityPositions) => {
-      //   const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
-      //     prevRoomEntityPositions
-      //   );
-
-      //   newRoomEntityPositions.forEach((value, key) => {
-      //     if (value[0] === ENTITY_TYPE.ENEMY) {
-      //       const enemy = enemies.find((e) => e.id === value[1]);
-      //       if (!enemy) {
-      //         newRoomEntityPositions.delete(key);
-      //       }
-      //     }
-      //   });
-
-      //   return newRoomEntityPositions;
-      // });
     };
 
     // Update turn cycle to remove defeated enemies
@@ -379,6 +347,19 @@ export const Room: FC<{
                 setTimeout(() => {
                   if (!enemyPosition) {
                     console.error("Enemy position not found!");
+                    const oldEnemyPos = getEntityPosition(
+                      enemy,
+                      roomEntityPositions
+                    );
+                    if (oldEnemyPos[0] === -1 && oldEnemyPos[1] === -1) {
+                      console.error("Old enemy position not found!");
+                      return;
+                    }
+                    handleEnemyAttack(
+                      affectedEnemy,
+                      oldEnemyPos,
+                      playerPosition
+                    );
                     return;
                   }
                   handleEnemyAttack(
@@ -1126,9 +1107,9 @@ export const Room: FC<{
     // If so, do nothing
     if (
       randomMove[0] < 0 ||
-      randomMove[0] >= ROOM_LENGTH ||
+      randomMove[0] >= roomLength ||
       randomMove[1] < 0 ||
-      randomMove[1] >= ROOM_LENGTH ||
+      randomMove[1] >= roomLength ||
       roomTileMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.EMPTY ||
       roomEntityPositions.get(`${randomMove[0]},${randomMove[1]}`)
     ) {
@@ -1137,8 +1118,8 @@ export const Room: FC<{
     }
 
     // Update room matrix to move enemy to random adjacent tile
-    if (randomMove[0] >= 0 && randomMove[0] < ROOM_LENGTH) {
-      if (randomMove[1] >= 0 && randomMove[1] < ROOM_LENGTH) {
+    if (randomMove[0] >= 0 && randomMove[0] < roomLength) {
+      if (randomMove[1] >= 0 && randomMove[1] < roomLength) {
         setRoomEntityPositions(
           updateRoomEntityPositions(
             randomMove,
@@ -1191,7 +1172,6 @@ export const Room: FC<{
       const playerTotalDefense = getPlayerTotalDefense();
 
       let totalDamage = baseDamage + statusDamageBonus - playerTotalDefense;
-      totalDamage -= playerTotalDefense;
 
       if (totalDamage <= 0) totalDamage = 0;
 

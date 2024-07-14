@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { MAX_ACTION_POINTS } from "../constants";
+import { MAX_ACTION_POINTS } from "../constants/entity";
 import { useLogStore } from "../store/log";
 import { usePlayerStore } from "../store/player";
 

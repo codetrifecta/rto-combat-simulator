@@ -2,15 +2,16 @@ import { useEffect, useMemo, useState, type FC } from "react";
 import clsx from "clsx";
 import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
-import { ENTITY_TYPE, SKILL_ID } from "../constants";
 import { handlePlayerEndTurn } from "../utils";
 import { useLogStore } from "../store/log";
 import { Tooltip } from "./Tooltip";
 import { ISkill } from "../types";
 import { Button } from "./Button";
 import { Icon } from "./Icon";
-import { ICON_ID } from "../icons";
+import { ICON_ID } from "../constants/icons";
 import { IconButton } from "./IconButton";
+import { SKILL_ID } from "../constants/skill";
+import { ENTITY_TYPE } from "../constants/entity";
 
 const ICON_SIZE = 48;
 
@@ -139,7 +140,6 @@ export const PlayerControlPanel: FC = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const disabled = useMemo(() => {
-    console.log(isGameOver);
     return (
       (turnCycle[0] !== null &&
         turnCycle[0].entityType !== ENTITY_TYPE.PLAYER) ||
