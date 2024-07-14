@@ -75,23 +75,6 @@ export const Room: FC<{
   // remove it from the turn cycle and,
   // check if the room is over and log a message if it is.
   useEffect(() => {
-    // Update room matrix to remove defeated enemy tiles
-    // const updateRoomMatrixWhenEnemyDefeated = () => {
-    //   setRoomTileMatrix((prevRoomMatrix) => {
-    //     return prevRoomMatrix.map((row) => {
-    //       return row.map(([tileType, id]) => {
-    //         if (tileType === TILE_TYPE.ENEMY) {
-    //           const enemy = enemies.find((enemy) => enemy.id === id);
-    //           if (!enemy) {
-    //             return [TILE_TYPE.EMPTY, 0];
-    //           }
-    //         }
-    //         return [tileType, id];
-    //       });
-    //     });
-    //   });
-    // };
-
     // Update enemy positions when enemy is defeated
     const updateEnemyPositionsWhenEnemyDefeated = () => {
       // Delete enemy from room entity positions
@@ -922,7 +905,12 @@ export const Room: FC<{
             return;
           }
 
-          newEnemy.statuses.push(burnedStatus);
+          // Only apply burn status if enemy is not already burned
+          if (
+            !newEnemy.statuses.some((status) => status.id === STATUS_ID.BURNED)
+          ) {
+            newEnemy.statuses.push(burnedStatus);
+          }
 
           // Check if enemy is defeated
           if (newEnemy.health <= 0) {
