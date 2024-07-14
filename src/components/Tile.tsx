@@ -109,10 +109,15 @@ export const Tile: FC<{
   return (
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
-      className={clsx("relative border-2 border-gray ", classNames, {
+      className={clsx("relative", classNames, {
+        // Border classes only on non-null tiles
+        "border-2 border-gray": tileType !== TILE_TYPE.NULL,
+
         // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
         "cursor-pointer":
-          (tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR) ||
+          (tileType !== TILE_TYPE.WALL &&
+            tileType !== TILE_TYPE.DOOR &&
+            tileType !== TILE_TYPE.NULL) ||
           (tileType === TILE_TYPE.DOOR && isRoomOver),
         // "cursor-default": tileType === TILE_TYPE.DOOR && !isRoomOver,
 
