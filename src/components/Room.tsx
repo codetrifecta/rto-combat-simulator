@@ -950,7 +950,12 @@ export const Room: FC<{
             return;
           }
 
-          newPlayer.statuses.push(burnedStatus);
+          // Only apply burn status if player is not burned
+          if (
+            !player.statuses.some((status) => status.id === STATUS_ID.BURNED)
+          ) {
+            player.statuses.push(burnedStatus);
+          }
 
           if (newPlayer.health <= 0) {
             addLog({
