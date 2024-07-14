@@ -1,4 +1,6 @@
-import { IEnemy } from "../types";
+import { IEnemy, IPlayer } from "../types";
+import { SKILLS } from "./skill";
+import { WEAPONS } from "./weapon";
 
 export const STARTING_ACTION_POINTS = 4;
 
@@ -8,6 +10,29 @@ export enum ENTITY_TYPE {
   PLAYER = "player",
   ENEMY = "enemy",
 }
+
+export const PLAYER: IPlayer = {
+  id: 1,
+  name: "Kratos",
+  entityType: ENTITY_TYPE.PLAYER,
+  health: 10,
+  maxHealth: 10,
+  damageBonus: 0,
+  actionPoints: STARTING_ACTION_POINTS,
+  skills: SKILLS,
+  statuses: [],
+  state: {
+    isAttacking: false,
+    isMoving: false,
+    isUsingSkill: false,
+  },
+  equipment: {
+    weapon: WEAPONS.find((weapon) => weapon.id === 1) || null,
+    helmet: null,
+    chestpiece: null,
+    legging: null,
+  },
+};
 
 export enum ENEMY_PRESET_ID {
   SHADE = 1,
