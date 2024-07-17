@@ -5,6 +5,4 @@ export enum TILE_TYPE {
   EMPTY = 0,
   WALL = 1,
   DOOR = 2,
-  PLAYER = 3,
-  ENEMY = 4,
 }
