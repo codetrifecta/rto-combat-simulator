@@ -179,15 +179,11 @@ const WeaponCard: FC<{
   onClick: () => void;
 }> = ({ weapon, active, onClick }) => {
   return (
-    <div
-      className={clsx("relative", {
-        "shadow-intense-white": active,
-        "hover:shadow-intense-gray": !active,
-      })}
-    >
+    <div className="relative">
       <IconButton
         onClick={onClick}
         disabled={active}
+        active={active}
       >
         <Icon icon={weapon.icon} width={EQUIPMENT_ICON_SIZE} height={EQUIPMENT_ICON_SIZE} />
       </IconButton>
