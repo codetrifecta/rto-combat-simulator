@@ -2,13 +2,19 @@ import { FC } from "react";
 
 import { usePlayerStore } from "../store/player";
 import { useGameStateStore } from "../store/game";
+import { IconButton } from "./IconButton";
+import { Icon } from "./Icon";
+import { Tooltip } from "./Tooltip";
 
 const equipmentCardClasses =
   "w-28 h-28 bg-zinc-700 mb-5 flex justify-center items-center border border-white";
 
+const EQUIPMENT_ICON_SIZE = 96;
+
 export const CharacterSheet: FC = () => {
   const { getPlayer, getPlayerTotalStats } = usePlayerStore();
   const player = getPlayer();
+  const weapon = player.equipment.weapon;
   const playerStats = getPlayerTotalStats();
 
   const { setIsCharacterSheetOpen } = useGameStateStore();
@@ -27,9 +33,34 @@ export const CharacterSheet: FC = () => {
       <div className="text-center flex flex-col justify-start items-center">
         <h3 className="mb-5">Name: {player.name}</h3>
 
-        <div className={equipmentCardClasses}>
-          {player.equipment.weapon ? (
-            <p>{player.equipment.weapon.name}</p>
+        <div className="relative mb-5">
+          {weapon !== null ? (
+            <>
+              <IconButton>
+                <Icon
+                  icon={weapon.icon}
+                  width={EQUIPMENT_ICON_SIZE}
+                  height={EQUIPMENT_ICON_SIZE}
+                />
+              </IconButton>
+              <Tooltip>
+                <h3>{weapon.name}</h3>
+                {weapon.stats.strength > 0 && (
+                  <p>Strength: {weapon.stats.strength}</p>
+                )}
+                {weapon.stats.intelligence > 0 && (
+                  <p>Intelligence: {weapon.stats.intelligence}</p>
+                )}
+                {weapon.stats.defense > 0 && (
+                  <p>Defense: {weapon.stats.defense}</p>
+                )}
+                {weapon.stats.constitution > 0 && (
+                  <p>Constitution: {weapon.stats.constitution}</p>
+                )}
+                <p>Range: {weapon.range}</p>
+                <p>Cost: {weapon.cost} AP</p>
+              </Tooltip>
+            </>
           ) : (
             <p>None</p>
           )}

@@ -24,8 +24,10 @@ export const Icon: FC<{
 
     image.onload = function () {
       if (!context) return;
+      context.reset();
       context.imageSmoothingEnabled = false;
       context.drawImage(image, 0, 0, width, height);
+
     };
   }, [icon, width, height]);
 
