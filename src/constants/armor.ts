@@ -1,4 +1,4 @@
-import { IHelmet, IChestpiece } from '../types';
+import { IHelmet, IChestpiece, ILegging } from '../types';
 import { ICON_ID } from './icons';
 
 export const HELMETS: IHelmet[] = [
@@ -179,6 +179,53 @@ export const CHESTPIECES: IChestpiece[] = [
       strength: 1,
       intelligence: 3,
       constitution: 1,
+    },
+  },
+];
+
+export const LEGGINGS: ILegging[] = [
+  {
+    id: 1,
+    name: 'Leather Pants',
+    icon: ICON_ID.LEGGING_LEATHER_1,
+    stats: {
+      defense: 1,
+      strength: 1,
+      intelligence: 1,
+      constitution: 1,
+    },
+  },
+  {
+    id: 2,
+    name: 'Steel Leggings',
+    icon: ICON_ID.LEGGING_STEEL_1,
+    stats: {
+      defense: 2,
+      strength: 1,
+      intelligence: 1,
+      constitution: 2,
+    },
+  },
+  {
+    id: 3,
+    name: 'Gold Leggings',
+    icon: ICON_ID.LEGGING_GOLD_1,
+    stats: {
+      defense: 3,
+      strength: 1,
+      intelligence: 1,
+      constitution: 2,
+    },
+  },
+  {
+    id: 4,
+    name: 'Diamond Leggings',
+    icon: ICON_ID.LEGGING_DIAMOND_1,
+    stats: {
+      defense: 4,
+      strength: 1,
+      intelligence: 3,
+      constitution: 2,
     },
   },
 ];

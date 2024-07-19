@@ -40,6 +40,9 @@ import chestpiece_diamond_2 from '../assets/icons/icon_chestpiece_diamond_2.png'
 
 // LEGGINGS
 import legging_leather_1 from '../assets/icons/icon_legging_leather_1.png';
+import legging_steel_1 from '../assets/icons/icon_legging_steel_1.png';
+import legging_gold_1 from '../assets/icons/icon_legging_gold_1.png';
+import legging_diamond_1 from '../assets/icons/icon_legging_diamond_1.png';
 
 // SKILLS
 import skill_defense_up from '../assets/icons/icon_skill_defense_up.png';
@@ -98,6 +101,9 @@ export enum ICON_ID {
 
   // LEGGINGS
   LEGGING_LEATHER_1 = 'legging_leather_1',
+  LEGGING_STEEL_1 = 'legging_steel_1',
+  LEGGING_GOLD_1 = 'legging_gold_1',
+  LEGGING_DIAMOND_1 = 'legging_diamond_1',
 
   // SKILLS
   SKILL_DEFENSE_UP = 'skill_defense_up',
@@ -157,6 +163,9 @@ const ICONS: Record<ICON_ID, string> = {
 
   // LEGGINGS
   [ICON_ID.LEGGING_LEATHER_1]: legging_leather_1,
+  [ICON_ID.LEGGING_STEEL_1]: legging_steel_1,
+  [ICON_ID.LEGGING_GOLD_1]: legging_gold_1,
+  [ICON_ID.LEGGING_DIAMOND_1]: legging_diamond_1,
 
   // SKILLS
   [ICON_ID.SKILL_DEFENSE_UP]: skill_defense_up,

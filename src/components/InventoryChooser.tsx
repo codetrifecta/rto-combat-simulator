@@ -46,7 +46,7 @@ export const InventoryChooser: FC = () => {
       </div>
 
       <div
-        className="relative overflow-auto"
+        className="relative overflow-auto h-full"
         style={{ maxHeight: 'calc(100% - 70px)' }}
       >
         {/* Weapons */}
@@ -234,7 +234,7 @@ const ArmorCard: FC<{
   onClick?: () => void;
 }> = ({ armor, active, onClick }) => {
   return (
-    <div className={'relative'}>
+    <div className="relative">
       <IconButton onClick={onClick} disabled={active} active={active}>
         <Icon
           icon={armor.icon}
