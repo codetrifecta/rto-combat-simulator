@@ -126,6 +126,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   },
 
   getPlayerTotalDefense: () => {
+    const weaponDefense = get().equipment.weapon?.stats.defense || 0;
     const helmetDefense = get().equipment.helmet?.stats.defense || 0;
     const chestpieceDefense = get().equipment.chestpiece?.stats.defense || 0;
     const leggingDefense = get().equipment.legging?.stats.defense || 0;
@@ -137,6 +138,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     );
 
     const totalDefense =
+      weaponDefense +
       helmetDefense +
       chestpieceDefense +
       leggingDefense +
@@ -146,6 +148,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   },
 
   getPlayerTotalConstitution: () => {
+    const weaponConstitution = get().equipment.weapon?.stats.constitution || 0;
     const helmetConstitution = get().equipment.helmet?.stats.constitution || 0;
     const chestpieceConstitution =
       get().equipment.chestpiece?.stats.constitution || 0;
@@ -153,7 +156,10 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       get().equipment.legging?.stats.constitution || 0;
 
     const totalConstitution =
-      helmetConstitution + chestpieceConstitution + leggingConstitution;
+      weaponConstitution +
+      helmetConstitution +
+      chestpieceConstitution +
+      leggingConstitution;
 
     return totalConstitution;
   },
