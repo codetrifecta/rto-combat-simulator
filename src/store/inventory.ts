@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { IChestpiece, IHelmet, ILegging, IWeapon } from '../types';
 import { WEAPONS } from '../constants/weapon';
-import { HELMETS } from '../constants/armor';
+import { CHESTPIECES, HELMETS } from '../constants/armor';
 
 interface IPlayerInventoryStore {
   weapons: IWeapon[];
@@ -18,48 +18,7 @@ interface IPlayerInventoryStore {
 export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
   weapons: WEAPONS,
   helmets: HELMETS,
-  chestpieces: [
-    {
-      id: 3,
-      name: 'Leather Vest',
-      stats: {
-        defense: 1,
-        strength: 1,
-        intelligence: 1,
-        constitution: 1,
-      },
-    },
-    {
-      id: 4,
-      name: 'Steel Chestplate',
-      stats: {
-        defense: 2,
-        strength: 1,
-        intelligence: 1,
-        constitution: 2,
-      },
-    },
-    {
-      id: 8,
-      name: 'Berserker Chestplate',
-      stats: {
-        defense: 1,
-        strength: 3,
-        intelligence: 1,
-        constitution: 1,
-      },
-    },
-    {
-      id: 11,
-      name: 'Wizard Robes',
-      stats: {
-        defense: 1,
-        strength: 1,
-        intelligence: 3,
-        constitution: 1,
-      },
-    },
-  ],
+  chestpieces: CHESTPIECES,
   leggings: [
     {
       id: 5,

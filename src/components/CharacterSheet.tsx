@@ -6,7 +6,7 @@ import { IconButton } from './IconButton';
 import { Icon } from './Icon';
 import { Tooltip } from './Tooltip';
 import { WEAPONS } from '../constants/weapon';
-import { HELMETS } from '../constants/armor';
+import { CHESTPIECES, HELMETS } from '../constants/armor';
 
 // const equipmentCardClasses =
 //   'w-28 h-28 bg-zinc-700 mb-5 flex justify-center items-center border border-white';
@@ -18,7 +18,7 @@ const EQUIPMENT_ICON_SIZE = 96;
 export const CharacterSheet: FC = () => {
   const { getPlayer, getPlayerTotalStats } = usePlayerStore();
   const player = getPlayer();
-  const { weapon, helmet } = player.equipment;
+  const { weapon, helmet, chestpiece } = player.equipment;
   const playerStats = getPlayerTotalStats();
 
   const { setIsCharacterSheetOpen } = useGameStateStore();
@@ -116,10 +116,39 @@ export const CharacterSheet: FC = () => {
         </div>
 
         <div className={equipmentCardClasses}>
-          {player.equipment.chestpiece ? (
-            <p>{player.equipment.chestpiece.name}</p>
+          {chestpiece !== null ? (
+            <>
+              <IconButton>
+                <Icon
+                  icon={chestpiece.icon}
+                  width={EQUIPMENT_ICON_SIZE}
+                  height={EQUIPMENT_ICON_SIZE}
+                />
+              </IconButton>
+              <Tooltip>
+                <h3>{chestpiece.name}</h3>
+                {chestpiece.stats.strength > 0 && (
+                  <p>Strength: {chestpiece.stats.strength}</p>
+                )}
+                {chestpiece.stats.intelligence > 0 && (
+                  <p>Intelligence: {chestpiece.stats.intelligence}</p>
+                )}
+                {chestpiece.stats.defense > 0 && (
+                  <p>Defense: {chestpiece.stats.defense}</p>
+                )}
+                {chestpiece.stats.constitution > 0 && (
+                  <p>Constitution: {chestpiece.stats.constitution}</p>
+                )}
+              </Tooltip>
+            </>
           ) : (
-            <p>None</p>
+            <IconButton disabled grayscale>
+              <Icon
+                icon={CHESTPIECES[0].icon}
+                width={EQUIPMENT_ICON_SIZE}
+                height={EQUIPMENT_ICON_SIZE}
+              />
+            </IconButton>
           )}
         </div>
 

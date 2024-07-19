@@ -122,7 +122,10 @@ export const InventoryChooser: FC = () => {
         {/* Chestpieces */}
         <div className={clsx(equipmentTypeClasses)}>
           <h2 className={clsx(equipmentTitleClasses)}>Chestpieces</h2>
-          <div className={clsx(cardContainerClasses)}>
+          <div
+            className={clsx(cardContainerClasses)}
+            style={{ left: 'calc(50% - 48px)' }}
+          >
             {chestpieces.map((chestpiece) => {
               if (player.equipment.chestpiece?.id === chestpiece.id) {
                 return (
@@ -150,7 +153,10 @@ export const InventoryChooser: FC = () => {
         {/* Leggings */}
         <div className="mb-2">
           <h2 className={clsx(equipmentTitleClasses)}>Leggings</h2>
-          <div className={clsx(cardContainerClasses)}>
+          <div
+            className={clsx(cardContainerClasses)}
+            style={{ left: 'calc(50% - 48px)' }}
+          >
             {leggings.map((legging) => {
               if (player.equipment.legging?.id === legging.id) {
                 return (
