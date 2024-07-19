@@ -224,7 +224,7 @@ export const LEGGINGS: ILegging[] = [
     stats: {
       defense: 4,
       strength: 1,
-      intelligence: 3,
+      intelligence: 1,
       constitution: 2,
     },
   },
