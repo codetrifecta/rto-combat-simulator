@@ -1,22 +1,22 @@
-import { FC } from "react";
+import { FC } from 'react';
 // import { ROOM_LENGTH, TILE_SIZE } from "../constants";
-import { IArmor, IWeapon } from "../types";
-import { usePlayerInventoryStore } from "../store/inventory";
-import clsx from "clsx";
-import { usePlayerStore } from "../store/player";
-import { useGameStateStore } from "../store/game";
-import { IconButton } from "./IconButton";
-import { Icon } from "./Icon";
-import { Tooltip } from "./Tooltip";
+import { IArmor, IWeapon } from '../types';
+import { usePlayerInventoryStore } from '../store/inventory';
+import clsx from 'clsx';
+import { usePlayerStore } from '../store/player';
+import { useGameStateStore } from '../store/game';
+import { IconButton } from './IconButton';
+import { Icon } from './Icon';
+import { Tooltip } from './Tooltip';
 
 const EQUIPMENT_ICON_SIZE = 64;
 
-const equipmentTypeClasses = "mb-4";
-const equipmentTitleClasses = "mb-0";
-const cardContainerClasses = "relative flex gap-3 pb-5 p-3";
-const cardClasses =
-  "p-3 bg-zinc-700 border border-white min-w-[175px] cursor-pointer";
-const cardParagraphClasses = "text-base";
+const equipmentTypeClasses = 'mb-4';
+const equipmentTitleClasses = 'mb-0';
+const cardContainerClasses = 'relative flex gap-3 pb-5 p-3';
+// const cardClasses =
+//   'p-3 bg-zinc-700 border border-white min-w-[175px] cursor-pointer';
+const cardParagraphClasses = 'text-base';
 
 export const InventoryChooser: FC = () => {
   const { weapons, helmets, chestpieces, leggings } = usePlayerInventoryStore();
@@ -47,12 +47,15 @@ export const InventoryChooser: FC = () => {
 
       <div
         className="relative overflow-auto"
-        style={{ maxHeight: "calc(100% - 70px)" }}
+        style={{ maxHeight: 'calc(100% - 70px)' }}
       >
         {/* Weapons */}
         <div className={clsx(equipmentTypeClasses)}>
           <h2 className={clsx(equipmentTitleClasses)}>Weapons</h2>
-          <div className={clsx(cardContainerClasses)} style={{left: "calc(50% - 48px)"}}>
+          <div
+            className={clsx(cardContainerClasses)}
+            style={{ left: 'calc(50% - 48px)' }}
+          >
             {weapons.map((weapon) => {
               if (player.equipment.weapon?.id === weapon.id) {
                 return (
@@ -88,7 +91,10 @@ export const InventoryChooser: FC = () => {
         {/* Helmets */}
         <div className={clsx(equipmentTypeClasses)}>
           <h2 className={clsx(equipmentTitleClasses)}>Helmets</h2>
-          <div className={clsx(cardContainerClasses)}>
+          <div
+            className={clsx(cardContainerClasses)}
+            style={{ left: 'calc(50% - 48px)' }}
+          >
             {helmets.map((helmet) => {
               if (player.equipment.helmet?.id === helmet.id) {
                 return (
@@ -180,33 +186,33 @@ const WeaponCard: FC<{
 }> = ({ weapon, active, onClick }) => {
   return (
     <div className="relative">
-      <IconButton
-        onClick={onClick}
-        disabled={active}
-        active={active}
-      >
-        <Icon icon={weapon.icon} width={EQUIPMENT_ICON_SIZE} height={EQUIPMENT_ICON_SIZE} />
+      <IconButton onClick={onClick} disabled={active} active={active}>
+        <Icon
+          icon={weapon.icon}
+          width={EQUIPMENT_ICON_SIZE}
+          height={EQUIPMENT_ICON_SIZE}
+        />
       </IconButton>
       <Tooltip>
         <h3>{weapon.name}</h3>
         {weapon.stats.strength > 0 && (
           <p className={clsx(cardParagraphClasses)}>
-          Strength: {weapon.stats.strength}
+            Strength: {weapon.stats.strength}
           </p>
         )}
         {weapon.stats.intelligence > 0 && (
           <p className={clsx(cardParagraphClasses)}>
-          Intelligence: {weapon.stats.intelligence}
+            Intelligence: {weapon.stats.intelligence}
           </p>
         )}
         {weapon.stats.defense > 0 && (
           <p className={clsx(cardParagraphClasses)}>
-          Defense: {weapon.stats.defense}
+            Defense: {weapon.stats.defense}
           </p>
         )}
         {weapon.stats.constitution > 0 && (
           <p className={clsx(cardParagraphClasses)}>
-          Constitution: {weapon.stats.constitution}
+            Constitution: {weapon.stats.constitution}
           </p>
         )}
         <p className={clsx(cardParagraphClasses)}>Range: {weapon.range}</p>
@@ -222,34 +228,37 @@ const ArmorCard: FC<{
   onClick?: () => void;
 }> = ({ armor, active, onClick }) => {
   return (
-    <div
-      className={clsx(cardClasses, {
-        "shadow-intense-white": active,
-        "hover:shadow-intense-gray": !active,
-      })}
-      onClick={onClick}
-    >
-      <h3>{armor.name}</h3>
-      {armor.stats.strength > 0 && (
-        <p className={clsx(cardParagraphClasses)}>
-          Strength: {armor.stats.strength}
-        </p>
-      )}
-      {armor.stats.intelligence > 0 && (
-        <p className={clsx(cardParagraphClasses)}>
-          Intelligence: {armor.stats.intelligence}
-        </p>
-      )}
-      {armor.stats.defense > 0 && (
-        <p className={clsx(cardParagraphClasses)}>
-          Defense: {armor.stats.defense}
-        </p>
-      )}
-      {armor.stats.constitution > 0 && (
-        <p className={clsx(cardParagraphClasses)}>
-          Constitution: {armor.stats.constitution}
-        </p>
-      )}
+    <div className={'relative'}>
+      <IconButton onClick={onClick} disabled={active} active={active}>
+        <Icon
+          icon={armor.icon}
+          width={EQUIPMENT_ICON_SIZE}
+          height={EQUIPMENT_ICON_SIZE}
+        />
+      </IconButton>
+      <Tooltip>
+        <h3>{armor.name}</h3>
+        {armor.stats.strength > 0 && (
+          <p className={clsx(cardParagraphClasses)}>
+            Strength: {armor.stats.strength}
+          </p>
+        )}
+        {armor.stats.intelligence > 0 && (
+          <p className={clsx(cardParagraphClasses)}>
+            Intelligence: {armor.stats.intelligence}
+          </p>
+        )}
+        {armor.stats.defense > 0 && (
+          <p className={clsx(cardParagraphClasses)}>
+            Defense: {armor.stats.defense}
+          </p>
+        )}
+        {armor.stats.constitution > 0 && (
+          <p className={clsx(cardParagraphClasses)}>
+            Constitution: {armor.stats.constitution}
+          </p>
+        )}
+      </Tooltip>
     </div>
   );
 };

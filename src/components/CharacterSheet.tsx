@@ -1,20 +1,24 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-import { usePlayerStore } from "../store/player";
-import { useGameStateStore } from "../store/game";
-import { IconButton } from "./IconButton";
-import { Icon } from "./Icon";
-import { Tooltip } from "./Tooltip";
+import { usePlayerStore } from '../store/player';
+import { useGameStateStore } from '../store/game';
+import { IconButton } from './IconButton';
+import { Icon } from './Icon';
+import { Tooltip } from './Tooltip';
+import { WEAPONS } from '../constants/weapon';
+import { HELMETS } from '../constants/armor';
 
-const equipmentCardClasses =
-  "w-28 h-28 bg-zinc-700 mb-5 flex justify-center items-center border border-white";
+// const equipmentCardClasses =
+//   'w-28 h-28 bg-zinc-700 mb-5 flex justify-center items-center border border-white';
+
+const equipmentCardClasses = 'relative mb-5';
 
 const EQUIPMENT_ICON_SIZE = 96;
 
 export const CharacterSheet: FC = () => {
   const { getPlayer, getPlayerTotalStats } = usePlayerStore();
   const player = getPlayer();
-  const weapon = player.equipment.weapon;
+  const { weapon, helmet } = player.equipment;
   const playerStats = getPlayerTotalStats();
 
   const { setIsCharacterSheetOpen } = useGameStateStore();
@@ -33,7 +37,8 @@ export const CharacterSheet: FC = () => {
       <div className="text-center flex flex-col justify-start items-center">
         <h3 className="mb-5">Name: {player.name}</h3>
 
-        <div className="relative mb-5">
+        <div className={equipmentCardClasses}>
+          {/* Weapon will never be done because fists are the default */}
           {weapon !== null ? (
             <>
               <IconButton>
@@ -62,15 +67,52 @@ export const CharacterSheet: FC = () => {
               </Tooltip>
             </>
           ) : (
-            <p>None</p>
+            <IconButton>
+              <Icon
+                icon={WEAPONS[0].icon}
+                width={EQUIPMENT_ICON_SIZE}
+                height={EQUIPMENT_ICON_SIZE}
+                grayscale={true}
+              />
+            </IconButton>
           )}
         </div>
 
         <div className={equipmentCardClasses}>
-          {player.equipment.helmet ? (
-            <p>{player.equipment.helmet.name}</p>
+          {helmet !== null ? (
+            <>
+              <IconButton>
+                <Icon
+                  icon={helmet.icon}
+                  width={EQUIPMENT_ICON_SIZE}
+                  height={EQUIPMENT_ICON_SIZE}
+                />
+              </IconButton>
+              <Tooltip>
+                <h3>{helmet.name}</h3>
+                {helmet.stats.strength > 0 && (
+                  <p>Strength: {helmet.stats.strength}</p>
+                )}
+                {helmet.stats.intelligence > 0 && (
+                  <p>Intelligence: {helmet.stats.intelligence}</p>
+                )}
+                {helmet.stats.defense > 0 && (
+                  <p>Defense: {helmet.stats.defense}</p>
+                )}
+                {helmet.stats.constitution > 0 && (
+                  <p>Constitution: {helmet.stats.constitution}</p>
+                )}
+              </Tooltip>
+            </>
           ) : (
-            <p>None</p>
+            <IconButton disabled={true}>
+              <Icon
+                icon={HELMETS[0].icon}
+                width={EQUIPMENT_ICON_SIZE}
+                height={EQUIPMENT_ICON_SIZE}
+                grayscale={true}
+              />
+            </IconButton>
           )}
         </div>
 

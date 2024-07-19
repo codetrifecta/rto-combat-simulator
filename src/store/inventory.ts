@@ -1,6 +1,7 @@
-import { create } from "zustand";
-import { IChestpiece, IHelmet, ILegging, IWeapon } from "../types";
-import { WEAPONS } from "../constants/weapon";
+import { create } from 'zustand';
+import { IChestpiece, IHelmet, ILegging, IWeapon } from '../types';
+import { WEAPONS } from '../constants/weapon';
+import { HELMETS } from '../constants/armor';
 
 interface IPlayerInventoryStore {
   weapons: IWeapon[];
@@ -16,52 +17,11 @@ interface IPlayerInventoryStore {
 
 export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
   weapons: WEAPONS,
-  helmets: [
-    {
-      id: 1,
-      name: "Leather Cap",
-      stats: {
-        defense: 1,
-        strength: 1,
-        intelligence: 1,
-        constitution: 1,
-      },
-    },
-    {
-      id: 2,
-      name: "Steel Helmet",
-      stats: {
-        defense: 2,
-        strength: 1,
-        intelligence: 1,
-        constitution: 2,
-      },
-    },
-    {
-      id: 7,
-      name: "Berserker Helmet",
-      stats: {
-        defense: 1,
-        strength: 3,
-        intelligence: 1,
-        constitution: 1,
-      },
-    },
-    {
-      id: 10,
-      name: "Wizard Hat",
-      stats: {
-        defense: 1,
-        strength: 1,
-        intelligence: 3,
-        constitution: 1,
-      },
-    },
-  ],
+  helmets: HELMETS,
   chestpieces: [
     {
       id: 3,
-      name: "Leather Vest",
+      name: 'Leather Vest',
       stats: {
         defense: 1,
         strength: 1,
@@ -71,7 +31,7 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     },
     {
       id: 4,
-      name: "Steel Chestplate",
+      name: 'Steel Chestplate',
       stats: {
         defense: 2,
         strength: 1,
@@ -81,7 +41,7 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     },
     {
       id: 8,
-      name: "Berserker Chestplate",
+      name: 'Berserker Chestplate',
       stats: {
         defense: 1,
         strength: 3,
@@ -91,7 +51,7 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     },
     {
       id: 11,
-      name: "Wizard Robes",
+      name: 'Wizard Robes',
       stats: {
         defense: 1,
         strength: 1,
@@ -103,7 +63,7 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
   leggings: [
     {
       id: 5,
-      name: "Leather Pants",
+      name: 'Leather Pants',
       stats: {
         defense: 1,
         strength: 1,
@@ -113,7 +73,7 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     },
     {
       id: 6,
-      name: "Steel Leggings",
+      name: 'Steel Leggings',
       stats: {
         defense: 2,
         strength: 1,
@@ -123,7 +83,7 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     },
     {
       id: 9,
-      name: "Berserker Leggings",
+      name: 'Berserker Leggings',
       stats: {
         defense: 1,
         strength: 3,
@@ -133,7 +93,7 @@ export const usePlayerInventoryStore = create<IPlayerInventoryStore>((set) => ({
     },
     {
       id: 12,
-      name: "Wizard Pants",
+      name: 'Wizard Pants',
       stats: {
         defense: 1,
         strength: 1,

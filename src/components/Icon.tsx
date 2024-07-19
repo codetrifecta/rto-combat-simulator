@@ -1,11 +1,12 @@
-import { FC, useEffect, useRef } from "react";
-import { getIconSrc, ICON_ID } from "../constants/icons";
+import { FC, useEffect, useRef } from 'react';
+import { getIconSrc, ICON_ID } from '../constants/icons';
 
 export const Icon: FC<{
   icon: ICON_ID;
   width: number;
   height: number;
-}> = ({ icon, width, height }) => {
+  grayscale?: boolean;
+}> = ({ icon, width, height, grayscale }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -14,7 +15,7 @@ export const Icon: FC<{
       return;
     }
 
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext('2d');
     if (!context) {
       return;
     }
@@ -26,8 +27,12 @@ export const Icon: FC<{
       if (!context) return;
       context.reset();
       context.imageSmoothingEnabled = false;
-      context.drawImage(image, 0, 0, width, height);
 
+      if (grayscale) {
+        context.filter = 'grayscale(1)';
+      }
+
+      context.drawImage(image, 0, 0, width, height);
     };
   }, [icon, width, height]);
 
