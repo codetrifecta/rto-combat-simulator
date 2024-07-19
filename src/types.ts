@@ -73,6 +73,7 @@ export interface IStatusEffect {
 export interface IWeapon {
   id: number;
   name: string;
+  icon: ICON_ID;
   attackType: WEAPON_ATTACK_TYPE.MELEE | WEAPON_ATTACK_TYPE.RANGED;
   type: WEAPON_TYPE;
   stats: IStats;

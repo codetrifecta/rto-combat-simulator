@@ -3,23 +3,26 @@ import { FC } from "react";
 
 export const IconButton: FC<{
   children: string | JSX.Element | JSX.Element[];
-  onClick: () => void;
+  onClick?: () => void | undefined | null;
   disabled?: boolean | undefined | null;
+  active?: boolean | undefined | null;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
-}> = ({ children, onClick, disabled, onMouseEnter, onMouseLeave }) => {
+}> = ({ children, onClick, disabled, active, onMouseEnter, onMouseLeave }) => {
   return (
     <button
       className={clsx(
-        "relative p-0 m-0 flex items-center justify-center border-2 hover:border-white hover:border-2 box-border",
+        "peer relative p-0 m-0 flex items-center justify-center border-2 hover:border-white box-border bg-zinc-800",
         {
           "cursor-not-allowed opacity-50": disabled,
-          "cursor-pointer": !disabled,
+          "cursor-pointer hover:border-gray": !disabled && onClick !== undefined,
           "border-primary-500": !disabled,
+          "border-white": active,
+          "cursor-auto": !onClick,
         }
       )}
       onClick={() => {
-        if (!disabled) onClick();
+        if (!disabled && onClick) onClick();
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

@@ -1,4 +1,5 @@
 import { IWeapon } from "../types";
+import { ICON_ID } from "./icons";
 
 export enum WEAPON_ATTACK_TYPE {
   MELEE = "melee",
@@ -17,6 +18,7 @@ export const WEAPONS: IWeapon[] = [
   {
     id: 1,
     name: "Fists",
+    icon: ICON_ID.WEAPON_FIST,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.ONE_HANDED,
     stats: {
@@ -30,11 +32,27 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 2,
-    name: "Club",
+    name: "Sword",
+    icon: ICON_ID.WEAPON_SWORD,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.ONE_HANDED,
     stats: {
       strength: 2,
+      intelligence: 0,
+      defense: 2,
+      constitution: 0,
+    },
+    range: 1,
+    cost: 1,
+  },
+  {
+    id: 3,
+    name: "Katana",
+    icon: ICON_ID.WEAPON_KATANA,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.ONE_HANDED,
+    stats: {
+      strength: 3,
       intelligence: 0,
       defense: 0,
       constitution: 0,
@@ -43,13 +61,29 @@ export const WEAPONS: IWeapon[] = [
     cost: 1,
   },
   {
-    id: 3,
-    name: "Blade of Olympus",
+    id: 4,
+    name: "Greatsword",
+    icon: ICON_ID.WEAPON_GREATSWORD,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.TWO_HANDED,
     stats: {
-      strength: 5,
-      intelligence: 3,
+      strength: 3,
+      intelligence: 0,
+      defense: 2,
+      constitution: 0,
+    },
+    range: 2,
+    cost: 2,
+  },
+  {
+    id: 5,
+    name: "Glaive",
+    icon: ICON_ID.WEAPON_GLAIVE,
+    attackType: WEAPON_ATTACK_TYPE.MELEE,
+    type: WEAPON_TYPE.TWO_HANDED,
+    stats: {
+      strength: 4,
+      intelligence: 0,
       defense: 0,
       constitution: 0,
     },
@@ -57,22 +91,9 @@ export const WEAPONS: IWeapon[] = [
     cost: 2,
   },
   {
-    id: 4,
-    name: "Blades of Chaos",
-    attackType: WEAPON_ATTACK_TYPE.MELEE,
-    type: WEAPON_TYPE.ONE_HANDED,
-    stats: {
-      strength: 2,
-      intelligence: 1,
-      defense: 0,
-      constitution: 0,
-    },
-    range: 3,
-    cost: 1,
-  },
-  {
-    id: 5,
+    id: 6,
     name: "Bow",
+    icon: ICON_ID.WEAPON_BOW,
     attackType: WEAPON_ATTACK_TYPE.RANGED,
     type: WEAPON_TYPE.BOW,
     stats: {
@@ -85,8 +106,24 @@ export const WEAPONS: IWeapon[] = [
     cost: 2,
   },
   {
-    id: 6,
+    id: 7,
+    name: "Magic Wand",
+    icon: ICON_ID.WEAPON_MAGIC_WAND,
+    attackType: WEAPON_ATTACK_TYPE.RANGED,
+    type: WEAPON_TYPE.WAND,
+    stats: {
+      strength: 0,
+      intelligence: 2,
+      defense: 0,
+      constitution: 0,
+    },
+    range: 3,
+    cost: 1,
+  },
+  {
+    id: 8,
     name: "Magic Staff",
+    icon: ICON_ID.WEAPON_MAGIC_STAFF,
     attackType: WEAPON_ATTACK_TYPE.RANGED,
     type: WEAPON_TYPE.STAFF,
     stats: {
@@ -96,11 +133,12 @@ export const WEAPONS: IWeapon[] = [
       constitution: 0,
     },
     range: 3,
-    cost: 1,
+    cost: 2,
   },
   {
-    id: 7,
+    id: 9,
     name: "Doom Hammer",
+    icon: ICON_ID.WEAPON_GREATSWORD,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.TWO_HANDED,
     stats: {

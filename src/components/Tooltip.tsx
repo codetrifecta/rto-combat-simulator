@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import { FC, ReactNode, useEffect, useRef } from "react";
 
-export const Tooltip: FC<{ children: ReactNode; active: boolean }> = ({
+export const Tooltip: FC<{ children: ReactNode; active?: boolean }> = ({
   children,
-  active,
+  // active = false,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const tooltipRect = ref.current?.getBoundingClientRect();
@@ -39,9 +39,7 @@ export const Tooltip: FC<{ children: ReactNode; active: boolean }> = ({
   return (
     <div
       className={clsx(
-        "absolute inline-block bg-neutral-900 text-white p-2 rounded-lg shadow-lg transition-all ease duration-200 w-[300px]",
-        { "opacity-100 z-50": active },
-        { "opacity-0 z-[-10] invisible": !active }
+        "absolute inline-block bg-neutral-900 text-white p-2 rounded-lg shadow-lg transition-all ease duration-200 w-[300px] opacity-0 invisible peer-hover:opacity-100 peer-hover:z-50 peer-hover:visible"
       )}
       ref={ref}
     >

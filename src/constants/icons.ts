@@ -8,6 +8,16 @@ import log from "../assets/icons/icon_log.png";
 import character from "../assets/icons/icon_character.png";
 import inventory from "../assets/icons/icon_inventory.png";
 
+// WEAPONS
+import fist from "../assets/icons/icon_weapon_fist.png";
+import sword from "../assets/icons/icon_weapon_sword_1.png";
+import katana from "../assets/icons/icon_weapon_katana_1.png";
+import greatsword from "../assets/icons/icon_weapon_greatsword_1.png";
+import glaive from "../assets/icons/icon_weapon_polearm_1.png";
+import bow from "../assets/icons/icon_weapon_bow_1.png";
+import magic_wand from "../assets/icons/icon_weapon_wand_1.png";
+import magic_staff from "../assets/icons/icon_weapon_staff_1.png";
+
 // SKILLS
 import skill_defense_up from "../assets/icons/icon_skill_defense_up.png";
 import skill_petrify from "../assets/icons/icon_skill_petrify.png";
@@ -32,6 +42,16 @@ export enum ICON_ID {
   LOG = "log",
   CHARACTER = "character",
   INVENTORY = "inventory",
+
+  // WEAPONS
+  WEAPON_FIST = "weapon_fist",
+  WEAPON_SWORD = "weapon_sword",
+  WEAPON_KATANA = "weapon_katana",
+  WEAPON_GREATSWORD = "weapon_greatsword",
+  WEAPON_GLAIVE = "weapon_glaive",
+  WEAPON_BOW = "weapon_bow",
+  WEAPON_MAGIC_WAND = "weapon_magic_scepter",
+  WEAPON_MAGIC_STAFF = "weapon_magic_staff",
 
   // SKILLS
   SKILL_DEFENSE_UP = "skill_defense_up",
@@ -58,6 +78,16 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.LOG]: log,
   [ICON_ID.CHARACTER]: character,
   [ICON_ID.INVENTORY]: inventory,
+
+  // WEAPONS
+  [ICON_ID.WEAPON_FIST]: fist,
+  [ICON_ID.WEAPON_SWORD]: sword,
+  [ICON_ID.WEAPON_KATANA]: katana,
+  [ICON_ID.WEAPON_GREATSWORD]: greatsword,
+  [ICON_ID.WEAPON_GLAIVE]: glaive,
+  [ICON_ID.WEAPON_BOW]: bow,
+  [ICON_ID.WEAPON_MAGIC_WAND]: magic_wand,
+  [ICON_ID.WEAPON_MAGIC_STAFF]: magic_staff,
 
   // SKILLS
   [ICON_ID.SKILL_DEFENSE_UP]: skill_defense_up,
