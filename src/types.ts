@@ -1,7 +1,7 @@
-import { ENTITY_TYPE } from "./constants/entity";
-import { ICON_ID } from "./constants/icons";
-import { SKILL_TYPE } from "./constants/skill";
-import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from "./constants/weapon";
+import { ENTITY_TYPE } from './constants/entity';
+import { ICON_ID } from './constants/icons';
+import { SKILL_TYPE } from './constants/skill';
+import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from './constants/weapon';
 
 export interface IEntity {
   id: number;
@@ -91,6 +91,7 @@ export interface IStats {
 export interface IArmor {
   id: number;
   name: string;
+  icon: ICON_ID;
   stats: IStats;
 }
 
@@ -102,5 +103,5 @@ export interface ILegging extends IArmor {}
 
 export interface ILog {
   message: string | JSX.Element;
-  type: "info" | "error";
+  type: 'info' | 'error';
 }

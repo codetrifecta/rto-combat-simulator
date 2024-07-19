@@ -1,5 +1,5 @@
-import clsx from "clsx";
-import { FC, ReactNode, useEffect, useRef } from "react";
+import clsx from 'clsx';
+import { FC, ReactNode, useEffect, useRef } from 'react';
 
 export const Tooltip: FC<{ children: ReactNode; active?: boolean }> = ({
   children,
@@ -25,8 +25,10 @@ export const Tooltip: FC<{ children: ReactNode; active?: boolean }> = ({
       // Set tooltip position to top or bottom of parent element
       if (isTop) {
         ref.current.style.bottom = `-${tooltipRect.height + 10}px`;
+        ref.current.style.top = '';
       } else {
         ref.current.style.top = `-${tooltipRect.height + 10}px`;
+        ref.current.style.bottom = '';
       }
 
       // Set tooltip position to middle of parent element
@@ -39,7 +41,7 @@ export const Tooltip: FC<{ children: ReactNode; active?: boolean }> = ({
   return (
     <div
       className={clsx(
-        "absolute inline-block bg-neutral-900 text-white p-2 rounded-lg shadow-lg transition-all ease duration-200 w-[300px] opacity-0 invisible peer-hover:opacity-100 peer-hover:z-50 peer-hover:visible"
+        'absolute inline-block bg-neutral-900 text-white p-2 rounded-lg shadow-lg transition-all ease duration-200 w-[300px] opacity-0 invisible peer-hover:opacity-100 peer-hover:z-50 peer-hover:visible'
       )}
       ref={ref}
     >

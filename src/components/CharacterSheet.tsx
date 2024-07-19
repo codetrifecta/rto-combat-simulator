@@ -1,20 +1,24 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-import { usePlayerStore } from "../store/player";
-import { useGameStateStore } from "../store/game";
-import { IconButton } from "./IconButton";
-import { Icon } from "./Icon";
-import { Tooltip } from "./Tooltip";
+import { usePlayerStore } from '../store/player';
+import { useGameStateStore } from '../store/game';
+import { IconButton } from './IconButton';
+import { Icon } from './Icon';
+import { Tooltip } from './Tooltip';
+import { WEAPONS } from '../constants/weapon';
+import { CHESTPIECES, HELMETS, LEGGINGS } from '../constants/armor';
 
-const equipmentCardClasses =
-  "w-28 h-28 bg-zinc-700 mb-5 flex justify-center items-center border border-white";
+// const equipmentCardClasses =
+//   'w-28 h-28 bg-zinc-700 mb-5 flex justify-center items-center border border-white';
+
+const equipmentCardClasses = 'relative mb-5';
 
 const EQUIPMENT_ICON_SIZE = 96;
 
 export const CharacterSheet: FC = () => {
   const { getPlayer, getPlayerTotalStats } = usePlayerStore();
   const player = getPlayer();
-  const weapon = player.equipment.weapon;
+  const { weapon, helmet, chestpiece, legging } = player.equipment;
   const playerStats = getPlayerTotalStats();
 
   const { setIsCharacterSheetOpen } = useGameStateStore();
@@ -33,7 +37,8 @@ export const CharacterSheet: FC = () => {
       <div className="text-center flex flex-col justify-start items-center">
         <h3 className="mb-5">Name: {player.name}</h3>
 
-        <div className="relative mb-5">
+        <div className={equipmentCardClasses}>
+          {/* Weapon will never be done because fists are the default */}
           {weapon !== null ? (
             <>
               <IconButton>
@@ -62,31 +67,125 @@ export const CharacterSheet: FC = () => {
               </Tooltip>
             </>
           ) : (
-            <p>None</p>
+            <IconButton>
+              <Icon
+                icon={WEAPONS[0].icon}
+                width={EQUIPMENT_ICON_SIZE}
+                height={EQUIPMENT_ICON_SIZE}
+                grayscale={true}
+              />
+            </IconButton>
           )}
         </div>
 
         <div className={equipmentCardClasses}>
-          {player.equipment.helmet ? (
-            <p>{player.equipment.helmet.name}</p>
+          {helmet !== null ? (
+            <>
+              <IconButton>
+                <Icon
+                  icon={helmet.icon}
+                  width={EQUIPMENT_ICON_SIZE}
+                  height={EQUIPMENT_ICON_SIZE}
+                />
+              </IconButton>
+              <Tooltip>
+                <h3>{helmet.name}</h3>
+                {helmet.stats.strength > 0 && (
+                  <p>Strength: {helmet.stats.strength}</p>
+                )}
+                {helmet.stats.intelligence > 0 && (
+                  <p>Intelligence: {helmet.stats.intelligence}</p>
+                )}
+                {helmet.stats.defense > 0 && (
+                  <p>Defense: {helmet.stats.defense}</p>
+                )}
+                {helmet.stats.constitution > 0 && (
+                  <p>Constitution: {helmet.stats.constitution}</p>
+                )}
+              </Tooltip>
+            </>
           ) : (
-            <p>None</p>
+            <IconButton disabled={true} grayscale={true}>
+              <Icon
+                icon={HELMETS[0].icon}
+                width={EQUIPMENT_ICON_SIZE}
+                height={EQUIPMENT_ICON_SIZE}
+              />
+            </IconButton>
           )}
         </div>
 
         <div className={equipmentCardClasses}>
-          {player.equipment.chestpiece ? (
-            <p>{player.equipment.chestpiece.name}</p>
+          {chestpiece !== null ? (
+            <>
+              <IconButton>
+                <Icon
+                  icon={chestpiece.icon}
+                  width={EQUIPMENT_ICON_SIZE}
+                  height={EQUIPMENT_ICON_SIZE}
+                />
+              </IconButton>
+              <Tooltip>
+                <h3>{chestpiece.name}</h3>
+                {chestpiece.stats.strength > 0 && (
+                  <p>Strength: {chestpiece.stats.strength}</p>
+                )}
+                {chestpiece.stats.intelligence > 0 && (
+                  <p>Intelligence: {chestpiece.stats.intelligence}</p>
+                )}
+                {chestpiece.stats.defense > 0 && (
+                  <p>Defense: {chestpiece.stats.defense}</p>
+                )}
+                {chestpiece.stats.constitution > 0 && (
+                  <p>Constitution: {chestpiece.stats.constitution}</p>
+                )}
+              </Tooltip>
+            </>
           ) : (
-            <p>None</p>
+            <IconButton disabled grayscale>
+              <Icon
+                icon={CHESTPIECES[0].icon}
+                width={EQUIPMENT_ICON_SIZE}
+                height={EQUIPMENT_ICON_SIZE}
+              />
+            </IconButton>
           )}
         </div>
 
         <div className={equipmentCardClasses}>
-          {player.equipment.legging ? (
-            <p>{player.equipment.legging.name}</p>
+          {legging !== null ? (
+            <>
+              <IconButton>
+                <Icon
+                  icon={legging.icon}
+                  width={EQUIPMENT_ICON_SIZE}
+                  height={EQUIPMENT_ICON_SIZE}
+                />
+              </IconButton>
+              <Tooltip>
+                <h3>{legging.name}</h3>
+                {legging.stats.strength > 0 && (
+                  <p>Strength: {legging.stats.strength}</p>
+                )}
+                {legging.stats.intelligence > 0 && (
+                  <p>Intelligence: {legging.stats.intelligence}</p>
+                )}
+                {legging.stats.defense > 0 && (
+                  <p>Defense: {legging.stats.defense}</p>
+                )}
+                {legging.stats.constitution > 0 && (
+                  <p>Constitution: {legging.stats.constitution}</p>
+                )}
+              </Tooltip>
+            </>
           ) : (
-            <p>None</p>
+            <IconButton disabled={true} grayscale={true}>
+              <Icon
+                icon={LEGGINGS[0].icon}
+                width={EQUIPMENT_ICON_SIZE}
+                height={EQUIPMENT_ICON_SIZE}
+              />
+            </IconButton>
           )}
         </div>
 
