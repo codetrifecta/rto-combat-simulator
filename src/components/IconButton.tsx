@@ -11,7 +11,7 @@ export const IconButton: FC<{
   return (
     <button
       className={clsx(
-        "relative p-0 m-0 flex items-center justify-center border-2 hover:border-white hover:border-2 box-border",
+        "peer relative p-0 m-0 flex items-center justify-center border-2 hover:border-white hover:border-2 box-border",
         {
           "cursor-not-allowed opacity-50": disabled,
           "cursor-pointer": !disabled,

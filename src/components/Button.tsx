@@ -12,7 +12,7 @@ export const Button: FC<{
   return (
     <button
       className={clsx(
-        " text-white font-bold py-2 px-4 rounded text-lg",
+        "peer text-white font-bold py-2 px-4 rounded text-lg",
         { "bg-blue-500": !neutral },
         { "bg-neutral-500": neutral },
         { "hover:bg-blue-700": !disabled && !neutral },
