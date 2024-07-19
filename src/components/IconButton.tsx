@@ -1,5 +1,5 @@
-import clsx from "clsx";
-import { FC } from "react";
+import clsx from 'clsx';
+import { FC } from 'react';
 
 export const IconButton: FC<{
   children: string | JSX.Element | JSX.Element[];
@@ -8,17 +8,28 @@ export const IconButton: FC<{
   active?: boolean | undefined | null;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
-}> = ({ children, onClick, disabled, active, onMouseEnter, onMouseLeave }) => {
+  grayscale?: boolean | undefined | null;
+}> = ({
+  children,
+  onClick,
+  disabled,
+  active,
+  onMouseEnter,
+  onMouseLeave,
+  grayscale,
+}) => {
   return (
     <button
       className={clsx(
-        "peer relative p-0 m-0 flex items-center justify-center border-2 hover:border-white box-border bg-zinc-800",
+        'peer relative p-0 m-0 flex items-center justify-center border-2  box-border bg-zinc-800',
         {
-          "cursor-not-allowed opacity-50": disabled,
-          "cursor-pointer hover:border-gray": !disabled && onClick !== undefined,
-          "border-primary-500": !disabled,
-          "border-white": active,
-          "cursor-auto": !onClick,
+          'cursor-not-allowed opacity-50': disabled,
+          'cursor-pointer hover:border-gray':
+            !disabled && onClick !== undefined,
+          'border-primary-500 hover:border-white': !disabled,
+          'border-white': active,
+          'cursor-auto': !onClick,
+          grayscale: grayscale,
         }
       )}
       onClick={() => {

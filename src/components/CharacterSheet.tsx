@@ -105,12 +105,11 @@ export const CharacterSheet: FC = () => {
               </Tooltip>
             </>
           ) : (
-            <IconButton disabled={true}>
+            <IconButton disabled={true} grayscale={true}>
               <Icon
                 icon={HELMETS[0].icon}
                 width={EQUIPMENT_ICON_SIZE}
                 height={EQUIPMENT_ICON_SIZE}
-                grayscale={true}
               />
             </IconButton>
           )}
