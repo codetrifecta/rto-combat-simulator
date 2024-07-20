@@ -8,7 +8,16 @@ export const IconButton: FC<{
   active?: boolean | undefined | null;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
-}> = ({ children, onClick, disabled, active, onMouseEnter, onMouseLeave }) => {
+  grayscale?: boolean;
+}> = ({
+  children,
+  onClick,
+  disabled,
+  active,
+  onMouseEnter,
+  onMouseLeave,
+  grayscale,
+}) => {
   return (
     <button
       className={clsx(
@@ -20,6 +29,7 @@ export const IconButton: FC<{
           'border-primary-500': !disabled,
           'border-white': active,
           'cursor-auto': !onClick,
+          grayscale: grayscale,
         }
       )}
       onClick={() => {
