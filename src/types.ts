@@ -1,6 +1,7 @@
 import { ENTITY_TYPE } from './constants/entity';
 import { ICON_ID } from './constants/icons';
 import { SKILL_TYPE } from './constants/skill';
+import { SPRITE_ID } from './constants/sprites';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from './constants/weapon';
 
 export interface IEntity {
@@ -35,6 +36,7 @@ export interface IPlayerState {
 }
 
 export interface IEnemy extends IEntity {
+  sprite: SPRITE_ID;
   range: number;
   damage: number;
 }
