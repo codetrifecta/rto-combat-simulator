@@ -37,6 +37,7 @@ export interface IPlayerState {
 
 export interface IEnemy extends IEntity {
   sprite: SPRITE_ID;
+  sprite_size: number;
   range: number;
   damage: number;
 }
