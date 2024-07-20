@@ -1,10 +1,10 @@
-import { ISkill } from "../types";
-import { ICON_ID } from "./icons";
+import { ISkill } from '../types';
+import { ICON_ID } from './icons';
 
 export enum SKILL_TYPE {
-  SELF = "self",
-  ST = "st",
-  AOE = "aoe",
+  SELF = 'self',
+  ST = 'st',
+  AOE = 'aoe',
 }
 
 export enum SKILL_ID {
@@ -20,10 +20,10 @@ export enum SKILL_ID {
 export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.FLEX,
-    name: "Flex",
+    name: 'Flex',
     icon: ICON_ID.BASIC_ATTACK,
     skillType: SKILL_TYPE.SELF,
-    description: "Increase damage for all attacks by 2 for 3 turns.",
+    description: 'Increase damage for all attacks by 2 for 3 turns.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
@@ -32,11 +32,11 @@ export const SKILLS: ISkill[] = [
   },
   {
     id: SKILL_ID.IRONFLESH,
-    name: "Ironflesh",
+    name: 'Ironflesh',
     icon: ICON_ID.SKILL_DEFENSE_UP,
     skillType: SKILL_TYPE.SELF,
     description:
-      "Applies Stone Skin on self for 3 turns. Stone Skin decreases all incoming damage by 3.",
+      'Applies Stone Skin on self for 3 turns. Stone Skin decreases all incoming damage by 3.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
@@ -49,7 +49,7 @@ export const SKILLS: ISkill[] = [
     icon: ICON_ID.SKILL_PETRIFY,
     skillType: SKILL_TYPE.ST,
     description:
-      "Petrify an enemy for 3 turns. Petrified enemies cannot move or attack.",
+      'Petrify an enemy for 3 turns. Petrified enemies cannot move or attack.',
     damageMultiplier: 0,
     range: 3,
     cooldown: 3,
@@ -58,10 +58,10 @@ export const SKILLS: ISkill[] = [
   },
   {
     id: SKILL_ID.LIGHTNING,
-    name: "Lightning",
+    name: 'Lightning',
     icon: ICON_ID.SKILL_LIGHTNING,
     skillType: SKILL_TYPE.ST,
-    description: "Strike enemies with lighning from the skies.",
+    description: 'Strike enemies with lighning from the skies.',
     damageMultiplier: 2,
     range: 3,
     cooldown: 1,
@@ -70,10 +70,10 @@ export const SKILLS: ISkill[] = [
   },
   {
     id: SKILL_ID.FIREBALL,
-    name: "Fireball",
+    name: 'Fireball',
     icon: ICON_ID.SKILL_FIREBALL,
     skillType: SKILL_TYPE.AOE,
-    description: "Launch a fireball at a target area. Burns enemies hit.",
+    description: 'Launch a fireball at a target area. Burns enemies hit.',
     damageMultiplier: 1.5,
     range: 3,
     cooldown: 2,
@@ -82,7 +82,7 @@ export const SKILLS: ISkill[] = [
   },
   {
     id: SKILL_ID.WHIRLWIND,
-    name: "Whirlwind",
+    name: 'Whirlwind',
     icon: ICON_ID.SKILL_WHIRLWIND,
     skillType: SKILL_TYPE.AOE,
     description:
@@ -95,10 +95,10 @@ export const SKILLS: ISkill[] = [
   },
   {
     id: SKILL_ID.FLY,
-    name: "Fly",
+    name: 'Fly',
     icon: ICON_ID.SKILL_TELEPORT,
     skillType: SKILL_TYPE.ST,
-    description: "Fly to an empty tile in the room.",
+    description: 'Fly to an empty tile in the room.',
     damageMultiplier: 0,
     range: 5,
     cooldown: 4,
