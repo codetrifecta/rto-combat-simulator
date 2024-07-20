@@ -1,11 +1,10 @@
 import { FC, useMemo } from 'react';
-import { ENTITY_SIZE, ENTITY_TYPE } from '../constants/entity';
+import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import clsx from 'clsx';
 import { IPlayerState } from '../types';
 import { useEnemyStore } from '../store/enemy';
 import { Sprite } from './Sprite';
-import { SPRITE_SIZE } from '../constants/sprites';
 
 export const Tile: FC<{
   tileType: number;
