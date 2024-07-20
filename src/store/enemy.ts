@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { IEnemy } from "../types";
-import { ENEMY_PRESET_ID, ENEMY_PRESETS } from "../constants/entity";
+import { create } from 'zustand';
+import { IEnemy } from '../types';
+import { ENEMY_PRESET_ID, ENEMY_PRESETS } from '../constants/entity';
 
 interface IEnemies {
   enemies: IEnemy[];
@@ -23,11 +23,11 @@ export const useEnemyStore = create<IEnemyStore>((set, get) => ({
       id: 2,
     },
     {
-      ...ENEMY_PRESETS[ENEMY_PRESET_ID.GORGON],
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.HARPY],
       id: 3,
     },
     {
-      ...ENEMY_PRESETS[ENEMY_PRESET_ID.CYCLOPS],
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.MINOTAUR],
       id: 4,
     },
   ],
