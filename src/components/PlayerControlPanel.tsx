@@ -28,7 +28,7 @@ export const PlayerControlPanel: FC = () => {
     setIsCharacterSheetOpen,
     setIsInventoryOpen,
     setIsGameLogOpen,
-    setIsGenerateRoomOpen
+    setIsGenerateRoomOpen,
   } = useGameStateStore();
 
   const {
@@ -37,7 +37,7 @@ export const PlayerControlPanel: FC = () => {
     getPlayerTotalIntelligence,
     getPlayerBonusDamage,
     setPlayer,
-    setPlayerState
+    setPlayerState,
   } = usePlayerStore();
 
   const player = getPlayer();
@@ -54,7 +54,7 @@ export const PlayerControlPanel: FC = () => {
     setPlayerState({
       isAttacking: false,
       isMoving: false,
-      isUsingSkill: false
+      isUsingSkill: false,
     });
     handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
   };
@@ -66,15 +66,23 @@ export const PlayerControlPanel: FC = () => {
           <h2>{skill.name}</h2>
           <p>{skill.description}</p>
           {player.equipment.weapon ? (
-            <p>Base DMG: {Math.round(baseAttackDamage * skill.damageMultiplier)}</p>
+            <p>
+              Base DMG: {Math.round(baseAttackDamage * skill.damageMultiplier)}
+            </p>
           ) : null}
           {player.equipment.weapon ? <p>Bonus DMG: {bonusDamage}</p> : null}
           {player.equipment.weapon ? (
-            <p>Total DMG: {Math.round(baseAttackDamage * skill.damageMultiplier) + bonusDamage}</p>
+            <p>
+              Total DMG:{' '}
+              {Math.round(baseAttackDamage * skill.damageMultiplier) +
+                bonusDamage}
+            </p>
           ) : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
-          {skill.cooldownCounter > 0 && <p>Turns until active: {skill.cooldownCounter}</p>}
+          {skill.cooldownCounter > 0 && (
+            <p>Turns until active: {skill.cooldownCounter}</p>
+          )}
         </Tooltip>
       );
     } else {
@@ -83,36 +91,52 @@ export const PlayerControlPanel: FC = () => {
           <h2>{skill.name}</h2>
           <p>{skill.description}</p>
           {skill.damageMultiplier ? (
-            <p>Base DMG: {Math.round(totalIntelligence * skill.damageMultiplier)}</p>
+            <p>
+              Base DMG: {Math.round(totalIntelligence * skill.damageMultiplier)}
+            </p>
           ) : null}
           {skill.damageMultiplier ? <p>Bonus DMG: {bonusDamage}</p> : null}
           {skill.damageMultiplier ? (
-            <p>Total DMG: {Math.round(totalIntelligence * skill.damageMultiplier) + bonusDamage}</p>
+            <p>
+              Total DMG:{' '}
+              {Math.round(totalIntelligence * skill.damageMultiplier) +
+                bonusDamage}
+            </p>
           ) : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
-          {skill.cooldownCounter > 0 && <p>Turns until active: {skill.cooldownCounter}</p>}
+          {skill.cooldownCounter > 0 && (
+            <p>Turns until active: {skill.cooldownCounter}</p>
+          )}
         </Tooltip>
       );
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const disabled = useMemo(() => {
-    return (turnCycle[0] !== null && turnCycle[0].entityType !== ENTITY_TYPE.PLAYER) || isGameOver;
+    return (
+      (turnCycle[0] !== null &&
+        turnCycle[0].entityType !== ENTITY_TYPE.PLAYER) ||
+      isGameOver
+    );
   }, [isGameOver, turnCycle]);
 
   return (
     <div className="h-[80px] flex items-center bg-neutral-900">
       <div
-        className={clsx('w-screen px-4 flex justify-center items-center gap-5 box-border', {
-          'bg-neutral-900': !disabled
-        })}>
+        className={clsx(
+          'w-screen px-4 flex justify-center items-center gap-5 box-border',
+          {
+            'bg-neutral-900': !disabled,
+          }
+        )}
+      >
         {openSkills ? (
           <div
-            className={clsx('flex justify-center items-center gap-5', {
-              'pointer-events-none': disabled
-            })}>
+            className={clsx('flex justify-center items-center', {
+              'pointer-events-none': disabled,
+            })}
+          >
             {player.skills.map((skill) => (
               <div key={skill.id} className="relative">
                 <IconButton
@@ -121,16 +145,22 @@ export const PlayerControlPanel: FC = () => {
                       isAttacking: false,
                       isMoving: false,
                       isUsingSkill: !player.state.isUsingSkill,
-                      skillId: skill.id
+                      skillId: skill.id,
                     });
                   }}
                   disabled={
                     disabled ||
                     player.actionPoints < skill.cost ||
                     skill.cooldownCounter > 0 ||
-                    (skill.id === SKILL_ID.WHIRLWIND && player.equipment.weapon === null)
-                  }>
-                  <Icon icon={skill.icon} width={ICON_SIZE} height={ICON_SIZE} />
+                    (skill.id === SKILL_ID.WHIRLWIND &&
+                      player.equipment.weapon === null)
+                  }
+                >
+                  <Icon
+                    icon={skill.icon}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
                 </IconButton>
                 {renderWeaponButtonTooltip(skill)}
               </div>
@@ -140,26 +170,32 @@ export const PlayerControlPanel: FC = () => {
                 setPlayerState({
                   isAttacking: false,
                   isMoving: false,
-                  isUsingSkill: false
+                  isUsingSkill: false,
                 });
                 setOpenSkills(false);
               }}
               disabled={disabled}
-              neutral>
+              neutral
+            >
               Cancel
             </Button>
           </div>
         ) : (
           <div className="grid grid-flow-col grid-rows-1 grid-cols-3 items-center w-full">
             {/* Logger, Character, Inventory buttons */}
-            <div className="flex justify-center gap-5 col-span-1">
+            <div className="flex justify-center col-span-1">
               <div className="relative">
                 <IconButton
                   onClick={() => {
                     if (isGenerateRoomOpen) return;
                     setIsGameLogOpen(!isGameLogOpen);
-                  }}>
-                  <Icon icon={ICON_ID.LOG} width={ICON_SIZE} height={ICON_SIZE} />
+                  }}
+                >
+                  <Icon
+                    icon={ICON_ID.LOG}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
                 </IconButton>
                 <Tooltip>
                   <p>Game Log (L)</p>
@@ -170,8 +206,13 @@ export const PlayerControlPanel: FC = () => {
                   onClick={() => {
                     if (isGenerateRoomOpen) return;
                     setIsCharacterSheetOpen(!isCharacterSheetOpen);
-                  }}>
-                  <Icon icon={ICON_ID.CHARACTER} width={ICON_SIZE} height={ICON_SIZE} />
+                  }}
+                >
+                  <Icon
+                    icon={ICON_ID.CHARACTER}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
                 </IconButton>
                 <Tooltip>
                   <p>Character Sheet (C)</p>
@@ -182,8 +223,13 @@ export const PlayerControlPanel: FC = () => {
                   onClick={() => {
                     if (isGenerateRoomOpen) return;
                     setIsInventoryOpen(!isInventoryOpen);
-                  }}>
-                  <Icon icon={ICON_ID.INVENTORY} width={ICON_SIZE} height={ICON_SIZE} />
+                  }}
+                >
+                  <Icon
+                    icon={ICON_ID.INVENTORY}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
                 </IconButton>
                 <Tooltip>
                   <p>Inventory (I)</p>
@@ -193,24 +239,27 @@ export const PlayerControlPanel: FC = () => {
 
             {/* Combat buttons */}
             <div
-              className={clsx('flex justify-center items-center gap-5 col-span-1', {
-                'pointer-events-none': disabled
-              })}>
+              className={clsx('flex justify-center items-center col-span-1', {
+                'pointer-events-none': disabled,
+              })}
+            >
               <div className="relative">
                 <IconButton
                   onClick={() => {
                     setPlayerState({
                       isAttacking: !player.state.isAttacking,
                       isMoving: false,
-                      isUsingSkill: false
+                      isUsingSkill: false,
                     });
                   }}
                   disabled={
                     disabled ||
                     isRoomOver ||
                     player.equipment.weapon === null ||
-                    (player.equipment.weapon && player.actionPoints < player.equipment.weapon.cost)
-                  }>
+                    (player.equipment.weapon &&
+                      player.actionPoints < player.equipment.weapon.cost)
+                  }
+                >
                   {player.equipment.weapon ? (
                     <Icon
                       icon={player.equipment.weapon.icon}
@@ -218,7 +267,11 @@ export const PlayerControlPanel: FC = () => {
                       height={ICON_SIZE}
                     />
                   ) : (
-                    <Icon icon={ICON_ID.BASIC_ATTACK} width={ICON_SIZE} height={ICON_SIZE} />
+                    <Icon
+                      icon={ICON_ID.BASIC_ATTACK}
+                      width={ICON_SIZE}
+                      height={ICON_SIZE}
+                    />
                   )}
                 </IconButton>
                 <Tooltip>
@@ -242,11 +295,16 @@ export const PlayerControlPanel: FC = () => {
                     setPlayerState({
                       isAttacking: false,
                       isMoving: !player.state.isMoving,
-                      isUsingSkill: false
+                      isUsingSkill: false,
                     });
                   }}
-                  disabled={disabled}>
-                  <Icon icon={ICON_ID.MOVE} width={ICON_SIZE} height={ICON_SIZE} />
+                  disabled={disabled}
+                >
+                  <Icon
+                    icon={ICON_ID.MOVE}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
                 </IconButton>
                 <Tooltip>
                   <h2>Move</h2>
@@ -263,11 +321,16 @@ export const PlayerControlPanel: FC = () => {
                     setPlayerState({
                       isAttacking: false,
                       isMoving: false,
-                      isUsingSkill: false
+                      isUsingSkill: false,
                     });
                   }}
-                  disabled={disabled || isRoomOver}>
-                  <Icon icon={ICON_ID.SKILLS} width={ICON_SIZE} height={ICON_SIZE} />
+                  disabled={disabled || isRoomOver}
+                >
+                  <Icon
+                    icon={ICON_ID.SKILLS}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
                 </IconButton>
                 <Tooltip>
                   <h2>Skills</h2>
@@ -282,13 +345,15 @@ export const PlayerControlPanel: FC = () => {
                     addLog({
                       message: (
                         <>
-                          <span className="text-green-500">{player.name}</span> ended their turn.
+                          <span className="text-green-500">{player.name}</span>{' '}
+                          ended their turn.
                         </>
                       ),
-                      type: 'info'
+                      type: 'info',
                     });
                   }}
-                  disabled={disabled || isRoomOver}>
+                  disabled={disabled || isRoomOver}
+                >
                   End Turn
                 </Button>
                 <Tooltip>
@@ -305,7 +370,8 @@ export const PlayerControlPanel: FC = () => {
                   setIsCharacterSheetOpen(false);
                   setIsInventoryOpen(false);
                   setIsGenerateRoomOpen(!isGenerateRoomOpen);
-                }}>
+                }}
+              >
                 Generate Room
               </Button>
             </div>

@@ -9,54 +9,54 @@ import character from '../assets/icons/icon_character.png';
 import inventory from '../assets/icons/icon_inventory.png';
 
 // WEAPONS
-import fist from '../assets/icons/icon_weapon_fist.png';
-import sword from '../assets/icons/icon_weapon_sword_1.png';
-import katana from '../assets/icons/icon_weapon_katana_1.png';
-import greatsword from '../assets/icons/icon_weapon_greatsword_1.png';
-import glaive from '../assets/icons/icon_weapon_polearm_1.png';
-import bow from '../assets/icons/icon_weapon_bow_1.png';
-import magic_wand from '../assets/icons/icon_weapon_wand_1.png';
-import magic_staff from '../assets/icons/icon_weapon_staff_1.png';
+import fist from '../assets/icons/weapons/icon_weapon_fist.png';
+import sword from '../assets/icons/weapons/icon_weapon_sword_1.png';
+import katana from '../assets/icons/weapons/icon_weapon_katana_1.png';
+import greatsword from '../assets/icons/weapons/icon_weapon_greatsword_1.png';
+import glaive from '../assets/icons/weapons/icon_weapon_polearm_1.png';
+import bow from '../assets/icons/weapons/icon_weapon_bow_1.png';
+import magic_wand from '../assets/icons/weapons/icon_weapon_wand_1.png';
+import magic_staff from '../assets/icons/weapons/icon_weapon_staff_1.png';
 
 // HELMETS
-import helmet_leather_1 from '../assets/icons/icon_helmet_leather_1.png';
-import helmet_leather_2 from '../assets/icons/icon_helmet_leather_2.png';
-import helmet_steel_1 from '../assets/icons/icon_helmet_steel_1.png';
-import helmet_steel_2 from '../assets/icons/icon_helmet_steel_2.png';
-import helmet_gold_1 from '../assets/icons/icon_helmet_gold_1.png';
-import helmet_gold_2 from '../assets/icons/icon_helmet_gold_2.png';
-import helmet_diamond_1 from '../assets/icons/icon_helmet_diamond_1.png';
-import helmet_diamond_2 from '../assets/icons/icon_helmet_diamond_2.png';
+import helmet_leather_1 from '../assets/icons/helmets/icon_helmet_leather_1.png';
+import helmet_leather_2 from '../assets/icons/helmets/icon_helmet_leather_2.png';
+import helmet_steel_1 from '../assets/icons/helmets/icon_helmet_steel_1.png';
+import helmet_steel_2 from '../assets/icons/helmets/icon_helmet_steel_2.png';
+import helmet_gold_1 from '../assets/icons/helmets/icon_helmet_gold_1.png';
+import helmet_gold_2 from '../assets/icons/helmets/icon_helmet_gold_2.png';
+import helmet_diamond_1 from '../assets/icons/helmets/icon_helmet_diamond_1.png';
+import helmet_diamond_2 from '../assets/icons/helmets/icon_helmet_diamond_2.png';
 
 // CHESTPIECES
-import chestpiece_leather_1 from '../assets/icons/icon_chestpiece_leather_1.png';
-import chestpiece_leather_2 from '../assets/icons/icon_chestpiece_leather_2.png';
-import chestpiece_steel_1 from '../assets/icons/icon_chestpiece_steel_1.png';
-import chestpiece_steel_2 from '../assets/icons/icon_chestpiece_steel_2.png';
-import chestpiece_gold_1 from '../assets/icons/icon_chestpiece_gold_1.png';
-import chestpiece_gold_2 from '../assets/icons/icon_chestpiece_gold_2.png';
-import chestpiece_diamond_1 from '../assets/icons/icon_chestpiece_diamond_1.png';
-import chestpiece_diamond_2 from '../assets/icons/icon_chestpiece_diamond_2.png';
+import chestpiece_leather_1 from '../assets/icons/chestpieces/icon_chestpiece_leather_1.png';
+import chestpiece_leather_2 from '../assets/icons/chestpieces/icon_chestpiece_leather_2.png';
+import chestpiece_steel_1 from '../assets/icons/chestpieces/icon_chestpiece_steel_1.png';
+import chestpiece_steel_2 from '../assets/icons/chestpieces/icon_chestpiece_steel_2.png';
+import chestpiece_gold_1 from '../assets/icons/chestpieces/icon_chestpiece_gold_1.png';
+import chestpiece_gold_2 from '../assets/icons/chestpieces/icon_chestpiece_gold_2.png';
+import chestpiece_diamond_1 from '../assets/icons/chestpieces/icon_chestpiece_diamond_1.png';
+import chestpiece_diamond_2 from '../assets/icons/chestpieces/icon_chestpiece_diamond_2.png';
 
 // LEGGINGS
-import legging_leather_1 from '../assets/icons/icon_legging_leather_1.png';
-import legging_steel_1 from '../assets/icons/icon_legging_steel_1.png';
-import legging_gold_1 from '../assets/icons/icon_legging_gold_1.png';
-import legging_diamond_1 from '../assets/icons/icon_legging_diamond_1.png';
+import legging_leather_1 from '../assets/icons/leggings/icon_legging_leather_1.png';
+import legging_steel_1 from '../assets/icons/leggings/icon_legging_steel_1.png';
+import legging_gold_1 from '../assets/icons/leggings/icon_legging_gold_1.png';
+import legging_diamond_1 from '../assets/icons/leggings/icon_legging_diamond_1.png';
 
 // SKILLS
-import skill_defense_up from '../assets/icons/icon_skill_defense_up.png';
-import skill_petrify from '../assets/icons/icon_skill_petrify.png';
-import skill_lightning from '../assets/icons/icon_skill_lightning.png';
-import skill_fireball from '../assets/icons/icon_skill_fireball.png';
-import skill_whirlwind from '../assets/icons/icon_skill_whirlwind.png';
-import skill_teleport from '../assets/icons/icon_skill_teleport.png';
+import skill_defense_up from '../assets/icons/skills/icon_skill_defense_up.png';
+import skill_petrify from '../assets/icons/skills/icon_skill_petrify.png';
+import skill_lightning from '../assets/icons/skills/icon_skill_lightning.png';
+import skill_fireball from '../assets/icons/skills/icon_skill_fireball.png';
+import skill_whirlwind from '../assets/icons/skills/icon_skill_whirlwind.png';
+import skill_teleport from '../assets/icons/skills/icon_skill_teleport.png';
 
-// EFFECTS
-import effect_defense_up from '../assets/icons/icon_effect_defense_up.png';
-import effect_petrified from '../assets/icons/icon_effect_petrified.png';
-import effect_attack_up from '../assets/icons/icon_effect_attack_up.png';
-import effect_burned from '../assets/icons/icon_effect_burned.png';
+// STATUSES
+import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
+import status_petrified from '../assets/icons/statuses/icon_status_petrified.png';
+import status_attack_up from '../assets/icons/statuses/icon_status_attack_up.png';
+import status_burned from '../assets/icons/statuses/icon_status_burned.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -113,11 +113,11 @@ export enum ICON_ID {
   SKILL_WHIRLWIND = 'skill_whirlwind',
   SKILL_TELEPORT = 'skill_teleport',
 
-  // EFFECTS
-  EFFECT_DEFENSE_UP = 'effect_defense_up',
-  EFFECT_PETRIFIED = 'effect_petrified',
-  EFFECT_ATTACK_UP = 'effect_attack_up',
-  EFFECT_BURNED = 'effect_burned',
+  // STATUSES
+  STATUS_DEFENSE_UP = 'status_defense_up',
+  STATUS_PETRIFIED = 'status_petrified',
+  STATUS_ATTACK_UP = 'status_attack_up',
+  STATUS_BURNED = 'status_burned',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -175,11 +175,11 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_WHIRLWIND]: skill_whirlwind,
   [ICON_ID.SKILL_TELEPORT]: skill_teleport,
 
-  // EFFECTS
-  [ICON_ID.EFFECT_DEFENSE_UP]: effect_defense_up,
-  [ICON_ID.EFFECT_PETRIFIED]: effect_petrified,
-  [ICON_ID.EFFECT_ATTACK_UP]: effect_attack_up,
-  [ICON_ID.EFFECT_BURNED]: effect_burned,
+  // STATUSES
+  [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
+  [ICON_ID.STATUS_PETRIFIED]: status_petrified,
+  [ICON_ID.STATUS_ATTACK_UP]: status_attack_up,
+  [ICON_ID.STATUS_BURNED]: status_burned,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

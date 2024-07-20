@@ -1,22 +1,22 @@
-import { FC, useEffect, useMemo, useRef, useState } from "react";
-import { Tile } from "./Tile";
-import { ENTITY_TYPE, STARTING_ACTION_POINTS } from "../constants/entity";
-import { TILE_SIZE, TILE_TYPE } from "../constants/tile";
-import { SKILL_ID, SKILL_TYPE } from "../constants/skill";
-import { STATUSES, STATUS_ID } from "../constants/status";
-import { WEAPON_ATTACK_TYPE } from "../constants/weapon";
-import { IEnemy, IEntity, IPlayer } from "../types";
-import { useGameStateStore } from "../store/game";
-import { usePlayerStore } from "../store/player";
-import { useEnemyStore } from "../store/enemy";
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { Tile } from './Tile';
+import { ENTITY_TYPE, STARTING_ACTION_POINTS } from '../constants/entity';
+import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
+import { SKILL_ID, SKILL_TYPE } from '../constants/skill';
+import { STATUSES, STATUS_ID } from '../constants/status';
+import { WEAPON_ATTACK_TYPE } from '../constants/weapon';
+import { IEnemy, IEntity, IPlayer } from '../types';
+import { useGameStateStore } from '../store/game';
+import { usePlayerStore } from '../store/player';
+import { useEnemyStore } from '../store/enemy';
 import {
   getEntityPosition,
   handlePlayerEndTurn,
   isEnemy,
   isPlayer,
   updateRoomEntityPositions,
-} from "../utils";
-import { useLogStore } from "../store/log";
+} from '../utils';
+import { useLogStore } from '../store/log';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -65,7 +65,7 @@ export const Room: FC<{
       const playerPos = getEntityPosition(player, roomEntityPositions);
       return playerPos;
     } else {
-      console.error("Room entity positions not found!");
+      console.error('Room entity positions not found!');
       return [-1, -1];
     }
   }, [player, roomEntityPositions]);
@@ -75,6 +75,8 @@ export const Room: FC<{
   // remove it from the turn cycle and,
   // check if the room is over and log a message if it is.
   useEffect(() => {
+    console.log('updateEnemyPositionsWhenEnemyDefeated');
+
     // Update enemy positions when enemy is defeated
     const updateEnemyPositionsWhenEnemyDefeated = () => {
       // Delete enemy from room entity positions
@@ -119,7 +121,7 @@ export const Room: FC<{
           message: (
             <span className="text-green-500">Player completed the room!</span>
           ),
-          type: "info",
+          type: 'info',
         });
         setIsRoomOver(true);
         setPlayer({
@@ -138,12 +140,13 @@ export const Room: FC<{
     updateEnemyPositionsWhenEnemyDefeated();
     updateTurnCycleWhenEnemyDefeated();
     logRoomCompletion();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enemies.length]);
 
   // When player's action points reach 0 and there are still enemies in the room (room is not over),
   // Automatically end player's turn
   useEffect(() => {
+    console.log('automaticallyEndPlayerTurn');
+
     const automaticallyEndPlayerTurn = () => {
       if (player.actionPoints === 0 && !isRoomOver && enemies.length > 0) {
         handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
@@ -154,18 +157,19 @@ export const Room: FC<{
               turn.
             </>
           ),
-          type: "info",
+          type: 'info',
         });
       }
     };
     automaticallyEndPlayerTurn();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player.actionPoints, isRoomOver, enemies.length]);
 
   // When turn cycle changes,
   // Handle DoT effects,
   // Handle enemy turn (for now, move to a random adjacent tile and attack player if in range)
   useEffect(() => {
+    console.log('handleDoT');
+
     // Handle DoT check first
     const handleDoT = () => {
       if (
@@ -177,7 +181,7 @@ export const Room: FC<{
         const enemy = enemies.find((e) => e.id === turnCycle[0].id);
 
         if (!enemy) {
-          addLog({ message: "Enemy not found!", type: "error" });
+          addLog({ message: 'Enemy not found!', type: 'error' });
           return;
         }
 
@@ -197,22 +201,22 @@ export const Room: FC<{
               addLog({
                 message: (
                   <>
-                    <span className="text-red-500">{affectedEnemy.name}</span>{" "}
+                    <span className="text-red-500">{affectedEnemy.name}</span>{' '}
                     took 1 damage from burn and has been defeated!
                   </>
                 ),
-                type: "info",
+                type: 'info',
               });
               setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
             } else {
               addLog({
                 message: (
                   <>
-                    <span className="text-red-500">{affectedEnemy.name}</span>{" "}
+                    <span className="text-red-500">{affectedEnemy.name}</span>{' '}
                     took 1 damage from burn.
                   </>
                 ),
-                type: "info",
+                type: 'info',
               });
 
               const damagedEnemy = setEnemy(affectedEnemy);
@@ -243,21 +247,21 @@ export const Room: FC<{
             addLog({
               message: (
                 <>
-                  <span className="text-green-500">{affectedPlayer.name}</span>{" "}
+                  <span className="text-green-500">{affectedPlayer.name}</span>{' '}
                   took 1 damage from burn and has been defeated!
                 </>
               ),
-              type: "info",
+              type: 'info',
             });
           } else {
             addLog({
               message: (
                 <>
-                  <span className="text-green-500">{affectedPlayer.name}</span>{" "}
+                  <span className="text-green-500">{affectedPlayer.name}</span>{' '}
                   took 1 damage from burn.
                 </>
               ),
-              type: "info",
+              type: 'info',
             });
           }
 
@@ -277,7 +281,7 @@ export const Room: FC<{
         const enemy = enemies.find((e) => e.id === turnCycle[0].id);
 
         if (!enemy) {
-          addLog({ message: "Enemy not found!", type: "error" });
+          addLog({ message: 'Enemy not found!', type: 'error' });
           return;
         }
 
@@ -315,7 +319,7 @@ export const Room: FC<{
                   to move or attack.
                 </>
               ),
-              type: "info",
+              type: 'info',
             });
           }, moveTime);
         } else {
@@ -329,13 +333,13 @@ export const Room: FC<{
 
                 setTimeout(() => {
                   if (!enemyPosition) {
-                    console.error("Enemy position not found!");
+                    console.error('Enemy position not found!');
                     const oldEnemyPos = getEntityPosition(
                       enemy,
                       roomEntityPositions
                     );
                     if (oldEnemyPos[0] === -1 && oldEnemyPos[1] === -1) {
-                      console.error("Old enemy position not found!");
+                      console.error('Old enemy position not found!');
                       return;
                     }
                     handleEnemyAttack(
@@ -360,7 +364,7 @@ export const Room: FC<{
                         unable to attack.
                       </>
                     ),
-                    type: "info",
+                    type: 'info',
                   });
                 }, attackTime);
               }
@@ -374,7 +378,7 @@ export const Room: FC<{
                     to move.
                   </>
                 ),
-                type: "info",
+                type: 'info',
               });
 
               // Make enemy attack player if they can attack
@@ -383,7 +387,7 @@ export const Room: FC<{
 
                 setTimeout(() => {
                   if (!enemyPosition) {
-                    console.error("Enemy position not found!");
+                    console.error('Enemy position not found!');
                     return;
                   }
                   handleEnemyAttack(
@@ -401,7 +405,7 @@ export const Room: FC<{
                         unable to attack.
                       </>
                     ),
-                    type: "info",
+                    type: 'info',
                   });
                 }, attackTime);
               }
@@ -450,7 +454,7 @@ export const Room: FC<{
                 turn.
               </>
             ),
-            type: "info",
+            type: 'info',
           });
           endTurn();
         }, totalTime + endTurnTime);
@@ -460,8 +464,29 @@ export const Room: FC<{
     if (!isGameOver) {
       handleDoT();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turnCycle, turnCycle.length, isGameOver]);
+
+  // Handle player defeat
+  useEffect(() => {
+    console.log('handlePlayerDefeat');
+
+    const handlePlayerDefeat = () => {
+      if (player.health <= 0) {
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> has been
+              defeated!
+            </>
+          ),
+          type: 'info',
+        });
+        // setPlayerDefeated(true);
+      }
+    };
+
+    handlePlayerDefeat();
+  }, [isGameOver, player.health, player.name, addLog]);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (entityId: number | null) => {
@@ -472,7 +497,7 @@ export const Room: FC<{
     const enemy = enemies.find((enemy) => enemy.id === entityId);
 
     if (!enemy) {
-      addLog({ message: "Enemy not found!", type: "error" });
+      addLog({ message: 'Enemy not found!', type: 'error' });
       return;
     }
 
@@ -482,7 +507,7 @@ export const Room: FC<{
 
     if (player.state.isAttacking) {
       if (!player.equipment.weapon) {
-        addLog({ message: "Player has no weapon equipped!", type: "error" });
+        addLog({ message: 'Player has no weapon equipped!', type: 'error' });
         return;
       }
 
@@ -495,11 +520,11 @@ export const Room: FC<{
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> took{" "}
+              <span className="text-red-500">{enemy.name}</span> took{' '}
               {totalDamage} damage and has been defeated!
             </>
           ),
-          type: "info",
+          type: 'info',
         });
       } else {
         setEnemies(
@@ -513,11 +538,11 @@ export const Room: FC<{
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> took{" "}
+              <span className="text-red-500">{enemy.name}</span> took{' '}
               {totalDamage} damage.
             </>
           ),
-          type: "info",
+          type: 'info',
         });
       }
       setPlayerActionPoints(player.actionPoints - player.equipment.weapon.cost);
@@ -527,7 +552,7 @@ export const Room: FC<{
       );
 
       if (!skill) {
-        addLog({ message: "Skill not found!", type: "error" });
+        addLog({ message: 'Skill not found!', type: 'error' });
         return;
       }
 
@@ -546,11 +571,11 @@ export const Room: FC<{
           );
 
           if (!petrifedStatus) {
-            addLog({ message: "Petrified status not found!", type: "error" });
+            addLog({ message: 'Petrified status not found!', type: 'error' });
             return;
           }
 
-          affectedEnemy.statuses.push(petrifedStatus);
+          affectedEnemy.statuses = [...affectedEnemy.statuses, petrifedStatus];
           break;
         }
         case SKILL_ID.LIGHTNING: {
@@ -566,12 +591,12 @@ export const Room: FC<{
       addLog({
         message: (
           <>
-            <span className="text-green-500">{player.name}</span> used{" "}
-            <span className="text-green-500">{skill.name}</span> on{" "}
+            <span className="text-green-500">{player.name}</span> used{' '}
+            <span className="text-green-500">{skill.name}</span> on{' '}
             <span className="text-red-500">{enemy.name}</span>.
           </>
         ),
-        type: "info",
+        type: 'info',
       });
 
       // Check if enemy is defeated
@@ -581,31 +606,27 @@ export const Room: FC<{
           addLog({
             message: (
               <>
-                <span className="text-red-500">{affectedEnemy.name}</span> took{" "}
+                <span className="text-red-500">{affectedEnemy.name}</span> took{' '}
                 {totalDamage} damage and has been defeated!
               </>
             ),
-            type: "info",
+            type: 'info',
           });
         } else {
-          setEnemies(
-            enemies.map((e) => {
-              if (e.id === entityId) {
-                return affectedEnemy;
-              }
-              return e;
-            })
-          );
+          setEnemy(affectedEnemy);
           addLog({
             message: (
               <>
-                <span className="text-red-500">{affectedEnemy.name}</span> took{" "}
+                <span className="text-red-500">{affectedEnemy.name}</span> took{' '}
                 {totalDamage} damage.
               </>
             ),
-            type: "info",
+            type: 'info',
           });
         }
+      } else {
+        // Update enemy with new statuses
+        setEnemy(affectedEnemy);
       }
 
       // Decrease player's action points and set skill cooldown
@@ -629,6 +650,8 @@ export const Room: FC<{
   // Update room matrix when player moves
   // x = column, y = row
   const handlePlayerMove = (row: number, col: number) => {
+    console.log('handlePlayerMove');
+
     // Update player's position in the entity positions map
     setRoomEntityPositions(
       updateRoomEntityPositions([row, col], playerPosition, roomEntityPositions)
@@ -641,7 +664,7 @@ export const Room: FC<{
           {col}, {row}).
         </>
       ),
-      type: "info",
+      type: 'info',
     });
     if (!isRoomOver) {
       setPlayerActionPoints(player.actionPoints - 1);
@@ -655,10 +678,12 @@ export const Room: FC<{
   // This function is called when player uses a a self targeted skill, e.g buffing themselves
   // Skills that affect enemies are handled in the handleEnemyClick function
   const handlePlayerUseSkill = (skillId: number) => {
+    console.log('handlePlayerUseSkill');
+
     const skill = player.skills.find((skill) => skill.id === skillId);
 
     if (!skill) {
-      addLog({ message: "Skill not found!", type: "error" });
+      addLog({ message: 'Skill not found!', type: 'error' });
       return;
     }
 
@@ -672,7 +697,7 @@ export const Room: FC<{
         const buffedStatus = STATUSES.find((s) => s.id === STATUS_ID.FLEXED);
 
         if (!buffedStatus) {
-          addLog({ message: "Buffed status not found!", type: "error" });
+          addLog({ message: 'Buffed status not found!', type: 'error' });
           return;
         }
 
@@ -685,7 +710,7 @@ export const Room: FC<{
         );
 
         if (!stoneSkinStatus) {
-          addLog({ message: "Stone Skin status not found!", type: "error" });
+          addLog({ message: 'Stone Skin status not found!', type: 'error' });
           return;
         }
 
@@ -697,23 +722,23 @@ export const Room: FC<{
     }
 
     if (!newPlayer) {
-      addLog({ message: "Skill did not return anything!", type: "error" });
+      addLog({ message: 'Skill did not return anything!', type: 'error' });
       return;
     }
 
     if (!isPlayer(newPlayer)) {
-      addLog({ message: "Skill effect did not return player", type: "error" });
+      addLog({ message: 'Skill effect did not return player', type: 'error' });
       return;
     }
 
     addLog({
       message: (
         <>
-          <span className="text-green-500">{player.name}</span> used{" "}
+          <span className="text-green-500">{player.name}</span> used{' '}
           <span className="text-green-500">{skill.name}</span>.
         </>
       ),
-      type: "info",
+      type: 'info',
     });
     setPlayer({
       ...newPlayer,
@@ -732,21 +757,23 @@ export const Room: FC<{
   // This function is called when player uses a skill that targets an area
   // Skills that affect enemies are handled in the handleEnemyClick function
   const handlePlayerUseAOESkill = (skillId: number) => {
+    console.log('handlePlayerUseAOESkill');
+
     const skill = player.skills.find((skill) => skill.id === skillId);
 
     if (!skill) {
-      addLog({ message: "Skill not found!", type: "error" });
+      addLog({ message: 'Skill not found!', type: 'error' });
       return;
     }
 
     addLog({
       message: (
         <>
-          <span className="text-green-500">{player.name}</span> used{" "}
+          <span className="text-green-500">{player.name}</span> used{' '}
           <span className="text-green-500">{skill.name}</span>.
         </>
       ),
-      type: "info",
+      type: 'info',
     });
 
     // Handle individual skill effect
@@ -762,7 +789,7 @@ export const Room: FC<{
           if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
             const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
             if (!enemy) {
-              addLog({ message: "Enemy not found!", type: "error" });
+              addLog({ message: 'Enemy not found!', type: 'error' });
               return;
             }
 
@@ -774,8 +801,8 @@ export const Room: FC<{
 
         if (player.equipment.weapon === null) {
           addLog({
-            message: "Player has no weapon equipped!",
-            type: "error",
+            message: 'Player has no weapon equipped!',
+            type: 'error',
           });
           return;
         }
@@ -805,22 +832,22 @@ export const Room: FC<{
             addLog({
               message: (
                 <>
-                  <span className="text-red-500">{enemy.name}</span> took{" "}
+                  <span className="text-red-500">{enemy.name}</span> took{' '}
                   {totalDamage} damage and has been defeated!
                 </>
               ),
-              type: "info",
+              type: 'info',
             });
             newEnemies.splice(enemyIndex, 1);
           } else {
             addLog({
               message: (
                 <>
-                  <span className="text-red-500">{enemy.name}</span> took{" "}
+                  <span className="text-red-500">{enemy.name}</span> took{' '}
                   {totalDamage} damage.
                 </>
               ),
-              type: "info",
+              type: 'info',
             });
             newEnemies[enemyIndex] = newEnemy;
           }
@@ -854,7 +881,7 @@ export const Room: FC<{
           if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
             const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
             if (!enemy) {
-              addLog({ message: "Enemy not found!", type: "error" });
+              addLog({ message: 'Enemy not found!', type: 'error' });
               return;
             }
 
@@ -871,8 +898,8 @@ export const Room: FC<{
 
         if (player.equipment.weapon === null) {
           addLog({
-            message: "Player has no weapon equipped!",
-            type: "error",
+            message: 'Player has no weapon equipped!',
+            type: 'error',
           });
           return;
         }
@@ -901,7 +928,7 @@ export const Room: FC<{
           const burnedStatus = STATUSES.find((s) => s.id === STATUS_ID.BURNED);
 
           if (!burnedStatus) {
-            addLog({ message: "Burned status not found!", type: "error" });
+            addLog({ message: 'Burned status not found!', type: 'error' });
             return;
           }
 
@@ -917,22 +944,22 @@ export const Room: FC<{
             addLog({
               message: (
                 <>
-                  <span className="text-red-500">{enemy.name}</span> took{" "}
+                  <span className="text-red-500">{enemy.name}</span> took{' '}
                   {totalDamage} damage and has been defeated!
                 </>
               ),
-              type: "info",
+              type: 'info',
             });
             newEnemies.splice(enemyIndex, 1);
           } else {
             addLog({
               message: (
                 <>
-                  <span className="text-red-500">{enemy.name}</span> took{" "}
+                  <span className="text-red-500">{enemy.name}</span> took{' '}
                   {totalDamage} damage.
                 </>
               ),
-              type: "info",
+              type: 'info',
             });
             newEnemies[enemyIndex] = newEnemy;
           }
@@ -946,7 +973,7 @@ export const Room: FC<{
           const burnedStatus = STATUSES.find((s) => s.id === STATUS_ID.BURNED);
 
           if (!burnedStatus) {
-            addLog({ message: "Burned status not found!", type: "error" });
+            addLog({ message: 'Burned status not found!', type: 'error' });
             return;
           }
 
@@ -961,21 +988,21 @@ export const Room: FC<{
             addLog({
               message: (
                 <>
-                  <span className="text-green-500">{player.name}</span> took{" "}
+                  <span className="text-green-500">{player.name}</span> took{' '}
                   {totalDamage} damage and has been defeated!
                 </>
               ),
-              type: "info",
+              type: 'info',
             });
           } else {
             addLog({
               message: (
                 <>
-                  <span className="text-green-500">{player.name}</span> took{" "}
+                  <span className="text-green-500">{player.name}</span> took{' '}
                   {totalDamage} damage.
                 </>
               ),
-              type: "info",
+              type: 'info',
             });
           }
         }
@@ -1003,10 +1030,12 @@ export const Room: FC<{
   // This function is called when player uses a skill that targets an empty tile
   // Skills that affect enemies are handled in the handleEnemyClick function
   const handleEmptyTileClick = (skillId: number, row: number, col: number) => {
+    console.log('handleEmptyTileClick');
+
     const skill = player.skills.find((skill) => skill.id === skillId);
 
     if (!skill) {
-      addLog({ message: "Skill not found!", type: "error" });
+      addLog({ message: 'Skill not found!', type: 'error' });
       return;
     }
 
@@ -1033,12 +1062,12 @@ export const Room: FC<{
     }
 
     if (!newPlayer) {
-      addLog({ message: "Skill did not return anything!", type: "error" });
+      addLog({ message: 'Skill did not return anything!', type: 'error' });
       return;
     }
 
     if (!isPlayer(newPlayer)) {
-      addLog({ message: "Skill effect did not return player", type: "error" });
+      addLog({ message: 'Skill effect did not return player', type: 'error' });
       return;
     }
 
@@ -1053,22 +1082,22 @@ export const Room: FC<{
       addLog({
         message: (
           <>
-            <span className="text-green-500">{player.name}</span> used{" "}
+            <span className="text-green-500">{player.name}</span> used{' '}
             <span className="text-green-500">{skill.name}</span> to fly to tile
             ({col}, {row}).
           </>
         ),
-        type: "info",
+        type: 'info',
       });
     } else {
       addLog({
         message: (
           <>
-            <span className="text-green-500">{player.name}</span> used{" "}
+            <span className="text-green-500">{player.name}</span> used{' '}
             <span className="text-green-500">{skill.name}</span>.
           </>
         ),
-        type: "info",
+        type: 'info',
       });
     }
     setPlayerState({
@@ -1080,10 +1109,12 @@ export const Room: FC<{
   // Handle enemy movement (naive)
   // For now, just move the enemy to a random adjacent tile
   const handleEnemyMovement = (enemy: IEnemy): [number, number] | undefined => {
+    console.log('handleEnemyMovement');
+
     const [enemyRow, enemyCol] = getEntityPosition(enemy, roomEntityPositions);
 
     if (enemyRow === -1 || enemyCol === -1) {
-      addLog({ message: "Enemy not found in room matrix!", type: "error" });
+      addLog({ message: 'Enemy not found in room matrix!', type: 'error' });
       return;
     }
 
@@ -1128,7 +1159,7 @@ export const Room: FC<{
               {randomMove[1]}, {randomMove[0]}).
             </>
           ),
-          type: "info",
+          type: 'info',
         });
       }
     }
@@ -1143,11 +1174,13 @@ export const Room: FC<{
     enemyPosition: [number, number],
     playerPosition: [number, number]
   ) => {
+    console.log('handleEnemyAttack');
+
     const [enemyRow, enemyCol] = enemyPosition;
     const [playerRow, playerCol] = playerPosition;
 
     if (!enemyRow || !enemyCol || !playerRow || !playerCol) {
-      addLog({ message: "Enemy or player position not found!", type: "error" });
+      addLog({ message: 'Enemy or player position not found!', type: 'error' });
       return;
     }
 
@@ -1174,12 +1207,12 @@ export const Room: FC<{
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> attacked{" "}
-              <span className="text-green-500">{player.name}</span> for{" "}
+              <span className="text-red-500">{enemy.name}</span> attacked{' '}
+              <span className="text-green-500">{player.name}</span> for{' '}
               {totalDamage} damage and defeated them!
             </>
           ),
-          type: "info",
+          type: 'info',
         });
         setPlayer({
           ...player,
@@ -1195,39 +1228,23 @@ export const Room: FC<{
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> attacked{" "}
-              <span className="text-green-500">{player.name}</span> for{" "}
+              <span className="text-red-500">{enemy.name}</span> attacked{' '}
+              <span className="text-green-500">{player.name}</span> for{' '}
               {totalDamage} damage.
             </>
           ),
-          type: "info",
+          type: 'info',
         });
       }
     }
   };
-
-  // Handle player defeat
-  useEffect(() => {
-    if (player.health <= 0) {
-      addLog({
-        message: (
-          <>
-            <span className="text-green-500">{player.name}</span> has been
-            defeated!
-          </>
-        ),
-        type: "info",
-      });
-      // setPlayerDefeated(true);
-    }
-  }, [isGameOver, player.health, player.name, addLog]);
 
   return (
     <div
       style={{
         width: roomLength * TILE_SIZE,
         height: roomLength * TILE_SIZE,
-        display: "grid",
+        display: 'grid',
         gridTemplateColumns: `repeat(${roomLength}, ${TILE_SIZE}px)`,
         gridTemplateRows: `repeat(${roomLength}, ${TILE_SIZE}px)`,
       }}
@@ -1264,7 +1281,7 @@ export const Room: FC<{
           let isEffectZone: boolean = false;
           let isTargetZone: boolean = false;
           if (!playerPosition) {
-            addLog({ message: "Player position not found!", type: "error" });
+            addLog({ message: 'Player position not found!', type: 'error' });
             return;
           }
 
@@ -1311,7 +1328,7 @@ export const Room: FC<{
             );
 
             if (!skill) {
-              console.error("Skill not found!");
+              console.error('Skill not found!');
             } else {
               // Check skill type
               if (skill.skillType === SKILL_TYPE.SELF) {
@@ -1455,6 +1472,14 @@ export const Room: FC<{
               isRoomOver={isRoomOver}
               isTargetZone={isTargetZone}
               onClick={() => {
+                console.log(
+                  'Tile clicked',
+                  [rowIndex, columnIndex],
+                  entityIfExists,
+                  tileType,
+                  player.state.isUsingSkill,
+                  player.state.skillId
+                );
                 if (isEffectZone) {
                   if (
                     player.state.isAttacking &&
@@ -1475,8 +1500,8 @@ export const Room: FC<{
                     isRoomOver
                   ) {
                     addLog({
-                      message: "Player moved to the next room!",
-                      type: "info",
+                      message: 'Player moved to the next room!',
+                      type: 'info',
                     });
                     // TODO: Reset room and generate new room matrix
                   } else if (
@@ -1530,7 +1555,7 @@ export const Room: FC<{
                   // Set currentHoveredEntity to the enemy when mouse enters enemy tile
                   const enemy = enemies.find((enemy) => enemy.id === entityId);
                   if (!enemy) {
-                    console.error("Enemy not found!");
+                    console.error('Enemy not found!');
                     return;
                   }
 

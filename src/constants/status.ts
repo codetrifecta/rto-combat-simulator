@@ -1,5 +1,5 @@
-import { IStatus } from "../types";
-import { ICON_ID } from "./icons";
+import { IStatus } from '../types';
+import { ICON_ID } from './icons';
 
 export const STATUS_ID = {
   FLEXED: 1,
@@ -11,9 +11,9 @@ export const STATUS_ID = {
 export const STATUSES: IStatus[] = [
   {
     id: STATUS_ID.FLEXED,
-    name: "Flexed",
-    icon: ICON_ID.EFFECT_ATTACK_UP,
-    description: "Increased damage for all attacks by 2 for 3 turns.",
+    name: 'Flexed',
+    icon: ICON_ID.STATUS_ATTACK_UP,
+    description: 'Increased damage for all attacks by 2 for 3 turns.',
     duration: 3,
     durationCounter: 3,
     effect: {
@@ -26,9 +26,9 @@ export const STATUSES: IStatus[] = [
   },
   {
     id: STATUS_ID.PETRIFIED,
-    name: "Petrified",
-    icon: ICON_ID.EFFECT_PETRIFIED,
-    description: "Cannot move or attack for 3 turns.",
+    name: 'Petrified',
+    icon: ICON_ID.STATUS_PETRIFIED,
+    description: 'Cannot move or attack for 3 turns.',
     duration: 3,
     durationCounter: 3,
     effect: {
@@ -41,9 +41,9 @@ export const STATUSES: IStatus[] = [
   },
   {
     id: STATUS_ID.STONE_SKIN,
-    name: "Stone Skin",
-    icon: ICON_ID.EFFECT_DEFENSE_UP,
-    description: "Decreases all incoming damage by 3 for 3 turns.",
+    name: 'Stone Skin',
+    icon: ICON_ID.STATUS_DEFENSE_UP,
+    description: 'Decreases all incoming damage by 3 for 3 turns.',
     duration: 3,
     durationCounter: 3,
     effect: {
@@ -56,9 +56,9 @@ export const STATUSES: IStatus[] = [
   },
   {
     id: STATUS_ID.BURNED,
-    name: "Burned",
-    icon: ICON_ID.EFFECT_BURNED,
-    description: "Takes 1 damage at the start of the turn for 3 turns.",
+    name: 'Burned',
+    icon: ICON_ID.STATUS_BURNED,
+    description: 'Takes 1 damage at the start of the turn for 3 turns.',
     duration: 3,
     durationCounter: 3,
     effect: {
