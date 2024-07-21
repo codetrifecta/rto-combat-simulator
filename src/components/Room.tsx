@@ -835,7 +835,8 @@ export const Room: FC<{
 
     // Handle individual skill effect
     switch (skill.id) {
-      case SKILL_ID.WHIRLWIND: {
+      case SKILL_ID.WHIRLWIND:
+      case SKILL_ID.CLEAVE: {
         // Within target zones, deal damage to enemies
 
         // First find the enemies, then update them with the damage at the same time to avoid multiple renders
@@ -1395,7 +1396,21 @@ export const Room: FC<{
                 }
               } else if (skill.skillType === SKILL_TYPE.ST) {
                 // If skill is single target, highlight tiles that can be affected by the skill
-                const range = skill.range;
+                let range = skill.range;
+
+                // Check for weapon (range) dependent skills
+                if ([SKILL_ID.EXECUTE].includes(skill.id)) {
+                  if (player.equipment.weapon) {
+                    if (
+                      player.equipment.weapon.attackType ===
+                      WEAPON_ATTACK_TYPE.MELEE
+                    ) {
+                      if (skill.id === SKILL_ID.EXECUTE) {
+                        range = player.equipment.weapon.range;
+                      }
+                    }
+                  }
+                }
 
                 // Check for the specific skill's effect zone
                 switch (skill.id) {
@@ -1436,16 +1451,10 @@ export const Room: FC<{
 
                 // Range for weapon dependent skills
                 if (weapon) {
-                  if (weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
-                    if (
-                      [SKILL_ID.WHIRLWIND, SKILL_ID.CLEAVE].includes(skill.id)
-                    ) {
-                      range = weapon.range;
-                    }
-                  } else {
-                    if (skill.id === SKILL_ID.WHIRLWIND) {
-                      range = 1;
-                    }
+                  if (
+                    [SKILL_ID.WHIRLWIND, SKILL_ID.CLEAVE].includes(skill.id)
+                  ) {
+                    range = weapon.range;
                   }
                 }
 
