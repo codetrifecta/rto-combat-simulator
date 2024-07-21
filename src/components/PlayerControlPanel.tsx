@@ -61,8 +61,11 @@ export const PlayerControlPanel: FC = () => {
     handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
   };
 
-  const renderWeaponButtonTooltip = (skill: ISkill) => {
-    if (skill.id === SKILL_ID.WHIRLWIND) {
+  const renderSkillButtonTooltip = (skill: ISkill) => {
+    // Strength-based skills vs Intelligence-based skills
+    if (
+      [SKILL_ID.WHIRLWIND, SKILL_ID.EXECUTE, SKILL_ID.CLEAVE].includes(skill.id)
+    ) {
       return (
         <Tooltip>
           <h2>{skill.name}</h2>
@@ -163,7 +166,7 @@ export const PlayerControlPanel: FC = () => {
                     height={ICON_SIZE}
                   />
                 </IconButton>
-                {renderWeaponButtonTooltip(skill)}
+                {renderSkillButtonTooltip(skill)}
               </div>
             ))}
             <Button

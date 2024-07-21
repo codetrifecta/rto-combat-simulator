@@ -18,6 +18,7 @@ export enum SKILL_ID {
   FREEZE = 8,
   ABSORB = 9,
   EXECUTE = 10,
+  CLEAVE = 11,
 }
 
 export const SKILLS: ISkill[] = [
@@ -89,7 +90,7 @@ export const SKILLS: ISkill[] = [
     icon: ICON_ID.SKILL_WHIRLWIND,
     skillType: SKILL_TYPE.AOE,
     description:
-      "Spin around dealing damage to all adjacent enemies. Damage and range is dependent on the player's current weapon.",
+      "Spin around dealing damage to all adjacent enemies. Range is dependent on the player's current weapon.",
     damageMultiplier: 1,
     range: 1,
     cooldown: 3,
@@ -140,11 +141,24 @@ export const SKILLS: ISkill[] = [
     icon: ICON_ID.SKILL_EXECUTE,
     skillType: SKILL_TYPE.ST,
     description:
-      'Execute an enemy with low health. Deals 2x damage to enemies with less than 25% health. If the enemy is executed, the player gains 2 AP.',
+      "Execute an enemy with low health. Deals 2x damage to enemies with less than 25% health. If the enemy is executed, the player gains 2 AP. Range is dependent on the player's current weapon.",
     damageMultiplier: 1,
     range: 1,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
+  },
+  {
+    id: SKILL_ID.CLEAVE,
+    name: 'Cleave',
+    icon: ICON_ID.SKILL_CLEAVE,
+    skillType: SKILL_TYPE.AOE,
+    description:
+      "Cleave through enemies in front of you. Range is dependent on the player's current weapon.",
+    damageMultiplier: 1.5,
+    range: 1,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 3,
   },
 ];
