@@ -10,7 +10,7 @@ import { Button } from './Button';
 import { Icon } from './Icon';
 import { ICON_ID } from '../constants/icons';
 import { IconButton } from './IconButton';
-import { SKILL_ID } from '../constants/skill';
+import { SKILL_ID, strengthBasedSkillIDs } from '../constants/skill';
 import { ENTITY_TYPE } from '../constants/entity';
 
 const ICON_SIZE = 48;
@@ -63,14 +63,7 @@ export const PlayerControlPanel: FC = () => {
 
   const renderSkillButtonTooltip = (skill: ISkill) => {
     // Strength-based skills vs Intelligence-based skills
-    if (
-      [
-        SKILL_ID.WHIRLWIND,
-        SKILL_ID.EXECUTE,
-        SKILL_ID.CLEAVE,
-        SKILL_ID.ANNIHILATE,
-      ].includes(skill.id)
-    ) {
+    if (strengthBasedSkillIDs.includes(skill.id)) {
       return (
         <Tooltip>
           <h2>{skill.name}</h2>

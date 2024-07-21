@@ -22,6 +22,30 @@ export enum SKILL_ID {
   ANNIHILATE = 12,
 }
 
+export const weaponBasedSkillIDs: SKILL_ID[] = [
+  SKILL_ID.WHIRLWIND,
+  SKILL_ID.EXECUTE,
+  SKILL_ID.CLEAVE,
+  SKILL_ID.ANNIHILATE,
+];
+
+export const strengthBasedSkillIDs: SKILL_ID[] = [
+  SKILL_ID.FLEX,
+  SKILL_ID.IRONFLESH,
+  SKILL_ID.WHIRLWIND,
+  SKILL_ID.EXECUTE,
+  SKILL_ID.CLEAVE,
+  SKILL_ID.ANNIHILATE,
+];
+
+export const intelligenceBasedSkillIDs: SKILL_ID[] = [
+  SKILL_ID.GORGONS_GAZE,
+  SKILL_ID.LIGHTNING,
+  SKILL_ID.FIREBALL,
+  SKILL_ID.FREEZE,
+  SKILL_ID.ABSORB,
+];
+
 export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.FLEX,

@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Tile';
 import { ENTITY_TYPE, STARTING_ACTION_POINTS } from '../constants/entity';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
-import { SKILL_ID, SKILL_TYPE } from '../constants/skill';
+import { SKILL_ID, SKILL_TYPE, weaponBasedSkillIDs } from '../constants/skill';
 import { STATUSES, STATUS_ID } from '../constants/status';
 import { WEAPON_ATTACK_TYPE } from '../constants/weapon';
 import { IEnemy, IEntity, IPlayer } from '../types';
@@ -1405,9 +1405,7 @@ export const Room: FC<{
                 let range = skill.range;
 
                 // Check for weapon (range) dependent skills
-                if (
-                  [SKILL_ID.EXECUTE, SKILL_ID.ANNIHILATE].includes(skill.id)
-                ) {
+                if (weaponBasedSkillIDs.includes(skill.id)) {
                   if (player.equipment.weapon) {
                     if (
                       player.equipment.weapon.attackType ===
