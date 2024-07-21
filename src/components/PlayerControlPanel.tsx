@@ -64,7 +64,12 @@ export const PlayerControlPanel: FC = () => {
   const renderSkillButtonTooltip = (skill: ISkill) => {
     // Strength-based skills vs Intelligence-based skills
     if (
-      [SKILL_ID.WHIRLWIND, SKILL_ID.EXECUTE, SKILL_ID.CLEAVE].includes(skill.id)
+      [
+        SKILL_ID.WHIRLWIND,
+        SKILL_ID.EXECUTE,
+        SKILL_ID.CLEAVE,
+        SKILL_ID.ANNIHILATE,
+      ].includes(skill.id)
     ) {
       return (
         <Tooltip>

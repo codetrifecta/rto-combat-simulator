@@ -55,6 +55,7 @@ import skill_freeze from '../assets/icons/skills/icon_skill_freeze.png';
 import skill_absorb from '../assets/icons/skills/icon_skill_absorb.png';
 import skill_execute from '../assets/icons/skills/icon_skill_execute.png';
 import skill_cleave from '../assets/icons/skills/icon_skill_cleave.png';
+import skill_annihilate from '../assets/icons/skills/icon_skill_annihilate.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -121,6 +122,7 @@ export enum ICON_ID {
   SKILL_ABSORB = 'skill_absorb',
   SKILL_EXECUTE = 'skill_execute',
   SKILL_CLEAVE = 'skill_cleave',
+  SKILL_ANNIHILATE = 'skill_annihilate',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -188,6 +190,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_ABSORB]: skill_absorb,
   [ICON_ID.SKILL_EXECUTE]: skill_execute,
   [ICON_ID.SKILL_CLEAVE]: skill_cleave,
+  [ICON_ID.SKILL_ANNIHILATE]: skill_annihilate,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,

@@ -19,6 +19,7 @@ export enum SKILL_ID {
   ABSORB = 9,
   EXECUTE = 10,
   CLEAVE = 11,
+  ANNIHILATE = 12,
 }
 
 export const SKILLS: ISkill[] = [
@@ -160,5 +161,18 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 3,
+  },
+  {
+    id: SKILL_ID.ANNIHILATE,
+    name: 'Annihilate',
+    icon: ICON_ID.SKILL_ANNIHILATE,
+    skillType: SKILL_TYPE.ST,
+    description:
+      'As you brace yourself, swing with all your might to deal a devastating blow to an enemy. Range is dependent on the player’s current weapon.',
+    damageMultiplier: 3,
+    range: 1,
+    cooldown: 4,
+    cooldownCounter: 0,
+    cost: 5,
   },
 ];

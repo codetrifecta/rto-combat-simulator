@@ -620,7 +620,6 @@ export const Room: FC<{
           break;
         }
         case SKILL_ID.EXECUTE: {
-          // Absorb enemy's health
           const executeThreshold = Math.round(affectedEnemy.maxHealth * 0.25);
 
           if (affectedEnemy.health <= executeThreshold) {
@@ -636,6 +635,13 @@ export const Room: FC<{
           if (affectedEnemy.health <= 0) {
             affectedPlayer.actionPoints += 2;
           }
+
+          doesDamage = true;
+
+          break;
+        }
+        case SKILL_ID.ANNIHILATE: {
+          affectedEnemy.health = affectedEnemy.health - totalDamage;
 
           doesDamage = true;
 
@@ -1399,15 +1405,15 @@ export const Room: FC<{
                 let range = skill.range;
 
                 // Check for weapon (range) dependent skills
-                if ([SKILL_ID.EXECUTE].includes(skill.id)) {
+                if (
+                  [SKILL_ID.EXECUTE, SKILL_ID.ANNIHILATE].includes(skill.id)
+                ) {
                   if (player.equipment.weapon) {
                     if (
                       player.equipment.weapon.attackType ===
                       WEAPON_ATTACK_TYPE.MELEE
                     ) {
-                      if (skill.id === SKILL_ID.EXECUTE) {
-                        range = player.equipment.weapon.range;
-                      }
+                      range = player.equipment.weapon.range;
                     }
                   }
                 }
