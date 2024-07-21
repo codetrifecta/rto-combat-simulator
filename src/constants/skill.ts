@@ -16,6 +16,7 @@ export enum SKILL_ID {
   IRONFLESH = 6,
   FIREBALL = 7,
   FREEZE = 8,
+  ABSORB = 9,
 }
 
 export const SKILLS: ISkill[] = [
@@ -116,6 +117,19 @@ export const SKILLS: ISkill[] = [
     damageMultiplier: 0,
     range: 3,
     cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.ABSORB,
+    name: 'Absorb',
+    icon: ICON_ID.SKILL_ABSORB,
+    skillType: SKILL_TYPE.ST,
+    description:
+      "Absorb an enemy's life force. Damage dealt is converted to health.",
+    damageMultiplier: 0.5,
+    range: 3,
+    cooldown: 2,
     cooldownCounter: 0,
     cost: 2,
   },
