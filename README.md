@@ -19,6 +19,23 @@ Combat simulator for Return to Olympus
   - [x] Teleport
   - [x] Whirlwind
   - [x] Fireball
+  - [x] Freeze
+  - [x] Absorb
+  - [x] Execute
+  - [x] Cleave
+  - [x] Annihilate
+  - [ ] Warcry
+  - [ ] Vampiric Hunger
+  - [ ] Focus
+  - [ ] Enlighten
+  - [ ] Weaken
+  - [ ] Disable
+  - [ ] Entangle
+  - [ ] Leap Slam
+  - [ ] Elemental Dive
+  - [ ] Elemental Charge
+  - [ ] Teleport
+  - [ ] Swap
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
 - [ ] Sprites for each of the above
