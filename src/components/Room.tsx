@@ -584,6 +584,18 @@ export const Room: FC<{
           doesDamage = true;
           break;
         }
+        case SKILL_ID.FREEZE: {
+          // Petrify enemy
+          const frozenStatus = STATUSES.find((s) => s.id === STATUS_ID.FROZEN);
+
+          if (!frozenStatus) {
+            addLog({ message: 'Frozen status not found!', type: 'error' });
+            return;
+          }
+
+          affectedEnemy.statuses = [...affectedEnemy.statuses, frozenStatus];
+          break;
+        }
         default:
           break;
       }
@@ -1516,13 +1528,13 @@ export const Room: FC<{
                       entityIfExists &&
                       entityIfExists[0] === ENTITY_TYPE.PLAYER
                     ) {
-                      // Skills that uses the player tile
+                      // Skills that targets the player
                       handlePlayerUseSkill(player.state.skillId);
                     } else if (
                       entityIfExists &&
                       entityIfExists[0] === ENTITY_TYPE.ENEMY
                     ) {
-                      // Skills that uses the enemy tile
+                      // Skills that targets a singular enemy
                       handleEnemyClick(entityId);
                     } else if (
                       tileType === TILE_TYPE.EMPTY &&

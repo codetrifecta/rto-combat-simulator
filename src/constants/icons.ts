@@ -58,6 +58,7 @@ import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.p
 import status_petrified from '../assets/icons/statuses/icon_status_petrified.png';
 import status_attack_up from '../assets/icons/statuses/icon_status_attack_up.png';
 import status_burned from '../assets/icons/statuses/icon_status_burned.png';
+import status_frozen from '../assets/icons/statuses/icon_status_frozen.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -120,6 +121,7 @@ export enum ICON_ID {
   STATUS_PETRIFIED = 'status_petrified',
   STATUS_ATTACK_UP = 'status_attack_up',
   STATUS_BURNED = 'status_burned',
+  STATUS_FROZEN = 'status_frozen',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -183,6 +185,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_PETRIFIED]: status_petrified,
   [ICON_ID.STATUS_ATTACK_UP]: status_attack_up,
   [ICON_ID.STATUS_BURNED]: status_burned,
+  [ICON_ID.STATUS_FROZEN]: status_frozen,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

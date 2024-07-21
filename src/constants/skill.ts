@@ -52,8 +52,8 @@ export const SKILLS: ISkill[] = [
     description:
       'Petrify an enemy for 3 turns. Petrified enemies cannot move or attack.',
     damageMultiplier: 0,
-    range: 3,
-    cooldown: 3,
+    range: 4,
+    cooldown: 4,
     cooldownCounter: 0,
     cost: 2,
   },
