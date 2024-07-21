@@ -15,6 +15,7 @@ export enum SKILL_ID {
   WHIRLWIND = 5,
   IRONFLESH = 6,
   FIREBALL = 7,
+  FREEZE = 8,
 }
 
 export const SKILLS: ISkill[] = [
@@ -104,5 +105,18 @@ export const SKILLS: ISkill[] = [
     cooldown: 4,
     cooldownCounter: 0,
     cost: 1,
+  },
+  {
+    id: SKILL_ID.FREEZE,
+    name: 'Freeze',
+    icon: ICON_ID.SKILL_FREEZE,
+    skillType: SKILL_TYPE.ST,
+    description:
+      'Freeze an enemy for 2 turns. Frozen enemies cannot move or attack.',
+    damageMultiplier: 0,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
   },
 ];
