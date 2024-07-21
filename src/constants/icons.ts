@@ -51,12 +51,15 @@ import skill_lightning from '../assets/icons/skills/icon_skill_lightning.png';
 import skill_fireball from '../assets/icons/skills/icon_skill_fireball.png';
 import skill_whirlwind from '../assets/icons/skills/icon_skill_whirlwind.png';
 import skill_teleport from '../assets/icons/skills/icon_skill_teleport.png';
+import skill_freeze from '../assets/icons/skills/icon_skill_freeze.png';
+import skill_absorb from '../assets/icons/skills/icon_skill_absorb.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
 import status_petrified from '../assets/icons/statuses/icon_status_petrified.png';
 import status_attack_up from '../assets/icons/statuses/icon_status_attack_up.png';
 import status_burned from '../assets/icons/statuses/icon_status_burned.png';
+import status_frozen from '../assets/icons/statuses/icon_status_frozen.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -112,12 +115,15 @@ export enum ICON_ID {
   SKILL_FIREBALL = 'skill_fireball',
   SKILL_WHIRLWIND = 'skill_whirlwind',
   SKILL_TELEPORT = 'skill_teleport',
+  SKILL_FREEZE = 'skill_freeze',
+  SKILL_ABSORB = 'skill_absorb',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
   STATUS_PETRIFIED = 'status_petrified',
   STATUS_ATTACK_UP = 'status_attack_up',
   STATUS_BURNED = 'status_burned',
+  STATUS_FROZEN = 'status_frozen',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -174,12 +180,15 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_FIREBALL]: skill_fireball,
   [ICON_ID.SKILL_WHIRLWIND]: skill_whirlwind,
   [ICON_ID.SKILL_TELEPORT]: skill_teleport,
+  [ICON_ID.SKILL_FREEZE]: skill_freeze,
+  [ICON_ID.SKILL_ABSORB]: skill_absorb,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
   [ICON_ID.STATUS_PETRIFIED]: status_petrified,
   [ICON_ID.STATUS_ATTACK_UP]: status_attack_up,
   [ICON_ID.STATUS_BURNED]: status_burned,
+  [ICON_ID.STATUS_FROZEN]: status_frozen,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

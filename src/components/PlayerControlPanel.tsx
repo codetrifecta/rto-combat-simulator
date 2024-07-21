@@ -34,6 +34,7 @@ export const PlayerControlPanel: FC = () => {
   const {
     getPlayer,
     getPlayerBaseAttackDamage,
+    getPlayerTotalStrength,
     getPlayerTotalIntelligence,
     getPlayerBonusDamage,
     setPlayer,
@@ -42,6 +43,7 @@ export const PlayerControlPanel: FC = () => {
 
   const player = getPlayer();
   const baseAttackDamage = getPlayerBaseAttackDamage();
+  const totalStrength = getPlayerTotalStrength();
   const totalIntelligence = getPlayerTotalIntelligence();
 
   const bonusDamage = getPlayerBonusDamage();
@@ -67,15 +69,14 @@ export const PlayerControlPanel: FC = () => {
           <p>{skill.description}</p>
           {player.equipment.weapon ? (
             <p>
-              Base DMG: {Math.round(baseAttackDamage * skill.damageMultiplier)}
+              Base DMG: {Math.round(totalStrength * skill.damageMultiplier)}
             </p>
           ) : null}
           {player.equipment.weapon ? <p>Bonus DMG: {bonusDamage}</p> : null}
           {player.equipment.weapon ? (
             <p>
               Total DMG:{' '}
-              {Math.round(baseAttackDamage * skill.damageMultiplier) +
-                bonusDamage}
+              {Math.round(totalStrength * skill.damageMultiplier) + bonusDamage}
             </p>
           ) : null}
           <p>Cost: {skill.cost} AP</p>

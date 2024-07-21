@@ -15,6 +15,8 @@ export enum SKILL_ID {
   WHIRLWIND = 5,
   IRONFLESH = 6,
   FIREBALL = 7,
+  FREEZE = 8,
+  ABSORB = 9,
 }
 
 export const SKILLS: ISkill[] = [
@@ -51,8 +53,8 @@ export const SKILLS: ISkill[] = [
     description:
       'Petrify an enemy for 3 turns. Petrified enemies cannot move or attack.',
     damageMultiplier: 0,
-    range: 3,
-    cooldown: 3,
+    range: 4,
+    cooldown: 4,
     cooldownCounter: 0,
     cost: 2,
   },
@@ -87,7 +89,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     description:
       "Spin around dealing damage to all adjacent enemies. Damage and range is dependent on the player's current weapon.",
-    damageMultiplier: 2,
+    damageMultiplier: 1,
     range: 1,
     cooldown: 3,
     cooldownCounter: 0,
@@ -104,5 +106,31 @@ export const SKILLS: ISkill[] = [
     cooldown: 4,
     cooldownCounter: 0,
     cost: 1,
+  },
+  {
+    id: SKILL_ID.FREEZE,
+    name: 'Freeze',
+    icon: ICON_ID.SKILL_FREEZE,
+    skillType: SKILL_TYPE.ST,
+    description:
+      'Freeze an enemy for 2 turns. Frozen enemies cannot move or attack.',
+    damageMultiplier: 0,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.ABSORB,
+    name: 'Absorb',
+    icon: ICON_ID.SKILL_ABSORB,
+    skillType: SKILL_TYPE.ST,
+    description:
+      "Absorb an enemy's life force. Damage dealt is converted to health.",
+    damageMultiplier: 0.5,
+    range: 3,
+    cooldown: 2,
+    cooldownCounter: 0,
+    cost: 2,
   },
 ];

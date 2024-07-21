@@ -45,6 +45,7 @@ export const Room: FC<{
   const {
     getPlayer,
     getPlayerBaseAttackDamage,
+    getPlayerTotalStrength,
     getPlayerTotalIntelligence,
     getPlayerTotalDefense,
     setPlayer,
@@ -53,6 +54,7 @@ export const Room: FC<{
   } = usePlayerStore();
   const player = getPlayer();
   const playerBaseAttackDamage = getPlayerBaseAttackDamage();
+  const playerTotalStrength = getPlayerTotalStrength();
   const playerTotalIntelligence = getPlayerTotalIntelligence();
 
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
@@ -556,12 +558,19 @@ export const Room: FC<{
         return;
       }
 
-      const totalDamage =
-        Math.round(skill.damageMultiplier * playerTotalIntelligence) +
-        statusDamageBonus;
+      let totalDamage = statusDamageBonus;
       let doesDamage = false;
 
+      if ([SKILL_ID.LIGHTNING, SKILL_ID.ABSORB].includes(skill.id)) {
+        totalDamage += Math.round(
+          skill.damageMultiplier * playerTotalIntelligence
+        );
+      } else {
+        totalDamage += Math.round(skill.damageMultiplier * playerTotalStrength);
+      }
+
       const affectedEnemy = { ...enemy };
+      const affectedPlayer = { ...player };
 
       switch (skill.id) {
         case SKILL_ID.GORGONS_GAZE: {
@@ -582,6 +591,32 @@ export const Room: FC<{
           // Deal damage to enemy
           affectedEnemy.health = affectedEnemy.health - totalDamage;
           doesDamage = true;
+          break;
+        }
+        case SKILL_ID.FREEZE: {
+          // Petrify enemy
+          const frozenStatus = STATUSES.find((s) => s.id === STATUS_ID.FROZEN);
+
+          if (!frozenStatus) {
+            addLog({ message: 'Frozen status not found!', type: 'error' });
+            return;
+          }
+
+          affectedEnemy.statuses = [...affectedEnemy.statuses, frozenStatus];
+          break;
+        }
+        case SKILL_ID.ABSORB: {
+          // Absorb enemy's health
+          const absorbedHealth = totalDamage;
+
+          affectedEnemy.health = affectedEnemy.health - absorbedHealth;
+
+          // Heal player with absorbed health
+          if (player.health + absorbedHealth > player.maxHealth) {
+            affectedPlayer.health = player.maxHealth;
+          } else {
+            affectedPlayer.health = affectedPlayer.health + absorbedHealth;
+          }
           break;
         }
         default:
@@ -631,9 +666,9 @@ export const Room: FC<{
 
       // Decrease player's action points and set skill cooldown
       setPlayer({
-        ...player,
-        actionPoints: player.actionPoints - skill.cost,
-        skills: player.skills.map((s) =>
+        ...affectedPlayer,
+        actionPoints: affectedPlayer.actionPoints - skill.cost,
+        skills: affectedPlayer.skills.map((s) =>
           s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
         ),
       });
@@ -814,7 +849,7 @@ export const Room: FC<{
         // Calculate total damage dealt
         // Damage scaled based off player's strength stat
         const totalDamage =
-          Math.round(skill.damageMultiplier * playerBaseAttackDamage) +
+          Math.round(skill.damageMultiplier * playerTotalStrength) +
           statusDamageBonus;
 
         // Create a new array of enemies with the damage dealt to be updated in the store
@@ -1516,13 +1551,13 @@ export const Room: FC<{
                       entityIfExists &&
                       entityIfExists[0] === ENTITY_TYPE.PLAYER
                     ) {
-                      // Skills that uses the player tile
+                      // Skills that targets the player
                       handlePlayerUseSkill(player.state.skillId);
                     } else if (
                       entityIfExists &&
                       entityIfExists[0] === ENTITY_TYPE.ENEMY
                     ) {
-                      // Skills that uses the enemy tile
+                      // Skills that targets a singular enemy
                       handleEnemyClick(entityId);
                     } else if (
                       tileType === TILE_TYPE.EMPTY &&

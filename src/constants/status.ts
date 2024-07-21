@@ -6,6 +6,7 @@ export const STATUS_ID = {
   PETRIFIED: 2,
   STONE_SKIN: 3,
   BURNED: 4,
+  FROZEN: 5,
 };
 
 export const STATUSES: IStatus[] = [
@@ -67,6 +68,21 @@ export const STATUSES: IStatus[] = [
       damageOverTime: 1,
       canMove: true,
       canAttack: true,
+    },
+  },
+  {
+    id: STATUS_ID.FROZEN,
+    name: 'Frozen',
+    icon: ICON_ID.STATUS_FROZEN,
+    description: 'Cannot move or attack for 2 turns.',
+    duration: 2,
+    durationCounter: 2,
+    effect: {
+      damageBonus: 0,
+      incomingDamageReduction: 0,
+      damageOverTime: 0,
+      canMove: false,
+      canAttack: false,
     },
   },
 ];
