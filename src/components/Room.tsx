@@ -849,7 +849,7 @@ export const Room: FC<{
         // Calculate total damage dealt
         // Damage scaled based off player's strength stat
         const totalDamage =
-          Math.round(skill.damageMultiplier * playerBaseAttackDamage) +
+          Math.round(skill.damageMultiplier * playerTotalStrength) +
           statusDamageBonus;
 
         // Create a new array of enemies with the damage dealt to be updated in the store

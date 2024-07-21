@@ -89,7 +89,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     description:
       "Spin around dealing damage to all adjacent enemies. Damage and range is dependent on the player's current weapon.",
-    damageMultiplier: 2,
+    damageMultiplier: 1,
     range: 1,
     cooldown: 3,
     cooldownCounter: 0,
