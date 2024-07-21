@@ -50,7 +50,7 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.FLEX,
     name: 'Flex',
-    icon: ICON_ID.BASIC_ATTACK,
+    icon: ICON_ID.SKILL_FLEX,
     skillType: SKILL_TYPE.SELF,
     description: 'Increase damage for all attacks by 2 for 3 turns.',
     damageMultiplier: 0,

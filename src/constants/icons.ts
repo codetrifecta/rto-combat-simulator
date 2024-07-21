@@ -45,6 +45,7 @@ import legging_gold_1 from '../assets/icons/leggings/icon_legging_gold_1.png';
 import legging_diamond_1 from '../assets/icons/leggings/icon_legging_diamond_1.png';
 
 // SKILLS
+import skill_flex from '../assets/icons/skills/icon_skill_flex.png';
 import skill_defense_up from '../assets/icons/skills/icon_skill_defense_up.png';
 import skill_petrify from '../assets/icons/skills/icon_skill_petrify.png';
 import skill_lightning from '../assets/icons/skills/icon_skill_lightning.png';
@@ -112,6 +113,7 @@ export enum ICON_ID {
   LEGGING_DIAMOND_1 = 'legging_diamond_1',
 
   // SKILLS
+  SKILL_FLEX = 'skill_flex',
   SKILL_DEFENSE_UP = 'skill_defense_up',
   SKILL_PETRIFY = 'skill_petrify',
   SKILL_LIGHTNING = 'skill_lightning',
@@ -180,6 +182,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.LEGGING_DIAMOND_1]: legging_diamond_1,
 
   // SKILLS
+  [ICON_ID.SKILL_FLEX]: skill_flex,
   [ICON_ID.SKILL_DEFENSE_UP]: skill_defense_up,
   [ICON_ID.SKILL_PETRIFY]: skill_petrify,
   [ICON_ID.SKILL_LIGHTNING]: skill_lightning,
