@@ -53,6 +53,7 @@ import skill_whirlwind from '../assets/icons/skills/icon_skill_whirlwind.png';
 import skill_teleport from '../assets/icons/skills/icon_skill_teleport.png';
 import skill_freeze from '../assets/icons/skills/icon_skill_freeze.png';
 import skill_absorb from '../assets/icons/skills/icon_skill_absorb.png';
+import skill_execute from '../assets/icons/skills/icon_skill_execute.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -117,6 +118,7 @@ export enum ICON_ID {
   SKILL_TELEPORT = 'skill_teleport',
   SKILL_FREEZE = 'skill_freeze',
   SKILL_ABSORB = 'skill_absorb',
+  SKILL_EXECUTE = 'skill_execute',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -182,6 +184,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_TELEPORT]: skill_teleport,
   [ICON_ID.SKILL_FREEZE]: skill_freeze,
   [ICON_ID.SKILL_ABSORB]: skill_absorb,
+  [ICON_ID.SKILL_EXECUTE]: skill_execute,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,

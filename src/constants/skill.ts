@@ -17,6 +17,7 @@ export enum SKILL_ID {
   FIREBALL = 7,
   FREEZE = 8,
   ABSORB = 9,
+  EXECUTE = 10,
 }
 
 export const SKILLS: ISkill[] = [
@@ -130,6 +131,19 @@ export const SKILLS: ISkill[] = [
     damageMultiplier: 0.5,
     range: 3,
     cooldown: 2,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.EXECUTE,
+    name: 'Execute',
+    icon: ICON_ID.SKILL_EXECUTE,
+    skillType: SKILL_TYPE.ST,
+    description:
+      'Execute an enemy with low health. Deals 2x damage to enemies with less than 25% health. If the enemy is executed, the player gains 2 AP.',
+    damageMultiplier: 1,
+    range: 1,
+    cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
   },

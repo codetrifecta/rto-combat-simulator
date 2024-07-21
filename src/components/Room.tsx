@@ -619,6 +619,28 @@ export const Room: FC<{
           }
           break;
         }
+        case SKILL_ID.EXECUTE: {
+          // Absorb enemy's health
+          const executeThreshold = Math.round(affectedEnemy.maxHealth * 0.25);
+
+          if (affectedEnemy.health <= executeThreshold) {
+            // For execute, damage multiplier is 2x player's strength when enemy health is less than 25%
+            totalDamage =
+              statusDamageBonus + Math.round(2 * playerTotalStrength);
+
+            affectedEnemy.health = affectedEnemy.health - totalDamage;
+          } else {
+            affectedEnemy.health = affectedEnemy.health - totalDamage;
+          }
+
+          if (affectedEnemy.health <= 0) {
+            affectedPlayer.actionPoints += 2;
+          }
+
+          doesDamage = true;
+
+          break;
+        }
         default:
           break;
       }
