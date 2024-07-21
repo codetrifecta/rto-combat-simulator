@@ -7,6 +7,9 @@ export const STATUS_ID = {
   STONE_SKIN: 3,
   BURNED: 4,
   FROZEN: 5,
+  BATTLE_FURY_1: 6,
+  BATTLE_FURY_2: 7,
+  BATTLE_FURY_3: 8,
 };
 
 export const STATUSES: IStatus[] = [
@@ -83,6 +86,54 @@ export const STATUSES: IStatus[] = [
       damageOverTime: 0,
       canMove: false,
       canAttack: false,
+    },
+  },
+  {
+    id: STATUS_ID.BATTLE_FURY_1,
+    name: 'Battle Fury I',
+    icon: ICON_ID.STATUS_BATTLE_FURY,
+    description:
+      'Increased damage for all attacks by 1 for 3 turns. Increased defense by 1 for 3 turns.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      damageBonus: 1,
+      incomingDamageReduction: 0,
+      damageOverTime: 0,
+      canMove: true,
+      canAttack: true,
+    },
+  },
+  {
+    id: STATUS_ID.BATTLE_FURY_2,
+    name: 'Battle Fury II',
+    icon: ICON_ID.STATUS_BATTLE_FURY,
+    description:
+      'Increased damage for all attacks by 2 for 3 turns. Increased defense by 2 for 3 turns.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      damageBonus: 2,
+      incomingDamageReduction: 0,
+      damageOverTime: 0,
+      canMove: true,
+      canAttack: true,
+    },
+  },
+  {
+    id: STATUS_ID.BATTLE_FURY_3,
+    name: 'Battle Fury III',
+    icon: ICON_ID.STATUS_BATTLE_FURY,
+    description:
+      'Increased damage for all attacks by 3 for 3 turns. Increased defense by 3 for 3 turns.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      damageBonus: 3,
+      incomingDamageReduction: 0,
+      damageOverTime: 0,
+      canMove: true,
+      canAttack: true,
     },
   },
 ];

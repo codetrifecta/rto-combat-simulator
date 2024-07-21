@@ -57,6 +57,7 @@ import skill_absorb from '../assets/icons/skills/icon_skill_absorb.png';
 import skill_execute from '../assets/icons/skills/icon_skill_execute.png';
 import skill_cleave from '../assets/icons/skills/icon_skill_cleave.png';
 import skill_annihilate from '../assets/icons/skills/icon_skill_annihilate.png';
+import skill_warcry from '../assets/icons/skills/icon_skill_warcry.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -64,6 +65,7 @@ import status_petrified from '../assets/icons/statuses/icon_status_petrified.png
 import status_attack_up from '../assets/icons/statuses/icon_status_attack_up.png';
 import status_burned from '../assets/icons/statuses/icon_status_burned.png';
 import status_frozen from '../assets/icons/statuses/icon_status_frozen.png';
+import status_battle_fury from '../assets/icons/statuses/icon_status_battle_fury.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -125,6 +127,7 @@ export enum ICON_ID {
   SKILL_EXECUTE = 'skill_execute',
   SKILL_CLEAVE = 'skill_cleave',
   SKILL_ANNIHILATE = 'skill_annihilate',
+  SKILL_WARCRY = 'skill_warcry',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -132,6 +135,7 @@ export enum ICON_ID {
   STATUS_ATTACK_UP = 'status_attack_up',
   STATUS_BURNED = 'status_burned',
   STATUS_FROZEN = 'status_frozen',
+  STATUS_BATTLE_FURY = 'status_battle_fury',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -194,6 +198,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_EXECUTE]: skill_execute,
   [ICON_ID.SKILL_CLEAVE]: skill_cleave,
   [ICON_ID.SKILL_ANNIHILATE]: skill_annihilate,
+  [ICON_ID.SKILL_WARCRY]: skill_warcry,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
@@ -201,6 +206,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_ATTACK_UP]: status_attack_up,
   [ICON_ID.STATUS_BURNED]: status_burned,
   [ICON_ID.STATUS_FROZEN]: status_frozen,
+  [ICON_ID.STATUS_BATTLE_FURY]: status_battle_fury,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';
