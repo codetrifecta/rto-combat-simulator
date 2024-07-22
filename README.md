@@ -24,11 +24,11 @@ Combat simulator for Return to Olympus
   - [x] Execute
   - [x] Cleave
   - [x] Annihilate
-  - [ ] Warcry
-  - [ ] Vampiric Hunger
-  - [ ] Focus
-  - [ ] Enlighten
-  - [ ] Weaken
+  - [x] Warcry
+  - [x] Bloodlust
+  - [x] Focus
+  - [x] Enlighten
+  - [x] Weaken
   - [ ] Disable
   - [ ] Entangle
   - [ ] Leap Slam
