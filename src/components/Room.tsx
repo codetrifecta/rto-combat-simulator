@@ -744,6 +744,20 @@ export const Room: FC<{
 
           break;
         }
+        case SKILL_ID.WEAKEN: {
+          // Petrify enemy
+          const weakenedStatus = STATUSES.find(
+            (s) => s.id === STATUS_ID.WEAKENED
+          );
+
+          if (!weakenedStatus) {
+            addLog({ message: 'Weakened status not found!', type: 'error' });
+            return;
+          }
+
+          affectedEnemy.statuses = [...affectedEnemy.statuses, weakenedStatus];
+          break;
+        }
         default:
           break;
       }
@@ -1467,9 +1481,21 @@ export const Room: FC<{
         return acc + status.effect.damageBonus;
       }, 0);
 
+      const damageMultiplier = enemy.statuses.reduce((acc, status) => {
+        if (status.effect.damageMultiplier === 0) return acc;
+
+        if (status.effect.damageMultiplier > 1) {
+          return acc + (status.effect.damageMultiplier - 1);
+        } else {
+          return acc - (1 - status.effect.damageMultiplier);
+        }
+      }, 1);
+
       const playerTotalDefense = getPlayerTotalDefense();
 
-      let totalDamage = baseDamage + statusDamageBonus - playerTotalDefense;
+      let totalDamage =
+        Math.round((baseDamage + statusDamageBonus) * damageMultiplier) -
+        playerTotalDefense;
 
       if (totalDamage <= 0) totalDamage = 0;
 
