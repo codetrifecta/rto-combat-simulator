@@ -2,11 +2,13 @@
 import basic_attack from '../assets/icons/icon_basic_attack.png';
 import move from '../assets/icons/icon_move.png';
 import skills from '../assets/icons/icon_skills.png';
+import end_turn from '../assets/icons/icon_end_turn.png';
 
 // UI
 import log from '../assets/icons/icon_log.png';
 import character from '../assets/icons/icon_character.png';
 import inventory from '../assets/icons/icon_inventory.png';
+import generate_room from '../assets/icons/icon_generate_room.png';
 
 // WEAPONS
 import fist from '../assets/icons/weapons/icon_weapon_fist.png';
@@ -74,11 +76,13 @@ export enum ICON_ID {
   BASIC_ATTACK = 'basic_attack',
   MOVE = 'move',
   SKILLS = 'skills',
+  END_TURN = 'end_turn',
 
   // UI
   LOG = 'log',
   CHARACTER = 'character',
   INVENTORY = 'inventory',
+  GENERATE_ROOM = 'generate_room',
 
   // WEAPONS
   WEAPON_FIST = 'weapon_fist',
@@ -147,11 +151,13 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.BASIC_ATTACK]: basic_attack,
   [ICON_ID.MOVE]: move,
   [ICON_ID.SKILLS]: skills,
+  [ICON_ID.END_TURN]: end_turn,
 
   // UI
   [ICON_ID.LOG]: log,
   [ICON_ID.CHARACTER]: character,
   [ICON_ID.INVENTORY]: inventory,
+  [ICON_ID.GENERATE_ROOM]: generate_room,
 
   // WEAPONS
   [ICON_ID.WEAPON_FIST]: fist,

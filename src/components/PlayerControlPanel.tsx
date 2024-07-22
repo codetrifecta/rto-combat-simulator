@@ -341,7 +341,7 @@ export const PlayerControlPanel: FC = () => {
               </div>
 
               <div className="relative">
-                <Button
+                <IconButton
                   onClick={() => {
                     handleEndTurnClick();
                     addLog({
@@ -356,8 +356,12 @@ export const PlayerControlPanel: FC = () => {
                   }}
                   disabled={disabled || isRoomOver}
                 >
-                  End Turn
-                </Button>
+                  <Icon
+                    icon={ICON_ID.END_TURN}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
+                </IconButton>
                 <Tooltip>
                   <h2>End Turn</h2>
                   <p>End your turn and gain 4 AP</p>
@@ -367,15 +371,25 @@ export const PlayerControlPanel: FC = () => {
 
             {/* Tool buttons */}
             <div className="flex justify-center gap-5 col-span-1">
-              <Button
-                onClick={() => {
-                  setIsCharacterSheetOpen(false);
-                  setIsInventoryOpen(false);
-                  setIsGenerateRoomOpen(!isGenerateRoomOpen);
-                }}
-              >
-                Generate Room
-              </Button>
+              <div className="relative">
+                <IconButton
+                  onClick={() => {
+                    setIsCharacterSheetOpen(false);
+                    setIsInventoryOpen(false);
+                    setIsGenerateRoomOpen(!isGenerateRoomOpen);
+                  }}
+                >
+                  <Icon
+                    icon={ICON_ID.GENERATE_ROOM}
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                  />
+                </IconButton>
+                <Tooltip>
+                  <h2>Generate Room</h2>
+                  <p>Customize room layout</p>
+                </Tooltip>
+              </div>
             </div>
           </div>
         )}
