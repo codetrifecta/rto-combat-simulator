@@ -2,11 +2,13 @@
 import basic_attack from '../assets/icons/icon_basic_attack.png';
 import move from '../assets/icons/icon_move.png';
 import skills from '../assets/icons/icon_skills.png';
+import end_turn from '../assets/icons/icon_end_turn.png';
 
 // UI
 import log from '../assets/icons/icon_log.png';
 import character from '../assets/icons/icon_character.png';
 import inventory from '../assets/icons/icon_inventory.png';
+import generate_room from '../assets/icons/icon_generate_room.png';
 
 // WEAPONS
 import fist from '../assets/icons/weapons/icon_weapon_fist.png';
@@ -45,6 +47,7 @@ import legging_gold_1 from '../assets/icons/leggings/icon_legging_gold_1.png';
 import legging_diamond_1 from '../assets/icons/leggings/icon_legging_diamond_1.png';
 
 // SKILLS
+import skill_flex from '../assets/icons/skills/icon_skill_flex.png';
 import skill_defense_up from '../assets/icons/skills/icon_skill_defense_up.png';
 import skill_petrify from '../assets/icons/skills/icon_skill_petrify.png';
 import skill_lightning from '../assets/icons/skills/icon_skill_lightning.png';
@@ -56,6 +59,11 @@ import skill_absorb from '../assets/icons/skills/icon_skill_absorb.png';
 import skill_execute from '../assets/icons/skills/icon_skill_execute.png';
 import skill_cleave from '../assets/icons/skills/icon_skill_cleave.png';
 import skill_annihilate from '../assets/icons/skills/icon_skill_annihilate.png';
+import skill_warcry from '../assets/icons/skills/icon_skill_warcry.png';
+import skill_bloodlust from '../assets/icons/skills/icon_skill_bloodlust.png';
+import skill_focus from '../assets/icons/skills/icon_skill_focus.png';
+import skill_enlighten from '../assets/icons/skills/icon_skill_enlighten.png';
+import skill_weaken from '../assets/icons/skills/icon_skill_weaken.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -63,17 +71,24 @@ import status_petrified from '../assets/icons/statuses/icon_status_petrified.png
 import status_attack_up from '../assets/icons/statuses/icon_status_attack_up.png';
 import status_burned from '../assets/icons/statuses/icon_status_burned.png';
 import status_frozen from '../assets/icons/statuses/icon_status_frozen.png';
+import status_battle_fury from '../assets/icons/statuses/icon_status_battle_fury.png';
+import status_bloodlust from '../assets/icons/statuses/icon_status_bloodlust.png';
+import status_focused from '../assets/icons/statuses/icon_status_focused.png';
+import status_enlightened from '../assets/icons/statuses/icon_status_enlightened.png';
+import status_weakened from '../assets/icons/statuses/icon_status_weakened.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
   BASIC_ATTACK = 'basic_attack',
   MOVE = 'move',
   SKILLS = 'skills',
+  END_TURN = 'end_turn',
 
   // UI
   LOG = 'log',
   CHARACTER = 'character',
   INVENTORY = 'inventory',
+  GENERATE_ROOM = 'generate_room',
 
   // WEAPONS
   WEAPON_FIST = 'weapon_fist',
@@ -112,6 +127,7 @@ export enum ICON_ID {
   LEGGING_DIAMOND_1 = 'legging_diamond_1',
 
   // SKILLS
+  SKILL_FLEX = 'skill_flex',
   SKILL_DEFENSE_UP = 'skill_defense_up',
   SKILL_PETRIFY = 'skill_petrify',
   SKILL_LIGHTNING = 'skill_lightning',
@@ -123,6 +139,11 @@ export enum ICON_ID {
   SKILL_EXECUTE = 'skill_execute',
   SKILL_CLEAVE = 'skill_cleave',
   SKILL_ANNIHILATE = 'skill_annihilate',
+  SKILL_WARCRY = 'skill_warcry',
+  SKILL_BLOODLUST = 'skill_bloodlust',
+  SKILL_FOCUS = 'skill_focus',
+  SKILL_ENLIGHTEN = 'skill_enlighten',
+  SKILL_WEAKEN = 'skill_weaken',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -130,6 +151,11 @@ export enum ICON_ID {
   STATUS_ATTACK_UP = 'status_attack_up',
   STATUS_BURNED = 'status_burned',
   STATUS_FROZEN = 'status_frozen',
+  STATUS_BATTLE_FURY = 'status_battle_fury',
+  STATUS_BLOODLUST = 'status_bloodlust',
+  STATUS_FOCUSED = 'status_focused',
+  STATUS_ENLIGHTENED = 'status_enlightened',
+  STATUS_WEAKENED = 'status_weakened',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -137,11 +163,13 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.BASIC_ATTACK]: basic_attack,
   [ICON_ID.MOVE]: move,
   [ICON_ID.SKILLS]: skills,
+  [ICON_ID.END_TURN]: end_turn,
 
   // UI
   [ICON_ID.LOG]: log,
   [ICON_ID.CHARACTER]: character,
   [ICON_ID.INVENTORY]: inventory,
+  [ICON_ID.GENERATE_ROOM]: generate_room,
 
   // WEAPONS
   [ICON_ID.WEAPON_FIST]: fist,
@@ -180,6 +208,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.LEGGING_DIAMOND_1]: legging_diamond_1,
 
   // SKILLS
+  [ICON_ID.SKILL_FLEX]: skill_flex,
   [ICON_ID.SKILL_DEFENSE_UP]: skill_defense_up,
   [ICON_ID.SKILL_PETRIFY]: skill_petrify,
   [ICON_ID.SKILL_LIGHTNING]: skill_lightning,
@@ -191,6 +220,11 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_EXECUTE]: skill_execute,
   [ICON_ID.SKILL_CLEAVE]: skill_cleave,
   [ICON_ID.SKILL_ANNIHILATE]: skill_annihilate,
+  [ICON_ID.SKILL_WARCRY]: skill_warcry,
+  [ICON_ID.SKILL_BLOODLUST]: skill_bloodlust,
+  [ICON_ID.SKILL_FOCUS]: skill_focus,
+  [ICON_ID.SKILL_ENLIGHTEN]: skill_enlighten,
+  [ICON_ID.SKILL_WEAKEN]: skill_weaken,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
@@ -198,6 +232,11 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_ATTACK_UP]: status_attack_up,
   [ICON_ID.STATUS_BURNED]: status_burned,
   [ICON_ID.STATUS_FROZEN]: status_frozen,
+  [ICON_ID.STATUS_BATTLE_FURY]: status_battle_fury,
+  [ICON_ID.STATUS_BLOODLUST]: status_bloodlust,
+  [ICON_ID.STATUS_FOCUSED]: status_focused,
+  [ICON_ID.STATUS_ENLIGHTENED]: status_enlightened,
+  [ICON_ID.STATUS_WEAKENED]: status_weakened,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

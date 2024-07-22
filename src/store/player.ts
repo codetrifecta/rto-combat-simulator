@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { PLAYER } from "../constants/entity";
-import { WEAPON_TYPE, WEAPON_ATTACK_TYPE } from "../constants/weapon";
+import { create } from 'zustand';
+import { PLAYER } from '../constants/entity';
+import { WEAPON_TYPE, WEAPON_ATTACK_TYPE } from '../constants/weapon';
 import {
   IChestpiece,
   IHelmet,
@@ -11,7 +11,7 @@ import {
   IStats,
   IStatus,
   IWeapon,
-} from "../types";
+} from '../types';
 
 interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
@@ -22,6 +22,7 @@ interface IPlayerStore extends IPlayer {
   getPlayerTotalIntelligence: () => number;
   getPlayerTotalDefense: () => number;
   getPlayerTotalConstitution: () => number;
+  getPlayerLifestealMultiplier: () => number;
   setPlayer: (player: IPlayer) => void;
   setPlayerActionPoints: (actionPoints: number) => void;
   setPlayerSkills: (skills: ISkill[]) => void;
@@ -105,7 +106,23 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     const totalStrength =
       weaponStrength + helmetStrength + chestpieceStrength + leggingStrength;
 
-    return totalStrength;
+    // 0, 0, 1, 1, 0.6, 1.2 = 0.8
+
+    const strengthMultiplier = get().statuses.reduce((acc, status) => {
+      // console.log('status', status);
+
+      if (status.effect.strengthMultiplier === 0) return acc;
+
+      if (status.effect.strengthMultiplier > 1) {
+        return acc + (status.effect.strengthMultiplier - 1);
+      } else {
+        return acc - (1 - status.effect.strengthMultiplier);
+      }
+    }, 1);
+
+    // console.log('strengthMultiplier', strengthMultiplier);
+
+    return Math.round(totalStrength * strengthMultiplier);
   },
 
   getPlayerTotalIntelligence: () => {
@@ -116,13 +133,23 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     const leggingIntelligence =
       get().equipment.legging?.stats.intelligence || 0;
 
+    const intelligenceMultiplier = get().statuses.reduce((acc, status) => {
+      if (status.effect.intelligenceMultiplier === 0) return acc;
+
+      if (status.effect.intelligenceMultiplier > 1) {
+        return acc + (status.effect.intelligenceMultiplier - 1);
+      } else {
+        return acc - (1 - status.effect.intelligenceMultiplier);
+      }
+    }, 1);
+
     const totalIntelligence =
       weaponIntelligence +
       helmetIntelligence +
       chestpieceIntelligence +
       leggingIntelligence;
 
-    return totalIntelligence;
+    return Math.round(totalIntelligence * intelligenceMultiplier);
   },
 
   getPlayerTotalDefense: () => {
@@ -137,14 +164,23 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       0
     );
 
-    const totalDefense =
-      weaponDefense +
-      helmetDefense +
-      chestpieceDefense +
-      leggingDefense +
-      totalDefenseFromStatuses;
+    const defenseMultiplier = get().statuses.reduce((acc, status) => {
+      if (status.effect.defenseMultiplier === 0) return acc;
 
-    return totalDefense;
+      if (status.effect.defenseMultiplier > 1) {
+        return acc + (status.effect.defenseMultiplier - 1);
+      } else {
+        return acc - (1 - status.effect.defenseMultiplier);
+      }
+    }, 1);
+
+    const equipmentDefense =
+      weaponDefense + helmetDefense + chestpieceDefense + leggingDefense;
+
+    return (
+      Math.round(equipmentDefense * defenseMultiplier) +
+      totalDefenseFromStatuses
+    );
   },
 
   getPlayerTotalConstitution: () => {
@@ -162,6 +198,15 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       leggingConstitution;
 
     return totalConstitution;
+  },
+
+  getPlayerLifestealMultiplier: () => {
+    const lifestealMultiplier = get().statuses.reduce(
+      (acc, status) => acc + status.effect.lifesteal,
+      0
+    );
+
+    return lifestealMultiplier;
   },
 
   setPlayer: (player: IPlayer) => set({ ...player }),

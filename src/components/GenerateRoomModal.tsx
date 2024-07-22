@@ -1,15 +1,15 @@
-import { FC, useEffect, useState } from "react";
-import { useGameStateStore } from "../store/game";
-import { Button } from "./Button";
+import { FC, useEffect, useState } from 'react';
+import { useGameStateStore } from '../store/game';
+import { Button } from './Button';
 import {
   ENEMY_PRESET_ID,
   ENEMY_PRESETS,
   ENTITY_TYPE,
   PLAYER,
-} from "../constants/entity";
-import { IEnemy } from "../types";
-import { useEnemyStore } from "../store/enemy";
-import { usePlayerStore } from "../store/player";
+} from '../constants/entity';
+import { IEnemy } from '../types';
+import { useEnemyStore } from '../store/enemy';
+import { usePlayerStore } from '../store/player';
 
 const MAX_ROOM_LENGTH = 100;
 
@@ -28,18 +28,18 @@ export const GenerateRoomModal: FC = () => {
   const { getPlayer, setPlayer } = usePlayerStore();
   const player = getPlayer();
 
-  const [roomLengthInput, setRoomLengthInput] = useState<string>("11"); // Default room length
-  const [roomMatrix, setRoomMatrix] = useState<string>("[\n[],\n[],\n[]\n]");
+  const [roomLengthInput, setRoomLengthInput] = useState<string>('11'); // Default room length
+  const [roomMatrix, setRoomMatrix] = useState<string>('[\n[],\n[],\n[]\n]');
   const [playerPositionInput, setPlayerPositionInput] = useState<
     [string, string]
-  >(["9", "5"]);
+  >(['9', '5']);
   const [enemyPositionsInput, setEnemyPositionsInput] = useState<
     [string, string, ENEMY_PRESET_ID][]
   >([
-    ["7", "4", ENEMY_PRESET_ID.SHADE],
-    ["6", "6", ENEMY_PRESET_ID.SHADE],
-    ["2", "8", ENEMY_PRESET_ID.GORGON],
-    ["2", "2", ENEMY_PRESET_ID.CYCLOPS],
+    ['7', '4', ENEMY_PRESET_ID.SHADE],
+    ['6', '6', ENEMY_PRESET_ID.SHADE],
+    ['2', '8', ENEMY_PRESET_ID.HARPY],
+    ['2', '2', ENEMY_PRESET_ID.MINOTAUR],
   ]);
 
   const handleGenerateRoom = () => {
@@ -55,7 +55,7 @@ export const GenerateRoomModal: FC = () => {
     ];
 
     if (playerPosition.some((pos) => isNaN(pos))) {
-      console.error("Player position is invalid!");
+      console.error('Player position is invalid!');
       return;
     }
 
@@ -65,7 +65,7 @@ export const GenerateRoomModal: FC = () => {
       playerPosition[0] >= parsedRoomMatrix.length ||
       playerPosition[1] >= parsedRoomMatrix[0].length
     ) {
-      console.error("Player position is out of bounds!");
+      console.error('Player position is out of bounds!');
       return;
     }
 
@@ -83,7 +83,7 @@ export const GenerateRoomModal: FC = () => {
       ];
 
       if (enemyPosition.some((pos) => isNaN(pos))) {
-        console.error("Enemy position is invalid!");
+        console.error('Enemy position is invalid!');
         return;
       }
 
@@ -126,9 +126,9 @@ export const GenerateRoomModal: FC = () => {
   useEffect(() => {
     const roomLength = parseInt(roomLengthInput);
 
-    let roomMatrixString = "[\n";
+    let roomMatrixString = '[\n';
     for (let i = 0; i < roomLength; i++) {
-      roomMatrixString += "[";
+      roomMatrixString += '[';
       for (let j = 0; j < roomLength; j++) {
         // Surround room with walls and place door in the middle of the top wall and bottom wall
         if (
@@ -139,27 +139,27 @@ export const GenerateRoomModal: FC = () => {
         ) {
           if (j === Math.floor(roomLength / 2)) {
             // Place door in the middle of the top wall and bottom wall
-            roomMatrixString += "[2,1]";
+            roomMatrixString += '[2,1]';
           } else {
             // Place walls everywhere else
-            roomMatrixString += "[1,1]";
+            roomMatrixString += '[1,1]';
           }
         } else {
           // Place empty tiles everywhere else
-          roomMatrixString += "[0,1]";
+          roomMatrixString += '[0,1]';
         }
 
         if (j !== roomLength - 1) {
-          roomMatrixString += ", ";
+          roomMatrixString += ', ';
         }
       }
-      roomMatrixString += "]";
+      roomMatrixString += ']';
       if (i !== roomLength - 1) {
-        roomMatrixString += ",\n";
+        roomMatrixString += ',\n';
       }
     }
 
-    roomMatrixString += "\n]";
+    roomMatrixString += '\n]';
 
     setRoomMatrix(roomMatrixString);
   }, [roomLengthInput]);
@@ -178,7 +178,7 @@ export const GenerateRoomModal: FC = () => {
 
       <div
         className="flex flex-col overflow-auto"
-        style={{ maxHeight: "calc(100% - 70px)" }}
+        style={{ maxHeight: 'calc(100% - 70px)' }}
       >
         <div className="mb-5 flex items-center justify-center">
           <div className="mr-3">
@@ -190,12 +190,12 @@ export const GenerateRoomModal: FC = () => {
             value={roomLengthInput}
             onChange={(e) => {
               if (/\D/.test(e.target.value)) {
-                console.log("Only allow numbers (no decimals)", e.target.value);
+                console.log('Only allow numbers (no decimals)', e.target.value);
                 // Only allow numbers (no decimals)
                 // setRoomLengthInput(roomLengthInput);
               } else {
                 if (parseInt(e.target.value) >= MAX_ROOM_LENGTH) {
-                  setRoomLengthInput(MAX_ROOM_LENGTH + "");
+                  setRoomLengthInput(MAX_ROOM_LENGTH + '');
                 } else {
                   setRoomLengthInput(e.target.value);
                 }

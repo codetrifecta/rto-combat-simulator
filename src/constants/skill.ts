@@ -20,6 +20,11 @@ export enum SKILL_ID {
   EXECUTE = 10,
   CLEAVE = 11,
   ANNIHILATE = 12,
+  WARCRY = 13,
+  BLOODLUST = 14,
+  FOCUS = 15,
+  ENLIGHTEN = 16,
+  WEAKEN = 17,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -30,12 +35,11 @@ export const weaponBasedSkillIDs: SKILL_ID[] = [
 ];
 
 export const strengthBasedSkillIDs: SKILL_ID[] = [
-  SKILL_ID.FLEX,
-  SKILL_ID.IRONFLESH,
   SKILL_ID.WHIRLWIND,
   SKILL_ID.EXECUTE,
   SKILL_ID.CLEAVE,
   SKILL_ID.ANNIHILATE,
+  SKILL_ID.WARCRY,
 ];
 
 export const intelligenceBasedSkillIDs: SKILL_ID[] = [
@@ -50,9 +54,10 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.FLEX,
     name: 'Flex',
-    icon: ICON_ID.BASIC_ATTACK,
+    icon: ICON_ID.SKILL_FLEX,
     skillType: SKILL_TYPE.SELF,
-    description: 'Increase damage for all attacks by 2 for 3 turns.',
+    description:
+      'Applies Flexed on self for 3 turns. Flexed increases strength by 30%.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
@@ -65,7 +70,7 @@ export const SKILLS: ISkill[] = [
     icon: ICON_ID.SKILL_DEFENSE_UP,
     skillType: SKILL_TYPE.SELF,
     description:
-      'Applies Stone Skin on self for 3 turns. Stone Skin decreases all incoming damage by 3.',
+      'Applies Stone Skin on self for 3 turns. Stone Skin increases defense by 30%.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
@@ -102,7 +107,8 @@ export const SKILLS: ISkill[] = [
     name: 'Fireball',
     icon: ICON_ID.SKILL_FIREBALL,
     skillType: SKILL_TYPE.AOE,
-    description: 'Launch a fireball at a target area. Burns enemies hit.',
+    description:
+      'Launch a fireball at a target area. Additionally applied Burned to enemies hit for 3 turns.',
     damageMultiplier: 1.5,
     range: 3,
     cooldown: 2,
@@ -198,5 +204,69 @@ export const SKILLS: ISkill[] = [
     cooldown: 4,
     cooldownCounter: 0,
     cost: 5,
+  },
+  {
+    id: SKILL_ID.WARCRY,
+    name: 'Warcry',
+    icon: ICON_ID.SKILL_WARCRY,
+    skillType: SKILL_TYPE.AOE,
+    description:
+      "Unleash a warcry to boost your courage. Gain Battle Fury for 3 turns. Battle Fury's efffects stacks with the amount of enemies in range",
+    damageMultiplier: 0,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 3,
+  },
+  {
+    id: SKILL_ID.BLOODLUST,
+    name: 'Bloodlust',
+    icon: ICON_ID.SKILL_BLOODLUST,
+    skillType: SKILL_TYPE.SELF,
+    description: 'Enter a state of Bloodlust for 3 turns.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 3,
+  },
+  {
+    id: SKILL_ID.FOCUS,
+    name: 'Focus',
+    icon: ICON_ID.SKILL_FOCUS,
+    skillType: SKILL_TYPE.SELF,
+    description:
+      'Gain Focused for 3 turns. Focused increases strength and intelligence by 15%.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.ENLIGHTEN,
+    name: 'Enlighten',
+    icon: ICON_ID.SKILL_ENLIGHTEN,
+    skillType: SKILL_TYPE.SELF,
+    description:
+      'Gain Enlightened for 3 turns. Enlightened increases intelligence by 30%.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.WEAKEN,
+    name: 'Weaken',
+    icon: ICON_ID.SKILL_WEAKEN,
+    skillType: SKILL_TYPE.ST,
+    description:
+      'Weaken an enemy for 3 turns. Weakened enemies deal 30% less damage.',
+    damageMultiplier: 0,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
   },
 ];

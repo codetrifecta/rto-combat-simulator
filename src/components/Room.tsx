@@ -48,6 +48,7 @@ export const Room: FC<{
     getPlayerTotalStrength,
     getPlayerTotalIntelligence,
     getPlayerTotalDefense,
+    getPlayerLifestealMultiplier,
     setPlayer,
     setPlayerActionPoints,
     setPlayerState,
@@ -56,6 +57,7 @@ export const Room: FC<{
   const playerBaseAttackDamage = getPlayerBaseAttackDamage();
   const playerTotalStrength = getPlayerTotalStrength();
   const playerTotalIntelligence = getPlayerTotalIntelligence();
+  const playerLifestealMultiplier = getPlayerLifestealMultiplier();
 
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
 
@@ -497,6 +499,7 @@ export const Room: FC<{
     }
 
     const enemy = enemies.find((enemy) => enemy.id === entityId);
+    const newPlayer = { ...player };
 
     if (!enemy) {
       addLog({ message: 'Enemy not found!', type: 'error' });
@@ -507,22 +510,37 @@ export const Room: FC<{
       return acc + status.effect.damageBonus;
     }, 0);
 
-    if (player.state.isAttacking) {
-      if (!player.equipment.weapon) {
+    if (newPlayer.state.isAttacking) {
+      if (!newPlayer.equipment.weapon) {
         addLog({ message: 'Player has no weapon equipped!', type: 'error' });
         return;
       }
 
       // Compute base attack damage based on the higher of player's strength or intelligence
       const totalDamage = playerBaseAttackDamage + statusDamageBonus;
-      enemy.health = enemy.health - totalDamage;
+      const newEnemy = { ...enemy };
+      newEnemy.health = newEnemy.health - totalDamage;
 
-      if (enemy.health <= 0) {
+      if (playerLifestealMultiplier > 0) {
+        // Limit lifesteal to the enemy's remaining health
+        const lifestealAmount = Math.round(
+          (totalDamage > enemy.health ? enemy.health : totalDamage) *
+            playerLifestealMultiplier
+        );
+
+        if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
+          newPlayer.health = newPlayer.maxHealth;
+        } else {
+          newPlayer.health += lifestealAmount;
+        }
+      }
+
+      if (newEnemy.health <= 0) {
         setEnemies(enemies.filter((e) => e.id !== entityId));
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> took{' '}
+              <span className="text-red-500">{newEnemy.name}</span> took{' '}
               {totalDamage} damage and has been defeated!
             </>
           ),
@@ -532,7 +550,7 @@ export const Room: FC<{
         setEnemies(
           enemies.map((e) => {
             if (e.id === entityId) {
-              return enemy;
+              return newEnemy;
             }
             return e;
           })
@@ -540,14 +558,18 @@ export const Room: FC<{
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> took{' '}
+              <span className="text-red-500">{newEnemy.name}</span> took{' '}
               {totalDamage} damage.
             </>
           ),
           type: 'info',
         });
       }
-      setPlayerActionPoints(player.actionPoints - player.equipment.weapon.cost);
+
+      setPlayer({
+        ...newPlayer,
+        actionPoints: newPlayer.actionPoints - newPlayer.equipment.weapon.cost,
+      });
     } else if (player.state.isUsingSkill && player.state.skillId) {
       const skill = player.skills.find(
         (skill) => skill.id === player.state.skillId
@@ -590,6 +612,25 @@ export const Room: FC<{
         case SKILL_ID.LIGHTNING: {
           // Deal damage to enemy
           affectedEnemy.health = affectedEnemy.health - totalDamage;
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > affectedEnemy.health
+                ? affectedEnemy.health
+                : totalDamage) * playerLifestealMultiplier
+            );
+
+            if (
+              affectedPlayer.health + lifestealAmount >
+              affectedPlayer.maxHealth
+            ) {
+              affectedPlayer.health = affectedPlayer.maxHealth;
+            } else {
+              affectedPlayer.health += lifestealAmount;
+            }
+          }
+
           doesDamage = true;
           break;
         }
@@ -617,6 +658,26 @@ export const Room: FC<{
           } else {
             affectedPlayer.health = affectedPlayer.health + absorbedHealth;
           }
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > affectedEnemy.health
+                ? affectedEnemy.health
+                : totalDamage) * playerLifestealMultiplier
+            );
+
+            if (
+              affectedPlayer.health + lifestealAmount >
+              affectedPlayer.maxHealth
+            ) {
+              affectedPlayer.health = affectedPlayer.maxHealth;
+            } else {
+              affectedPlayer.health += lifestealAmount;
+            }
+          }
+
+          doesDamage = true;
           break;
         }
         case SKILL_ID.EXECUTE: {
@@ -632,6 +693,24 @@ export const Room: FC<{
             affectedEnemy.health = affectedEnemy.health - totalDamage;
           }
 
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > affectedEnemy.health
+                ? affectedEnemy.health
+                : totalDamage) * playerLifestealMultiplier
+            );
+
+            if (
+              affectedPlayer.health + lifestealAmount >
+              affectedPlayer.maxHealth
+            ) {
+              affectedPlayer.health = affectedPlayer.maxHealth;
+            } else {
+              affectedPlayer.health += lifestealAmount;
+            }
+          }
+
           if (affectedEnemy.health <= 0) {
             affectedPlayer.actionPoints += 2;
           }
@@ -643,8 +722,40 @@ export const Room: FC<{
         case SKILL_ID.ANNIHILATE: {
           affectedEnemy.health = affectedEnemy.health - totalDamage;
 
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > affectedEnemy.health
+                ? affectedEnemy.health
+                : totalDamage) * playerLifestealMultiplier
+            );
+
+            if (
+              affectedPlayer.health + lifestealAmount >
+              affectedPlayer.maxHealth
+            ) {
+              affectedPlayer.health = affectedPlayer.maxHealth;
+            } else {
+              affectedPlayer.health += lifestealAmount;
+            }
+          }
+
           doesDamage = true;
 
+          break;
+        }
+        case SKILL_ID.WEAKEN: {
+          // Petrify enemy
+          const weakenedStatus = STATUSES.find(
+            (s) => s.id === STATUS_ID.WEAKENED
+          );
+
+          if (!weakenedStatus) {
+            addLog({ message: 'Weakened status not found!', type: 'error' });
+            return;
+          }
+
+          affectedEnemy.statuses = [...affectedEnemy.statuses, weakenedStatus];
           break;
         }
         default:
@@ -780,6 +891,43 @@ export const Room: FC<{
         newPlayer.statuses.push(stoneSkinStatus);
         break;
       }
+      case SKILL_ID.BLOODLUST: {
+        const bloodlustStatus = STATUSES.find(
+          (s) => s.id === STATUS_ID.BLOODLUST
+        );
+
+        if (!bloodlustStatus) {
+          addLog({ message: 'Bloodlust status not found!', type: 'error' });
+          return;
+        }
+
+        newPlayer.statuses.push(bloodlustStatus);
+        break;
+      }
+      case SKILL_ID.FOCUS: {
+        const focusedStatus = STATUSES.find((s) => s.id === STATUS_ID.FOCUSED);
+
+        if (!focusedStatus) {
+          addLog({ message: 'Focused status not found!', type: 'error' });
+          return;
+        }
+
+        newPlayer.statuses.push(focusedStatus);
+        break;
+      }
+      case SKILL_ID.ENLIGHTEN: {
+        const enlightenedStatus = STATUSES.find(
+          (s) => s.id === STATUS_ID.ENLIGHTENED
+        );
+
+        if (!enlightenedStatus) {
+          addLog({ message: 'Enlightened status not found!', type: 'error' });
+          return;
+        }
+
+        newPlayer.statuses.push(enlightenedStatus);
+        break;
+      }
       default:
         break;
     }
@@ -884,12 +1032,28 @@ export const Room: FC<{
         // Create a new array of enemies with the damage dealt to be updated in the store
         const newEnemies = [...enemies];
 
+        const newPlayer = { ...player };
+
         enemiesInTargetZones.forEach((enemy) => {
           // Find enemy index
           const enemyIndex = newEnemies.findIndex((e) => e.id === enemy.id);
 
           const newEnemy = { ...enemy };
           newEnemy.health -= totalDamage;
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > enemy.health ? enemy.health : totalDamage) *
+                playerLifestealMultiplier
+            );
+
+            if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
+              newPlayer.health = newPlayer.maxHealth;
+            } else {
+              newPlayer.health += lifestealAmount;
+            }
+          }
 
           // Check if enemy is defeated
           if (newEnemy.health <= 0) {
@@ -919,13 +1083,13 @@ export const Room: FC<{
 
         setEnemies(newEnemies);
         setPlayer({
-          ...player,
+          ...newPlayer,
           state: {
-            ...player.state,
+            ...newPlayer.state,
             isUsingSkill: false,
           },
-          actionPoints: player.actionPoints - skill.cost,
-          skills: player.skills.map((s) =>
+          actionPoints: newPlayer.actionPoints - skill.cost,
+          skills: newPlayer.skills.map((s) =>
             s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
           ),
         });
@@ -988,6 +1152,20 @@ export const Room: FC<{
 
           const newEnemy = { ...enemy };
           newEnemy.health -= totalDamage;
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > enemy.health ? enemy.health : totalDamage) *
+                playerLifestealMultiplier
+            );
+
+            if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
+              newPlayer.health = newPlayer.maxHealth;
+            } else {
+              newPlayer.health += lifestealAmount;
+            }
+          }
 
           const burnedStatus = STATUSES.find((s) => s.id === STATUS_ID.BURNED);
 
@@ -1072,6 +1250,74 @@ export const Room: FC<{
         }
 
         setEnemies(newEnemies);
+        setPlayer({
+          ...newPlayer,
+          state: {
+            ...newPlayer.state,
+            isUsingSkill: false,
+          },
+          actionPoints: newPlayer.actionPoints - skill.cost,
+          skills: newPlayer.skills.map((s) =>
+            s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+          ),
+        });
+
+        break;
+      }
+      case SKILL_ID.WARCRY: {
+        // Add either Battle Fury I, II, or III status to player depending on how many enemies are hit in the target zone
+        const battleFuryI = STATUSES.find(
+          (s) => s.id === STATUS_ID.BATTLE_FURY_1
+        );
+        const battleFuryII = STATUSES.find(
+          (s) => s.id === STATUS_ID.BATTLE_FURY_2
+        );
+        const battleFuryIII = STATUSES.find(
+          (s) => s.id === STATUS_ID.BATTLE_FURY_3
+        );
+
+        if (!battleFuryI || !battleFuryII || !battleFuryIII) {
+          addLog({ message: 'Battle Fury status not found!', type: 'error' });
+          return;
+        }
+
+        // First find the enemies, then update them with the damage at the same time to avoid multiple renders
+        const enemiesInTargetZones: IEnemy[] = [];
+        targetZones.current.forEach(([row, col]) => {
+          const entitiyIfExists = roomEntityPositions.get(`${row},${col}`);
+
+          if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
+            if (!enemy) {
+              addLog({ message: 'Enemy not found!', type: 'error' });
+              return;
+            }
+
+            enemiesInTargetZones.push(enemy);
+          }
+        });
+
+        // Create a new player with the status effect to be updated in the store
+        const newPlayer = { ...player };
+
+        if (enemiesInTargetZones.length === 1) {
+          newPlayer.statuses.push(battleFuryI);
+        } else if (enemiesInTargetZones.length === 2) {
+          newPlayer.statuses.push(battleFuryII);
+        } else if (enemiesInTargetZones.length >= 4) {
+          newPlayer.statuses.push(battleFuryIII);
+        }
+
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> used{' '}
+              <span className="text-green-500">{skill.name}</span>.
+            </>
+          ),
+          type: 'info',
+        });
+
         setPlayer({
           ...newPlayer,
           state: {
@@ -1259,9 +1505,21 @@ export const Room: FC<{
         return acc + status.effect.damageBonus;
       }, 0);
 
+      const damageMultiplier = enemy.statuses.reduce((acc, status) => {
+        if (status.effect.damageMultiplier === 0) return acc;
+
+        if (status.effect.damageMultiplier > 1) {
+          return acc + (status.effect.damageMultiplier - 1);
+        } else {
+          return acc - (1 - status.effect.damageMultiplier);
+        }
+      }, 1);
+
       const playerTotalDefense = getPlayerTotalDefense();
 
-      let totalDamage = baseDamage + statusDamageBonus - playerTotalDefense;
+      let totalDamage =
+        Math.round((baseDamage + statusDamageBonus) * damageMultiplier) -
+        playerTotalDefense;
 
       if (totalDamage <= 0) totalDamage = 0;
 
@@ -1455,9 +1713,7 @@ export const Room: FC<{
 
                 // Range for weapon dependent skills
                 if (weapon) {
-                  if (
-                    [SKILL_ID.WHIRLWIND, SKILL_ID.CLEAVE].includes(skill.id)
-                  ) {
+                  if (weaponBasedSkillIDs.includes(skill.id)) {
                     range = weapon.range;
                   }
                 }
@@ -1474,103 +1730,113 @@ export const Room: FC<{
                 }
 
                 // Compute target zone based on the specific skill requirement
-                if (skill.id === SKILL_ID.WHIRLWIND) {
-                  if (isEffectZone && isEffectZoneHovered) {
-                    // Add tiles to target zone to use to compute the effect of the skill
+                switch (skill.id) {
+                  case SKILL_ID.WHIRLWIND:
+                  case SKILL_ID.WARCRY: {
+                    if (isEffectZone && isEffectZoneHovered) {
+                      // Add tiles to target zone to use to compute the effect of the skill
 
-                    const currentTargetZones = targetZones.current;
-
-                    // Check if tile is in target zone
-                    let isTileInTargetZone = false;
-                    currentTargetZones.forEach(([row, col]) => {
-                      if (row === rowIndex && col === columnIndex) {
-                        isTileInTargetZone = true;
-                      }
-                    });
-
-                    if (!isTileInTargetZone) {
-                      currentTargetZones.push([rowIndex, columnIndex]);
-                      targetZones.current = currentTargetZones;
-                    }
-
-                    // For whirlwind, the target zone is the same as the effect zone
-                    isTargetZone = true;
-                  }
-                } else if (skill.id === SKILL_ID.FIREBALL) {
-                  // For fireball, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
-                  if (isEffectZoneHovered) {
-                    // Add tiles to target zone to use to compute the effect of the skill
-
-                    // For fireball, the target zone is a 3x3 area around the hovered effect zone tile
-                    if (
-                      effectZoneHovered &&
-                      rowIndex >= effectZoneHovered[0] - 1 &&
-                      rowIndex <= effectZoneHovered[0] + 1 &&
-                      columnIndex >= effectZoneHovered[1] - 1 &&
-                      columnIndex <= effectZoneHovered[1] + 1
-                    ) {
                       const currentTargetZones = targetZones.current;
 
                       // Check if tile is in target zone
-                      const isTileInTargetZone = currentTargetZones.some(
-                        ([row, col]) => {
-                          return row === rowIndex && col === columnIndex;
+                      let isTileInTargetZone = false;
+                      currentTargetZones.forEach(([row, col]) => {
+                        if (row === rowIndex && col === columnIndex) {
+                          isTileInTargetZone = true;
                         }
-                      );
+                      });
 
                       if (!isTileInTargetZone) {
                         currentTargetZones.push([rowIndex, columnIndex]);
                         targetZones.current = currentTargetZones;
                       }
 
+                      // For whirlwind, the target zone is the same as the effect zone
                       isTargetZone = true;
                     }
+                    break;
                   }
-                } else if (skill.id === SKILL_ID.CLEAVE) {
-                  if (isEffectZone && isEffectZoneHovered) {
-                    // Add tiles to target zone to use to compute the effect of the skill
+                  case SKILL_ID.FIREBALL: {
+                    // For fireball, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
+                    if (isEffectZoneHovered) {
+                      // Add tiles to target zone to use to compute the effect of the skill
 
-                    const currentTargetZones = targetZones.current;
+                      // For fireball, the target zone is a 3x3 area around the hovered effect zone tile
+                      if (
+                        effectZoneHovered &&
+                        rowIndex >= effectZoneHovered[0] - 1 &&
+                        rowIndex <= effectZoneHovered[0] + 1 &&
+                        columnIndex >= effectZoneHovered[1] - 1 &&
+                        columnIndex <= effectZoneHovered[1] + 1
+                      ) {
+                        const currentTargetZones = targetZones.current;
 
-                    // Check if tile is in target zone
-                    let isTileInTargetZone = false;
-                    currentTargetZones.forEach(([row, col]) => {
-                      if (row === rowIndex && col === columnIndex) {
-                        isTileInTargetZone = true;
-                      }
-                    });
+                        // Check if tile is in target zone
+                        const isTileInTargetZone = currentTargetZones.some(
+                          ([row, col]) => {
+                            return row === rowIndex && col === columnIndex;
+                          }
+                        );
 
-                    if (!isTileInTargetZone) {
-                      currentTargetZones.push([rowIndex, columnIndex]);
-                      targetZones.current = currentTargetZones;
-                    }
+                        if (!isTileInTargetZone) {
+                          currentTargetZones.push([rowIndex, columnIndex]);
+                          targetZones.current = currentTargetZones;
+                        }
 
-                    // For cleave, the target zone is in the area in front of the player, depending on the direction of the effect zone hovered
-                    if (!effectZoneHovered) {
-                      console.error('Effect zone hovered not found!');
-                      return;
-                    }
-
-                    // Handle north, south, east, west directions
-                    // Handle north direction
-                    if (effectZoneHovered[0] < playerRow) {
-                      if (rowIndex < playerRow) {
-                        isTargetZone = true;
-                      }
-                    } else if (effectZoneHovered[0] > playerRow) {
-                      if (rowIndex > playerRow) {
-                        isTargetZone = true;
-                      }
-                    } else if (effectZoneHovered[1] < playerCol) {
-                      if (columnIndex < playerCol) {
-                        isTargetZone = true;
-                      }
-                    } else if (effectZoneHovered[1] > playerCol) {
-                      if (columnIndex > playerCol) {
                         isTargetZone = true;
                       }
                     }
+                    break;
                   }
+                  case SKILL_ID.CLEAVE: {
+                    if (isEffectZone && isEffectZoneHovered) {
+                      // Add tiles to target zone to use to compute the effect of the skill
+
+                      const currentTargetZones = targetZones.current;
+
+                      // Check if tile is in target zone
+                      let isTileInTargetZone = false;
+                      currentTargetZones.forEach(([row, col]) => {
+                        if (row === rowIndex && col === columnIndex) {
+                          isTileInTargetZone = true;
+                        }
+                      });
+
+                      if (!isTileInTargetZone) {
+                        currentTargetZones.push([rowIndex, columnIndex]);
+                        targetZones.current = currentTargetZones;
+                      }
+
+                      // For cleave, the target zone is in the area in front of the player, depending on the direction of the effect zone hovered
+                      if (!effectZoneHovered) {
+                        console.error('Effect zone hovered not found!');
+                        return;
+                      }
+
+                      // Handle north, south, east, west directions
+                      // Handle north direction
+                      if (effectZoneHovered[0] < playerRow) {
+                        if (rowIndex < playerRow) {
+                          isTargetZone = true;
+                        }
+                      } else if (effectZoneHovered[0] > playerRow) {
+                        if (rowIndex > playerRow) {
+                          isTargetZone = true;
+                        }
+                      } else if (effectZoneHovered[1] < playerCol) {
+                        if (columnIndex < playerCol) {
+                          isTargetZone = true;
+                        }
+                      } else if (effectZoneHovered[1] > playerCol) {
+                        if (columnIndex > playerCol) {
+                          isTargetZone = true;
+                        }
+                      }
+                    }
+                    break;
+                  }
+                  default:
+                    break;
                 }
               }
             }

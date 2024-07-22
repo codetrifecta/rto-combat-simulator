@@ -1,4 +1,5 @@
 import { IEnemy, IPlayer } from '../types';
+import { LEGGINGS } from './armor';
 import { SKILLS } from './skill';
 import { SPRITE_ID } from './sprites';
 import { WEAPONS } from './weapon';
@@ -31,7 +32,7 @@ export const PLAYER: IPlayer = {
     weapon: WEAPONS.find((weapon) => weapon.id === 1) || null,
     helmet: null,
     chestpiece: null,
-    legging: null,
+    legging: LEGGINGS.find((legging) => legging.id === 1) || null,
   },
 };
 
