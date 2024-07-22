@@ -904,6 +904,30 @@ export const Room: FC<{
         newPlayer.statuses.push(bloodlustStatus);
         break;
       }
+      case SKILL_ID.FOCUS: {
+        const focusedStatus = STATUSES.find((s) => s.id === STATUS_ID.FOCUSED);
+
+        if (!focusedStatus) {
+          addLog({ message: 'Focused status not found!', type: 'error' });
+          return;
+        }
+
+        newPlayer.statuses.push(focusedStatus);
+        break;
+      }
+      case SKILL_ID.ENLIGHTEN: {
+        const enlightenedStatus = STATUSES.find(
+          (s) => s.id === STATUS_ID.ENLIGHTENED
+        );
+
+        if (!enlightenedStatus) {
+          addLog({ message: 'Enlightened status not found!', type: 'error' });
+          return;
+        }
+
+        newPlayer.statuses.push(enlightenedStatus);
+        break;
+      }
       default:
         break;
     }

@@ -35,8 +35,6 @@ export const weaponBasedSkillIDs: SKILL_ID[] = [
 ];
 
 export const strengthBasedSkillIDs: SKILL_ID[] = [
-  SKILL_ID.FLEX,
-  SKILL_ID.IRONFLESH,
   SKILL_ID.WHIRLWIND,
   SKILL_ID.EXECUTE,
   SKILL_ID.CLEAVE,
