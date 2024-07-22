@@ -1,6 +1,6 @@
-import { ENTITY_TYPE } from "./constants/entity";
-import { TILE_TYPE } from "./constants/tile";
-import { IEnemy, IEntity, IPlayer } from "./types";
+import { ENTITY_TYPE } from './constants/entity';
+import { TILE_TYPE } from './constants/tile';
+import { IEnemy, IEntity, IPlayer } from './types';
 
 /**
  * Generate initial room matrix based on the room length
@@ -37,10 +37,6 @@ export const generateRoomTileMatrix = (roomLength: number) => {
         } else {
           roomTileMatrix[row][col] = [TILE_TYPE.WALL, 1];
         }
-      }
-      // Place walls in the middle of the room
-      else if (row === 5 && col < 7) {
-        roomTileMatrix[row][col] = [TILE_TYPE.WALL, 1];
       } else {
         // Place walls everywhere else
         roomTileMatrix[row][col] = [TILE_TYPE.EMPTY, 1];
@@ -63,7 +59,7 @@ export const generateRoomEntityPositions: () => Map<
 
   // Place entities in the room
   // Place player
-  roomEntityPositions.set(`8,5`, [ENTITY_TYPE.PLAYER, 1]);
+  roomEntityPositions.set(`9,5`, [ENTITY_TYPE.PLAYER, 1]);
 
   // Place enemies (that match the number of enemies specified in enemy store)
   roomEntityPositions.set(`7,4`, [ENTITY_TYPE.ENEMY, 1]); // Enemy in direct top-left of player in a 11x11 room
@@ -195,7 +191,7 @@ export const getEntityPosition = (
 
   for (const [key, value] of entityPositions.entries()) {
     if (value[0] === entity.entityType && value[1] === entity.id) {
-      const [row, col] = key.split(",").map((num) => parseInt(num));
+      const [row, col] = key.split(',').map((num) => parseInt(num));
       return [row, col];
     }
   }
