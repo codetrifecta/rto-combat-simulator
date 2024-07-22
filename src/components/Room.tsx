@@ -48,6 +48,7 @@ export const Room: FC<{
     getPlayerTotalStrength,
     getPlayerTotalIntelligence,
     getPlayerTotalDefense,
+    getPlayerLifestealMultiplier,
     setPlayer,
     setPlayerActionPoints,
     setPlayerState,
@@ -56,6 +57,7 @@ export const Room: FC<{
   const playerBaseAttackDamage = getPlayerBaseAttackDamage();
   const playerTotalStrength = getPlayerTotalStrength();
   const playerTotalIntelligence = getPlayerTotalIntelligence();
+  const playerLifestealMultiplier = getPlayerLifestealMultiplier();
 
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
 
@@ -497,6 +499,7 @@ export const Room: FC<{
     }
 
     const enemy = enemies.find((enemy) => enemy.id === entityId);
+    const newPlayer = { ...player };
 
     if (!enemy) {
       addLog({ message: 'Enemy not found!', type: 'error' });
@@ -507,22 +510,37 @@ export const Room: FC<{
       return acc + status.effect.damageBonus;
     }, 0);
 
-    if (player.state.isAttacking) {
-      if (!player.equipment.weapon) {
+    if (newPlayer.state.isAttacking) {
+      if (!newPlayer.equipment.weapon) {
         addLog({ message: 'Player has no weapon equipped!', type: 'error' });
         return;
       }
 
       // Compute base attack damage based on the higher of player's strength or intelligence
       const totalDamage = playerBaseAttackDamage + statusDamageBonus;
-      enemy.health = enemy.health - totalDamage;
+      const newEnemy = { ...enemy };
+      newEnemy.health = newEnemy.health - totalDamage;
 
-      if (enemy.health <= 0) {
+      if (playerLifestealMultiplier > 0) {
+        // Limit lifesteal to the enemy's remaining health
+        const lifestealAmount = Math.round(
+          (totalDamage > enemy.health ? enemy.health : totalDamage) *
+            playerLifestealMultiplier
+        );
+
+        if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
+          newPlayer.health = newPlayer.maxHealth;
+        } else {
+          newPlayer.health += lifestealAmount;
+        }
+      }
+
+      if (newEnemy.health <= 0) {
         setEnemies(enemies.filter((e) => e.id !== entityId));
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> took{' '}
+              <span className="text-red-500">{newEnemy.name}</span> took{' '}
               {totalDamage} damage and has been defeated!
             </>
           ),
@@ -532,7 +550,7 @@ export const Room: FC<{
         setEnemies(
           enemies.map((e) => {
             if (e.id === entityId) {
-              return enemy;
+              return newEnemy;
             }
             return e;
           })
@@ -540,14 +558,18 @@ export const Room: FC<{
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> took{' '}
+              <span className="text-red-500">{newEnemy.name}</span> took{' '}
               {totalDamage} damage.
             </>
           ),
           type: 'info',
         });
       }
-      setPlayerActionPoints(player.actionPoints - player.equipment.weapon.cost);
+
+      setPlayer({
+        ...newPlayer,
+        actionPoints: newPlayer.actionPoints - newPlayer.equipment.weapon.cost,
+      });
     } else if (player.state.isUsingSkill && player.state.skillId) {
       const skill = player.skills.find(
         (skill) => skill.id === player.state.skillId
@@ -590,6 +612,25 @@ export const Room: FC<{
         case SKILL_ID.LIGHTNING: {
           // Deal damage to enemy
           affectedEnemy.health = affectedEnemy.health - totalDamage;
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > affectedEnemy.health
+                ? affectedEnemy.health
+                : totalDamage) * playerLifestealMultiplier
+            );
+
+            if (
+              affectedPlayer.health + lifestealAmount >
+              affectedPlayer.maxHealth
+            ) {
+              affectedPlayer.health = affectedPlayer.maxHealth;
+            } else {
+              affectedPlayer.health += lifestealAmount;
+            }
+          }
+
           doesDamage = true;
           break;
         }
@@ -617,6 +658,26 @@ export const Room: FC<{
           } else {
             affectedPlayer.health = affectedPlayer.health + absorbedHealth;
           }
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > affectedEnemy.health
+                ? affectedEnemy.health
+                : totalDamage) * playerLifestealMultiplier
+            );
+
+            if (
+              affectedPlayer.health + lifestealAmount >
+              affectedPlayer.maxHealth
+            ) {
+              affectedPlayer.health = affectedPlayer.maxHealth;
+            } else {
+              affectedPlayer.health += lifestealAmount;
+            }
+          }
+
+          doesDamage = true;
           break;
         }
         case SKILL_ID.EXECUTE: {
@@ -632,6 +693,24 @@ export const Room: FC<{
             affectedEnemy.health = affectedEnemy.health - totalDamage;
           }
 
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > affectedEnemy.health
+                ? affectedEnemy.health
+                : totalDamage) * playerLifestealMultiplier
+            );
+
+            if (
+              affectedPlayer.health + lifestealAmount >
+              affectedPlayer.maxHealth
+            ) {
+              affectedPlayer.health = affectedPlayer.maxHealth;
+            } else {
+              affectedPlayer.health += lifestealAmount;
+            }
+          }
+
           if (affectedEnemy.health <= 0) {
             affectedPlayer.actionPoints += 2;
           }
@@ -642,6 +721,24 @@ export const Room: FC<{
         }
         case SKILL_ID.ANNIHILATE: {
           affectedEnemy.health = affectedEnemy.health - totalDamage;
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > affectedEnemy.health
+                ? affectedEnemy.health
+                : totalDamage) * playerLifestealMultiplier
+            );
+
+            if (
+              affectedPlayer.health + lifestealAmount >
+              affectedPlayer.maxHealth
+            ) {
+              affectedPlayer.health = affectedPlayer.maxHealth;
+            } else {
+              affectedPlayer.health += lifestealAmount;
+            }
+          }
 
           doesDamage = true;
 
@@ -780,6 +877,19 @@ export const Room: FC<{
         newPlayer.statuses.push(stoneSkinStatus);
         break;
       }
+      case SKILL_ID.BLOODLUST: {
+        const bloodlustStatus = STATUSES.find(
+          (s) => s.id === STATUS_ID.BLOODLUST
+        );
+
+        if (!bloodlustStatus) {
+          addLog({ message: 'Bloodlust status not found!', type: 'error' });
+          return;
+        }
+
+        newPlayer.statuses.push(bloodlustStatus);
+        break;
+      }
       default:
         break;
     }
@@ -884,12 +994,28 @@ export const Room: FC<{
         // Create a new array of enemies with the damage dealt to be updated in the store
         const newEnemies = [...enemies];
 
+        const newPlayer = { ...player };
+
         enemiesInTargetZones.forEach((enemy) => {
           // Find enemy index
           const enemyIndex = newEnemies.findIndex((e) => e.id === enemy.id);
 
           const newEnemy = { ...enemy };
           newEnemy.health -= totalDamage;
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > enemy.health ? enemy.health : totalDamage) *
+                playerLifestealMultiplier
+            );
+
+            if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
+              newPlayer.health = newPlayer.maxHealth;
+            } else {
+              newPlayer.health += lifestealAmount;
+            }
+          }
 
           // Check if enemy is defeated
           if (newEnemy.health <= 0) {
@@ -919,13 +1045,13 @@ export const Room: FC<{
 
         setEnemies(newEnemies);
         setPlayer({
-          ...player,
+          ...newPlayer,
           state: {
-            ...player.state,
+            ...newPlayer.state,
             isUsingSkill: false,
           },
-          actionPoints: player.actionPoints - skill.cost,
-          skills: player.skills.map((s) =>
+          actionPoints: newPlayer.actionPoints - skill.cost,
+          skills: newPlayer.skills.map((s) =>
             s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
           ),
         });
@@ -988,6 +1114,20 @@ export const Room: FC<{
 
           const newEnemy = { ...enemy };
           newEnemy.health -= totalDamage;
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > enemy.health ? enemy.health : totalDamage) *
+                playerLifestealMultiplier
+            );
+
+            if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
+              newPlayer.health = newPlayer.maxHealth;
+            } else {
+              newPlayer.health += lifestealAmount;
+            }
+          }
 
           const burnedStatus = STATUSES.find((s) => s.id === STATUS_ID.BURNED);
 
@@ -1075,11 +1215,11 @@ export const Room: FC<{
         setPlayer({
           ...newPlayer,
           state: {
-            ...player.state,
+            ...newPlayer.state,
             isUsingSkill: false,
           },
-          actionPoints: player.actionPoints - skill.cost,
-          skills: player.skills.map((s) =>
+          actionPoints: newPlayer.actionPoints - skill.cost,
+          skills: newPlayer.skills.map((s) =>
             s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
           ),
         });

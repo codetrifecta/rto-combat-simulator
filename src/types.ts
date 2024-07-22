@@ -72,6 +72,7 @@ export interface IStatusEffect {
   strengthMultiplier: number;
   intelligenceMultiplier: number;
   defenseMultiplier: number;
+  lifesteal: number;
   canMove: boolean;
   canAttack: boolean;
 }

@@ -22,6 +22,7 @@ interface IPlayerStore extends IPlayer {
   getPlayerTotalIntelligence: () => number;
   getPlayerTotalDefense: () => number;
   getPlayerTotalConstitution: () => number;
+  getPlayerLifestealMultiplier: () => number;
   setPlayer: (player: IPlayer) => void;
   setPlayerActionPoints: (actionPoints: number) => void;
   setPlayerSkills: (skills: ISkill[]) => void;
@@ -197,6 +198,15 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       leggingConstitution;
 
     return totalConstitution;
+  },
+
+  getPlayerLifestealMultiplier: () => {
+    const lifestealMultiplier = get().statuses.reduce(
+      (acc, status) => acc + status.effect.lifesteal,
+      0
+    );
+
+    return lifestealMultiplier;
   },
 
   setPlayer: (player: IPlayer) => set({ ...player }),

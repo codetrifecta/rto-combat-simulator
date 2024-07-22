@@ -21,6 +21,7 @@ export enum SKILL_ID {
   CLEAVE = 11,
   ANNIHILATE = 12,
   WARCRY = 13,
+  BLOODLUST = 14,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -212,6 +213,18 @@ export const SKILLS: ISkill[] = [
       "Unleash a warcry to boost your courage. Gain Battle Fury for 3 turns. Battle Fury's efffects stacks with the amount of enemies in range",
     damageMultiplier: 0,
     range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 3,
+  },
+  {
+    id: SKILL_ID.BLOODLUST,
+    name: 'Bloodlust',
+    icon: ICON_ID.SKILL_BLOODLUST,
+    skillType: SKILL_TYPE.SELF,
+    description: 'Enter a state of Bloodlust for 3 turns.',
+    damageMultiplier: 0,
+    range: 0,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 3,
