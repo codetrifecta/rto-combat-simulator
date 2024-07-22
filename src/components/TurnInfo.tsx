@@ -1,11 +1,11 @@
-import { FC, useMemo } from "react";
-import { IEntity } from "../types";
-import { ENTITY_TYPE } from "../constants/entity";
-import clsx from "clsx";
-import { useGameStateStore } from "../store/game";
-import { usePlayerStore } from "../store/player";
-import { useEnemyStore } from "../store/enemy";
-import { StatusEffect } from "./StatusEffect";
+import { FC, useMemo } from 'react';
+import { IEntity } from '../types';
+import { ENTITY_TYPE } from '../constants/entity';
+import clsx from 'clsx';
+import { useGameStateStore } from '../store/game';
+import { usePlayerStore } from '../store/player';
+import { useEnemyStore } from '../store/enemy';
+import { StatusEffect } from './StatusEffect';
 
 export const TurnInfo: FC<{
   currentHoveredEntity: IEntity | null;
@@ -36,26 +36,26 @@ export const TurnInfo: FC<{
 
   const renderEntityTurnText = (entity: IEntity | null) => {
     if (!entity) {
-      return "";
+      return '';
     }
 
     if (entity.entityType === ENTITY_TYPE.PLAYER) {
       return (
         <>
-          <span className="text-green-500">{entity.name}'s</span> turn
+          <span className="text-green-500">{entity.name + "'s"}</span> turn
         </>
       );
     } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
       return (
         <>
-          <span className="text-red-500">{entity.name}'s</span> turn
+          <span className="text-red-500">{entity.name + "'s"}</span> turn
         </>
       );
     }
 
     return (
       <>
-        <span>{entity.name}'s</span> turn
+        <span>{entity.name + "'s"}</span> turn
       </>
     );
   };
@@ -83,7 +83,7 @@ export const TurnInfo: FC<{
           );
         })}
       </div>
-      <div className="flex justify-center items-center bg-neutral-900 px-5 py-1 border border-white">
+      <div className="fixed top-36 flex justify-center items-center bg-neutral-900 px-5 py-1 border border-white">
         <h2>{renderEntityTurnText(turnEntities[0])}</h2>
       </div>
     </div>
@@ -102,14 +102,14 @@ const EntityCard: FC<{
   return (
     <div>
       <div
-        className={clsx("relative border p-3 cursor-default", {
-          "z-0 hover:shadow-intense-green hover:z-10":
+        className={clsx('relative border p-3 cursor-default', {
+          'z-0 hover:shadow-intense-green hover:z-10':
             entity.entityType === ENTITY_TYPE.PLAYER && !active,
-          "z-0 hover:shadow-intense-red hover:z-10":
+          'z-0 hover:shadow-intense-red hover:z-10':
             entity.entityType === ENTITY_TYPE.ENEMY && !active,
-          "shadow-intense-green z-10":
+          'shadow-intense-green z-10':
             entity.entityType === ENTITY_TYPE.PLAYER && active,
-          "shadow-intense-red z-10":
+          'shadow-intense-red z-10':
             entity.entityType === ENTITY_TYPE.ENEMY && active,
         })}
         onMouseEnter={onMouseEnter}
@@ -117,13 +117,13 @@ const EntityCard: FC<{
       >
         <div
           className={clsx(
-            "absolute z-[-10] bottom-0 left-0 w-full transition-all ease-in-out duration-300 delay-0",
+            'absolute z-[-10] bottom-0 left-0 w-full transition-all ease-in-out duration-300 delay-0',
             {
-              "bg-green-700": entity.entityType === ENTITY_TYPE.PLAYER,
-              "bg-red-700": entity.entityType === ENTITY_TYPE.ENEMY,
+              'bg-green-700': entity.entityType === ENTITY_TYPE.PLAYER,
+              'bg-red-700': entity.entityType === ENTITY_TYPE.ENEMY,
             }
           )}
-          style={{ height: (entity.health / entity.maxHealth) * 100 + "%" }}
+          style={{ height: (entity.health / entity.maxHealth) * 100 + '%' }}
         ></div>
         <h3>{entity.name}</h3>
         <h4>
