@@ -316,7 +316,7 @@ function App() {
       {/* <div className="fixed bottom-0 flex flex-col justify-between items-center"> */}
       {/* Player Info */}
       <section
-        className="mb-1 max-w-[3400px] fixed bottom-[80px]"
+        className="mb-1 max-w-[3400px] fixed bottom-[80px] z-50"
         style={{
           left: '50%',
           transform: 'translateX(-50%)',

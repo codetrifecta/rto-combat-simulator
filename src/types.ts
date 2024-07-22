@@ -69,6 +69,9 @@ export interface IStatusEffect {
   damageBonus: number;
   incomingDamageReduction: number;
   damageOverTime: number;
+  strengthMultiplier: number;
+  intelligenceMultiplier: number;
+  defenseMultiplier: number;
   canMove: boolean;
   canAttack: boolean;
 }

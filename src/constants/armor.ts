@@ -190,8 +190,8 @@ export const LEGGINGS: ILegging[] = [
     icon: ICON_ID.LEGGING_LEATHER_1,
     stats: {
       defense: 1,
-      strength: 1,
-      intelligence: 1,
+      strength: 0,
+      intelligence: 0,
       constitution: 1,
     },
   },

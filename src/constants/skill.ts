@@ -53,7 +53,8 @@ export const SKILLS: ISkill[] = [
     name: 'Flex',
     icon: ICON_ID.SKILL_FLEX,
     skillType: SKILL_TYPE.SELF,
-    description: 'Increase damage for all attacks by 2 for 3 turns.',
+    description:
+      'Applies Flexed on self for 3 turns. Flexed increases strength by 30%.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
@@ -66,7 +67,7 @@ export const SKILLS: ISkill[] = [
     icon: ICON_ID.SKILL_DEFENSE_UP,
     skillType: SKILL_TYPE.SELF,
     description:
-      'Applies Stone Skin on self for 3 turns. Stone Skin decreases all incoming damage by 3.',
+      'Applies Stone Skin on self for 3 turns. Stone Skin increases defense by 30%.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
@@ -103,7 +104,8 @@ export const SKILLS: ISkill[] = [
     name: 'Fireball',
     icon: ICON_ID.SKILL_FIREBALL,
     skillType: SKILL_TYPE.AOE,
-    description: 'Launch a fireball at a target area. Burns enemies hit.',
+    description:
+      'Launch a fireball at a target area. Additionally applied Burned to enemies hit for 3 turns.',
     damageMultiplier: 1.5,
     range: 3,
     cooldown: 2,
