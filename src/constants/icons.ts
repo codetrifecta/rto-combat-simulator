@@ -61,6 +61,9 @@ import skill_cleave from '../assets/icons/skills/icon_skill_cleave.png';
 import skill_annihilate from '../assets/icons/skills/icon_skill_annihilate.png';
 import skill_warcry from '../assets/icons/skills/icon_skill_warcry.png';
 import skill_bloodlust from '../assets/icons/skills/icon_skill_bloodlust.png';
+import skill_focus from '../assets/icons/skills/icon_skill_focus.png';
+import skill_enlighten from '../assets/icons/skills/icon_skill_enlighten.png';
+import skill_weaken from '../assets/icons/skills/icon_skill_weaken.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -70,6 +73,9 @@ import status_burned from '../assets/icons/statuses/icon_status_burned.png';
 import status_frozen from '../assets/icons/statuses/icon_status_frozen.png';
 import status_battle_fury from '../assets/icons/statuses/icon_status_battle_fury.png';
 import status_bloodlust from '../assets/icons/statuses/icon_status_bloodlust.png';
+import status_focused from '../assets/icons/statuses/icon_status_focused.png';
+import status_enlightened from '../assets/icons/statuses/icon_status_enlightened.png';
+import status_weakened from '../assets/icons/statuses/icon_status_weakened.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -135,6 +141,9 @@ export enum ICON_ID {
   SKILL_ANNIHILATE = 'skill_annihilate',
   SKILL_WARCRY = 'skill_warcry',
   SKILL_BLOODLUST = 'skill_bloodlust',
+  SKILL_FOCUS = 'skill_focus',
+  SKILL_ENLIGHTEN = 'skill_enlighten',
+  SKILL_WEAKEN = 'skill_weaken',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -144,6 +153,9 @@ export enum ICON_ID {
   STATUS_FROZEN = 'status_frozen',
   STATUS_BATTLE_FURY = 'status_battle_fury',
   STATUS_BLOODLUST = 'status_bloodlust',
+  STATUS_FOCUSED = 'status_focused',
+  STATUS_ENLIGHTENED = 'status_enlightened',
+  STATUS_WEAKENED = 'status_weakened',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -210,6 +222,9 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_ANNIHILATE]: skill_annihilate,
   [ICON_ID.SKILL_WARCRY]: skill_warcry,
   [ICON_ID.SKILL_BLOODLUST]: skill_bloodlust,
+  [ICON_ID.SKILL_FOCUS]: skill_focus,
+  [ICON_ID.SKILL_ENLIGHTEN]: skill_enlighten,
+  [ICON_ID.SKILL_WEAKEN]: skill_weaken,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
@@ -219,6 +234,9 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_FROZEN]: status_frozen,
   [ICON_ID.STATUS_BATTLE_FURY]: status_battle_fury,
   [ICON_ID.STATUS_BLOODLUST]: status_bloodlust,
+  [ICON_ID.STATUS_FOCUSED]: status_focused,
+  [ICON_ID.STATUS_ENLIGHTENED]: status_enlightened,
+  [ICON_ID.STATUS_WEAKENED]: status_weakened,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

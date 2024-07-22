@@ -22,6 +22,9 @@ export enum SKILL_ID {
   ANNIHILATE = 12,
   WARCRY = 13,
   BLOODLUST = 14,
+  FOCUS = 15,
+  ENLIGHTEN = 16,
+  WEAKEN = 17,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -228,5 +231,44 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 3,
+  },
+  {
+    id: SKILL_ID.FOCUS,
+    name: 'Focus',
+    icon: ICON_ID.SKILL_FOCUS,
+    skillType: SKILL_TYPE.SELF,
+    description:
+      'Gain Focused for 3 turns. Focused increases strength and intelligence by 15%.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.ENLIGHTEN,
+    name: 'Enlighten',
+    icon: ICON_ID.SKILL_ENLIGHTEN,
+    skillType: SKILL_TYPE.SELF,
+    description:
+      'Gain Enlightened for 3 turns. Enlightened increases intelligence by 30%.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.WEAKEN,
+    name: 'Weaken',
+    icon: ICON_ID.SKILL_WEAKEN,
+    skillType: SKILL_TYPE.ST,
+    description:
+      'Weaken an enemy for 3 turns. Weakened enemies deal 30% less damage.',
+    damageMultiplier: 0,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
   },
 ];
