@@ -1086,6 +1086,74 @@ export const Room: FC<{
 
         break;
       }
+      case SKILL_ID.WARCRY: {
+        // Add either Battle Fury I, II, or III status to player depending on how many enemies are hit in the target zone
+        const battleFuryI = STATUSES.find(
+          (s) => s.id === STATUS_ID.BATTLE_FURY_1
+        );
+        const battleFuryII = STATUSES.find(
+          (s) => s.id === STATUS_ID.BATTLE_FURY_2
+        );
+        const battleFuryIII = STATUSES.find(
+          (s) => s.id === STATUS_ID.BATTLE_FURY_3
+        );
+
+        if (!battleFuryI || !battleFuryII || !battleFuryIII) {
+          addLog({ message: 'Battle Fury status not found!', type: 'error' });
+          return;
+        }
+
+        // First find the enemies, then update them with the damage at the same time to avoid multiple renders
+        const enemiesInTargetZones: IEnemy[] = [];
+        targetZones.current.forEach(([row, col]) => {
+          const entitiyIfExists = roomEntityPositions.get(`${row},${col}`);
+
+          if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
+            if (!enemy) {
+              addLog({ message: 'Enemy not found!', type: 'error' });
+              return;
+            }
+
+            enemiesInTargetZones.push(enemy);
+          }
+        });
+
+        // Create a new player with the status effect to be updated in the store
+        const newPlayer = { ...player };
+
+        if (enemiesInTargetZones.length === 1) {
+          newPlayer.statuses.push(battleFuryI);
+        } else if (enemiesInTargetZones.length === 2) {
+          newPlayer.statuses.push(battleFuryII);
+        } else if (enemiesInTargetZones.length >= 4) {
+          newPlayer.statuses.push(battleFuryIII);
+        }
+
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> used{' '}
+              <span className="text-green-500">{skill.name}</span>.
+            </>
+          ),
+          type: 'info',
+        });
+
+        setPlayer({
+          ...newPlayer,
+          state: {
+            ...player.state,
+            isUsingSkill: false,
+          },
+          actionPoints: player.actionPoints - skill.cost,
+          skills: player.skills.map((s) =>
+            s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+          ),
+        });
+
+        break;
+      }
       default:
         break;
     }
@@ -1455,9 +1523,7 @@ export const Room: FC<{
 
                 // Range for weapon dependent skills
                 if (weapon) {
-                  if (
-                    [SKILL_ID.WHIRLWIND, SKILL_ID.CLEAVE].includes(skill.id)
-                  ) {
+                  if (weaponBasedSkillIDs.includes(skill.id)) {
                     range = weapon.range;
                   }
                 }
@@ -1474,103 +1540,113 @@ export const Room: FC<{
                 }
 
                 // Compute target zone based on the specific skill requirement
-                if (skill.id === SKILL_ID.WHIRLWIND) {
-                  if (isEffectZone && isEffectZoneHovered) {
-                    // Add tiles to target zone to use to compute the effect of the skill
+                switch (skill.id) {
+                  case SKILL_ID.WHIRLWIND:
+                  case SKILL_ID.WARCRY: {
+                    if (isEffectZone && isEffectZoneHovered) {
+                      // Add tiles to target zone to use to compute the effect of the skill
 
-                    const currentTargetZones = targetZones.current;
-
-                    // Check if tile is in target zone
-                    let isTileInTargetZone = false;
-                    currentTargetZones.forEach(([row, col]) => {
-                      if (row === rowIndex && col === columnIndex) {
-                        isTileInTargetZone = true;
-                      }
-                    });
-
-                    if (!isTileInTargetZone) {
-                      currentTargetZones.push([rowIndex, columnIndex]);
-                      targetZones.current = currentTargetZones;
-                    }
-
-                    // For whirlwind, the target zone is the same as the effect zone
-                    isTargetZone = true;
-                  }
-                } else if (skill.id === SKILL_ID.FIREBALL) {
-                  // For fireball, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
-                  if (isEffectZoneHovered) {
-                    // Add tiles to target zone to use to compute the effect of the skill
-
-                    // For fireball, the target zone is a 3x3 area around the hovered effect zone tile
-                    if (
-                      effectZoneHovered &&
-                      rowIndex >= effectZoneHovered[0] - 1 &&
-                      rowIndex <= effectZoneHovered[0] + 1 &&
-                      columnIndex >= effectZoneHovered[1] - 1 &&
-                      columnIndex <= effectZoneHovered[1] + 1
-                    ) {
                       const currentTargetZones = targetZones.current;
 
                       // Check if tile is in target zone
-                      const isTileInTargetZone = currentTargetZones.some(
-                        ([row, col]) => {
-                          return row === rowIndex && col === columnIndex;
+                      let isTileInTargetZone = false;
+                      currentTargetZones.forEach(([row, col]) => {
+                        if (row === rowIndex && col === columnIndex) {
+                          isTileInTargetZone = true;
                         }
-                      );
+                      });
 
                       if (!isTileInTargetZone) {
                         currentTargetZones.push([rowIndex, columnIndex]);
                         targetZones.current = currentTargetZones;
                       }
 
+                      // For whirlwind, the target zone is the same as the effect zone
                       isTargetZone = true;
                     }
+                    break;
                   }
-                } else if (skill.id === SKILL_ID.CLEAVE) {
-                  if (isEffectZone && isEffectZoneHovered) {
-                    // Add tiles to target zone to use to compute the effect of the skill
+                  case SKILL_ID.FIREBALL: {
+                    // For fireball, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
+                    if (isEffectZoneHovered) {
+                      // Add tiles to target zone to use to compute the effect of the skill
 
-                    const currentTargetZones = targetZones.current;
+                      // For fireball, the target zone is a 3x3 area around the hovered effect zone tile
+                      if (
+                        effectZoneHovered &&
+                        rowIndex >= effectZoneHovered[0] - 1 &&
+                        rowIndex <= effectZoneHovered[0] + 1 &&
+                        columnIndex >= effectZoneHovered[1] - 1 &&
+                        columnIndex <= effectZoneHovered[1] + 1
+                      ) {
+                        const currentTargetZones = targetZones.current;
 
-                    // Check if tile is in target zone
-                    let isTileInTargetZone = false;
-                    currentTargetZones.forEach(([row, col]) => {
-                      if (row === rowIndex && col === columnIndex) {
-                        isTileInTargetZone = true;
-                      }
-                    });
+                        // Check if tile is in target zone
+                        const isTileInTargetZone = currentTargetZones.some(
+                          ([row, col]) => {
+                            return row === rowIndex && col === columnIndex;
+                          }
+                        );
 
-                    if (!isTileInTargetZone) {
-                      currentTargetZones.push([rowIndex, columnIndex]);
-                      targetZones.current = currentTargetZones;
-                    }
+                        if (!isTileInTargetZone) {
+                          currentTargetZones.push([rowIndex, columnIndex]);
+                          targetZones.current = currentTargetZones;
+                        }
 
-                    // For cleave, the target zone is in the area in front of the player, depending on the direction of the effect zone hovered
-                    if (!effectZoneHovered) {
-                      console.error('Effect zone hovered not found!');
-                      return;
-                    }
-
-                    // Handle north, south, east, west directions
-                    // Handle north direction
-                    if (effectZoneHovered[0] < playerRow) {
-                      if (rowIndex < playerRow) {
-                        isTargetZone = true;
-                      }
-                    } else if (effectZoneHovered[0] > playerRow) {
-                      if (rowIndex > playerRow) {
-                        isTargetZone = true;
-                      }
-                    } else if (effectZoneHovered[1] < playerCol) {
-                      if (columnIndex < playerCol) {
-                        isTargetZone = true;
-                      }
-                    } else if (effectZoneHovered[1] > playerCol) {
-                      if (columnIndex > playerCol) {
                         isTargetZone = true;
                       }
                     }
+                    break;
                   }
+                  case SKILL_ID.CLEAVE: {
+                    if (isEffectZone && isEffectZoneHovered) {
+                      // Add tiles to target zone to use to compute the effect of the skill
+
+                      const currentTargetZones = targetZones.current;
+
+                      // Check if tile is in target zone
+                      let isTileInTargetZone = false;
+                      currentTargetZones.forEach(([row, col]) => {
+                        if (row === rowIndex && col === columnIndex) {
+                          isTileInTargetZone = true;
+                        }
+                      });
+
+                      if (!isTileInTargetZone) {
+                        currentTargetZones.push([rowIndex, columnIndex]);
+                        targetZones.current = currentTargetZones;
+                      }
+
+                      // For cleave, the target zone is in the area in front of the player, depending on the direction of the effect zone hovered
+                      if (!effectZoneHovered) {
+                        console.error('Effect zone hovered not found!');
+                        return;
+                      }
+
+                      // Handle north, south, east, west directions
+                      // Handle north direction
+                      if (effectZoneHovered[0] < playerRow) {
+                        if (rowIndex < playerRow) {
+                          isTargetZone = true;
+                        }
+                      } else if (effectZoneHovered[0] > playerRow) {
+                        if (rowIndex > playerRow) {
+                          isTargetZone = true;
+                        }
+                      } else if (effectZoneHovered[1] < playerCol) {
+                        if (columnIndex < playerCol) {
+                          isTargetZone = true;
+                        }
+                      } else if (effectZoneHovered[1] > playerCol) {
+                        if (columnIndex > playerCol) {
+                          isTargetZone = true;
+                        }
+                      }
+                    }
+                    break;
+                  }
+                  default:
+                    break;
                 }
               }
             }
