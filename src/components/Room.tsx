@@ -2,7 +2,12 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Tile';
 import { ENTITY_TYPE, STARTING_ACTION_POINTS } from '../constants/entity';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
-import { SKILL_ID, SKILL_TYPE, weaponBasedSkillIDs } from '../constants/skill';
+import {
+  intelligenceBasedSkillIDs,
+  SKILL_ID,
+  SKILL_TYPE,
+  weaponBasedSkillIDs,
+} from '../constants/skill';
 import { STATUSES, STATUS_ID } from '../constants/status';
 import { WEAPON_ATTACK_TYPE } from '../constants/weapon';
 import { IEnemy, IEntity, IPlayer } from '../types';
@@ -583,7 +588,7 @@ export const Room: FC<{
       let totalDamage = statusDamageBonus;
       let doesDamage = false;
 
-      if ([SKILL_ID.LIGHTNING, SKILL_ID.ABSORB].includes(skill.id)) {
+      if (intelligenceBasedSkillIDs.includes(skill.id)) {
         totalDamage += Math.round(
           skill.damageMultiplier * playerTotalIntelligence
         );
@@ -745,7 +750,7 @@ export const Room: FC<{
           break;
         }
         case SKILL_ID.WEAKEN: {
-          // Petrify enemy
+          // Weaken enemy
           const weakenedStatus = STATUSES.find(
             (s) => s.id === STATUS_ID.WEAKENED
           );
@@ -756,6 +761,34 @@ export const Room: FC<{
           }
 
           affectedEnemy.statuses = [...affectedEnemy.statuses, weakenedStatus];
+          break;
+        }
+        case SKILL_ID.DISABLE: {
+          // Disable enemy
+          const disabledStatus = STATUSES.find(
+            (s) => s.id === STATUS_ID.DISABLED
+          );
+
+          if (!disabledStatus) {
+            addLog({ message: 'Disabled status not found!', type: 'error' });
+            return;
+          }
+
+          affectedEnemy.statuses = [...affectedEnemy.statuses, disabledStatus];
+          break;
+        }
+        case SKILL_ID.ENTANGLE: {
+          // Petrify enemy
+          const entangleStatus = STATUSES.find(
+            (s) => s.id === STATUS_ID.ENTANGLED
+          );
+
+          if (!entangleStatus) {
+            addLog({ message: 'Entangled status not found!', type: 'error' });
+            return;
+          }
+
+          affectedEnemy.statuses = [...affectedEnemy.statuses, entangleStatus];
           break;
         }
         default:
@@ -1302,7 +1335,10 @@ export const Room: FC<{
 
         if (enemiesInTargetZones.length === 1) {
           newPlayer.statuses.push(battleFuryI);
-        } else if (enemiesInTargetZones.length === 2) {
+        } else if (
+          enemiesInTargetZones.length === 2 ||
+          enemiesInTargetZones.length === 3
+        ) {
           newPlayer.statuses.push(battleFuryII);
         } else if (enemiesInTargetZones.length >= 4) {
           newPlayer.statuses.push(battleFuryIII);
