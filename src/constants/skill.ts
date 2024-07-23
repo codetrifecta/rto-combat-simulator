@@ -25,6 +25,8 @@ export enum SKILL_ID {
   FOCUS = 15,
   ENLIGHTEN = 16,
   WEAKEN = 17,
+  DISABLE = 18,
+  ENTANGLE = 19,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -263,6 +265,32 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     description:
       'Weaken an enemy for 3 turns. Weakened enemies deal 30% less damage.',
+    damageMultiplier: 0,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.DISABLE,
+    name: 'Disable',
+    icon: ICON_ID.SKILL_DISABLE,
+    skillType: SKILL_TYPE.ST,
+    description:
+      'Disable an enemy for 3 turns. Disabled enemies cannot attack.',
+    damageMultiplier: 0,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.ENTANGLE,
+    name: 'Entangle',
+    icon: ICON_ID.SKILL_ENTANGLE,
+    skillType: SKILL_TYPE.ST,
+    description:
+      'Entangle an enemy for 3 turns. Entangled enemies cannot move.',
     damageMultiplier: 0,
     range: 3,
     cooldown: 3,

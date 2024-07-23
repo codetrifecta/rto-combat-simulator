@@ -14,6 +14,8 @@ export enum STATUS_ID {
   FOCUSED = 10,
   ENLIGHTENED = 11,
   WEAKENED = 12,
+  DISABLED = 13,
+  ENTANGLED = 14,
 }
 
 const BASE_STATUS_EFFECTS: IStatusEffect = {
@@ -178,6 +180,30 @@ export const STATUSES: IStatus[] = [
     effect: {
       ...BASE_STATUS_EFFECTS,
       damageMultiplier: 0.7,
+    },
+  },
+  {
+    id: STATUS_ID.DISABLED,
+    name: 'Disabled',
+    icon: ICON_ID.STATUS_DISABLED,
+    description: 'Unable to attack.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      canAttack: false,
+    },
+  },
+  {
+    id: STATUS_ID.ENTANGLED,
+    name: 'Entangled',
+    icon: ICON_ID.STATUS_ENTANGLED,
+    description: 'Unable to move.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      canMove: false,
     },
   },
 ];

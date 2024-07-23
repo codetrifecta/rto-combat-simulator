@@ -64,6 +64,8 @@ import skill_bloodlust from '../assets/icons/skills/icon_skill_bloodlust.png';
 import skill_focus from '../assets/icons/skills/icon_skill_focus.png';
 import skill_enlighten from '../assets/icons/skills/icon_skill_enlighten.png';
 import skill_weaken from '../assets/icons/skills/icon_skill_weaken.png';
+import skill_disable from '../assets/icons/skills/icon_skill_disable.png';
+import skill_entangle from '../assets/icons/skills/icon_skill_entangle.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -76,6 +78,8 @@ import status_bloodlust from '../assets/icons/statuses/icon_status_bloodlust.png
 import status_focused from '../assets/icons/statuses/icon_status_focused.png';
 import status_enlightened from '../assets/icons/statuses/icon_status_enlightened.png';
 import status_weakened from '../assets/icons/statuses/icon_status_weakened.png';
+import status_disabled from '../assets/icons/statuses/icon_status_disabled.png';
+import status_entangled from '../assets/icons/statuses/icon_status_entangled.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -144,6 +148,8 @@ export enum ICON_ID {
   SKILL_FOCUS = 'skill_focus',
   SKILL_ENLIGHTEN = 'skill_enlighten',
   SKILL_WEAKEN = 'skill_weaken',
+  SKILL_DISABLE = 'skill_disable',
+  SKILL_ENTANGLE = 'skill_entangle',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -156,6 +162,8 @@ export enum ICON_ID {
   STATUS_FOCUSED = 'status_focused',
   STATUS_ENLIGHTENED = 'status_enlightened',
   STATUS_WEAKENED = 'status_weakened',
+  STATUS_DISABLED = 'status_disabled',
+  STATUS_ENTANGLED = 'status_entangled',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -225,6 +233,8 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_FOCUS]: skill_focus,
   [ICON_ID.SKILL_ENLIGHTEN]: skill_enlighten,
   [ICON_ID.SKILL_WEAKEN]: skill_weaken,
+  [ICON_ID.SKILL_DISABLE]: skill_disable,
+  [ICON_ID.SKILL_ENTANGLE]: skill_entangle,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
@@ -237,6 +247,8 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_FOCUSED]: status_focused,
   [ICON_ID.STATUS_ENLIGHTENED]: status_enlightened,
   [ICON_ID.STATUS_WEAKENED]: status_weakened,
+  [ICON_ID.STATUS_DISABLED]: status_disabled,
+  [ICON_ID.STATUS_ENTANGLED]: status_entangled,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';
