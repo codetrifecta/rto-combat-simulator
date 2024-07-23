@@ -31,8 +31,8 @@ Combat simulator for Return to Olympus
   - [x] Weaken
   - [x] Disable
   - [x] Entangle
-  - [ ] Leap Slam
-  - [ ] Elemental Dive
+  - [x] Leap Slam
+  - [x] Flame Dive
   - [ ] Elemental Charge
   - [ ] Teleport
   - [ ] Swap
