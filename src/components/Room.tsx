@@ -1000,7 +1000,10 @@ export const Room: FC<{
   // Function to handle player using an AOE skill
   // This function is called when player uses a skill that targets an area
   // Skills that affect enemies are handled in the handleEnemyClick function
-  const handlePlayerUseAOESkill = (skillId: number) => {
+  const handlePlayerUseAOESkill = (
+    skillId: number,
+    clickedTilePosition: [number, number]
+  ) => {
     console.log('handlePlayerUseAOESkill');
 
     const skill = player.skills.find((skill) => skill.id === skillId);
@@ -1362,6 +1365,247 @@ export const Room: FC<{
           },
           actionPoints: player.actionPoints - skill.cost,
           skills: player.skills.map((s) =>
+            s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+          ),
+        });
+
+        break;
+      }
+      case SKILL_ID.LEAP_SLAM: {
+        // Within target zones, deal damage to enemies
+
+        // First find the enemies, then update them with the damage at the same time to avoid multiple renders
+        const enemiesInTargetZones: IEnemy[] = [];
+        targetZones.current.forEach(([row, col]) => {
+          const entitiyIfExists = roomEntityPositions.get(`${row},${col}`);
+
+          if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
+            if (!enemy) {
+              addLog({ message: 'Enemy not found!', type: 'error' });
+              return;
+            }
+
+            enemiesInTargetZones.push(enemy);
+          }
+        });
+
+        // Update the enemies with the damage dealt
+
+        if (player.equipment.weapon === null) {
+          addLog({
+            message: 'Player has no weapon equipped!',
+            type: 'error',
+          });
+          return;
+        }
+
+        const statusDamageBonus = player.statuses.reduce((acc, status) => {
+          return acc + status.effect.damageBonus;
+        }, 0);
+
+        // Calculate total damage dealt
+        // Damage scaled based off player's strength stat
+        const totalDamage =
+          Math.round(skill.damageMultiplier * playerTotalStrength) +
+          statusDamageBonus;
+
+        // Create a new array of enemies with the damage dealt to be updated in the store
+        const newEnemies = [...enemies];
+
+        const newPlayer = { ...player };
+
+        enemiesInTargetZones.forEach((enemy) => {
+          // Find enemy index
+          const enemyIndex = newEnemies.findIndex((e) => e.id === enemy.id);
+
+          const newEnemy = { ...enemy };
+          newEnemy.health -= totalDamage;
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > enemy.health ? enemy.health : totalDamage) *
+                playerLifestealMultiplier
+            );
+
+            if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
+              newPlayer.health = newPlayer.maxHealth;
+            } else {
+              newPlayer.health += lifestealAmount;
+            }
+          }
+
+          // Check if enemy is defeated
+          if (newEnemy.health <= 0) {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> took{' '}
+                  {totalDamage} damage and has been defeated!
+                </>
+              ),
+              type: 'info',
+            });
+            newEnemies.splice(enemyIndex, 1);
+          } else {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> took{' '}
+                  {totalDamage} damage.
+                </>
+              ),
+              type: 'info',
+            });
+            newEnemies[enemyIndex] = newEnemy;
+          }
+        });
+
+        setRoomEntityPositions(
+          updateRoomEntityPositions(
+            clickedTilePosition,
+            playerPosition,
+            roomEntityPositions
+          )
+        );
+
+        setEnemies(newEnemies);
+        setPlayer({
+          ...newPlayer,
+          state: {
+            ...newPlayer.state,
+            isUsingSkill: false,
+          },
+          actionPoints: newPlayer.actionPoints - skill.cost,
+          skills: newPlayer.skills.map((s) =>
+            s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+          ),
+        });
+        break;
+      }
+      case SKILL_ID.FLAME_DIVE: {
+        // Within target zones not including the middle tile, deal damage to enemies
+
+        // First find the enemies, then update them with the damage at the same time to avoid multiple renders
+        const enemiesInTargetZones: IEnemy[] = [];
+        targetZones.current.forEach(([row, col]) => {
+          const entitiyIfExists = roomEntityPositions.get(`${row},${col}`);
+
+          if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
+            const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
+            if (!enemy) {
+              addLog({ message: 'Enemy not found!', type: 'error' });
+              return;
+            }
+
+            enemiesInTargetZones.push(enemy);
+          }
+        });
+
+        // Update the enemies with the damage dealt
+
+        if (player.equipment.weapon === null) {
+          addLog({
+            message: 'Player has no weapon equipped!',
+            type: 'error',
+          });
+          return;
+        }
+
+        const statusDamageBonus = player.statuses.reduce((acc, status) => {
+          return acc + status.effect.damageBonus;
+        }, 0);
+
+        // Calculate total damage dealt
+        // Damage scaled based off player's strength stat
+        const totalDamage =
+          Math.round(skill.damageMultiplier * playerTotalStrength) +
+          statusDamageBonus;
+
+        // Create a new array of enemies with the damage dealt to be updated in the store
+        const newEnemies = [...enemies];
+
+        const newPlayer = { ...player };
+
+        enemiesInTargetZones.forEach((enemy) => {
+          // Find enemy index
+          const enemyIndex = newEnemies.findIndex((e) => e.id === enemy.id);
+
+          const newEnemy = { ...enemy };
+          newEnemy.health -= totalDamage;
+
+          if (playerLifestealMultiplier > 0) {
+            // Limit lifesteal to the enemy's remaining health
+            const lifestealAmount = Math.round(
+              (totalDamage > enemy.health ? enemy.health : totalDamage) *
+                playerLifestealMultiplier
+            );
+
+            if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
+              newPlayer.health = newPlayer.maxHealth;
+            } else {
+              newPlayer.health += lifestealAmount;
+            }
+          }
+
+          // Apply burn status to enemy
+          const burnedStatus = STATUSES.find((s) => s.id === STATUS_ID.BURNED);
+
+          if (!burnedStatus) {
+            addLog({ message: 'Burned status not found!', type: 'error' });
+            return;
+          }
+
+          // Only apply burn status if enemy is not already burned
+          if (
+            !newEnemy.statuses.some((status) => status.id === STATUS_ID.BURNED)
+          ) {
+            newEnemy.statuses.push(burnedStatus);
+          }
+
+          // Check if enemy is defeated
+          if (newEnemy.health <= 0) {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> took{' '}
+                  {totalDamage} damage and has been defeated!
+                </>
+              ),
+              type: 'info',
+            });
+            newEnemies.splice(enemyIndex, 1);
+          } else {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> took{' '}
+                  {totalDamage} damage.
+                </>
+              ),
+              type: 'info',
+            });
+            newEnemies[enemyIndex] = newEnemy;
+          }
+        });
+
+        setRoomEntityPositions(
+          updateRoomEntityPositions(
+            clickedTilePosition,
+            playerPosition,
+            roomEntityPositions
+          )
+        );
+        setEnemies(newEnemies);
+        setPlayer({
+          ...newPlayer,
+          state: {
+            ...newPlayer.state,
+            isUsingSkill: false,
+          },
+          actionPoints: newPlayer.actionPoints - skill.cost,
+          skills: newPlayer.skills.map((s) =>
             s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
           ),
         });
@@ -1871,6 +2115,44 @@ export const Room: FC<{
                     }
                     break;
                   }
+                  case SKILL_ID.LEAP_SLAM:
+                  case SKILL_ID.FLAME_DIVE: {
+                    // For leap slam and flame dive, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
+                    if (isEffectZoneHovered) {
+                      // Add tiles to target zone to use to compute the effect of the skill
+
+                      console.log('Effect zone hovered', effectZoneHovered);
+                      // For leap slam and flame dive, the target zone is a 3x3 area around the hovered effect zone tile not including the hovered tile
+                      if (
+                        effectZoneHovered &&
+                        rowIndex >= effectZoneHovered[0] - 1 &&
+                        rowIndex <= effectZoneHovered[0] + 1 &&
+                        columnIndex >= effectZoneHovered[1] - 1 &&
+                        columnIndex <= effectZoneHovered[1] + 1
+                        // !(
+                        //   rowIndex === effectZoneHovered[0] &&
+                        //   columnIndex === effectZoneHovered[1]
+                        // )
+                      ) {
+                        const currentTargetZones = targetZones.current;
+
+                        // Check if tile is in target zone
+                        const isTileInTargetZone = currentTargetZones.some(
+                          ([row, col]) => {
+                            return row === rowIndex && col === columnIndex;
+                          }
+                        );
+
+                        if (!isTileInTargetZone) {
+                          currentTargetZones.push([rowIndex, columnIndex]);
+                          targetZones.current = currentTargetZones;
+                        }
+
+                        isTargetZone = true;
+                      }
+                    }
+                    break;
+                  }
                   default:
                     break;
                 }
@@ -1930,7 +2212,19 @@ export const Room: FC<{
                     // Check tile clicked
                     // If skill is an AOE, then check if the tile is in the target zone
                     if (isTargetZone) {
-                      handlePlayerUseAOESkill(player.state.skillId);
+                      // Check AOE skills that shouldn't target the middle tile AKA middle tile should not have an entity
+                      if (
+                        [SKILL_ID.LEAP_SLAM, SKILL_ID.FLAME_DIVE].includes(
+                          player.state.skillId
+                        ) &&
+                        entityIfExists
+                      ) {
+                        return;
+                      }
+                      handlePlayerUseAOESkill(player.state.skillId, [
+                        rowIndex,
+                        columnIndex,
+                      ]);
                     } else if (
                       entityIfExists &&
                       entityIfExists[0] === ENTITY_TYPE.PLAYER
