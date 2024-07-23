@@ -29,8 +29,8 @@ Combat simulator for Return to Olympus
   - [x] Focus
   - [x] Enlighten
   - [x] Weaken
-  - [ ] Disable
-  - [ ] Entangle
+  - [x] Disable
+  - [x] Entangle
   - [ ] Leap Slam
   - [ ] Elemental Dive
   - [ ] Elemental Charge
