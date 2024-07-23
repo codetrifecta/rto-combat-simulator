@@ -66,6 +66,8 @@ import skill_enlighten from '../assets/icons/skills/icon_skill_enlighten.png';
 import skill_weaken from '../assets/icons/skills/icon_skill_weaken.png';
 import skill_disable from '../assets/icons/skills/icon_skill_disable.png';
 import skill_entangle from '../assets/icons/skills/icon_skill_entangle.png';
+import skill_leap_slam from '../assets/icons/skills/icon_skill_leap_slam.png';
+import skill_flame_dive from '../assets/icons/skills/icon_skill_flame_dive.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -150,6 +152,8 @@ export enum ICON_ID {
   SKILL_WEAKEN = 'skill_weaken',
   SKILL_DISABLE = 'skill_disable',
   SKILL_ENTANGLE = 'skill_entangle',
+  SKILL_LEAP_SLAM = 'skill_leap_slam',
+  SKILL_FLAME_DIVE = 'skill_flame_dive',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -235,6 +239,8 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_WEAKEN]: skill_weaken,
   [ICON_ID.SKILL_DISABLE]: skill_disable,
   [ICON_ID.SKILL_ENTANGLE]: skill_entangle,
+  [ICON_ID.SKILL_LEAP_SLAM]: skill_leap_slam,
+  [ICON_ID.SKILL_FLAME_DIVE]: skill_flame_dive,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,

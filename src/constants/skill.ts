@@ -27,6 +27,8 @@ export enum SKILL_ID {
   WEAKEN = 17,
   DISABLE = 18,
   ENTANGLE = 19,
+  LEAP_SLAM = 20,
+  FLAME_DIVE = 21,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -42,6 +44,7 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.CLEAVE,
   SKILL_ID.ANNIHILATE,
   SKILL_ID.WARCRY,
+  SKILL_ID.LEAP_SLAM,
 ];
 
 export const intelligenceBasedSkillIDs: SKILL_ID[] = [
@@ -50,6 +53,7 @@ export const intelligenceBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.FIREBALL,
   SKILL_ID.FREEZE,
   SKILL_ID.ABSORB,
+  SKILL_ID.FLAME_DIVE,
 ];
 
 export const SKILLS: ISkill[] = [
@@ -293,6 +297,32 @@ export const SKILLS: ISkill[] = [
       'Entangle an enemy for 3 turns. Entangled enemies cannot move.',
     damageMultiplier: 0,
     range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.LEAP_SLAM,
+    name: 'Leap Slam',
+    icon: ICON_ID.SKILL_LEAP_SLAM,
+    skillType: SKILL_TYPE.AOE,
+    description:
+      'Leap slam to a location and deal damage around your landing position.',
+    damageMultiplier: 0.8,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.FLAME_DIVE,
+    name: 'Flame Dive',
+    icon: ICON_ID.SKILL_FLAME_DIVE,
+    skillType: SKILL_TYPE.AOE,
+    description:
+      'Dive to a location and deal damage to enemies around your landing position. Additionally applies Burned to enemies hit for 3 turns.',
+    damageMultiplier: 0.5,
+    range: 4,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
