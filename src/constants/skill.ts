@@ -362,3 +362,15 @@ export const SKILLS: ISkill[] = [
     cost: 2,
   },
 ];
+
+export const selfTargetedSkillIDs: SKILL_ID[] = SKILLS.filter((skill) =>
+  skill.tags.some((tag) => tag === SKILL_TAG.SELF)
+).map((skill) => skill.id);
+
+export const singleTargetSkillIDs: SKILL_ID[] = SKILLS.filter((skill) =>
+  skill.tags.some((tag) => tag === SKILL_TAG.SINGLE_TARGET)
+).map((skill) => skill.id);
+
+export const aoeSkillIDs: SKILL_ID[] = SKILLS.filter((skill) =>
+  skill.tags.some((tag) => tag === SKILL_TAG.AOE)
+).map((skill) => skill.id);
