@@ -22,6 +22,7 @@ import {
   updateRoomEntityPositions,
 } from '../utils';
 import { useLogStore } from '../store/log';
+import { handleSkill } from '../skill_utils';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -884,6 +885,7 @@ export const Room: FC<{
 
   // This function is called when player uses a a self targeted skill, e.g buffing themselves
   // Skills that affect enemies are handled in the handleEnemyClick function
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handlePlayerUseSkill = (skillId: number) => {
     console.log('handlePlayerUseSkill');
 
@@ -898,82 +900,93 @@ export const Room: FC<{
       ...player,
     };
 
-    // Handle skill effect
-    switch (skill.id) {
-      case SKILL_ID.FLEX: {
-        const buffedStatus = STATUSES.find((s) => s.id === STATUS_ID.FLEXED);
-
-        if (!buffedStatus) {
-          addLog({ message: 'Buffed status not found!', type: 'error' });
-          return;
-        }
-
-        newPlayer.statuses.push(buffedStatus);
-        break;
-      }
-      case SKILL_ID.IRONFLESH: {
-        const stoneSkinStatus = STATUSES.find(
-          (s) => s.id === STATUS_ID.STONE_SKIN
-        );
-
-        if (!stoneSkinStatus) {
-          addLog({ message: 'Stone Skin status not found!', type: 'error' });
-          return;
-        }
-
-        newPlayer.statuses.push(stoneSkinStatus);
-        break;
-      }
-      case SKILL_ID.BLOODLUST: {
-        const bloodlustStatus = STATUSES.find(
-          (s) => s.id === STATUS_ID.BLOODLUST
-        );
-
-        if (!bloodlustStatus) {
-          addLog({ message: 'Bloodlust status not found!', type: 'error' });
-          return;
-        }
-
-        newPlayer.statuses.push(bloodlustStatus);
-        break;
-      }
-      case SKILL_ID.FOCUS: {
-        const focusedStatus = STATUSES.find((s) => s.id === STATUS_ID.FOCUSED);
-
-        if (!focusedStatus) {
-          addLog({ message: 'Focused status not found!', type: 'error' });
-          return;
-        }
-
-        newPlayer.statuses.push(focusedStatus);
-        break;
-      }
-      case SKILL_ID.ENLIGHTEN: {
-        const enlightenedStatus = STATUSES.find(
-          (s) => s.id === STATUS_ID.ENLIGHTENED
-        );
-
-        if (!enlightenedStatus) {
-          addLog({ message: 'Enlightened status not found!', type: 'error' });
-          return;
-        }
-
-        newPlayer.statuses.push(enlightenedStatus);
-        break;
-      }
-      default:
-        break;
-    }
-
-    if (!newPlayer) {
-      addLog({ message: 'Skill did not return anything!', type: 'error' });
-      return;
-    }
-
     if (!isPlayer(newPlayer)) {
-      addLog({ message: 'Skill effect did not return player', type: 'error' });
+      addLog({
+        message: 'handlePlayerUseSkill: newPlayer not a valid player type',
+        type: 'error',
+      });
       return;
     }
+    // skill: ISkill,
+    // clickedTilePosition: [number, number],
+    // player: IPlayer,
+    // enemies: IEnemy[],
+    // targetZones: [number, number][],
+    // roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
+
+    // handleSkill(skill,  newPlayer, player, );
+
+    // // Handle skill effect
+    // switch (skill.id) {
+    //   case SKILL_ID.FLEX: {
+    //     const buffedStatus = STATUSES.find((s) => s.id === STATUS_ID.FLEXED);
+
+    //     if (!buffedStatus) {
+    //       addLog({ message: 'Buffed status not found!', type: 'error' });
+    //       return;
+    //     }
+
+    //     newPlayer.statuses.push(buffedStatus);
+    //     break;
+    //   }
+    //   case SKILL_ID.IRONFLESH: {
+    //     const stoneSkinStatus = STATUSES.find(
+    //       (s) => s.id === STATUS_ID.STONE_SKIN
+    //     );
+
+    //     if (!stoneSkinStatus) {
+    //       addLog({ message: 'Stone Skin status not found!', type: 'error' });
+    //       return;
+    //     }
+
+    //     newPlayer.statuses.push(stoneSkinStatus);
+    //     break;
+    //   }
+    //   case SKILL_ID.BLOODLUST: {
+    //     const bloodlustStatus = STATUSES.find(
+    //       (s) => s.id === STATUS_ID.BLOODLUST
+    //     );
+
+    //     if (!bloodlustStatus) {
+    //       addLog({ message: 'Bloodlust status not found!', type: 'error' });
+    //       return;
+    //     }
+
+    //     newPlayer.statuses.push(bloodlustStatus);
+    //     break;
+    //   }
+    //   case SKILL_ID.FOCUS: {
+    //     const focusedStatus = STATUSES.find((s) => s.id === STATUS_ID.FOCUSED);
+
+    //     if (!focusedStatus) {
+    //       addLog({ message: 'Focused status not found!', type: 'error' });
+    //       return;
+    //     }
+
+    //     newPlayer.statuses.push(focusedStatus);
+    //     break;
+    //   }
+    //   case SKILL_ID.ENLIGHTEN: {
+    //     const enlightenedStatus = STATUSES.find(
+    //       (s) => s.id === STATUS_ID.ENLIGHTENED
+    //     );
+
+    //     if (!enlightenedStatus) {
+    //       addLog({ message: 'Enlightened status not found!', type: 'error' });
+    //       return;
+    //     }
+
+    //     newPlayer.statuses.push(enlightenedStatus);
+    //     break;
+    //   }
+    //   default:
+    //     break;
+    // }
+
+    // if (!newPlayer) {
+    //   addLog({ message: 'Skill did not return anything!', type: 'error' });
+    //   return;
+    // }
 
     addLog({
       message: (
@@ -2230,7 +2243,63 @@ export const Room: FC<{
                       entityIfExists[0] === ENTITY_TYPE.PLAYER
                     ) {
                       // Skills that targets the player
-                      handlePlayerUseSkill(player.state.skillId);
+                      // handlePlayerUseSkill(player.state.skillId);
+
+                      const skill = player.skills.find(
+                        (skill) => skill.id === player.state.skillId
+                      );
+
+                      if (!skill) {
+                        addLog({ message: 'Skill not found!', type: 'error' });
+                        return;
+                      }
+
+                      if (!isPlayer(player)) {
+                        addLog({
+                          message: 'onClick: player not a valid player type',
+                          type: 'error',
+                        });
+                        return;
+                      }
+
+                      console.log(
+                        'pre handleSkill',
+                        player,
+                        enemies,
+                        roomEntityPositions
+                      );
+
+                      const { newPlayer, newEnemies, newRoomEntityPositions } =
+                        handleSkill(
+                          skill,
+                          [rowIndex, columnIndex],
+                          player,
+                          enemies,
+                          targetZones.current,
+                          roomEntityPositions,
+                          addLog
+                        );
+
+                      console.log(
+                        'post handleSkill',
+                        newPlayer,
+                        newEnemies,
+                        newRoomEntityPositions
+                      );
+
+                      setPlayer({
+                        ...newPlayer,
+                        state: {
+                          ...player.state,
+                          isUsingSkill: false,
+                        },
+                        actionPoints: player.actionPoints - skill.cost,
+                        skills: player.skills.map((s) =>
+                          s.id === skill.id
+                            ? { ...s, cooldownCounter: s.cooldown }
+                            : s
+                        ),
+                      });
                     } else if (
                       entityIfExists &&
                       entityIfExists[0] === ENTITY_TYPE.ENEMY

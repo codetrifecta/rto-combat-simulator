@@ -1,7 +1,7 @@
 import { ENTITY_TYPE } from './constants/entity';
 import { SKILL_ID, SKILL_TAG } from './constants/skill';
 import { STATUS_ID, STATUSES } from './constants/status';
-import { IEnemy, IPlayer, ISkill, IStatus } from './types';
+import { IEnemy, ILog, IPlayer, ISkill, IStatus } from './types';
 
 export const handleSkill = (
   skill: ISkill,
@@ -9,17 +9,17 @@ export const handleSkill = (
   player: IPlayer,
   enemies: IEnemy[],
   targetZones: [number, number][],
-  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
+  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
+  addLog: (log: ILog) => void
 ) => {
-  const newPlayer = { ...player };
-  const newEnemies = [...enemies];
+  let newPlayer = { ...player };
+  let newEnemies = [...enemies];
   const newRoomEntityPositions = new Map(roomEntityPositions);
 
   let targets: (IPlayer | IEnemy)[] = [];
 
   // RI: each skill can only have AT MOST one of the following tags: SELF, SINGLE_TARGET, or AOE
   // Pure movement skills like fly have neither of these tags
-
   if (skill.tags.includes(SKILL_TAG.SELF)) {
     targets = [player];
   } else if (skill.tags.includes(SKILL_TAG.SINGLE_TARGET)) {
@@ -32,12 +32,31 @@ export const handleSkill = (
     targets = handleSkillAOE(targetZones, newEnemies, roomEntityPositions);
   }
 
+  //   Add log for skill usage
+  addLog({
+    message: (
+      <>
+        <span className="text-green-500">{player.name}</span> used{' '}
+        <span className="text-green-500">{skill.name}</span>.
+      </>
+    ),
+    type: 'info',
+  });
+
   if (skill.tags.includes(SKILL_TAG.DAMAGE)) {
     handleSkillDamage(skill, newPlayer, targets);
   }
 
   if (skill.tags.includes(SKILL_TAG.STATUS)) {
-    handleSkillStatus(skill, newPlayer, enemies, targets);
+    const { playerAfterStatus, enemiesAfterStatus } = handleSkillStatus(
+      skill,
+      newPlayer,
+      enemies,
+      targets
+    );
+
+    newPlayer = playerAfterStatus;
+    newEnemies = enemiesAfterStatus;
   }
 
   return { newPlayer, newEnemies, newRoomEntityPositions };
@@ -165,6 +184,14 @@ const handleSkillStatus = (
     case SKILL_ID.WEAKEN:
       statusID = STATUS_ID.WEAKENED;
       break;
+    case SKILL_ID.WARCRY:
+      statusID =
+        targets.length > 3
+          ? STATUS_ID.BATTLE_FURY_3
+          : targets.length > 1
+            ? STATUS_ID.BATTLE_FURY_2
+            : STATUS_ID.BATTLE_FURY_1;
+      break;
     default:
       break;
   }
@@ -205,7 +232,10 @@ const handleSkillStatus = (
       }
     } else if (target.entityType === ENTITY_TYPE.PLAYER) {
       if (statusToBeApplied) {
-        playerAfterStatus.statuses.push({ ...statusToBeApplied });
+        playerAfterStatus.statuses = [
+          ...playerAfterStatus.statuses,
+          statusToBeApplied,
+        ];
       }
     }
   });
