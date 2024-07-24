@@ -347,7 +347,12 @@ export const SKILLS: ISkill[] = [
     name: 'Flame Dive',
     icon: ICON_ID.SKILL_FLAME_DIVE,
     skillType: SKILL_TYPE.AOE,
-    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.MOVEMENT],
+    tags: [
+      SKILL_TAG.AOE,
+      SKILL_TAG.DAMAGE,
+      SKILL_TAG.STATUS,
+      SKILL_TAG.MOVEMENT,
+    ],
     description:
       'Dive to a location and deal damage to enemies around your landing position. Additionally applies Burned to enemies hit for 3 turns.',
     damageMultiplier: 0.5,

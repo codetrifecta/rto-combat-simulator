@@ -7,6 +7,7 @@ import {
 import { STATUS_ID, STATUSES } from './constants/status';
 import { IEnemy, ILog, IPlayer, ISkill, IStatus } from './types';
 import {
+  getEntityPosition,
   getPlayerLifestealMultiplier,
   getPlayerTotalDefense,
   getPlayerTotalIntelligence,
@@ -27,6 +28,17 @@ export const handleSkill = (
   const newRoomEntityPositions = new Map(roomEntityPositions);
 
   let targets: [ENTITY_TYPE, number][] = [];
+
+  // Log skill usage
+  addLog({
+    message: (
+      <>
+        <span className="text-green-500">{player.name}</span> used{' '}
+        <span className="text-blue-500">{skill.name}</span>
+      </>
+    ),
+    type: 'info',
+  });
 
   // RI: each skill can only have AT MOST one of the following tags: SELF, SINGLE_TARGET, or AOE
   // Pure movement skills like Fly have neither of these tags
@@ -50,13 +62,9 @@ export const handleSkill = (
       addLog
     );
 
-    console.log('enemies after damage', enemiesAfterDamage);
-
     newPlayer = playerAfterDamage;
     newEnemies = [...enemiesAfterDamage];
   }
-
-  console.log('newEnemies after damage', newEnemies);
 
   if (skill.tags.includes(SKILL_TAG.STATUS)) {
     const { playerAfterStatus, enemiesAfterStatus } = handleSkillStatus(
@@ -71,7 +79,43 @@ export const handleSkill = (
     newEnemies = [...enemiesAfterStatus];
   }
 
-  console.log('newEnemies after status', newEnemies);
+  if (skill.tags.includes(SKILL_TAG.MOVEMENT)) {
+    // Move player to clicked tile position
+
+    const [playerRow, playerCol] = getEntityPosition(
+      player,
+      newRoomEntityPositions
+    );
+
+    if (playerRow === -1 || playerCol === -1) {
+      console.error('handleSkill movement: Player position not found');
+      return {
+        newPlayer: player,
+        newEnemies: enemies,
+        newRoomEntityPositions: roomEntityPositions,
+      };
+    }
+
+    newRoomEntityPositions.delete(
+      `${playerRow},${playerCol}` // Remove player from old position
+    );
+
+    newRoomEntityPositions.set(
+      `${clickedTilePosition[0]},${clickedTilePosition[1]}`,
+      [ENTITY_TYPE.PLAYER, player.id]
+    );
+
+    // Log movement
+    addLog({
+      message: (
+        <>
+          <span className="text-green-500">{player.name}</span> moved to tile{' '}
+          {`(${clickedTilePosition[0]}, ${clickedTilePosition[1]})`}
+        </>
+      ),
+      type: 'info',
+    });
+  }
 
   return { newPlayer, newEnemies, newRoomEntityPositions };
 };
@@ -130,16 +174,6 @@ const handleSkillDamage = (
   targets: [ENTITY_TYPE, number][],
   addLog: (log: ILog) => void
 ) => {
-  addLog({
-    message: (
-      <>
-        <span className="text-green-500">{player.name}</span> used{' '}
-        <span className="text-blue-500">{skill.name}</span>
-      </>
-    ),
-    type: 'info',
-  });
-
   const playerAfterDamage: IPlayer = { ...player };
   const enemiesAfterDamage: IEnemy[] = [...enemies];
   const playerTotalStrength = getPlayerTotalStrength(player);
@@ -242,14 +276,20 @@ const handleSkillDamage = (
 
       // eslint-disable-next-line no-empty
     } else if (entityType === ENTITY_TYPE.PLAYER) {
-      // Calculate damage dealt to player
-      totalDamage -= playerTotalDefense;
-
-      if (totalDamage < 0) {
-        totalDamage = 0;
+      // Peform skill specific actions when applying to targets
+      // Leap Slam, Flame Dive: Player never gets damaged (because they are supposed to be diving into the new position)
+      if ([SKILL_ID.LEAP_SLAM, SKILL_ID.FLAME_DIVE].includes(skill.id)) {
+        return; // Skip applying status to player
       }
 
-      playerAfterDamage.health = playerAfterDamage.health - totalDamage;
+      // Calculate damage dealt to player
+      let totalDamageToPlayer = totalDamage - playerTotalDefense;
+
+      if (totalDamageToPlayer < 0) {
+        totalDamageToPlayer = 0;
+      }
+
+      playerAfterDamage.health = playerAfterDamage.health - totalDamageToPlayer;
 
       // Log damage
       if (playerAfterDamage.health <= 0) {
@@ -257,7 +297,7 @@ const handleSkillDamage = (
           message: (
             <>
               <span className="text-green-500">{player.name}</span> took{' '}
-              {totalDamage} damage and has been defeated!
+              {totalDamageToPlayer} damage and has been defeated!
             </>
           ),
           type: 'info',
@@ -267,7 +307,7 @@ const handleSkillDamage = (
           message: (
             <>
               <span className="text-green-500">{player.name}</span> took{' '}
-              {totalDamage} damage.
+              {totalDamageToPlayer} damage.
             </>
           ),
           type: 'info',
@@ -288,9 +328,6 @@ const handleSkillStatus = (
 ) => {
   const playerAfterStatus: IPlayer = { ...player };
   const enemiesAfterStatus: IEnemy[] = [...enemies];
-
-  console.log('handleSkillStatus: enemies', enemiesAfterStatus);
-
   let statusID: STATUS_ID | -1 = -1;
 
   switch (skill.id) {
@@ -352,7 +389,7 @@ const handleSkillStatus = (
     return { playerAfterStatus, enemiesAfterStatus: [] };
   }
 
-  // Peform skill specific actions
+  // Peform skill specific actions before applying to targets
   // Warcry: Apply status to player
   if (skill.id === SKILL_ID.WARCRY) {
     playerAfterStatus.statuses = [
@@ -394,10 +431,8 @@ const handleSkillStatus = (
           addLog({
             message: (
               <>
-                <span className="text-green-500">{player.name}</span> used{' '}
-                <span className="text-blue-500">{skill.name}</span> on{' '}
-                <span className="text-red-500">{newEnemy.name}</span> and it now
-                has status{' '}
+                <span className="text-red-500">{newEnemy.name}</span> now has
+                status{' '}
                 <span className="text-yellow-500">
                   {statusToBeApplied.name}
                 </span>
@@ -411,6 +446,12 @@ const handleSkillStatus = (
         enemiesAfterStatus[enemyIndex] = newEnemy;
       }
     } else if (entityType === ENTITY_TYPE.PLAYER) {
+      // Peform skill specific actions when applying to targets
+      // Flame Dive: Player never gets burned (because they are supposed to be diving into the new position)
+      if (skill.id === SKILL_ID.FLAME_DIVE) {
+        return; // Skip applying status to player
+      }
+
       if (statusToBeApplied) {
         playerAfterStatus.statuses = [
           ...playerAfterStatus.statuses,
@@ -420,8 +461,7 @@ const handleSkillStatus = (
         addLog({
           message: (
             <>
-              <span className="text-green-500">{player.name}</span> used{' '}
-              <span className="text-blue-500">{skill.name}</span> and now has
+              <span className="text-green-500">{player.name}</span> now has
               status{' '}
               <span className="text-yellow-500">{statusToBeApplied.name}</span>.
             </>
