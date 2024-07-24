@@ -8,6 +8,7 @@ import { STATUS_ID, STATUSES } from './constants/status';
 import { IEnemy, ILog, IPlayer, ISkill, IStatus } from './types';
 import {
   getPlayerLifestealMultiplier,
+  getPlayerTotalDefense,
   getPlayerTotalIntelligence,
   getPlayerTotalStrength,
 } from './utils';
@@ -25,67 +26,60 @@ export const handleSkill = (
   let newEnemies = [...enemies];
   const newRoomEntityPositions = new Map(roomEntityPositions);
 
-  let targets: (IPlayer | IEnemy)[] = [];
+  let targets: [ENTITY_TYPE, number][] = [];
 
   // RI: each skill can only have AT MOST one of the following tags: SELF, SINGLE_TARGET, or AOE
-  // Pure movement skills like fly have neither of these tags
+  // Pure movement skills like Fly have neither of these tags
   if (skill.tags.includes(SKILL_TAG.SELF)) {
-    targets = [player];
+    targets = [[player.entityType, player.id]];
   } else if (skill.tags.includes(SKILL_TAG.SINGLE_TARGET)) {
-    targets = handleSkillSingleTarget(
+    targets = getSingleTargetSkillTarget(
       clickedTilePosition,
-      newEnemies,
       roomEntityPositions
     );
   } else if (skill.tags.includes(SKILL_TAG.AOE)) {
-    targets = handleSkillAOE(targetZones, newEnemies, roomEntityPositions);
+    targets = getAOESkillTargets(targetZones, roomEntityPositions);
   }
-
-  //   Add log for skill usage
-  // addLog({
-  //   message: (
-  //     <>
-  //       <span className="text-green-500">{player.name}</span> used{' '}
-  //       <span className="text-green-500">{skill.name}</span>.
-  //     </>
-  //   ),
-  //   type: 'info',
-  // });
 
   if (skill.tags.includes(SKILL_TAG.DAMAGE)) {
     const { playerAfterDamage, enemiesAfterDamage } = handleSkillDamage(
       skill,
       newPlayer,
-      enemies,
+      newEnemies,
       targets,
       addLog
     );
 
+    console.log('enemies after damage', enemiesAfterDamage);
+
     newPlayer = playerAfterDamage;
-    newEnemies = enemiesAfterDamage;
+    newEnemies = [...enemiesAfterDamage];
   }
+
+  console.log('newEnemies after damage', newEnemies);
 
   if (skill.tags.includes(SKILL_TAG.STATUS)) {
     const { playerAfterStatus, enemiesAfterStatus } = handleSkillStatus(
       skill,
       newPlayer,
-      enemies,
+      newEnemies,
       targets,
       addLog
     );
 
     newPlayer = playerAfterStatus;
-    newEnemies = enemiesAfterStatus;
+    newEnemies = [...enemiesAfterStatus];
   }
+
+  console.log('newEnemies after status', newEnemies);
 
   return { newPlayer, newEnemies, newRoomEntityPositions };
 };
 
-const handleSkillSingleTarget = (
+const getSingleTargetSkillTarget = (
   clickedTilePosition: [number, number],
-  enemies: IEnemy[],
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
-): (IPlayer | IEnemy)[] => {
+): [ENTITY_TYPE, number][] => {
   const entityIfExists = roomEntityPositions.get(
     `${clickedTilePosition[0]},${clickedTilePosition[1]}`
   );
@@ -93,16 +87,7 @@ const handleSkillSingleTarget = (
   if (entityIfExists) {
     const [entityType, entityId] = entityIfExists;
     if (entityType === ENTITY_TYPE.ENEMY) {
-      const enemy = enemies.find((e) => e.id === entityId);
-      if (enemy) {
-        return [enemy];
-      } else {
-        console.error(
-          'handleSkillSingleTarget: No enemy with the associated ID found at clicked tile position'
-        );
-
-        return [];
-      }
+      return [[ENTITY_TYPE.ENEMY, entityId]];
     } else {
       console.error(
         'handleSkillSingleTarget: No enemy found at clicked tile position'
@@ -119,37 +104,30 @@ const handleSkillSingleTarget = (
   }
 };
 
-const handleSkillAOE = (
+const getAOESkillTargets = (
   targetZones: [number, number][],
-  enemies: IEnemy[],
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
 ) => {
-  const enemiesInTargetZones: IEnemy[] = [];
+  const entitiesInTargetZone: [ENTITY_TYPE, number][] = [];
+
   targetZones.forEach(([row, col]) => {
     const entitiyIfExists = roomEntityPositions.get(`${row},${col}`);
 
-    if (entitiyIfExists && entitiyIfExists[0] === ENTITY_TYPE.ENEMY) {
-      const enemy = enemies.find((e) => e.id === entitiyIfExists[1]);
-      if (enemy) {
-        enemiesInTargetZones.push(enemy);
-      } else {
-        console.error(
-          'handleSkillAOE: No enemy with the associated ID found at target zone'
-        );
-
-        return [];
-      }
+    if (!entitiyIfExists) {
+      return;
     }
+
+    entitiesInTargetZone.push(entitiyIfExists);
   });
 
-  return [];
+  return entitiesInTargetZone;
 };
 
 const handleSkillDamage = (
   skill: ISkill,
   player: IPlayer,
   enemies: IEnemy[],
-  targets: (IPlayer | IEnemy)[],
+  targets: [ENTITY_TYPE, number][],
   addLog: (log: ILog) => void
 ) => {
   addLog({
@@ -166,6 +144,7 @@ const handleSkillDamage = (
   const enemiesAfterDamage: IEnemy[] = [...enemies];
   const playerTotalStrength = getPlayerTotalStrength(player);
   const playerTotalIntelligence = getPlayerTotalIntelligence(player);
+  const playerTotalDefense = getPlayerTotalDefense(player);
   const playerLifestealMultiplier = getPlayerLifestealMultiplier(player);
 
   let totalDamage = 0;
@@ -177,8 +156,17 @@ const handleSkillDamage = (
   }
 
   targets.forEach((target) => {
-    if (target.entityType === ENTITY_TYPE.ENEMY) {
-      const enemy = target as IEnemy;
+    const entityType = target[0];
+    const entityId = target[1];
+
+    if (entityType === ENTITY_TYPE.ENEMY) {
+      const enemy = enemiesAfterDamage.find((e) => e.id === entityId);
+
+      if (!enemy) {
+        console.error('handleSkillDamage: Enemy not found in enemies list');
+        return;
+      }
+
       // Find enemy index
       const enemyIndex = enemiesAfterDamage.findIndex((e) => e.id === enemy.id);
 
@@ -253,7 +241,38 @@ const handleSkillDamage = (
       }
 
       // eslint-disable-next-line no-empty
-    } else if (target.entityType === ENTITY_TYPE.PLAYER) {
+    } else if (entityType === ENTITY_TYPE.PLAYER) {
+      // Calculate damage dealt to player
+      totalDamage -= playerTotalDefense;
+
+      if (totalDamage < 0) {
+        totalDamage = 0;
+      }
+
+      playerAfterDamage.health = playerAfterDamage.health - totalDamage;
+
+      // Log damage
+      if (playerAfterDamage.health <= 0) {
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> took{' '}
+              {totalDamage} damage and has been defeated!
+            </>
+          ),
+          type: 'info',
+        });
+      } else {
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> took{' '}
+              {totalDamage} damage.
+            </>
+          ),
+          type: 'info',
+        });
+      }
     }
   });
 
@@ -264,11 +283,14 @@ const handleSkillStatus = (
   skill: ISkill,
   player: IPlayer,
   enemies: IEnemy[],
-  targets: (IPlayer | IEnemy)[],
+  targets: [ENTITY_TYPE, number][],
   addLog: (log: ILog) => void
 ) => {
   const playerAfterStatus: IPlayer = { ...player };
   const enemiesAfterStatus: IEnemy[] = [...enemies];
+
+  console.log('handleSkillStatus: enemies', enemiesAfterStatus);
+
   let statusID: STATUS_ID | -1 = -1;
 
   switch (skill.id) {
@@ -330,9 +352,29 @@ const handleSkillStatus = (
     return { playerAfterStatus, enemiesAfterStatus: [] };
   }
 
+  // Peform skill specific actions
+  // Warcry: Apply status to player
+  if (skill.id === SKILL_ID.WARCRY) {
+    playerAfterStatus.statuses = [
+      ...playerAfterStatus.statuses,
+      statusToBeApplied,
+    ];
+
+    return { playerAfterStatus, enemiesAfterStatus };
+  }
+
   targets.forEach((target) => {
-    if (target.entityType === ENTITY_TYPE.ENEMY) {
-      const enemy = target as IEnemy;
+    const entityType = target[0];
+    const entityId = target[1];
+
+    if (entityType === ENTITY_TYPE.ENEMY) {
+      const enemy = enemiesAfterStatus.find((e) => e.id === entityId);
+
+      if (!enemy) {
+        console.error('handleSkillStatus: Enemy not found in enemies list');
+        return;
+      }
+
       if (statusToBeApplied) {
         // Find enemy index
         const enemyIndex = enemiesAfterStatus.findIndex(
@@ -368,7 +410,7 @@ const handleSkillStatus = (
 
         enemiesAfterStatus[enemyIndex] = newEnemy;
       }
-    } else if (target.entityType === ENTITY_TYPE.PLAYER) {
+    } else if (entityType === ENTITY_TYPE.PLAYER) {
       if (statusToBeApplied) {
         playerAfterStatus.statuses = [
           ...playerAfterStatus.statuses,

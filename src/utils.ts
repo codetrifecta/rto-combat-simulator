@@ -259,6 +259,36 @@ export const getPlayerTotalIntelligence = (player: IPlayer) => {
   return Math.round(totalIntelligence * intelligenceMultiplier);
 };
 
+export const getPlayerTotalDefense = (player: IPlayer) => {
+  const weaponDefense = player.equipment.weapon?.stats.defense || 0;
+  const helmetDefense = player.equipment.helmet?.stats.defense || 0;
+  const chestpieceDefense = player.equipment.chestpiece?.stats.defense || 0;
+  const leggingDefense = player.equipment.legging?.stats.defense || 0;
+
+  // Get defense from status effects
+  const totalDefenseFromStatuses = player.statuses.reduce(
+    (acc, status) => acc + status.effect.incomingDamageReduction,
+    0
+  );
+
+  const defenseMultiplier = player.statuses.reduce((acc, status) => {
+    if (status.effect.defenseMultiplier === 0) return acc;
+
+    if (status.effect.defenseMultiplier > 1) {
+      return acc + (status.effect.defenseMultiplier - 1);
+    } else {
+      return acc - (1 - status.effect.defenseMultiplier);
+    }
+  }, 1);
+
+  const equipmentDefense =
+    weaponDefense + helmetDefense + chestpieceDefense + leggingDefense;
+
+  return (
+    Math.round(equipmentDefense * defenseMultiplier) + totalDefenseFromStatuses
+  );
+};
+
 export const getPlayerLifestealMultiplier = (player: IPlayer) => {
   const lifestealMultiplier = player.statuses.reduce(
     (acc, status) => acc + status.effect.lifesteal,

@@ -1013,6 +1013,7 @@ export const Room: FC<{
   // Function to handle player using an AOE skill
   // This function is called when player uses a skill that targets an area
   // Skills that affect enemies are handled in the handleEnemyClick function
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handlePlayerUseAOESkill = (
     skillId: number,
     clickedTilePosition: [number, number]
@@ -2234,10 +2235,67 @@ export const Room: FC<{
                       ) {
                         return;
                       }
-                      handlePlayerUseAOESkill(player.state.skillId, [
-                        rowIndex,
-                        columnIndex,
-                      ]);
+                      // handlePlayerUseAOESkill(player.state.skillId, [
+                      //   rowIndex,
+                      //   columnIndex,
+                      // ]);
+
+                      const skill = player.skills.find(
+                        (skill) => skill.id === player.state.skillId
+                      );
+
+                      if (!skill) {
+                        addLog({ message: 'Skill not found!', type: 'error' });
+                        return;
+                      }
+
+                      if (!isPlayer(player)) {
+                        addLog({
+                          message: 'onClick: player not a valid player type',
+                          type: 'error',
+                        });
+                        return;
+                      }
+
+                      console.log(
+                        'pre handleSkill',
+                        player,
+                        enemies,
+                        roomEntityPositions
+                      );
+
+                      const { newPlayer, newEnemies, newRoomEntityPositions } =
+                        handleSkill(
+                          skill,
+                          [rowIndex, columnIndex],
+                          player,
+                          enemies,
+                          targetZones.current,
+                          roomEntityPositions,
+                          addLog
+                        );
+
+                      console.log(
+                        'post handleSkill',
+                        newPlayer,
+                        newEnemies,
+                        newRoomEntityPositions
+                      );
+
+                      setEnemies([...newEnemies]);
+                      setPlayer({
+                        ...newPlayer,
+                        state: {
+                          ...player.state,
+                          isUsingSkill: false,
+                        },
+                        actionPoints: player.actionPoints - skill.cost,
+                        skills: player.skills.map((s) =>
+                          s.id === skill.id
+                            ? { ...s, cooldownCounter: s.cooldown }
+                            : s
+                        ),
+                      });
                     } else if (
                       entityIfExists &&
                       entityIfExists[0] === ENTITY_TYPE.PLAYER
