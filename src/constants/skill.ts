@@ -6,6 +6,14 @@ export enum SKILL_TYPE {
   ST = 'st',
   AOE = 'aoe',
 }
+export enum SKILL_TAG {
+  SELF = 'self',
+  ST = 'st',
+  AOE = 'aoe',
+  DAMAGE = 'damage',
+  STATUS = 'status',
+  MOVEMENT = 'movement',
+}
 
 export enum SKILL_ID {
   FLEX = 1,
@@ -62,6 +70,7 @@ export const SKILLS: ISkill[] = [
     name: 'Flex',
     icon: ICON_ID.SKILL_FLEX,
     skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       'Applies Flexed on self for 3 turns. Flexed increases strength by 30%.',
     damageMultiplier: 0,
@@ -75,6 +84,7 @@ export const SKILLS: ISkill[] = [
     name: 'Ironflesh',
     icon: ICON_ID.SKILL_DEFENSE_UP,
     skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       'Applies Stone Skin on self for 3 turns. Stone Skin increases defense by 30%.',
     damageMultiplier: 0,
@@ -88,6 +98,7 @@ export const SKILLS: ISkill[] = [
     name: "Gorgon's Gaze",
     icon: ICON_ID.SKILL_PETRIFY,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.ST, SKILL_TAG.STATUS],
     description:
       'Petrify an enemy for 3 turns. Petrified enemies cannot move or attack.',
     damageMultiplier: 0,
@@ -101,6 +112,7 @@ export const SKILLS: ISkill[] = [
     name: 'Lightning',
     icon: ICON_ID.SKILL_LIGHTNING,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.ST, SKILL_TAG.DAMAGE],
     description: 'Strike enemies with lighning from the skies.',
     damageMultiplier: 2,
     range: 3,
@@ -113,6 +125,7 @@ export const SKILLS: ISkill[] = [
     name: 'Fireball',
     icon: ICON_ID.SKILL_FIREBALL,
     skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
       'Launch a fireball at a target area. Additionally applied Burned to enemies hit for 3 turns.',
     damageMultiplier: 1.5,
@@ -126,6 +139,7 @@ export const SKILLS: ISkill[] = [
     name: 'Whirlwind',
     icon: ICON_ID.SKILL_WHIRLWIND,
     skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
     description:
       "Spin around dealing damage to all adjacent enemies. Range is dependent on the player's current weapon.",
     damageMultiplier: 1,
@@ -137,8 +151,9 @@ export const SKILLS: ISkill[] = [
   {
     id: SKILL_ID.FLY,
     name: 'Fly',
-    icon: ICON_ID.SKILL_TELEPORT,
+    icon: ICON_ID.SKILL_FLY,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.MOVEMENT],
     description: 'Fly to an empty tile in the room.',
     damageMultiplier: 0,
     range: 5,
@@ -151,6 +166,7 @@ export const SKILLS: ISkill[] = [
     name: 'Freeze',
     icon: ICON_ID.SKILL_FREEZE,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.ST, SKILL_TAG.STATUS],
     description:
       'Freeze an enemy for 2 turns. Frozen enemies cannot move or attack.',
     damageMultiplier: 0,
@@ -164,6 +180,7 @@ export const SKILLS: ISkill[] = [
     name: 'Absorb',
     icon: ICON_ID.SKILL_ABSORB,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.ST, SKILL_TAG.DAMAGE],
     description:
       "Absorb an enemy's life force. Damage dealt is converted to health.",
     damageMultiplier: 0.5,
@@ -177,6 +194,7 @@ export const SKILLS: ISkill[] = [
     name: 'Execute',
     icon: ICON_ID.SKILL_EXECUTE,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.ST, SKILL_TAG.STATUS],
     description:
       "Execute an enemy with low health. Deals 2x damage to enemies with less than 25% health. If the enemy is executed, the player gains 2 AP. Range is dependent on the player's current weapon.",
     damageMultiplier: 1,
@@ -190,6 +208,7 @@ export const SKILLS: ISkill[] = [
     name: 'Cleave',
     icon: ICON_ID.SKILL_CLEAVE,
     skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       "Cleave through enemies in front of you. Range is dependent on the player's current weapon.",
     damageMultiplier: 1.5,
@@ -203,6 +222,7 @@ export const SKILLS: ISkill[] = [
     name: 'Annihilate',
     icon: ICON_ID.SKILL_ANNIHILATE,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       'As you brace yourself, swing with all your might to deal a devastating blow to an enemy. Range is dependent on the player’s current weapon.',
     damageMultiplier: 3,
@@ -216,6 +236,7 @@ export const SKILLS: ISkill[] = [
     name: 'Warcry',
     icon: ICON_ID.SKILL_WARCRY,
     skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.STATUS],
     description:
       "Unleash a warcry to boost your courage. Gain Battle Fury for 3 turns. Battle Fury's efffects stacks with the amount of enemies in range",
     damageMultiplier: 0,
@@ -229,6 +250,7 @@ export const SKILLS: ISkill[] = [
     name: 'Bloodlust',
     icon: ICON_ID.SKILL_BLOODLUST,
     skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description: 'Enter a state of Bloodlust for 3 turns.',
     damageMultiplier: 0,
     range: 0,
@@ -241,6 +263,7 @@ export const SKILLS: ISkill[] = [
     name: 'Focus',
     icon: ICON_ID.SKILL_FOCUS,
     skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       'Gain Focused for 3 turns. Focused increases strength and intelligence by 15%.',
     damageMultiplier: 0,
@@ -254,6 +277,7 @@ export const SKILLS: ISkill[] = [
     name: 'Enlighten',
     icon: ICON_ID.SKILL_ENLIGHTEN,
     skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       'Gain Enlightened for 3 turns. Enlightened increases intelligence by 30%.',
     damageMultiplier: 0,
@@ -267,6 +291,7 @@ export const SKILLS: ISkill[] = [
     name: 'Weaken',
     icon: ICON_ID.SKILL_WEAKEN,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       'Weaken an enemy for 3 turns. Weakened enemies deal 30% less damage.',
     damageMultiplier: 0,
@@ -280,6 +305,7 @@ export const SKILLS: ISkill[] = [
     name: 'Disable',
     icon: ICON_ID.SKILL_DISABLE,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       'Disable an enemy for 3 turns. Disabled enemies cannot attack.',
     damageMultiplier: 0,
@@ -293,6 +319,7 @@ export const SKILLS: ISkill[] = [
     name: 'Entangle',
     icon: ICON_ID.SKILL_ENTANGLE,
     skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       'Entangle an enemy for 3 turns. Entangled enemies cannot move.',
     damageMultiplier: 0,
@@ -306,6 +333,7 @@ export const SKILLS: ISkill[] = [
     name: 'Leap Slam',
     icon: ICON_ID.SKILL_LEAP_SLAM,
     skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.MOVEMENT],
     description:
       'Leap slam to a location and deal damage around your landing position.',
     damageMultiplier: 0.8,
@@ -319,6 +347,7 @@ export const SKILLS: ISkill[] = [
     name: 'Flame Dive',
     icon: ICON_ID.SKILL_FLAME_DIVE,
     skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.MOVEMENT],
     description:
       'Dive to a location and deal damage to enemies around your landing position. Additionally applies Burned to enemies hit for 3 turns.',
     damageMultiplier: 0.5,
