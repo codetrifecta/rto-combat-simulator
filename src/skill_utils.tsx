@@ -6,7 +6,11 @@ import {
 } from './constants/skill';
 import { STATUS_ID, STATUSES } from './constants/status';
 import { IEnemy, ILog, IPlayer, ISkill, IStatus } from './types';
-import { getPlayerTotalIntelligence, getPlayerTotalStrength } from './utils';
+import {
+  getPlayerLifestealMultiplier,
+  getPlayerTotalIntelligence,
+  getPlayerTotalStrength,
+} from './utils';
 
 export const handleSkill = (
   skill: ISkill,
@@ -49,7 +53,16 @@ export const handleSkill = (
   // });
 
   if (skill.tags.includes(SKILL_TAG.DAMAGE)) {
-    handleSkillDamage(skill, newPlayer, enemies, targets, addLog);
+    const { playerAfterDamage, enemiesAfterDamage } = handleSkillDamage(
+      skill,
+      newPlayer,
+      enemies,
+      targets,
+      addLog
+    );
+
+    newPlayer = playerAfterDamage;
+    newEnemies = enemiesAfterDamage;
   }
 
   if (skill.tags.includes(SKILL_TAG.STATUS)) {
@@ -139,10 +152,21 @@ const handleSkillDamage = (
   targets: (IPlayer | IEnemy)[],
   addLog: (log: ILog) => void
 ) => {
+  addLog({
+    message: (
+      <>
+        <span className="text-green-500">{player.name}</span> used{' '}
+        <span className="text-blue-500">{skill.name}</span>
+      </>
+    ),
+    type: 'info',
+  });
+
   const playerAfterDamage: IPlayer = { ...player };
   const enemiesAfterDamage: IEnemy[] = [...enemies];
   const playerTotalStrength = getPlayerTotalStrength(player);
   const playerTotalIntelligence = getPlayerTotalIntelligence(player);
+  const playerLifestealMultiplier = getPlayerLifestealMultiplier(player);
 
   let totalDamage = 0;
 
@@ -161,6 +185,47 @@ const handleSkillDamage = (
       const newEnemy = { ...enemy };
 
       // Calculate damage
+      newEnemy.health = newEnemy.health - totalDamage;
+
+      if (playerLifestealMultiplier > 0) {
+        // Limit lifesteal to the enemy's remaining health
+        const lifestealAmount = Math.round(
+          (totalDamage > enemy.health ? enemy.health : totalDamage) *
+            playerLifestealMultiplier
+        );
+
+        if (
+          playerAfterDamage.health + lifestealAmount >
+          playerAfterDamage.maxHealth
+        ) {
+          playerAfterDamage.health = playerAfterDamage.maxHealth;
+        } else {
+          playerAfterDamage.health += lifestealAmount;
+        }
+      }
+
+      // Perform skill specific actions
+      switch (skill.id) {
+        case SKILL_ID.ABSORB:
+          {
+            // Absorb damage dealt as health (or the rest of the enemy's health if it's less than the damage dealt)
+            const lifestealAmount = Math.round(
+              totalDamage > enemy.health ? enemy.health : totalDamage
+            );
+
+            if (
+              playerAfterDamage.health + lifestealAmount >
+              playerAfterDamage.maxHealth
+            ) {
+              playerAfterDamage.health = playerAfterDamage.maxHealth;
+            } else {
+              playerAfterDamage.health += lifestealAmount;
+            }
+          }
+          break;
+        default:
+          break;
+      }
 
       // Log damage
       if (newEnemy.health <= 0) {
@@ -175,6 +240,7 @@ const handleSkillDamage = (
           type: 'info',
         });
       } else {
+        enemiesAfterDamage[enemyIndex] = newEnemy;
         addLog({
           message: (
             <>
@@ -186,7 +252,6 @@ const handleSkillDamage = (
         });
       }
 
-      enemiesAfterDamage[enemyIndex] = newEnemy;
       // eslint-disable-next-line no-empty
     } else if (target.entityType === ENTITY_TYPE.PLAYER) {
     }

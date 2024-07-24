@@ -194,7 +194,7 @@ export const SKILLS: ISkill[] = [
     name: 'Execute',
     icon: ICON_ID.SKILL_EXECUTE,
     skillType: SKILL_TYPE.ST,
-    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.STATUS],
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
     description:
       "Execute an enemy with low health. Deals 2x damage to enemies with less than 25% health. If the enemy is executed, the player gains 2 AP. Range is dependent on the player's current weapon.",
     damageMultiplier: 1,
@@ -208,7 +208,7 @@ export const SKILLS: ISkill[] = [
     name: 'Cleave',
     icon: ICON_ID.SKILL_CLEAVE,
     skillType: SKILL_TYPE.AOE,
-    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
     description:
       "Cleave through enemies in front of you. Range is dependent on the player's current weapon.",
     damageMultiplier: 1.5,
@@ -222,7 +222,7 @@ export const SKILLS: ISkill[] = [
     name: 'Annihilate',
     icon: ICON_ID.SKILL_ANNIHILATE,
     skillType: SKILL_TYPE.ST,
-    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.STATUS],
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
     description:
       'As you brace yourself, swing with all your might to deal a devastating blow to an enemy. Range is dependent on the player’s current weapon.',
     damageMultiplier: 3,
