@@ -290,7 +290,7 @@ function App() {
 
       {/* Generate Room */}
       <section
-        className="fixed z-50 top-0 w-screen shadow-lg"
+        className="fixed z-[60] top-0 w-screen shadow-lg"
         style={{
           height: 'calc(100vh - 80px)',
           visibility: isGenerateRoomOpen ? 'visible' : 'hidden',

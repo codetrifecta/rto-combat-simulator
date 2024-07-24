@@ -182,6 +182,13 @@ export const isEnemy = (
   return entity.entityType === ENTITY_TYPE.ENEMY;
 };
 
+/**
+ * Get entity position in room matrix
+ * @param entity Entity to get position of
+ * @param entityPositions Map of entity positions in room
+ * @returns a tuple of row and column representing the position of the entity in the room matrix
+ *          and [-1, -1] if entity is not found in the room matrix
+ */
 export const getEntityPosition = (
   entity: IEntity,
   entityPositions: Map<string, [ENTITY_TYPE, number]>
@@ -197,4 +204,96 @@ export const getEntityPosition = (
   }
 
   return [-1, -1];
+};
+
+export const getPlayerTotalStrength = (player: IPlayer) => {
+  const weaponStrength = player.equipment.weapon?.stats.strength || 0;
+  const helmetStrength = player.equipment.helmet?.stats.strength || 0;
+  const chestpieceStrength = player.equipment.chestpiece?.stats.strength || 0;
+  const leggingStrength = player.equipment.legging?.stats.strength || 0;
+
+  const totalStrength =
+    weaponStrength + helmetStrength + chestpieceStrength + leggingStrength;
+
+  // 0, 0, 1, 1, 0.6, 1.2 = 0.8
+  const strengthMultiplier = player.statuses.reduce((acc, status) => {
+    // console.log('status', status);
+
+    if (status.effect.strengthMultiplier === 0) return acc;
+
+    if (status.effect.strengthMultiplier > 1) {
+      return acc + (status.effect.strengthMultiplier - 1);
+    } else {
+      return acc - (1 - status.effect.strengthMultiplier);
+    }
+  }, 1);
+
+  // console.log('strengthMultiplier', strengthMultiplier);
+
+  return Math.round(totalStrength * strengthMultiplier);
+};
+
+export const getPlayerTotalIntelligence = (player: IPlayer) => {
+  const weaponIntelligence = player.equipment.weapon?.stats.intelligence || 0;
+  const helmetIntelligence = player.equipment.helmet?.stats.intelligence || 0;
+  const chestpieceIntelligence =
+    player.equipment.chestpiece?.stats.intelligence || 0;
+  const leggingIntelligence = player.equipment.legging?.stats.intelligence || 0;
+
+  const intelligenceMultiplier = player.statuses.reduce((acc, status) => {
+    if (status.effect.intelligenceMultiplier === 0) return acc;
+
+    if (status.effect.intelligenceMultiplier > 1) {
+      return acc + (status.effect.intelligenceMultiplier - 1);
+    } else {
+      return acc - (1 - status.effect.intelligenceMultiplier);
+    }
+  }, 1);
+
+  const totalIntelligence =
+    weaponIntelligence +
+    helmetIntelligence +
+    chestpieceIntelligence +
+    leggingIntelligence;
+
+  return Math.round(totalIntelligence * intelligenceMultiplier);
+};
+
+export const getPlayerTotalDefense = (player: IPlayer) => {
+  const weaponDefense = player.equipment.weapon?.stats.defense || 0;
+  const helmetDefense = player.equipment.helmet?.stats.defense || 0;
+  const chestpieceDefense = player.equipment.chestpiece?.stats.defense || 0;
+  const leggingDefense = player.equipment.legging?.stats.defense || 0;
+
+  // Get defense from status effects
+  const totalDefenseFromStatuses = player.statuses.reduce(
+    (acc, status) => acc + status.effect.incomingDamageReduction,
+    0
+  );
+
+  const defenseMultiplier = player.statuses.reduce((acc, status) => {
+    if (status.effect.defenseMultiplier === 0) return acc;
+
+    if (status.effect.defenseMultiplier > 1) {
+      return acc + (status.effect.defenseMultiplier - 1);
+    } else {
+      return acc - (1 - status.effect.defenseMultiplier);
+    }
+  }, 1);
+
+  const equipmentDefense =
+    weaponDefense + helmetDefense + chestpieceDefense + leggingDefense;
+
+  return (
+    Math.round(equipmentDefense * defenseMultiplier) + totalDefenseFromStatuses
+  );
+};
+
+export const getPlayerLifestealMultiplier = (player: IPlayer) => {
+  const lifestealMultiplier = player.statuses.reduce(
+    (acc, status) => acc + status.effect.lifesteal,
+    0
+  );
+
+  return lifestealMultiplier;
 };
