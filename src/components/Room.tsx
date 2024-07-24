@@ -2305,7 +2305,64 @@ export const Room: FC<{
                       entityIfExists[0] === ENTITY_TYPE.ENEMY
                     ) {
                       // Skills that targets a singular enemy
-                      handleEnemyClick(entityId);
+                      // handleEnemyClick(entityId);
+
+                      const skill = player.skills.find(
+                        (skill) => skill.id === player.state.skillId
+                      );
+
+                      if (!skill) {
+                        addLog({ message: 'Skill not found!', type: 'error' });
+                        return;
+                      }
+
+                      if (!isPlayer(player)) {
+                        addLog({
+                          message: 'onClick: player not a valid player type',
+                          type: 'error',
+                        });
+                        return;
+                      }
+
+                      console.log(
+                        'pre handleSkill',
+                        player,
+                        enemies,
+                        roomEntityPositions
+                      );
+
+                      const { newPlayer, newEnemies, newRoomEntityPositions } =
+                        handleSkill(
+                          skill,
+                          [rowIndex, columnIndex],
+                          player,
+                          enemies,
+                          targetZones.current,
+                          roomEntityPositions,
+                          addLog
+                        );
+
+                      console.log(
+                        'post handleSkill',
+                        newPlayer,
+                        newEnemies,
+                        newRoomEntityPositions
+                      );
+
+                      setEnemies([...newEnemies]);
+                      setPlayer({
+                        ...newPlayer,
+                        state: {
+                          ...player.state,
+                          isUsingSkill: false,
+                        },
+                        actionPoints: player.actionPoints - skill.cost,
+                        skills: player.skills.map((s) =>
+                          s.id === skill.id
+                            ? { ...s, cooldownCounter: s.cooldown }
+                            : s
+                        ),
+                      });
                     } else if (
                       tileType === TILE_TYPE.EMPTY &&
                       !entityIfExists

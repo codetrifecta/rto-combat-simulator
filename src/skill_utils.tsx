@@ -1,7 +1,12 @@
 import { ENTITY_TYPE } from './constants/entity';
-import { SKILL_ID, SKILL_TAG } from './constants/skill';
+import {
+  intelligenceBasedSkillIDs,
+  SKILL_ID,
+  SKILL_TAG,
+} from './constants/skill';
 import { STATUS_ID, STATUSES } from './constants/status';
 import { IEnemy, ILog, IPlayer, ISkill, IStatus } from './types';
+import { getPlayerTotalIntelligence, getPlayerTotalStrength } from './utils';
 
 export const handleSkill = (
   skill: ISkill,
@@ -33,18 +38,18 @@ export const handleSkill = (
   }
 
   //   Add log for skill usage
-  addLog({
-    message: (
-      <>
-        <span className="text-green-500">{player.name}</span> used{' '}
-        <span className="text-green-500">{skill.name}</span>.
-      </>
-    ),
-    type: 'info',
-  });
+  // addLog({
+  //   message: (
+  //     <>
+  //       <span className="text-green-500">{player.name}</span> used{' '}
+  //       <span className="text-green-500">{skill.name}</span>.
+  //     </>
+  //   ),
+  //   type: 'info',
+  // });
 
   if (skill.tags.includes(SKILL_TAG.DAMAGE)) {
-    handleSkillDamage(skill, newPlayer, targets);
+    handleSkillDamage(skill, newPlayer, enemies, targets, addLog);
   }
 
   if (skill.tags.includes(SKILL_TAG.STATUS)) {
@@ -52,7 +57,8 @@ export const handleSkill = (
       skill,
       newPlayer,
       enemies,
-      targets
+      targets,
+      addLog
     );
 
     newPlayer = playerAfterStatus;
@@ -129,24 +135,72 @@ const handleSkillAOE = (
 const handleSkillDamage = (
   skill: ISkill,
   player: IPlayer,
-  targets: (IPlayer | IEnemy)[]
+  enemies: IEnemy[],
+  targets: (IPlayer | IEnemy)[],
+  addLog: (log: ILog) => void
 ) => {
+  const playerAfterDamage: IPlayer = { ...player };
+  const enemiesAfterDamage: IEnemy[] = [...enemies];
+  const playerTotalStrength = getPlayerTotalStrength(player);
+  const playerTotalIntelligence = getPlayerTotalIntelligence(player);
+
+  let totalDamage = 0;
+
+  if (intelligenceBasedSkillIDs.includes(skill.id)) {
+    totalDamage += Math.round(skill.damageMultiplier * playerTotalIntelligence);
+  } else {
+    totalDamage += Math.round(skill.damageMultiplier * playerTotalStrength);
+  }
+
   targets.forEach((target) => {
     if (target.entityType === ENTITY_TYPE.ENEMY) {
       const enemy = target as IEnemy;
-      const damage = player.damageBonus * skill.damageMultiplier;
-      enemy.health -= damage;
+      // Find enemy index
+      const enemyIndex = enemiesAfterDamage.findIndex((e) => e.id === enemy.id);
+
+      const newEnemy = { ...enemy };
+
+      // Calculate damage
+
+      // Log damage
+      if (newEnemy.health <= 0) {
+        enemiesAfterDamage.splice(enemyIndex, 1);
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{newEnemy.name}</span> took{' '}
+              {totalDamage} damage and has been defeated!
+            </>
+          ),
+          type: 'info',
+        });
+      } else {
+        addLog({
+          message: (
+            <>
+              <span className="text-red-500">{newEnemy.name}</span> took{' '}
+              {totalDamage} damage.
+            </>
+          ),
+          type: 'info',
+        });
+      }
+
+      enemiesAfterDamage[enemyIndex] = newEnemy;
+      // eslint-disable-next-line no-empty
+    } else if (target.entityType === ENTITY_TYPE.PLAYER) {
     }
   });
 
-  return [];
+  return { playerAfterDamage, enemiesAfterDamage };
 };
 
 const handleSkillStatus = (
   skill: ISkill,
   player: IPlayer,
   enemies: IEnemy[],
-  targets: (IPlayer | IEnemy)[]
+  targets: (IPlayer | IEnemy)[],
+  addLog: (log: ILog) => void
 ) => {
   const playerAfterStatus: IPlayer = { ...player };
   const enemiesAfterStatus: IEnemy[] = [...enemies];
@@ -168,6 +222,9 @@ const handleSkillStatus = (
     case SKILL_ID.FIREBALL:
     case SKILL_ID.FLAME_DIVE:
       statusID = STATUS_ID.BURNED;
+      break;
+    case SKILL_ID.GORGONS_GAZE:
+      statusID = STATUS_ID.PETRIFIED;
       break;
     case SKILL_ID.FREEZE:
       statusID = STATUS_ID.FROZEN;
@@ -226,6 +283,22 @@ const handleSkillStatus = (
           )
         ) {
           newEnemy.statuses = [...newEnemy.statuses, statusToBeApplied];
+
+          addLog({
+            message: (
+              <>
+                <span className="text-green-500">{player.name}</span> used{' '}
+                <span className="text-blue-500">{skill.name}</span> on{' '}
+                <span className="text-red-500">{newEnemy.name}</span> and it now
+                has status{' '}
+                <span className="text-yellow-500">
+                  {statusToBeApplied.name}
+                </span>
+                .
+              </>
+            ),
+            type: 'info',
+          });
         }
 
         enemiesAfterStatus[enemyIndex] = newEnemy;
@@ -236,6 +309,18 @@ const handleSkillStatus = (
           ...playerAfterStatus.statuses,
           statusToBeApplied,
         ];
+
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> used{' '}
+              <span className="text-blue-500">{skill.name}</span> and now has
+              status{' '}
+              <span className="text-yellow-500">{statusToBeApplied.name}</span>.
+            </>
+          ),
+          type: 'info',
+        });
       }
     }
   });
