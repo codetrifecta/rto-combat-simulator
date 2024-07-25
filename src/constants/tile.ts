@@ -1,4 +1,4 @@
-export const TILE_SIZE = 50; // Default to 50
+export const TILE_SIZE = 48; // Default to 50
 
 export enum TILE_TYPE {
   NULL = -1,

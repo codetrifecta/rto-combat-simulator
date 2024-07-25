@@ -6,7 +6,8 @@ export const Sprite: FC<{
   width: number;
   height: number;
   grayscale?: boolean;
-}> = ({ sprite, width, height, grayscale }) => {
+  children?: React.ReactNode;
+}> = ({ sprite, width, height, grayscale, children }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -36,5 +37,9 @@ export const Sprite: FC<{
     };
   }, [sprite, width, height]);
 
-  return <canvas ref={canvasRef} width={width} height={height}></canvas>;
+  return (
+    <canvas ref={canvasRef} width={width} height={height}>
+      {children}
+    </canvas>
+  );
 };

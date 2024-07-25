@@ -768,7 +768,7 @@ export const Room: FC<{
       }}
     >
       {roomTileMatrix.map((row, rowIndex) => {
-        return row.map(([tileType], columnIndex) => {
+        return row.map(([tileType, tileID], columnIndex) => {
           // Parse tile type to entity type
           const entityIfExists = roomEntityPositions.get(
             `${rowIndex},${columnIndex}`
@@ -1078,6 +1078,7 @@ export const Room: FC<{
 
           return (
             <Tile
+              tileID={tileID}
               tileType={tileType}
               entityIfExist={roomEntityPositions.get(
                 `${rowIndex},${columnIndex}`

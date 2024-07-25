@@ -5,8 +5,10 @@ import clsx from 'clsx';
 import { IPlayerState } from '../types';
 import { useEnemyStore } from '../store/enemy';
 import { Sprite } from './Sprite';
+import { SPRITE_ID } from '../constants/sprite';
 
 export const Tile: FC<{
+  tileID: number;
   tileType: number;
   entityIfExist?: [ENTITY_TYPE, number] | undefined;
   playerState: IPlayerState;
@@ -110,7 +112,6 @@ export const Tile: FC<{
 
       return (
         <div className="absolute z-50 bottom-[35%] left-0 w-full h-full flex justify-center items-end">
-          {/* <div className="bg-red-500 w-[16px] h-[16px]"></div> */}
           <Sprite
             sprite={enemy.sprite}
             width={enemy.sprite_size}
@@ -126,7 +127,7 @@ export const Tile: FC<{
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
       className={clsx('relative', classNames, {
         // Border classes only on non-null tiles
-        'border-2 border-gray': tileType !== TILE_TYPE.NULL,
+        'border-gray': tileType !== TILE_TYPE.NULL,
 
         // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
         'cursor-pointer':
@@ -136,8 +137,8 @@ export const Tile: FC<{
           (tileType === TILE_TYPE.DOOR && isRoomOver),
         // "cursor-default": tileType === TILE_TYPE.DOOR && !isRoomOver,
 
-        // Only put border black on wall tiles
-        'hover:border-black':
+        // Only put border black on non-wall tiles
+        'hover:border-black hover:shadow-intense-black hover:z-10':
           tileType == TILE_TYPE.EMPTY ||
           (tileType == TILE_TYPE.DOOR && isRoomOver),
 
@@ -169,6 +170,11 @@ export const Tile: FC<{
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
+      <Sprite
+        sprite={SPRITE_ID.CELLAR_FLOOR_001}
+        width={TILE_SIZE}
+        height={TILE_SIZE}
+      />
       {renderEntity()}
     </div>
   );

@@ -4,6 +4,7 @@ export default {
   theme: {
     extend: {
       boxShadow: {
+        "intense-black": "0 0 5px 5px black",
         "intense-green": "0 0 5px 5px green",
         "intense-red": "0 0 5px 5px red",
         "intense-white": "0 0 5px 5px white",
