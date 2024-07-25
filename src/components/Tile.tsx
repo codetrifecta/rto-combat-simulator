@@ -79,11 +79,11 @@ export const Tile: FC<{
   const effectBorderClasses = useMemo(() => {
     if (isEffectZone) {
       if (playerState.isAttacking && isAttackEffectTile) {
-        return 'hover:opacity-80 border-red-500';
+        return 'hover:opacity-80 shadow-mild-red z-10';
       } else if (playerState.isMoving && isMovingEffectTile) {
-        return 'hover:opacity-80 border-blue-500';
+        return 'hover:opacity-80 shadow-mild-blue z-10';
       } else if (playerState.isUsingSkill && isSkillEffectTile) {
-        return 'hover:opacity-80 !border-yellow-500';
+        return 'hover:opacity-80 shadow-mild-yellow z-10';
       }
     }
     return '';
@@ -129,9 +129,6 @@ export const Tile: FC<{
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
       className={clsx('relative', classNames, {
-        // Border classes only on non-null tiles
-        'border-gray': tileType !== TILE_TYPE.NULL,
-
         // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
         'cursor-pointer':
           (tileType !== TILE_TYPE.WALL &&
@@ -140,23 +137,22 @@ export const Tile: FC<{
           (tileType === TILE_TYPE.DOOR && isRoomOver),
         // "cursor-default": tileType === TILE_TYPE.DOOR && !isRoomOver,
 
-        // Only put border black on non-wall tiles
-        'hover:border-black hover:shadow-intense-black hover:z-10':
-          tileType == TILE_TYPE.FLOOR ||
+        // Only put shadow black on non-wall tiles
+        'hover:shadow-mild-black hover:z-30':
+          (tileType == TILE_TYPE.FLOOR && !(hasPlayer || hasEnemy)) ||
           (tileType == TILE_TYPE.DOOR && isRoomOver),
 
         // Tile type color
         'bg-white': tileType === TILE_TYPE.FLOOR,
-        'bg-gray-500': tileType === TILE_TYPE.WALL,
         'bg-yellow-500': tileType === TILE_TYPE.DOOR,
 
         // Player and enemy tile
-        'hover:shadow-intense-green': hasPlayer,
-        'hover:shadow-intense-red': hasEnemy,
+        'hover:shadow-intense-green z-20': hasPlayer,
+        'hover:shadow-intense-red z-20': hasEnemy,
 
         // Active tile
-        'shadow-intense-green z-10': hasPlayer && active,
-        'shadow-intense-red z-10': hasEnemy && active,
+        'shadow-intense-green z-[15]': hasPlayer && active,
+        'shadow-intense-red z-[15]': hasEnemy && active,
 
         // Non-active tile
         'z-0': !active,
