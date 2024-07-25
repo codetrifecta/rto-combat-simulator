@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Tile';
 import { ENTITY_TYPE, STARTING_ACTION_POINTS } from '../constants/entity';
-import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
+import { FLOORS, TILE_SIZE, TILE_TYPE, WALLS } from '../constants/tile';
 import {
   aoeSkillIDs,
   selfTargetedSkillIDs,
@@ -25,6 +25,7 @@ import {
 } from '../utils';
 import { useLogStore } from '../store/log';
 import { handleSkill } from '../skill_utils';
+import { SPRITE_ID } from '../constants/sprite';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -640,7 +641,7 @@ export const Room: FC<{
       randomMove[0] >= roomLength ||
       randomMove[1] < 0 ||
       randomMove[1] >= roomLength ||
-      roomTileMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.EMPTY ||
+      roomTileMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.FLOOR ||
       roomEntityPositions.get(`${randomMove[0]},${randomMove[1]}`)
     ) {
       // Do nothing if random move is out of bounds or not an empty tile
@@ -769,6 +770,27 @@ export const Room: FC<{
     >
       {roomTileMatrix.map((row, rowIndex) => {
         return row.map(([tileType, tileID], columnIndex) => {
+          let sprite: SPRITE_ID | undefined;
+
+          switch (tileType) {
+            case TILE_TYPE.FLOOR:
+              sprite = FLOORS.find((floor) => floor.id === tileID)?.sprite;
+              break;
+            case TILE_TYPE.WALL:
+              sprite = WALLS.find((wall) => wall.id === tileID)?.sprite;
+              break;
+            case TILE_TYPE.DOOR:
+              sprite = FLOORS.find((floor) => floor.id === tileID)?.sprite;
+              break;
+            default:
+              break;
+          }
+
+          if (!sprite) {
+            console.error('Sprite not found!');
+            return null;
+          }
+
           // Parse tile type to entity type
           const entityIfExists = roomEntityPositions.get(
             `${rowIndex},${columnIndex}`
@@ -875,7 +897,7 @@ export const Room: FC<{
                   case SKILL_ID.FLY:
                     // For fly, player can target any empty tile that does not have an entity
                     if (
-                      tileType === TILE_TYPE.EMPTY &&
+                      tileType === TILE_TYPE.FLOOR &&
                       !entityIfExists &&
                       rowIndex >= playerRow - range &&
                       rowIndex <= playerRow + range &&
@@ -1080,6 +1102,7 @@ export const Room: FC<{
             <Tile
               tileID={tileID}
               tileType={tileType}
+              sprite={sprite}
               entityIfExist={roomEntityPositions.get(
                 `${rowIndex},${columnIndex}`
               )}

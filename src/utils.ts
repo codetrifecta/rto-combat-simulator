@@ -9,9 +9,9 @@ import { IEnemy, IEntity, IPlayer } from './types';
  *          ex - 2d array of 5x5 room matrix:
  *         [
  *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.DOOR, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1]],
- *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.ENEMY, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.EMPTY,1 ], [TILE_TYPE.WALL, 1]],
- *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.WALL, 1]],
- *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.PLAYER, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.ENEMY, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.FLOOR,1 ], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.PLAYER, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.WALL, 1]],
  *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.DOOR, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1]]
  *          ]
  */
@@ -19,7 +19,7 @@ export const generateRoomTileMatrix = (roomLength: number) => {
   // Initialize room matrix
   const roomTileMatrix: [TILE_TYPE, number][][] = Array.from(
     { length: roomLength },
-    () => Array.from({ length: roomLength }, () => [TILE_TYPE.EMPTY, 0])
+    () => Array.from({ length: roomLength }, () => [TILE_TYPE.FLOOR, 0])
   );
 
   // Generate room layout
@@ -39,7 +39,7 @@ export const generateRoomTileMatrix = (roomLength: number) => {
         }
       } else {
         // Place walls everywhere else
-        roomTileMatrix[row][col] = [TILE_TYPE.EMPTY, 1];
+        roomTileMatrix[row][col] = [TILE_TYPE.FLOOR, 1];
       }
     }
   }

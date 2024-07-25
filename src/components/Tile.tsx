@@ -9,6 +9,7 @@ import { SPRITE_ID } from '../constants/sprite';
 
 export const Tile: FC<{
   tileID: number;
+  sprite: SPRITE_ID;
   tileType: number;
   entityIfExist?: [ENTITY_TYPE, number] | undefined;
   playerState: IPlayerState;
@@ -21,6 +22,7 @@ export const Tile: FC<{
   onMouseLeave: () => void;
   classNames?: string;
 }> = ({
+  sprite,
   tileType,
   entityIfExist,
   playerState,
@@ -139,11 +141,11 @@ export const Tile: FC<{
 
         // Only put border black on non-wall tiles
         'hover:border-black hover:shadow-intense-black hover:z-10':
-          tileType == TILE_TYPE.EMPTY ||
+          tileType == TILE_TYPE.FLOOR ||
           (tileType == TILE_TYPE.DOOR && isRoomOver),
 
         // Tile type color
-        'bg-white': tileType === TILE_TYPE.EMPTY,
+        'bg-white': tileType === TILE_TYPE.FLOOR,
         'bg-gray-500': tileType === TILE_TYPE.WALL,
         'bg-yellow-500': tileType === TILE_TYPE.DOOR,
 
@@ -170,11 +172,7 @@ export const Tile: FC<{
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <Sprite
-        sprite={SPRITE_ID.CELLAR_FLOOR_001}
-        width={TILE_SIZE}
-        height={TILE_SIZE}
-      />
+      <Sprite sprite={sprite} width={TILE_SIZE} height={TILE_SIZE} />
       {renderEntity()}
     </div>
   );
