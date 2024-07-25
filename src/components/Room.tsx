@@ -770,7 +770,7 @@ export const Room: FC<{
     >
       {roomTileMatrix.map((row, rowIndex) => {
         return row.map(([tileType, tileID], columnIndex) => {
-          let sprite: SPRITE_ID | undefined;
+          let sprite: SPRITE_ID | undefined = WALLS[0].sprite;
 
           switch (tileType) {
             case TILE_TYPE.FLOOR:
@@ -787,7 +787,7 @@ export const Room: FC<{
           }
 
           if (!sprite) {
-            console.error('Sprite not found!');
+            console.error('Sprite not found!', sprite, tileType, tileID);
             return null;
           }
 

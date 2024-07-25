@@ -22,8 +22,9 @@ export const Tile: FC<{
   onMouseLeave: () => void;
   classNames?: string;
 }> = ({
-  sprite,
+  tileID,
   tileType,
+  sprite,
   entityIfExist,
   playerState,
   active,
@@ -172,7 +173,15 @@ export const Tile: FC<{
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <Sprite sprite={sprite} width={TILE_SIZE} height={TILE_SIZE} />
+      <Sprite
+        sprite={sprite}
+        backgroundSprite={
+          // Bottom, left, right wall IDs
+          [2, 66, 67].includes(tileID) ? SPRITE_ID.CELLAR_FLOOR_001 : undefined
+        }
+        width={TILE_SIZE}
+        height={TILE_SIZE}
+      />
       {renderEntity()}
     </div>
   );

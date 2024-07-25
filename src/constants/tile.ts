@@ -29,4 +29,89 @@ export const WALLS: ITile[] = [
     id: 1,
     sprite: SPRITE_ID.CELLAR_WALL_001,
   },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 2,
+    sprite: SPRITE_ID.CELLAR_WALL_002,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 3,
+    sprite: SPRITE_ID.CELLAR_WALL_003,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 4,
+    sprite: SPRITE_ID.CELLAR_WALL_004,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 5,
+    sprite: SPRITE_ID.CELLAR_WALL_005,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 6,
+    sprite: SPRITE_ID.CELLAR_WALL_006,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 30,
+    sprite: SPRITE_ID.CELLAR_WALL_030,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 32,
+    sprite: SPRITE_ID.CELLAR_WALL_032,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 34,
+    sprite: SPRITE_ID.CELLAR_WALL_034,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 35,
+    sprite: SPRITE_ID.CELLAR_WALL_035,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 36,
+    sprite: SPRITE_ID.CELLAR_WALL_036,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 62,
+    sprite: SPRITE_ID.CELLAR_WALL_062,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 64,
+    sprite: SPRITE_ID.CELLAR_WALL_064,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 66,
+    sprite: SPRITE_ID.CELLAR_WALL_066,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 67,
+    sprite: SPRITE_ID.CELLAR_WALL_067,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 93,
+    sprite: SPRITE_ID.CELLAR_WALL_093,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 94,
+    sprite: SPRITE_ID.CELLAR_WALL_094,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 95,
+    sprite: SPRITE_ID.CELLAR_WALL_095,
+  },
 ];
