@@ -33,8 +33,41 @@ export const generateRoomTileMatrix = (roomLength: number) => {
         col === 0 ||
         col === roomLength - 1
       ) {
-        if (col === Math.floor(roomLength / 2)) {
-          roomTileMatrix[row][col] = [TILE_TYPE.WALL, 3];
+        if (
+          (row === 0 || row === 1) &&
+          [
+            Math.floor(roomLength / 2),
+            Math.floor(roomLength / 2) - 1,
+            Math.floor(roomLength / 2) + 1,
+          ].includes(col)
+        ) {
+          // roomTileMatrix[row][col] = [TILE_TYPE.DOOR, 366];
+
+          if (row === 0) {
+            // First row
+            if (col === Math.floor(roomLength / 2)) {
+              // Middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 366];
+            } else if (col === Math.floor(roomLength / 2) - 1) {
+              // Left of middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 365];
+            } else {
+              // Right of middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 367];
+            }
+          } else {
+            // Second row
+            if (col === Math.floor(roomLength / 2)) {
+              // Middle
+              roomTileMatrix[row][col] = [TILE_TYPE.DOOR, 397];
+            } else if (col === Math.floor(roomLength / 2) - 1) {
+              // Left of middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 396];
+            } else {
+              // Right of middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 398];
+            }
+          }
         } else {
           // Place corners
           if (row === 0 && col === 0) {

@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Tile';
 import { ENTITY_TYPE, STARTING_ACTION_POINTS } from '../constants/entity';
-import { FLOORS, TILE_SIZE, TILE_TYPE, WALLS } from '../constants/tile';
+import { DOORS, FLOORS, TILE_SIZE, TILE_TYPE, WALLS } from '../constants/tile';
 import {
   aoeSkillIDs,
   selfTargetedSkillIDs,
@@ -780,7 +780,7 @@ export const Room: FC<{
               sprite = WALLS.find((wall) => wall.id === tileID)?.sprite;
               break;
             case TILE_TYPE.DOOR:
-              sprite = FLOORS.find((floor) => floor.id === tileID)?.sprite;
+              sprite = DOORS.find((door) => door.id === tileID)?.sprite;
               break;
             default:
               break;

@@ -177,7 +177,16 @@ export const Tile: FC<{
         sprite={sprite}
         backgroundSprite={
           // Bottom, left, right wall IDs
-          [2, 66, 67].includes(tileID) ? SPRITE_ID.CELLAR_FLOOR_001 : undefined
+          [2, 66, 67].includes(tileID)
+            ? SPRITE_ID.CELLAR_FLOOR_001
+            : // Door IDs - Door background sprite is the same as wall sprite
+              // Top door IDs
+              [365, 367].includes(tileID)
+              ? SPRITE_ID.CELLAR_WALL_005
+              : // Bottom door IDs
+                [396, 398].includes(tileID)
+                ? SPRITE_ID.CELLAR_WALL_035
+                : undefined
         }
         width={TILE_SIZE}
         height={TILE_SIZE}

@@ -27,6 +27,16 @@ import tile_cellar_093 from '../assets/sprites/tiles/cellar/wall/sprite_tile_cel
 import tile_cellar_094 from '../assets/sprites/tiles/cellar/wall/sprite_tile_cellar_094.png';
 import tile_cellar_095 from '../assets/sprites/tiles/cellar/wall/sprite_tile_cellar_095.png';
 
+// WALLS - DOORS
+import tile_cellar_365 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_365.png';
+import tile_cellar_366 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_366.png';
+import tile_cellar_367 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_367.png';
+import tile_cellar_396 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_396.png';
+import tile_cellar_398 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_398.png';
+
+// DOORS
+import tile_cellar_397 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_397.png';
+
 export const SPRITE_SIZE = 64;
 export const FLOOR_SIZE = 32;
 
@@ -59,6 +69,16 @@ export enum SPRITE_ID {
   CELLAR_WALL_093 = 'cellar_wall_093',
   CELLAR_WALL_094 = 'cellar_wall_094',
   CELLAR_WALL_095 = 'cellar_wall_095',
+
+  // WALLS - DOORS
+  CELLAR_DOOR_365 = 'cellar_door_365',
+  CELLAR_DOOR_366 = 'cellar_door_366',
+  CELLAR_DOOR_367 = 'cellar_door_367',
+  CELLAR_DOOR_396 = 'cellar_door_396',
+  CELLAR_DOOR_398 = 'cellar_door_398',
+
+  // DOORS
+  CELLAR_DOOR_397 = 'cellar_door_397',
 }
 
 export const SPRITES: Record<SPRITE_ID, string> = {
@@ -90,6 +110,16 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.CELLAR_WALL_093]: tile_cellar_093,
   [SPRITE_ID.CELLAR_WALL_094]: tile_cellar_094,
   [SPRITE_ID.CELLAR_WALL_095]: tile_cellar_095,
+
+  // WALLS - DOORS
+  [SPRITE_ID.CELLAR_DOOR_365]: tile_cellar_365,
+  [SPRITE_ID.CELLAR_DOOR_366]: tile_cellar_366,
+  [SPRITE_ID.CELLAR_DOOR_367]: tile_cellar_367,
+  [SPRITE_ID.CELLAR_DOOR_396]: tile_cellar_396,
+  [SPRITE_ID.CELLAR_DOOR_398]: tile_cellar_398,
+
+  // DOORS
+  [SPRITE_ID.CELLAR_DOOR_397]: tile_cellar_397,
 };
 
 export const getSpriteSrc = (spriteID: SPRITE_ID) => SPRITES[spriteID] || '';

@@ -114,4 +114,37 @@ export const WALLS: ITile[] = [
     id: 95,
     sprite: SPRITE_ID.CELLAR_WALL_095,
   },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 365,
+    sprite: SPRITE_ID.CELLAR_DOOR_365,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 366,
+    sprite: SPRITE_ID.CELLAR_DOOR_366,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 367,
+    sprite: SPRITE_ID.CELLAR_DOOR_367,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 396,
+    sprite: SPRITE_ID.CELLAR_DOOR_396,
+  },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 398,
+    sprite: SPRITE_ID.CELLAR_DOOR_398,
+  },
+];
+
+export const DOORS: ITile[] = [
+  {
+    tileType: TILE_TYPE.DOOR,
+    id: 397,
+    sprite: SPRITE_ID.CELLAR_DOOR_397,
+  },
 ];
