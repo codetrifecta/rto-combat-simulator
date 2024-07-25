@@ -1,23 +1,23 @@
-import { IWeapon } from "../types";
-import { ICON_ID } from "./icons";
+import { IWeapon } from '../types';
+import { ICON_ID } from './icon';
 
 export enum WEAPON_ATTACK_TYPE {
-  MELEE = "melee",
-  RANGED = "ranged",
+  MELEE = 'melee',
+  RANGED = 'ranged',
 }
 
 export enum WEAPON_TYPE {
-  ONE_HANDED = "one-handed",
-  TWO_HANDED = "two-handed",
-  BOW = "bow",
-  WAND = "wand",
-  STAFF = "staff",
+  ONE_HANDED = 'one-handed',
+  TWO_HANDED = 'two-handed',
+  BOW = 'bow',
+  WAND = 'wand',
+  STAFF = 'staff',
 }
 
 export const WEAPONS: IWeapon[] = [
   {
     id: 1,
-    name: "Fists",
+    name: 'Fists',
     icon: ICON_ID.WEAPON_FIST,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.ONE_HANDED,
@@ -32,7 +32,7 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 2,
-    name: "Sword",
+    name: 'Sword',
     icon: ICON_ID.WEAPON_SWORD,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.ONE_HANDED,
@@ -47,7 +47,7 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 3,
-    name: "Katana",
+    name: 'Katana',
     icon: ICON_ID.WEAPON_KATANA,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.ONE_HANDED,
@@ -62,7 +62,7 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 4,
-    name: "Greatsword",
+    name: 'Greatsword',
     icon: ICON_ID.WEAPON_GREATSWORD,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.TWO_HANDED,
@@ -77,7 +77,7 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 5,
-    name: "Glaive",
+    name: 'Glaive',
     icon: ICON_ID.WEAPON_GLAIVE,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.TWO_HANDED,
@@ -92,7 +92,7 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 6,
-    name: "Bow",
+    name: 'Bow',
     icon: ICON_ID.WEAPON_BOW,
     attackType: WEAPON_ATTACK_TYPE.RANGED,
     type: WEAPON_TYPE.BOW,
@@ -107,7 +107,7 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 7,
-    name: "Magic Wand",
+    name: 'Magic Wand',
     icon: ICON_ID.WEAPON_MAGIC_WAND,
     attackType: WEAPON_ATTACK_TYPE.RANGED,
     type: WEAPON_TYPE.WAND,
@@ -122,7 +122,7 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 8,
-    name: "Magic Staff",
+    name: 'Magic Staff',
     icon: ICON_ID.WEAPON_MAGIC_STAFF,
     attackType: WEAPON_ATTACK_TYPE.RANGED,
     type: WEAPON_TYPE.STAFF,
@@ -137,7 +137,7 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 9,
-    name: "Doom Hammer",
+    name: 'Doom Hammer',
     icon: ICON_ID.WEAPON_GREATSWORD,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.TWO_HANDED,

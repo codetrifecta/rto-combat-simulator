@@ -1,5 +1,5 @@
 import { ISkill } from '../types';
-import { ICON_ID } from './icons';
+import { ICON_ID } from './icon';
 
 export enum SKILL_TYPE {
   SELF = 'self',

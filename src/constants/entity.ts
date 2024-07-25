@@ -1,7 +1,7 @@
 import { IEnemy, IPlayer } from '../types';
 import { LEGGINGS } from './armor';
 import { SKILLS } from './skill';
-import { SPRITE_ID } from './sprites';
+import { SPRITE_ID } from './sprite';
 import { WEAPONS } from './weapon';
 
 export const STARTING_ACTION_POINTS = 4;

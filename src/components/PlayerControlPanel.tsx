@@ -8,7 +8,7 @@ import { Tooltip } from './Tooltip';
 import { ISkill } from '../types';
 import { Button } from './Button';
 import { Icon } from './Icon';
-import { ICON_ID } from '../constants/icons';
+import { ICON_ID } from '../constants/icon';
 import { IconButton } from './IconButton';
 import { SKILL_ID, strengthBasedSkillIDs } from '../constants/skill';
 import { ENTITY_TYPE } from '../constants/entity';

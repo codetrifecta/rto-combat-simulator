@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef } from 'react';
-import { getSpriteSrc, SPRITE_ID } from '../constants/sprites';
+import { getSpriteSrc, SPRITE_ID } from '../constants/sprite';
 
 export const Sprite: FC<{
   sprite: SPRITE_ID;
