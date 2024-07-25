@@ -9,9 +9,9 @@ import { IEnemy, IEntity, IPlayer } from './types';
  *          ex - 2d array of 5x5 room matrix:
  *         [
  *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.DOOR, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1]],
- *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.ENEMY, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.EMPTY,1 ], [TILE_TYPE.WALL, 1]],
- *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.WALL, 1]],
- *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.PLAYER, 1], [TILE_TYPE.EMPTY, 1], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.FLOOR,1 ], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.WALL, 1]],
+ *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.PLAYER, 1], [TILE_TYPE.FLOOR, 1], [TILE_TYPE.WALL, 1]],
  *          [[TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.DOOR, 1], [TILE_TYPE.WALL, 1], [TILE_TYPE.WALL, 1]]
  *          ]
  */
@@ -19,7 +19,7 @@ export const generateRoomTileMatrix = (roomLength: number) => {
   // Initialize room matrix
   const roomTileMatrix: [TILE_TYPE, number][][] = Array.from(
     { length: roomLength },
-    () => Array.from({ length: roomLength }, () => [TILE_TYPE.EMPTY, 0])
+    () => Array.from({ length: roomLength }, () => [TILE_TYPE.FLOOR, 1])
   );
 
   // Generate room layout
@@ -28,18 +28,99 @@ export const generateRoomTileMatrix = (roomLength: number) => {
       // Surround room with walls and place door in the middle of the top wall and bottom wall
       if (
         row === 0 ||
+        row === 1 ||
         row === roomLength - 1 ||
         col === 0 ||
         col === roomLength - 1
       ) {
-        if (col === Math.floor(roomLength / 2)) {
-          roomTileMatrix[row][col] = [TILE_TYPE.DOOR, 1];
+        if (
+          (row === 0 || row === 1) &&
+          [
+            Math.floor(roomLength / 2),
+            Math.floor(roomLength / 2) - 1,
+            Math.floor(roomLength / 2) + 1,
+          ].includes(col)
+        ) {
+          // roomTileMatrix[row][col] = [TILE_TYPE.DOOR, 366];
+
+          if (row === 0) {
+            // First row
+            if (col === Math.floor(roomLength / 2)) {
+              // Middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 366];
+            } else if (col === Math.floor(roomLength / 2) - 1) {
+              // Left of middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 365];
+            } else {
+              // Right of middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 367];
+            }
+          } else {
+            // Second row
+            if (col === Math.floor(roomLength / 2)) {
+              // Middle
+              roomTileMatrix[row][col] = [TILE_TYPE.DOOR, 397];
+            } else if (col === Math.floor(roomLength / 2) - 1) {
+              // Left of middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 396];
+            } else {
+              // Right of middle
+              roomTileMatrix[row][col] = [TILE_TYPE.WALL, 398];
+            }
+          }
         } else {
-          roomTileMatrix[row][col] = [TILE_TYPE.WALL, 1];
+          // Place corners
+          if (row === 0 && col === 0) {
+            // Top left corner
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 4];
+          } else if (row === 0 && col === roomLength - 1) {
+            // Top right corner
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 6];
+          } else if (row === roomLength - 1 && col === 0) {
+            // Bottom left corner
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 93];
+          } else if (row === roomLength - 1 && col === roomLength - 1) {
+            // Bottom right corner
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 95];
+          }
+
+          // Place non-corner walls
+          else if (row === 0 && col !== 0 && col !== roomLength - 1) {
+            // Top wall
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 5];
+          } else if (row === 1 && col > 0 && col < roomLength - 1) {
+            // Top wall - 1
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 35];
+          } else if (row === 1 && col === 0) {
+            // Top wall - 1 left wall
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 34];
+          } else if (row === 1 && col === roomLength - 1) {
+            // Top wall - 1 right wall
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 36];
+          } else if (
+            row === roomLength - 1 &&
+            col !== 0 &&
+            col !== roomLength - 1
+          ) {
+            // Bottom wall
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 2];
+          } else if (col === 0 && row !== 0 && row !== roomLength - 1) {
+            // Left wall
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 66];
+          } else if (
+            col === roomLength - 1 &&
+            row !== 0 &&
+            row !== roomLength - 1
+          ) {
+            // Right wall
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 67];
+          } else {
+            roomTileMatrix[row][col] = [TILE_TYPE.WALL, 1];
+          }
         }
       } else {
-        // Place walls everywhere else
-        roomTileMatrix[row][col] = [TILE_TYPE.EMPTY, 1];
+        // Place floors everywhere else
+        roomTileMatrix[row][col] = [TILE_TYPE.FLOOR, 1];
       }
     }
   }

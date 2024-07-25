@@ -1,5 +1,5 @@
 import { IHelmet, IChestpiece, ILegging } from '../types';
-import { ICON_ID } from './icons';
+import { ICON_ID } from './icon';
 
 export const HELMETS: IHelmet[] = [
   {

@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import { InventoryChooser } from './components/InventoryChooser';
 import { CharacterSheet } from './components/CharacterSheet';
 import { GenerateRoomModal } from './components/GenerateRoomModal';
+import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
 
 // Flag for first room render
 let firstRoomRender = true;
@@ -261,7 +262,7 @@ function App() {
           'fixed left-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0 z-30'
         )}
         style={{
-          height: 'calc(100vh - 80px)',
+          height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
           left: isCharacterSheetOpen ? 0 : -400,
           visibility: isCharacterSheetOpen ? 'visible' : 'hidden',
         }}
@@ -292,7 +293,7 @@ function App() {
       <section
         className="fixed z-[60] top-0 w-screen shadow-lg"
         style={{
-          height: 'calc(100vh - 80px)',
+          height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
           visibility: isGenerateRoomOpen ? 'visible' : 'hidden',
         }}
       >
@@ -303,7 +304,7 @@ function App() {
       <section
         className="fixed z-[30] top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
         style={{
-          height: 'calc(100vh - 80px)',
+          height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
           right: isInventoryOpen ? 0 : -400,
           visibility: isInventoryOpen ? 'visible' : 'hidden',
         }}

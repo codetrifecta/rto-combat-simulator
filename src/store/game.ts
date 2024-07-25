@@ -1,8 +1,8 @@
-import { create } from "zustand";
-import { IEntity } from "../types";
-import { ENTITY_TYPE } from "../constants/entity";
-import { TILE_TYPE } from "../constants/tile";
-import { generateRoomEntityPositions, generateRoomTileMatrix } from "../utils";
+import { create } from 'zustand';
+import { IEntity } from '../types';
+import { ENTITY_TYPE } from '../constants/entity';
+import { TILE_TYPE } from '../constants/tile';
+import { generateRoomEntityPositions, generateRoomTileMatrix } from '../utils';
 
 interface IGameStateStore {
   roomLength: number;
@@ -59,7 +59,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
     const currentTurnEntity = get().turnCycle[0];
 
     if (!currentTurnEntity) {
-      console.error("No current turn entity in turn cycle!");
+      console.error('No current turn entity in turn cycle!');
       return null;
     }
 
@@ -72,7 +72,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
     const currentTurnEntity = get().turnCycle.shift();
 
     if (!currentTurnEntity) {
-      console.error("No current turn entity in turn cycle!");
+      console.error('No current turn entity in turn cycle!');
       return;
     }
 

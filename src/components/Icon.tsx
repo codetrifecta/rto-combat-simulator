@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef } from 'react';
-import { getIconSrc, ICON_ID } from '../constants/icons';
+import { getIconSrc, ICON_ID } from '../constants/icon';
 
 export const Icon: FC<{
   icon: ICON_ID;

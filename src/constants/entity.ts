@@ -1,7 +1,7 @@
 import { IEnemy, IPlayer } from '../types';
 import { LEGGINGS } from './armor';
 import { SKILLS } from './skill';
-import { SPRITE_ID } from './sprites';
+import { SPRITE_ID } from './sprite';
 import { WEAPONS } from './weapon';
 
 export const STARTING_ACTION_POINTS = 4;
@@ -88,7 +88,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     id: 0,
     name: 'Harpy',
     sprite: SPRITE_ID.DEMON_02,
-    sprite_size: 32,
+    sprite_size: 48,
     entityType: ENTITY_TYPE.ENEMY,
     health: 4,
     maxHealth: 4,
@@ -101,7 +101,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     id: 0,
     name: 'Minotaur',
     sprite: SPRITE_ID.DEMON_12,
-    sprite_size: 48,
+    sprite_size: 80,
     entityType: ENTITY_TYPE.ENEMY,
     health: 12,
     maxHealth: 12,

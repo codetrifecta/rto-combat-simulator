@@ -8,12 +8,14 @@ import { Tooltip } from './Tooltip';
 import { ISkill } from '../types';
 import { Button } from './Button';
 import { Icon } from './Icon';
-import { ICON_ID } from '../constants/icons';
+import { ICON_ID } from '../constants/icon';
 import { IconButton } from './IconButton';
 import { SKILL_ID, strengthBasedSkillIDs } from '../constants/skill';
 import { ENTITY_TYPE } from '../constants/entity';
-
-const ICON_SIZE = 48;
+import {
+  PLAYER_CONTROL_PANEL_HEIGHT,
+  PLAYER_CONTROL_PANEL_ICON_SIZE,
+} from '../constants/game';
 
 export const PlayerControlPanel: FC = () => {
   const {
@@ -124,10 +126,13 @@ export const PlayerControlPanel: FC = () => {
   }, [isGameOver, turnCycle]);
 
   return (
-    <div className="h-[80px] flex items-center bg-neutral-900">
+    <div
+      className="flex justify-center items-center bg-black shadow-lg shadow-white"
+      style={{ height: PLAYER_CONTROL_PANEL_HEIGHT }}
+    >
       <div
         className={clsx(
-          'w-screen px-4 flex justify-center items-center gap-5 box-border',
+          'w-screen px-4 flex justify-center items-center gap-5',
           {
             'bg-neutral-900': !disabled,
           }
@@ -160,8 +165,8 @@ export const PlayerControlPanel: FC = () => {
                 >
                   <Icon
                     icon={skill.icon}
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                   />
                 </IconButton>
                 {renderSkillButtonTooltip(skill)}
@@ -195,8 +200,8 @@ export const PlayerControlPanel: FC = () => {
                 >
                   <Icon
                     icon={ICON_ID.LOG}
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                   />
                 </IconButton>
                 <Tooltip>
@@ -212,8 +217,8 @@ export const PlayerControlPanel: FC = () => {
                 >
                   <Icon
                     icon={ICON_ID.CHARACTER}
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                   />
                 </IconButton>
                 <Tooltip>
@@ -229,8 +234,8 @@ export const PlayerControlPanel: FC = () => {
                 >
                   <Icon
                     icon={ICON_ID.INVENTORY}
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                   />
                 </IconButton>
                 <Tooltip>
@@ -265,14 +270,14 @@ export const PlayerControlPanel: FC = () => {
                   {player.equipment.weapon ? (
                     <Icon
                       icon={player.equipment.weapon.icon}
-                      width={ICON_SIZE}
-                      height={ICON_SIZE}
+                      width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                      height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                     />
                   ) : (
                     <Icon
                       icon={ICON_ID.BASIC_ATTACK}
-                      width={ICON_SIZE}
-                      height={ICON_SIZE}
+                      width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                      height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                     />
                   )}
                 </IconButton>
@@ -304,8 +309,8 @@ export const PlayerControlPanel: FC = () => {
                 >
                   <Icon
                     icon={ICON_ID.MOVE}
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                   />
                 </IconButton>
                 <Tooltip>
@@ -330,8 +335,8 @@ export const PlayerControlPanel: FC = () => {
                 >
                   <Icon
                     icon={ICON_ID.SKILLS}
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                   />
                 </IconButton>
                 <Tooltip>
@@ -358,8 +363,8 @@ export const PlayerControlPanel: FC = () => {
                 >
                   <Icon
                     icon={ICON_ID.END_TURN}
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                   />
                 </IconButton>
                 <Tooltip>
@@ -381,8 +386,8 @@ export const PlayerControlPanel: FC = () => {
                 >
                   <Icon
                     icon={ICON_ID.GENERATE_ROOM}
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
                   />
                 </IconButton>
                 <Tooltip>

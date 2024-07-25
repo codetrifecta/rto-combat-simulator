@@ -28,7 +28,9 @@
 
 #root {
   color: white;
-  background-color: #242424;
+  /* background-color: #242424; */
+  background-color: rgb(21, 21, 21);
+  /* background-color: black; */
 }
 
 canvas {

@@ -1,12 +1,14 @@
 import { FC, useEffect, useRef } from 'react';
-import { getSpriteSrc, SPRITE_ID } from '../constants/sprites';
+import { getSpriteSrc, SPRITE_ID } from '../constants/sprite';
 
 export const Sprite: FC<{
   sprite: SPRITE_ID;
+  backgroundSprite?: SPRITE_ID;
   width: number;
   height: number;
   grayscale?: boolean;
-}> = ({ sprite, width, height, grayscale }) => {
+  children?: React.ReactNode;
+}> = ({ sprite, backgroundSprite, width, height, grayscale, children }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -27,14 +29,29 @@ export const Sprite: FC<{
       if (!context) return;
       context.reset();
       context.imageSmoothingEnabled = false;
+      // context.globalCompositeOperation = 'destination-over';
 
       if (grayscale) {
         context.filter = 'grayscale(1)';
       }
 
-      context.drawImage(image, 0, 0, width, height);
+      if (backgroundSprite) {
+        const background = new Image();
+
+        background.src = getSpriteSrc(backgroundSprite);
+        background.onload = function () {
+          context.drawImage(background, 0, 0, width, height);
+          context.drawImage(image, 0, 0, width, height);
+        };
+      } else {
+        context.drawImage(image, 0, 0, width, height);
+      }
     };
   }, [sprite, width, height]);
 
-  return <canvas ref={canvasRef} width={width} height={height}></canvas>;
+  return (
+    <canvas ref={canvasRef} width={width} height={height}>
+      {children}
+    </canvas>
+  );
 };

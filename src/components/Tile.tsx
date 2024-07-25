@@ -5,8 +5,11 @@ import clsx from 'clsx';
 import { IPlayerState } from '../types';
 import { useEnemyStore } from '../store/enemy';
 import { Sprite } from './Sprite';
+import { SPRITE_ID } from '../constants/sprite';
 
 export const Tile: FC<{
+  tileID: number;
+  sprite: SPRITE_ID;
   tileType: number;
   entityIfExist?: [ENTITY_TYPE, number] | undefined;
   playerState: IPlayerState;
@@ -19,7 +22,9 @@ export const Tile: FC<{
   onMouseLeave: () => void;
   classNames?: string;
 }> = ({
+  tileID,
   tileType,
+  sprite,
   entityIfExist,
   playerState,
   active,
@@ -74,11 +79,11 @@ export const Tile: FC<{
   const effectBorderClasses = useMemo(() => {
     if (isEffectZone) {
       if (playerState.isAttacking && isAttackEffectTile) {
-        return 'hover:opacity-80 border-red-500';
+        return 'hover:opacity-80 shadow-mild-red z-10';
       } else if (playerState.isMoving && isMovingEffectTile) {
-        return 'hover:opacity-80 border-blue-500';
+        return 'hover:opacity-80 shadow-mild-blue z-10';
       } else if (playerState.isUsingSkill && isSkillEffectTile) {
-        return 'hover:opacity-80 !border-yellow-500';
+        return 'hover:opacity-80 shadow-mild-yellow z-10';
       }
     }
     return '';
@@ -110,7 +115,6 @@ export const Tile: FC<{
 
       return (
         <div className="absolute z-50 bottom-[35%] left-0 w-full h-full flex justify-center items-end">
-          {/* <div className="bg-red-500 w-[16px] h-[16px]"></div> */}
           <Sprite
             sprite={enemy.sprite}
             width={enemy.sprite_size}
@@ -125,9 +129,6 @@ export const Tile: FC<{
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
       className={clsx('relative', classNames, {
-        // Border classes only on non-null tiles
-        'border-2 border-gray': tileType !== TILE_TYPE.NULL,
-
         // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
         'cursor-pointer':
           (tileType !== TILE_TYPE.WALL &&
@@ -136,23 +137,22 @@ export const Tile: FC<{
           (tileType === TILE_TYPE.DOOR && isRoomOver),
         // "cursor-default": tileType === TILE_TYPE.DOOR && !isRoomOver,
 
-        // Only put border black on wall tiles
-        'hover:border-black':
-          tileType == TILE_TYPE.EMPTY ||
+        // Only put shadow black on non-wall tiles
+        'hover:shadow-mild-black hover:z-30':
+          (tileType == TILE_TYPE.FLOOR && !(hasPlayer || hasEnemy)) ||
           (tileType == TILE_TYPE.DOOR && isRoomOver),
 
         // Tile type color
-        'bg-white': tileType === TILE_TYPE.EMPTY,
-        'bg-gray-500': tileType === TILE_TYPE.WALL,
+        'bg-white': tileType === TILE_TYPE.FLOOR,
         'bg-yellow-500': tileType === TILE_TYPE.DOOR,
 
         // Player and enemy tile
-        'hover:shadow-intense-green': hasPlayer,
-        'hover:shadow-intense-red': hasEnemy,
+        'hover:shadow-intense-green z-20': hasPlayer,
+        'hover:shadow-intense-red z-20': hasEnemy,
 
         // Active tile
-        'shadow-intense-green z-10': hasPlayer && active,
-        'shadow-intense-red z-10': hasEnemy && active,
+        'shadow-intense-green z-[15]': hasPlayer && active,
+        'shadow-intense-red z-[15]': hasEnemy && active,
 
         // Non-active tile
         'z-0': !active,
@@ -169,6 +169,24 @@ export const Tile: FC<{
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
+      <Sprite
+        sprite={sprite}
+        backgroundSprite={
+          // Bottom, left, right wall IDs
+          [2, 66, 67].includes(tileID)
+            ? SPRITE_ID.CELLAR_FLOOR_001
+            : // Door IDs - Door background sprite is the same as wall sprite
+              // Top door IDs
+              [365, 366, 367].includes(tileID)
+              ? SPRITE_ID.CELLAR_WALL_005
+              : // Bottom door IDs
+                [396, 398].includes(tileID)
+                ? SPRITE_ID.CELLAR_WALL_035
+                : undefined
+        }
+        width={TILE_SIZE}
+        height={TILE_SIZE}
+      />
       {renderEntity()}
     </div>
   );
