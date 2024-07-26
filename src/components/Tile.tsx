@@ -83,6 +83,10 @@ export const Tile: FC<{
       } else if (playerState.isMoving && isMovingEffectTile) {
         return 'hover:opacity-80 shadow-mild-blue z-10';
       } else if (playerState.isUsingSkill && isSkillEffectTile) {
+        if (hasPlayer) {
+          // Make sure self target skills highlight yellow on player tile
+          return 'hover:opacity-80 !shadow-mild-yellow z-10';
+        }
         return 'hover:opacity-80 shadow-mild-yellow z-10';
       }
     }
@@ -128,9 +132,9 @@ export const Tile: FC<{
   return (
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
-      className={clsx('relative', classNames, {
+      className={clsx('relative ', classNames, {
         // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
-        'cursor-pointer':
+        'cursor-pointer hover:z-30':
           (tileType !== TILE_TYPE.WALL &&
             tileType !== TILE_TYPE.DOOR &&
             tileType !== TILE_TYPE.NULL) ||
@@ -138,7 +142,7 @@ export const Tile: FC<{
         // "cursor-default": tileType === TILE_TYPE.DOOR && !isRoomOver,
 
         // Only put shadow black on non-wall tiles
-        'hover:shadow-mild-black hover:z-30':
+        'hover:shadow-mild-black':
           (tileType == TILE_TYPE.FLOOR && !(hasPlayer || hasEnemy)) ||
           (tileType == TILE_TYPE.DOOR && isRoomOver),
 
@@ -147,12 +151,12 @@ export const Tile: FC<{
         'bg-yellow-500': tileType === TILE_TYPE.DOOR,
 
         // Player and enemy tile
-        'hover:shadow-intense-green z-20': hasPlayer,
-        'hover:shadow-intense-red z-20': hasEnemy,
+        'hover:shadow-intense-green': hasPlayer,
+        'hover:shadow-intense-red': hasEnemy,
 
         // Active tile
-        'shadow-intense-green z-[15]': hasPlayer && active,
-        'shadow-intense-red z-[15]': hasEnemy && active,
+        'shadow-mild-green z-20': hasPlayer && active,
+        'shadow-mild-red z-20': hasEnemy && active,
 
         // Non-active tile
         'z-0': !active,
