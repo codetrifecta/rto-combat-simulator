@@ -397,6 +397,17 @@ const handleSkillStatus = (
       statusToBeApplied,
     ];
 
+    addLog({
+      message: (
+        <>
+          <span className="text-green-500">{playerAfterStatus.name}</span> now
+          has status{' '}
+          <span className="text-yellow-500">{statusToBeApplied.name}</span>.
+        </>
+      ),
+      type: 'info',
+    });
+
     return { playerAfterStatus, enemiesAfterStatus };
   }
 
