@@ -18,6 +18,7 @@ import { usePlayerStore } from '../store/player';
 import { useEnemyStore } from '../store/enemy';
 import {
   getEntityPosition,
+  getPlayerTotalDefense,
   handlePlayerEndTurn,
   isEnemy,
   isPlayer,
@@ -54,7 +55,6 @@ export const Room: FC<{
   const {
     getPlayer,
     getPlayerBaseAttackDamage,
-    getPlayerTotalDefense,
     getPlayerLifestealMultiplier,
     setPlayer,
     setPlayerActionPoints,
@@ -712,11 +712,16 @@ export const Room: FC<{
         }
       }, 1);
 
-      const playerTotalDefense = getPlayerTotalDefense();
+      const playerTotalDefense = getPlayerTotalDefense(player);
 
-      let totalDamage =
-        Math.round((baseDamage + statusDamageBonus) * damageMultiplier) -
-        playerTotalDefense;
+      // If player has 10 DEF, then player takes 10% less damage
+      const playerDamageTakenMultiplier = 1 - playerTotalDefense / 100;
+
+      let totalDamage = Math.round(
+        (baseDamage + statusDamageBonus) *
+          damageMultiplier *
+          playerDamageTakenMultiplier
+      );
 
       if (totalDamage <= 0) totalDamage = 0;
 

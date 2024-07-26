@@ -282,8 +282,13 @@ const handleSkillDamage = (
         return; // Skip applying status to player
       }
 
+      // If player has 10 DEF, then player takes 10% less damage
+      const playerDamageTakenMultiplier = 1 - playerTotalDefense / 100;
+
       // Calculate damage dealt to player
-      let totalDamageToPlayer = totalDamage - playerTotalDefense;
+      let totalDamageToPlayer = Math.round(
+        totalDamage * playerDamageTakenMultiplier
+      );
 
       if (totalDamageToPlayer < 0) {
         totalDamageToPlayer = 0;
