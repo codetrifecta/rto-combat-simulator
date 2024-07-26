@@ -1248,11 +1248,11 @@ export const Room: FC<{
                     setPlayer({
                       ...newPlayer,
                       state: {
-                        ...player.state,
+                        ...newPlayer.state,
                         isUsingSkill: false,
                       },
-                      actionPoints: player.actionPoints - skill.cost,
-                      skills: player.skills.map((s) =>
+                      actionPoints: newPlayer.actionPoints - skill.cost,
+                      skills: newPlayer.skills.map((s) =>
                         s.id === skill.id
                           ? { ...s, cooldownCounter: s.cooldown }
                           : s

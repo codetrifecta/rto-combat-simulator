@@ -206,6 +206,13 @@ const handleSkillDamage = (
 
       const newEnemy = { ...enemy };
 
+      if ([SKILL_ID.EXECUTE].includes(skill.id)) {
+        // Execute: Deal double damage if enemy health is below 25%
+        if (newEnemy.health < newEnemy.maxHealth * 0.25) {
+          totalDamage *= 2;
+        }
+      }
+
       // Calculate damage
       newEnemy.health = newEnemy.health - totalDamage;
 
@@ -251,6 +258,13 @@ const handleSkillDamage = (
 
       // Log damage
       if (newEnemy.health <= 0) {
+        // For Execute skill, player gains 2 AP if enemy is defeated
+        if ([SKILL_ID.EXECUTE].includes(skill.id)) {
+          playerAfterDamage.actionPoints += 2;
+        }
+
+        console.log(playerAfterDamage);
+
         enemiesAfterDamage.splice(enemyIndex, 1);
         addLog({
           message: (
