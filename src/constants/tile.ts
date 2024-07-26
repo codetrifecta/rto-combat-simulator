@@ -139,6 +139,11 @@ export const WALLS: ITile[] = [
     id: 398,
     sprite: SPRITE_ID.CELLAR_DOOR_398,
   },
+  {
+    tileType: TILE_TYPE.WALL,
+    id: 253,
+    sprite: SPRITE_ID.CELLAR_DOOR_253,
+  },
 ];
 
 export const DOORS: ITile[] = [
@@ -146,5 +151,10 @@ export const DOORS: ITile[] = [
     tileType: TILE_TYPE.DOOR,
     id: 397,
     sprite: SPRITE_ID.CELLAR_DOOR_397,
+  },
+  {
+    tileType: TILE_TYPE.DOOR,
+    id: 282,
+    sprite: SPRITE_ID.CELLAR_DOOR_282,
   },
 ];
