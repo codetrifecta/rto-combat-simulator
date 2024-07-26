@@ -791,6 +791,20 @@ export const Room: FC<{
               break;
           }
 
+          // Render closed door sprite when room is not over
+          if ([397, 366].includes(tileID) && !isRoomOver) {
+            switch (tileID) {
+              case 397: // Get closed door
+                sprite = DOORS.find((door) => door.id === 282)?.sprite;
+                break;
+              case 366:
+                sprite = WALLS.find((door) => door.id === 253)?.sprite;
+                break;
+              default:
+                break;
+            }
+          }
+
           if (!sprite) {
             console.error('Sprite not found!', sprite, tileType, tileID);
             return null;
