@@ -7,10 +7,10 @@ export const HELMETS: IHelmet[] = [
     name: 'Leather Helmet',
     icon: ICON_ID.HELMET_LEATHER_1,
     stats: {
-      defense: 1,
-      strength: 1,
+      defense: 3,
+      strength: 2,
       intelligence: 0,
-      constitution: 1,
+      constitution: 3,
     },
   },
   {
@@ -18,10 +18,10 @@ export const HELMETS: IHelmet[] = [
     name: 'Leather Wizard Hat',
     icon: ICON_ID.HELMET_LEATHER_2,
     stats: {
-      defense: 1,
+      defense: 3,
       strength: 0,
-      intelligence: 1,
-      constitution: 1,
+      intelligence: 2,
+      constitution: 3,
     },
   },
   {
@@ -29,10 +29,10 @@ export const HELMETS: IHelmet[] = [
     name: 'Steel Helmet',
     icon: ICON_ID.HELMET_STEEL_1,
     stats: {
-      defense: 2,
-      strength: 2,
+      defense: 4,
+      strength: 3,
       intelligence: 1,
-      constitution: 1,
+      constitution: 4,
     },
   },
   {
@@ -40,9 +40,9 @@ export const HELMETS: IHelmet[] = [
     name: 'Steel Wizard Hat',
     icon: ICON_ID.HELMET_STEEL_2,
     stats: {
-      defense: 2,
+      defense: 4,
       strength: 1,
-      intelligence: 2,
+      intelligence: 3,
       constitution: 1,
     },
   },
@@ -51,10 +51,10 @@ export const HELMETS: IHelmet[] = [
     name: 'Gold Helmet',
     icon: ICON_ID.HELMET_GOLD_1,
     stats: {
-      defense: 3,
-      strength: 2,
+      defense: 5,
+      strength: 3,
       intelligence: 1,
-      constitution: 1,
+      constitution: 5,
     },
   },
   {
@@ -62,10 +62,10 @@ export const HELMETS: IHelmet[] = [
     name: 'Gold Wizard Hat',
     icon: ICON_ID.HELMET_GOLD_2,
     stats: {
-      defense: 3,
+      defense: 5,
       strength: 1,
-      intelligence: 2,
-      constitution: 1,
+      intelligence: 3,
+      constitution: 5,
     },
   },
   {
@@ -73,10 +73,10 @@ export const HELMETS: IHelmet[] = [
     name: 'Diamond Helmet',
     icon: ICON_ID.HELMET_DIAMOND_1,
     stats: {
-      defense: 4,
-      strength: 3,
+      defense: 6,
+      strength: 4,
       intelligence: 1,
-      constitution: 1,
+      constitution: 6,
     },
   },
   {
@@ -84,10 +84,10 @@ export const HELMETS: IHelmet[] = [
     name: 'Diamond Wizard Hat',
     icon: ICON_ID.HELMET_DIAMOND_2,
     stats: {
-      defense: 4,
+      defense: 6,
       strength: 1,
-      intelligence: 3,
-      constitution: 1,
+      intelligence: 4,
+      constitution: 6,
     },
   },
 ];
@@ -98,10 +98,10 @@ export const CHESTPIECES: IChestpiece[] = [
     name: 'Leather Chestpiece',
     icon: ICON_ID.CHESTPIECE_LEATHER_1,
     stats: {
-      defense: 1,
-      strength: 1,
+      defense: 5,
+      strength: 3,
       intelligence: 0,
-      constitution: 1,
+      constitution: 5,
     },
   },
   {
@@ -109,10 +109,10 @@ export const CHESTPIECES: IChestpiece[] = [
     name: 'Leather Wizard Robes',
     icon: ICON_ID.CHESTPIECE_LEATHER_2,
     stats: {
-      defense: 1,
+      defense: 5,
       strength: 0,
-      intelligence: 1,
-      constitution: 1,
+      intelligence: 3,
+      constitution: 5,
     },
   },
   {
@@ -120,10 +120,10 @@ export const CHESTPIECES: IChestpiece[] = [
     name: 'Steel Chestpiece',
     icon: ICON_ID.CHESTPIECE_STEEL_1,
     stats: {
-      defense: 2,
-      strength: 2,
+      defense: 6,
+      strength: 4,
       intelligence: 1,
-      constitution: 1,
+      constitution: 6,
     },
   },
   {
@@ -131,10 +131,10 @@ export const CHESTPIECES: IChestpiece[] = [
     name: 'Steel Wizard Robes',
     icon: ICON_ID.CHESTPIECE_STEEL_2,
     stats: {
-      defense: 2,
+      defense: 6,
       strength: 1,
-      intelligence: 2,
-      constitution: 1,
+      intelligence: 4,
+      constitution: 6,
     },
   },
   {
@@ -142,10 +142,10 @@ export const CHESTPIECES: IChestpiece[] = [
     name: 'Gold Chestpiece',
     icon: ICON_ID.CHESTPIECE_GOLD_1,
     stats: {
-      defense: 3,
-      strength: 2,
+      defense: 7,
+      strength: 5,
       intelligence: 1,
-      constitution: 1,
+      constitution: 7,
     },
   },
   {
@@ -153,10 +153,10 @@ export const CHESTPIECES: IChestpiece[] = [
     name: 'Gold Wizard Robes',
     icon: ICON_ID.CHESTPIECE_GOLD_2,
     stats: {
-      defense: 3,
+      defense: 7,
       strength: 1,
-      intelligence: 2,
-      constitution: 1,
+      intelligence: 5,
+      constitution: 7,
     },
   },
   {
@@ -164,10 +164,10 @@ export const CHESTPIECES: IChestpiece[] = [
     name: 'Diamond Chestpiece',
     icon: ICON_ID.CHESTPIECE_DIAMOND_1,
     stats: {
-      defense: 4,
-      strength: 3,
+      defense: 8,
+      strength: 6,
       intelligence: 1,
-      constitution: 1,
+      constitution: 8,
     },
   },
   {
@@ -175,10 +175,10 @@ export const CHESTPIECES: IChestpiece[] = [
     name: 'Diamond Wizard Robes',
     icon: ICON_ID.CHESTPIECE_DIAMOND_2,
     stats: {
-      defense: 4,
+      defense: 8,
       strength: 1,
-      intelligence: 3,
-      constitution: 1,
+      intelligence: 6,
+      constitution: 8,
     },
   },
 ];
@@ -189,10 +189,10 @@ export const LEGGINGS: ILegging[] = [
     name: 'Leather Pants',
     icon: ICON_ID.LEGGING_LEATHER_1,
     stats: {
-      defense: 1,
+      defense: 5,
       strength: 0,
       intelligence: 0,
-      constitution: 1,
+      constitution: 5,
     },
   },
   {
@@ -200,10 +200,10 @@ export const LEGGINGS: ILegging[] = [
     name: 'Steel Leggings',
     icon: ICON_ID.LEGGING_STEEL_1,
     stats: {
-      defense: 2,
+      defense: 7,
       strength: 1,
       intelligence: 1,
-      constitution: 2,
+      constitution: 7,
     },
   },
   {
@@ -211,10 +211,10 @@ export const LEGGINGS: ILegging[] = [
     name: 'Gold Leggings',
     icon: ICON_ID.LEGGING_GOLD_1,
     stats: {
-      defense: 3,
+      defense: 9,
       strength: 1,
       intelligence: 1,
-      constitution: 2,
+      constitution: 9,
     },
   },
   {
@@ -222,10 +222,10 @@ export const LEGGINGS: ILegging[] = [
     name: 'Diamond Leggings',
     icon: ICON_ID.LEGGING_DIAMOND_1,
     stats: {
-      defense: 4,
+      defense: 11,
       strength: 1,
       intelligence: 1,
-      constitution: 2,
+      constitution: 11,
     },
   },
 ];
