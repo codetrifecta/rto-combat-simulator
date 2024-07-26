@@ -83,6 +83,10 @@ export const Tile: FC<{
       } else if (playerState.isMoving && isMovingEffectTile) {
         return 'hover:opacity-80 shadow-mild-blue z-10';
       } else if (playerState.isUsingSkill && isSkillEffectTile) {
+        if (hasPlayer) {
+          // Make sure self target skills highlight yellow on player tile
+          return 'hover:opacity-80 !shadow-mild-yellow z-10';
+        }
         return 'hover:opacity-80 shadow-mild-yellow z-10';
       }
     }
