@@ -33,9 +33,11 @@ import tile_cellar_366 from '../assets/sprites/tiles/cellar/door/sprite_tile_cel
 import tile_cellar_367 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_367.png';
 import tile_cellar_396 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_396.png';
 import tile_cellar_398 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_398.png';
+import tile_cellar_253 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_253.png';
 
 // DOORS
 import tile_cellar_397 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_397.png';
+import tile_cellar_282 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_282.png';
 
 export const SPRITE_SIZE = 64;
 export const FLOOR_SIZE = 32;
@@ -76,9 +78,11 @@ export enum SPRITE_ID {
   CELLAR_DOOR_367 = 'cellar_door_367',
   CELLAR_DOOR_396 = 'cellar_door_396',
   CELLAR_DOOR_398 = 'cellar_door_398',
+  CELLAR_DOOR_253 = 'cellar_door_253',
 
   // DOORS
   CELLAR_DOOR_397 = 'cellar_door_397',
+  CELLAR_DOOR_282 = 'cellar_door_282',
 }
 
 export const SPRITES: Record<SPRITE_ID, string> = {
@@ -117,9 +121,11 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.CELLAR_DOOR_367]: tile_cellar_367,
   [SPRITE_ID.CELLAR_DOOR_396]: tile_cellar_396,
   [SPRITE_ID.CELLAR_DOOR_398]: tile_cellar_398,
+  [SPRITE_ID.CELLAR_DOOR_253]: tile_cellar_253,
 
   // DOORS
   [SPRITE_ID.CELLAR_DOOR_397]: tile_cellar_397,
+  [SPRITE_ID.CELLAR_DOOR_282]: tile_cellar_282,
 };
 
 export const getSpriteSrc = (spriteID: SPRITE_ID) => SPRITES[spriteID] || '';
