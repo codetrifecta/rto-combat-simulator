@@ -10,6 +10,7 @@ import {
 import { IEnemy } from '../types';
 import { useEnemyStore } from '../store/enemy';
 import { usePlayerStore } from '../store/player';
+import { TILE_TYPE } from '../constants/tile';
 
 const MAX_ROOM_LENGTH = 100;
 
@@ -127,34 +128,112 @@ export const GenerateRoomModal: FC = () => {
     const roomLength = parseInt(roomLengthInput);
 
     let roomMatrixString = '[\n';
-    for (let i = 0; i < roomLength; i++) {
+    for (let row = 0; row < roomLength; row++) {
       roomMatrixString += '[';
-      for (let j = 0; j < roomLength; j++) {
+      for (let col = 0; col < roomLength; col++) {
         // Surround room with walls and place door in the middle of the top wall and bottom wall
         if (
-          i === 0 ||
-          i === roomLength - 1 ||
-          j === 0 ||
-          j === roomLength - 1
+          row === 0 ||
+          row === 1 ||
+          row === roomLength - 1 ||
+          col === 0 ||
+          col === roomLength - 1
         ) {
-          if (j === Math.floor(roomLength / 2)) {
-            // Place door in the middle of the top wall and bottom wall
-            roomMatrixString += '[2,1]';
+          if (
+            (row === 0 || row === 1) &&
+            [
+              Math.floor(roomLength / 2),
+              Math.floor(roomLength / 2) - 1,
+              Math.floor(roomLength / 2) + 1,
+            ].includes(col)
+          ) {
+            // Place door in the middle of the top wall
+            if (row === 0) {
+              // First row
+              if (col === Math.floor(roomLength / 2)) {
+                // Middle
+                roomMatrixString += `[${TILE_TYPE.WALL}, 366]`;
+              } else if (col === Math.floor(roomLength / 2) - 1) {
+                // Left of middle
+                roomMatrixString += `[${TILE_TYPE.WALL}, 365]`;
+              } else {
+                // Right of middle
+                roomMatrixString += `[${TILE_TYPE.WALL}, 367]`;
+              }
+            } else {
+              // Second row
+              if (col === Math.floor(roomLength / 2)) {
+                // Middle
+                roomMatrixString += `[${TILE_TYPE.DOOR}, 397]`;
+              } else if (col === Math.floor(roomLength / 2) - 1) {
+                // Left of middle
+                roomMatrixString += `[${TILE_TYPE.WALL}, 396]`;
+              } else {
+                // Right of middle
+                roomMatrixString += `[${TILE_TYPE.WALL}, 398]`;
+              }
+            }
           } else {
-            // Place walls everywhere else
-            roomMatrixString += '[1,1]';
+            // Place corners
+            if (row === 0 && col === 0) {
+              // Top left corner
+              roomMatrixString += `[${TILE_TYPE.WALL}, 4]`;
+            } else if (row === 0 && col === roomLength - 1) {
+              // Top right corner
+              roomMatrixString += `[${TILE_TYPE.WALL}, 6]`;
+            } else if (row === roomLength - 1 && col === 0) {
+              // Bottom left corner
+              roomMatrixString += `[${TILE_TYPE.WALL}, 93]`;
+            } else if (row === roomLength - 1 && col === roomLength - 1) {
+              // Bottom right corner
+              roomMatrixString += `[${TILE_TYPE.WALL}, 95]`;
+            }
+
+            // Place non-corner walls
+            else if (row === 0 && col !== 0 && col !== roomLength - 1) {
+              // Top wall
+              roomMatrixString += `[${TILE_TYPE.WALL}, 5]`;
+            } else if (row === 1 && col > 0 && col < roomLength - 1) {
+              // Top wall - 1
+              roomMatrixString += `[${TILE_TYPE.WALL}, 35]`;
+            } else if (row === 1 && col === 0) {
+              // Top wall - 1 left wall
+              roomMatrixString += `[${TILE_TYPE.WALL}, 34]`;
+            } else if (row === 1 && col === roomLength - 1) {
+              // Top wall - 1 right wall
+              roomMatrixString += `[${TILE_TYPE.WALL}, 36]`;
+            } else if (
+              row === roomLength - 1 &&
+              col !== 0 &&
+              col !== roomLength - 1
+            ) {
+              // Bottom wall
+              roomMatrixString += `[${TILE_TYPE.WALL}, 2]`;
+            } else if (col === 0 && row !== 0 && row !== roomLength - 1) {
+              // Left wall
+              roomMatrixString += `[${TILE_TYPE.WALL}, 66]`;
+            } else if (
+              col === roomLength - 1 &&
+              row !== 0 &&
+              row !== roomLength - 1
+            ) {
+              // Right wall
+              roomMatrixString += `[${TILE_TYPE.WALL}, 67]`;
+            } else {
+              roomMatrixString += `[${TILE_TYPE.WALL}, 1]`;
+            }
           }
         } else {
-          // Place empty tiles everywhere else
-          roomMatrixString += '[0,1]';
+          // Place floor tiles everywhere else
+          roomMatrixString += `[${TILE_TYPE.FLOOR}, 1]`;
         }
 
-        if (j !== roomLength - 1) {
+        if (col !== roomLength - 1) {
           roomMatrixString += ', ';
         }
       }
       roomMatrixString += ']';
-      if (i !== roomLength - 1) {
+      if (row !== roomLength - 1) {
         roomMatrixString += ',\n';
       }
     }
