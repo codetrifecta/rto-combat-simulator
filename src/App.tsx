@@ -16,7 +16,6 @@ import { GenerateRoomModal } from './components/GenerateRoomModal';
 import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
 
 // Flag for first room render
-let firstRoomRender = true;
 
 // Camera movement speed
 const cameraStraightMoveSpeed = 7;
@@ -33,6 +32,8 @@ const scaleStep = 0.02;
 const keyPressed: Record<string, boolean> = {};
 
 function App() {
+  const [firstRoomRender, setFirstRoomRender] = useState(true);
+
   const [headerOpen, setHeaderOpen] = useState(false);
   const [currentHoveredEntity, setCurrentHoveredEntity] =
     useState<IEntity | null>(null);
@@ -92,17 +93,33 @@ function App() {
   // When room container ref value changes, (in this case when the room container is mounted).
   // Scroll into the middle of the room container (to view the room)
   useEffect(() => {
-    if (roomContainerRef.current !== null && firstRoomRender) {
-      firstRoomRender = false;
+    const scrollIntoMiddleOfRoom = () => {
+      if (roomContainerRef.current !== null && firstRoomRender) {
+        setTimeout(() => {
+          if (
+            roomContainerRef.current !== null &&
+            roomScrollRef.current !== null
+          ) {
+            const roomContainerX = roomContainerRef.current.offsetWidth / 2;
+            const roomContainerY = roomContainerRef.current.offsetHeight / 2;
+
+            roomScrollRef.current.scrollLeft =
+              roomContainerX - window.innerWidth / 2;
+            roomScrollRef.current.scrollTop =
+              roomContainerY - window.innerHeight / 2;
+
+            bufferArtRender();
+          }
+        }, 50);
+      }
+    };
+
+    const bufferArtRender = () =>
       setTimeout(() => {
-        if (roomContainerRef.current !== null) {
-          roomContainerRef.current.scrollIntoView({
-            inline: 'center',
-            block: 'center',
-          });
-        }
-      }, 50);
-    }
+        setFirstRoomRender(false);
+      }, 100);
+
+    scrollIntoMiddleOfRoom();
   }, [roomContainerRef.current]);
 
   // Check every 50ms to check input to move camera
@@ -203,141 +220,145 @@ function App() {
   // Wait for game initialization
   if (!isInitialized) {
     return (
-      <h1 className="w-screen h-screen flex justify-center items-center">
-        Loading...
-      </h1>
+      <h1 className="w-screen h-screen flex justify-center items-center bg-black"></h1>
     );
   }
 
   return (
-    <div className="relative max-w-screen h-screen flex flex-col justify-start overflow-hidden">
-      <div></div>
-      <header className="absolute top-0 w-full z-[100]">
+    <>
+      {firstRoomRender === true ? (
+        <h1 className="fixed w-screen h-screen flex justify-center items-center z-[100] bg-black">
+          Loading...
+        </h1>
+      ) : null}
+      <div className="relative max-w-screen h-screen flex flex-col justify-start overflow-hidden">
+        <header className="absolute top-0 w-full z-[100]">
+          <div
+            className="absolute h-[20px] w-full z-20"
+            onMouseEnter={() => setHeaderOpen(true)}
+            onMouseLeave={() => setHeaderOpen(false)}
+          ></div>
+          <div
+            className={clsx(
+              'absolute h-[135px] pt-3 w-full flex flex-col justify-start items-center bg-neutral-900 transition-all ease duration-300 delay-0',
+              { 'top-[-135px] ': !headerOpen },
+              { 'top-0': headerOpen }
+            )}
+          >
+            <h1 className="mb-2 uppercase">
+              R<span className="text-4xl">eturn</span>{' '}
+              <span className="text-4xl">to</span> O
+              <span className="text-4xl">lympus</span>
+            </h1>
+            <h2>Combat Simulator</h2>
+          </div>
+        </header>
+
+        {/* Game Info (Currently only displays turn cycle) */}
+        <section
+          className="fixed z-40 mt-10 mb-6"
+          style={{
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+        >
+          <TurnInfo
+            currentHoveredEntity={currentHoveredEntity}
+            setCurrentHoveredEntity={setCurrentHoveredEntity}
+          />
+        </section>
+
         <div
-          className="absolute h-[20px] w-full z-20"
-          onMouseEnter={() => setHeaderOpen(true)}
-          onMouseLeave={() => setHeaderOpen(false)}
-        ></div>
+          className={clsx('fixed left-10 top-60 w-[23%] max-h-[200px]', {
+            'z-20': isGameLogOpen,
+            'z-[-10] opacity-0': !isGameLogOpen,
+          })}
+        >
+          <Logger />
+        </div>
+
         <div
           className={clsx(
-            'absolute h-[135px] pt-3 w-full flex flex-col justify-start items-center bg-neutral-900 transition-all ease duration-300 delay-0',
-            { 'top-[-135px] ': !headerOpen },
-            { 'top-0': headerOpen }
+            'fixed left-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0 z-30'
           )}
+          style={{
+            height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
+            left: isCharacterSheetOpen ? 0 : -400,
+            visibility: isCharacterSheetOpen ? 'visible' : 'hidden',
+          }}
         >
-          <h1 className="mb-2 uppercase">
-            R<span className="text-4xl">eturn</span>{' '}
-            <span className="text-4xl">to</span> O
-            <span className="text-4xl">lympus</span>
-          </h1>
-          <h2>Combat Simulator</h2>
+          <CharacterSheet />
         </div>
-      </header>
 
-      {/* Game Info (Currently only displays turn cycle) */}
-      <section
-        className="fixed z-40 mt-10 mb-6"
-        style={{
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}
-      >
-        <TurnInfo
-          currentHoveredEntity={currentHoveredEntity}
-          setCurrentHoveredEntity={setCurrentHoveredEntity}
-        />
-      </section>
-
-      <div
-        className={clsx('fixed left-10 top-60 w-[23%] max-h-[200px]', {
-          'z-20': isGameLogOpen,
-          'z-[-10] opacity-0': !isGameLogOpen,
-        })}
-      >
-        <Logger />
-      </div>
-
-      <div
-        className={clsx(
-          'fixed left-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0 z-30'
-        )}
-        style={{
-          height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
-          left: isCharacterSheetOpen ? 0 : -400,
-          visibility: isCharacterSheetOpen ? 'visible' : 'hidden',
-        }}
-      >
-        <CharacterSheet />
-      </div>
-
-      {/* Combat Room */}
-      <section className="relative max-w-screen max-h-screen">
-        <div
-          className="relative max-w-screen max-h-screen pr-10 hidden-scrollbar overflow-scroll"
-          ref={roomScrollRef}
-        >
+        {/* Combat Room */}
+        <section className="relative max-w-screen max-h-screen">
           <div
-            className="relative min-w-[2000px] min-h-[2000px] flex justify-center items-center"
-            ref={roomContainerRef}
+            className="relative max-w-screen max-h-screen pr-10 hidden-scrollbar overflow-scroll"
+            ref={roomScrollRef}
           >
-            <Room
-              currentHoveredEntity={currentHoveredEntity}
-              setCurrentHoveredEntity={setCurrentHoveredEntity}
-              pr-2
-            />
+            <div
+              className="relative min-w-[2000px] min-h-[2000px] flex justify-center items-center"
+              ref={roomContainerRef}
+            >
+              <Room
+                currentHoveredEntity={currentHoveredEntity}
+                setCurrentHoveredEntity={setCurrentHoveredEntity}
+                pr-2
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Generate Room */}
-      <section
-        className="fixed z-[60] top-0 w-screen shadow-lg"
-        style={{
-          height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
-          visibility: isGenerateRoomOpen ? 'visible' : 'hidden',
-        }}
-      >
-        <GenerateRoomModal />
-      </section>
+        {/* Generate Room */}
+        <section
+          className="fixed z-[60] top-0 w-screen shadow-lg"
+          style={{
+            height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
+            visibility: isGenerateRoomOpen ? 'visible' : 'hidden',
+          }}
+        >
+          <GenerateRoomModal />
+        </section>
 
-      {/* Inventory Chooser */}
-      <section
-        className="fixed z-[30] top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
-        style={{
-          height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
-          right: isInventoryOpen ? 0 : -400,
-          visibility: isInventoryOpen ? 'visible' : 'hidden',
-        }}
-      >
-        <InventoryChooser />
-        <div></div>
-      </section>
-      {/* )} */}
+        {/* Inventory Chooser */}
+        <section
+          className="fixed z-[30] top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
+          style={{
+            height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
+            right: isInventoryOpen ? 0 : -400,
+            visibility: isInventoryOpen ? 'visible' : 'hidden',
+          }}
+        >
+          <InventoryChooser />
+          <div></div>
+        </section>
+        {/* )} */}
 
-      {/* <div className="fixed bottom-0 flex flex-col justify-between items-center"> */}
-      {/* Player Info */}
-      <section
-        className="mb-1 max-w-[3400px] fixed bottom-[80px] z-50"
-        style={{
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}
-      >
-        <PlayerInfo />
-      </section>
+        {/* <div className="fixed bottom-0 flex flex-col justify-between items-center"> */}
+        {/* Player Info */}
+        <section
+          className="mb-1 max-w-[3400px] fixed bottom-[80px] z-50"
+          style={{
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+        >
+          <PlayerInfo />
+        </section>
 
-      {/* Player Control Panel */}
-      <section
-        className="z-50 fixed bottom-0"
-        style={{
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}
-      >
-        <PlayerControlPanel />
-      </section>
-      {/* </div> */}
-    </div>
+        {/* Player Control Panel */}
+        <section
+          className="z-50 fixed bottom-0"
+          style={{
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+        >
+          <PlayerControlPanel />
+        </section>
+        {/* </div> */}
+      </div>
+    </>
   );
 }
 
