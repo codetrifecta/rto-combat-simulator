@@ -110,7 +110,7 @@ function App() {
 
             bufferArtRender();
           }
-        }, 50);
+        }, 500);
       }
     };
 
