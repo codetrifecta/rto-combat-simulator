@@ -77,21 +77,37 @@ export const Tile: FC<{
   // Effect zone classes
   // Return flat string instead of formatted because getting an error where class is not applied
   const effectBorderClasses = useMemo(() => {
+    let classStr = 'group-hover:opacity-80 ';
+
     if (isEffectZone) {
       if (playerState.isAttacking && isAttackEffectTile) {
-        return 'hover:opacity-80 shadow-mild-red z-10';
+        classStr += 'shadow-mild-red z-10';
       } else if (playerState.isMoving && isMovingEffectTile) {
-        return 'hover:opacity-80 shadow-mild-blue z-10';
+        classStr += 'shadow-mild-blue z-10';
       } else if (playerState.isUsingSkill && isSkillEffectTile) {
-        if (hasPlayer) {
-          // Make sure self target skills highlight yellow on player tile
-          return 'hover:opacity-80 !shadow-mild-yellow z-10';
+        if (isTargetZone) {
+          // Checking for AOE skills
+          if (hasPlayer) {
+            classStr += '!shadow-intense-green  z-40';
+          } else if (hasEnemy) {
+            // Make sure enemy target skills highlight red on enemy tile
+            classStr += '!shadow-intense-red  z-40';
+          } else {
+            // Make other target skills highlight yellow on empty tile
+            classStr += 'shadow-mild-yellow  z-10';
+          }
+        } else {
+          if (hasPlayer) {
+            // Make sure self target skills highlight yellow on player tile
+            classStr += 'group-hover:opacity-80 !shadow-mild-yellow z-10';
+          }
+          classStr += 'shadow-mild-yellow z-10';
         }
-        return 'hover:opacity-80 shadow-mild-yellow z-10';
       }
     }
-    return '';
+    return classStr;
   }, [
+    isTargetZone,
     isEffectZone,
     playerState.isAttacking,
     playerState.isMoving,
@@ -108,7 +124,7 @@ export const Tile: FC<{
       return (
         <div
           id="player_1"
-          className="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+          className="absolute z-50 top-0 left-0 w-full h-full flex items-center justify-center cursor-pointer"
         >
           <div className="bg-green-500 w-[16px] h-[16px]"></div>
         </div>
@@ -121,7 +137,7 @@ export const Tile: FC<{
       if (!enemy) return null;
 
       return (
-        <div className="absolute z-50 bottom-[35%] left-0 w-full h-full flex justify-center items-end">
+        <div className="absolute z-50 bottom-[35%] left-0 w-full h-full flex justify-center items-end cursor-pointer">
           <Sprite
             id={`${enemy.entityType}_${enemy.id}`}
             sprite={enemy.sprite}
@@ -136,66 +152,72 @@ export const Tile: FC<{
   return (
     <div
       style={{ width: TILE_SIZE, height: TILE_SIZE }}
-      className={clsx('relative ', classNames, {
-        // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
-        'cursor-pointer hover:z-30':
-          (tileType !== TILE_TYPE.WALL &&
-            tileType !== TILE_TYPE.DOOR &&
-            tileType !== TILE_TYPE.NULL) ||
-          (tileType === TILE_TYPE.DOOR && isRoomOver),
-        // "cursor-default": tileType === TILE_TYPE.DOOR && !isRoomOver,
-
-        // Only put shadow black on non-wall tiles
-        'hover:shadow-mild-black':
-          (tileType == TILE_TYPE.FLOOR && !(hasPlayer || hasEnemy)) ||
-          (tileType == TILE_TYPE.DOOR && isRoomOver),
-
-        // Tile type color
-        'bg-white': tileType === TILE_TYPE.FLOOR,
-        'bg-yellow-500': tileType === TILE_TYPE.DOOR,
-
-        // Player and enemy tile
-        'hover:shadow-intense-green': hasPlayer,
-        'hover:shadow-intense-red': hasEnemy,
-
-        // Active tile
-        'shadow-mild-green z-20': hasPlayer && active,
-        'shadow-mild-red z-20': hasEnemy && active,
-
-        // Non-active tile
-        'z-0': !active,
-
-        // Effect zone
-        [effectBorderClasses]:
-          isEffectZone &&
-          (isAttackEffectTile || isMovingEffectTile || isSkillEffectTile),
-
-        // Target zone
-        'opacity-80': isTargetZone && isSkillEffectTile,
-      })}
+      className="relative group"
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <Sprite
-        id={`tile_${tileID}`}
-        sprite={sprite}
-        backgroundSprite={
-          // Bottom, left, right wall IDs
-          [2, 66, 67].includes(tileID)
-            ? SPRITE_ID.CELLAR_FLOOR_001
-            : // Door IDs - Door background sprite is the same as wall sprite
-              // Top door IDs
-              [365, 366, 367].includes(tileID)
-              ? SPRITE_ID.CELLAR_WALL_005
-              : // Bottom door IDs
-                [396, 398].includes(tileID)
-                ? SPRITE_ID.CELLAR_WALL_035
-                : undefined
-        }
-        width={TILE_SIZE}
-        height={TILE_SIZE}
-      />
+      <div
+        style={{ width: TILE_SIZE, height: TILE_SIZE }}
+        className={clsx('absolute top-0 left-0 ', classNames, {
+          // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
+          'cursor-pointer ':
+            (tileType !== TILE_TYPE.WALL &&
+              tileType !== TILE_TYPE.DOOR &&
+              tileType !== TILE_TYPE.NULL) ||
+            (tileType === TILE_TYPE.DOOR && isRoomOver),
+          // "cursor-default": tileType === TILE_TYPE.DOOR && !isRoomOver,
+
+          // Only put shadow black on non-wall tiles
+          'group-hover:shadow-mild-black group-hover:z-30':
+            (tileType == TILE_TYPE.FLOOR && !(hasPlayer || hasEnemy)) ||
+            (tileType == TILE_TYPE.DOOR && isRoomOver),
+
+          // Tile type color
+          'bg-white': tileType === TILE_TYPE.FLOOR,
+          'bg-yellow-500': tileType === TILE_TYPE.DOOR,
+
+          // Player and enemy tile
+          'group-hover:shadow-intense-green': hasPlayer,
+          'group-hover:shadow-intense-red': hasEnemy,
+
+          // Active tile
+          'shadow-mild-green z-20': hasPlayer && active,
+          'shadow-mild-red z-20': hasEnemy && active,
+
+          // Non-active tile
+          'z-0': !active,
+
+          // Effect zone
+          [effectBorderClasses]:
+            isEffectZone &&
+            (isAttackEffectTile || isMovingEffectTile || isSkillEffectTile),
+
+          // Target zone
+          'opacity-80': isTargetZone && isSkillEffectTile,
+          // 'shadow-mild-green': isTargetZone && isSkillEffectTile && hasPlayer,
+        })}
+      >
+        <Sprite
+          id={`tile_${tileID}`}
+          sprite={sprite}
+          backgroundSprite={
+            // Bottom, left, right wall IDs
+            [2, 66, 67].includes(tileID)
+              ? SPRITE_ID.CELLAR_FLOOR_001
+              : // Door IDs - Door background sprite is the same as wall sprite
+                // Top door IDs
+                [365, 366, 367].includes(tileID)
+                ? SPRITE_ID.CELLAR_WALL_005
+                : // Bottom door IDs
+                  [396, 398].includes(tileID)
+                  ? SPRITE_ID.CELLAR_WALL_035
+                  : undefined
+          }
+          width={TILE_SIZE}
+          height={TILE_SIZE}
+        />
+      </div>
       {renderEntity()}
     </div>
   );
