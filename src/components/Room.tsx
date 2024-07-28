@@ -255,7 +255,12 @@ export const Room: FC<{
         if (burnedDoT) {
           const totalDamage = burnedDoT.effect.damageOverTime;
 
-          affectedPlayer.health -= totalDamage;
+          affectedPlayer.health = damageEntity(
+            affectedPlayer,
+            totalDamage,
+            `${player.entityType}_${player.id}`
+          );
+          // affectedPlayer.health -= totalDamage;
 
           if (affectedPlayer.health <= 0) {
             addLog({
@@ -735,7 +740,11 @@ export const Room: FC<{
 
       if (totalDamage <= 0) totalDamage = 0;
 
-      const playerHealth = player.health - totalDamage;
+      const playerHealth = damageEntity(
+        player,
+        totalDamage,
+        `${player.entityType}_${player.id}`
+      );
 
       if (playerHealth <= 0) {
         addLog({

@@ -106,7 +106,10 @@ export const Tile: FC<{
 
     if (hasPlayer) {
       return (
-        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+        <div
+          id="player_1"
+          className="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+        >
           <div className="bg-green-500 w-[16px] h-[16px]"></div>
         </div>
       );

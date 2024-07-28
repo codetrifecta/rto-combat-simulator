@@ -314,8 +314,12 @@ const handleSkillDamage = (
         totalDamageToPlayer = 0;
       }
 
-      // playerAfterDamage.health = damageEntity(playerAfterDamage, totalDamageToPlayer, `${}`);
-      playerAfterDamage.health = playerAfterDamage.health - totalDamageToPlayer;
+      playerAfterDamage.health = damageEntity(
+        playerAfterDamage,
+        totalDamageToPlayer,
+        `${playerAfterDamage.entityType}_${playerAfterDamage.id}`
+      );
+      // playerAfterDamage.health = playerAfterDamage.health - totalDamageToPlayer;
 
       // Log damage
       if (playerAfterDamage.health <= 0) {
