@@ -13,6 +13,7 @@ import {
   getPlayerTotalDefense,
   getPlayerTotalIntelligence,
   getPlayerTotalStrength,
+  healEntity,
 } from './utils';
 
 export const handleSkill = (
@@ -224,7 +225,7 @@ const handleSkillDamage = (
 
       if (playerLifestealMultiplier > 0) {
         // Limit lifesteal to the enemy's remaining health
-        const lifestealAmount = Math.round(
+        let lifestealAmount = Math.round(
           (totalDamage > enemy.health ? enemy.health : totalDamage) *
             playerLifestealMultiplier
         );
@@ -233,10 +234,15 @@ const handleSkillDamage = (
           playerAfterDamage.health + lifestealAmount >
           playerAfterDamage.maxHealth
         ) {
-          playerAfterDamage.health = playerAfterDamage.maxHealth;
-        } else {
-          playerAfterDamage.health += lifestealAmount;
+          lifestealAmount =
+            playerAfterDamage.maxHealth - playerAfterDamage.health;
         }
+
+        playerAfterDamage.health = healEntity(
+          playerAfterDamage,
+          lifestealAmount,
+          `${player.entityType}_${player.id}`
+        );
       }
 
       // Perform skill specific actions
@@ -244,7 +250,7 @@ const handleSkillDamage = (
         case SKILL_ID.ABSORB:
           {
             // Absorb damage dealt as health (or the rest of the enemy's health if it's less than the damage dealt)
-            const lifestealAmount = Math.round(
+            let lifestealAmount = Math.round(
               totalDamage > enemy.health ? enemy.health : totalDamage
             );
 
@@ -252,10 +258,15 @@ const handleSkillDamage = (
               playerAfterDamage.health + lifestealAmount >
               playerAfterDamage.maxHealth
             ) {
-              playerAfterDamage.health = playerAfterDamage.maxHealth;
-            } else {
-              playerAfterDamage.health += lifestealAmount;
+              lifestealAmount =
+                playerAfterDamage.maxHealth - playerAfterDamage.health;
             }
+
+            playerAfterDamage.health = healEntity(
+              playerAfterDamage,
+              lifestealAmount,
+              `${player.entityType}_${player.id}`
+            );
           }
           break;
         default:

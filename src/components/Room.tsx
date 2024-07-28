@@ -21,6 +21,7 @@ import {
   getEntityPosition,
   getPlayerTotalDefense,
   handlePlayerEndTurn,
+  healEntity,
   isEnemy,
   isPlayer,
   updateRoomEntityPositions,
@@ -543,16 +544,20 @@ export const Room: FC<{
 
       if (playerLifestealMultiplier > 0) {
         // Limit lifesteal to the enemy's remaining health
-        const lifestealAmount = Math.round(
+        let lifestealAmount = Math.round(
           (totalDamage > enemy.health ? enemy.health : totalDamage) *
             playerLifestealMultiplier
         );
 
         if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
-          newPlayer.health = newPlayer.maxHealth;
-        } else {
-          newPlayer.health += lifestealAmount;
+          lifestealAmount = newPlayer.maxHealth - newPlayer.health;
         }
+
+        newPlayer.health = healEntity(
+          newPlayer,
+          lifestealAmount,
+          `${player.entityType}_${player.id}`
+        );
       }
 
       if (newEnemy.health <= 0) {
