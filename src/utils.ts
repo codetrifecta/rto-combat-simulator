@@ -145,8 +145,8 @@ export const generateRoomEntityPositions: () => Map<
   // Place enemies (that match the number of enemies specified in enemy store)
   roomEntityPositions.set(`7,4`, [ENTITY_TYPE.ENEMY, 1]); // Enemy in direct top-left of player in a 11x11 room
   roomEntityPositions.set(`6,6`, [ENTITY_TYPE.ENEMY, 2]); // Enemy in direct top-left of player in a 11x11 room
-  roomEntityPositions.set(`2,8`, [ENTITY_TYPE.ENEMY, 3]); // Enemy in 2n1e of player in a 11x11 room
-  roomEntityPositions.set(`2,2`, [ENTITY_TYPE.ENEMY, 4]); // Enemy in top left of room in a 11x11 room
+  roomEntityPositions.set(`3,8`, [ENTITY_TYPE.ENEMY, 3]); // Enemy in 2n1e of player in a 11x11 room
+  roomEntityPositions.set(`3,2`, [ENTITY_TYPE.ENEMY, 4]); // Enemy in top left of room in a 11x11 room
 
   return roomEntityPositions;
 };

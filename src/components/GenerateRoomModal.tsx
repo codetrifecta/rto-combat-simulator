@@ -39,8 +39,8 @@ export const GenerateRoomModal: FC = () => {
   >([
     ['7', '4', ENEMY_PRESET_ID.SHADE],
     ['6', '6', ENEMY_PRESET_ID.SHADE],
-    ['2', '8', ENEMY_PRESET_ID.HARPY],
-    ['2', '2', ENEMY_PRESET_ID.MINOTAUR],
+    ['3', '8', ENEMY_PRESET_ID.HARPY],
+    ['3', '2', ENEMY_PRESET_ID.MINOTAUR],
   ]);
 
   const handleGenerateRoom = () => {
