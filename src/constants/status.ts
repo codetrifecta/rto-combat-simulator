@@ -137,7 +137,7 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.BLOODLUST,
     name: 'Bloodlust',
     icon: ICON_ID.STATUS_BLOODLUST,
-    description: 'Convert 50% of any damage dealt into health.',
+    description: "Convert 50% of enemy health loss into caster's health.",
     duration: 3,
     durationCounter: 3,
     effect: {

@@ -17,9 +17,11 @@ import { useGameStateStore } from '../store/game';
 import { usePlayerStore } from '../store/player';
 import { useEnemyStore } from '../store/enemy';
 import {
+  damageEntity,
   getEntityPosition,
   getPlayerTotalDefense,
   handlePlayerEndTurn,
+  healEntity,
   isEnemy,
   isPlayer,
   updateRoomEntityPositions,
@@ -204,7 +206,11 @@ export const Room: FC<{
           setTimeout(() => {
             const totalDamage = burnedDoT.effect.damageOverTime;
 
-            affectedEnemy.health -= totalDamage;
+            affectedEnemy.health = damageEntity(
+              affectedEnemy,
+              totalDamage,
+              `${enemy.entityType}_${enemy.id}`
+            );
 
             if (affectedEnemy.health <= 0) {
               addLog({
@@ -250,7 +256,12 @@ export const Room: FC<{
         if (burnedDoT) {
           const totalDamage = burnedDoT.effect.damageOverTime;
 
-          affectedPlayer.health -= totalDamage;
+          affectedPlayer.health = damageEntity(
+            affectedPlayer,
+            totalDamage,
+            `${player.entityType}_${player.id}`
+          );
+          // affectedPlayer.health -= totalDamage;
 
           if (affectedPlayer.health <= 0) {
             addLog({
@@ -524,20 +535,29 @@ export const Room: FC<{
       // Compute base attack damage based on the higher of player's strength or intelligence
       const totalDamage = playerBaseAttackDamage + statusDamageBonus;
       const newEnemy = { ...enemy };
-      newEnemy.health = newEnemy.health - totalDamage;
+      newEnemy.health = damageEntity(
+        newEnemy,
+        totalDamage,
+        `${enemy.entityType}_${enemy.id}`
+      );
+      // newEnemy.health = newEnemy.health - totalDamage;
 
       if (playerLifestealMultiplier > 0) {
         // Limit lifesteal to the enemy's remaining health
-        const lifestealAmount = Math.round(
+        let lifestealAmount = Math.round(
           (totalDamage > enemy.health ? enemy.health : totalDamage) *
             playerLifestealMultiplier
         );
 
         if (newPlayer.health + lifestealAmount > newPlayer.maxHealth) {
-          newPlayer.health = newPlayer.maxHealth;
-        } else {
-          newPlayer.health += lifestealAmount;
+          lifestealAmount = newPlayer.maxHealth - newPlayer.health;
         }
+
+        newPlayer.health = healEntity(
+          newPlayer,
+          lifestealAmount,
+          `${player.entityType}_${player.id}`
+        );
       }
 
       if (newEnemy.health <= 0) {
@@ -725,7 +745,11 @@ export const Room: FC<{
 
       if (totalDamage <= 0) totalDamage = 0;
 
-      const playerHealth = player.health - totalDamage;
+      const playerHealth = damageEntity(
+        player,
+        totalDamage,
+        `${player.entityType}_${player.id}`
+      );
 
       if (playerHealth <= 0) {
         addLog({

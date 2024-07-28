@@ -1,5 +1,5 @@
 import { ENTITY_TYPE } from './constants/entity';
-import { TILE_TYPE } from './constants/tile';
+import { TILE_SIZE, TILE_TYPE } from './constants/tile';
 import { IEnemy, IEntity, IPlayer } from './types';
 
 /**
@@ -377,4 +377,100 @@ export const getPlayerLifestealMultiplier = (player: IPlayer) => {
   );
 
   return lifestealMultiplier;
+};
+
+export const damageEntity = (
+  entity: IPlayer | IEnemy,
+  damage: number,
+  entitySpriteID: string
+) => {
+  // console.log('damageEntity', entity, damage, entitySpriteID);
+  const newHealth = entity.health - damage;
+
+  // Display damage numbers
+  displayDamageNumbers(entitySpriteID, damage);
+
+  return newHealth;
+};
+
+const displayDamageNumbers = (entitySpriteID: string, damage: number) => {
+  // Find sprite position
+  const sprite = document.querySelector(`#${entitySpriteID}`);
+  if (!sprite) {
+    console.error('displayDamageNumbers: Sprite not found');
+    return;
+  }
+  const spriteX = sprite.getBoundingClientRect().left;
+  const spriteY = sprite.getBoundingClientRect().top;
+  const spriteWidth = sprite.getBoundingClientRect().width;
+
+  // Display damage numbers
+  const damageNumbers = document.createElement('h1');
+  damageNumbers.textContent = `-${damage}`;
+
+  // Construct damage numbers and add it to the document body
+  damageNumbers.style.fontWeight = 'bold';
+  damageNumbers.style.fontSize = '1.5rem';
+  document.body.appendChild(damageNumbers);
+
+  damageNumbers.style.position = 'absolute';
+  damageNumbers.style.top = `${spriteY - TILE_SIZE / 2}px`;
+  damageNumbers.style.left = `${spriteX + spriteWidth / 2 - damageNumbers.getBoundingClientRect().width / 2}px`;
+  damageNumbers.style.zIndex = '100';
+  damageNumbers.style.color = 'red';
+
+  damageNumbers.classList.add('animate-floatUpAndFadeOut');
+
+  // Remove damage numbers after 1.5 seconds
+  setTimeout(() => {
+    damageNumbers.remove();
+  }, 1500);
+};
+
+export const healEntity = (
+  entity: IPlayer | IEnemy,
+  healAmount: number,
+  entitySpriteID: string
+) => {
+  // console.log('damageEntity', entity, heal, entitySpriteID);
+  const newHealth = entity.health + healAmount;
+
+  // Display heal numbers
+  displayHealNumbers(entitySpriteID, healAmount);
+
+  return newHealth;
+};
+
+const displayHealNumbers = (entitySpriteID: string, heal: number) => {
+  // Find sprite position
+  const sprite = document.querySelector(`#${entitySpriteID}`);
+  if (!sprite) {
+    console.error('displayDamageNumbers: Sprite not found');
+    return;
+  }
+  const spriteX = sprite.getBoundingClientRect().left;
+  const spriteY = sprite.getBoundingClientRect().top;
+  const spriteWidth = sprite.getBoundingClientRect().width;
+
+  // Display heal numbers
+  const healNumbers = document.createElement('h1');
+  healNumbers.textContent = `-${heal}`;
+
+  // Construct heal numbers and add it to the document body
+  healNumbers.style.fontWeight = 'bold';
+  healNumbers.style.fontSize = '1.5rem';
+  document.body.appendChild(healNumbers);
+
+  healNumbers.style.position = 'absolute';
+  healNumbers.style.top = `${spriteY - TILE_SIZE / 2}px`;
+  healNumbers.style.left = `${spriteX + spriteWidth / 2 - healNumbers.getBoundingClientRect().width / 2}px`;
+  healNumbers.style.zIndex = '100';
+  healNumbers.style.color = 'green';
+
+  healNumbers.classList.add('animate-floatUpAndFadeOut');
+
+  // Remove heal numbers after 1.5 seconds
+  setTimeout(() => {
+    healNumbers.remove();
+  }, 1500);
 };

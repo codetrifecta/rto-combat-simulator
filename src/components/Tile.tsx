@@ -106,7 +106,10 @@ export const Tile: FC<{
 
     if (hasPlayer) {
       return (
-        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+        <div
+          id="player_1"
+          className="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+        >
           <div className="bg-green-500 w-[16px] h-[16px]"></div>
         </div>
       );
@@ -120,6 +123,7 @@ export const Tile: FC<{
       return (
         <div className="absolute z-50 bottom-[35%] left-0 w-full h-full flex justify-center items-end">
           <Sprite
+            id={`${enemy.entityType}_${enemy.id}`}
             sprite={enemy.sprite}
             width={enemy.sprite_size}
             height={enemy.sprite_size}
@@ -174,6 +178,7 @@ export const Tile: FC<{
       onMouseLeave={onMouseLeave}
     >
       <Sprite
+        id={`tile_${tileID}`}
         sprite={sprite}
         backgroundSprite={
           // Bottom, left, right wall IDs

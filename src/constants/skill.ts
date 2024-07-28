@@ -182,7 +182,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
     description:
-      "Absorb an enemy's life force. Damage dealt is converted to health.",
+      "Absorb an enemy's life force. Enemy health lost is converted to caster's health.",
     damageMultiplier: 0.5,
     range: 3,
     cooldown: 2,
