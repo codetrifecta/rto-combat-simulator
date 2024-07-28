@@ -408,7 +408,7 @@ const displayDamageNumbers = (entitySpriteID: string, damage: number) => {
   const damageNumbers = document.createElement('h1');
   damageNumbers.classList.add('animate-floatUpAndFadeOut');
   damageNumbers.style.position = 'absolute';
-  damageNumbers.style.top = `${spriteY - TILE_SIZE / 3}px`;
+  damageNumbers.style.top = `${spriteY - TILE_SIZE / 2}px`;
   damageNumbers.style.left = `${spriteX}px`;
   damageNumbers.style.transform = `trnslateX(${spriteWidth / 2}px)`;
   damageNumbers.style.zIndex = '100';

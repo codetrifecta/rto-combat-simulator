@@ -205,7 +205,11 @@ export const Room: FC<{
           setTimeout(() => {
             const totalDamage = burnedDoT.effect.damageOverTime;
 
-            affectedEnemy.health -= totalDamage;
+            affectedEnemy.health = damageEntity(
+              affectedEnemy,
+              totalDamage,
+              `${enemy.entityType}_${enemy.id}`
+            );
 
             if (affectedEnemy.health <= 0) {
               addLog({

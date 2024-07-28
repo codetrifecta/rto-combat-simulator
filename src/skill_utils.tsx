@@ -7,6 +7,7 @@ import {
 import { STATUS_ID, STATUSES } from './constants/status';
 import { IEnemy, ILog, IPlayer, ISkill, IStatus } from './types';
 import {
+  damageEntity,
   getEntityPosition,
   getPlayerLifestealMultiplier,
   getPlayerTotalDefense,
@@ -214,7 +215,12 @@ const handleSkillDamage = (
       }
 
       // Calculate damage
-      newEnemy.health = newEnemy.health - totalDamage;
+      newEnemy.health = damageEntity(
+        newEnemy,
+        totalDamage,
+        `${newEnemy.entityType}_${newEnemy.id}`
+      );
+      // newEnemy.health = newEnemy.health - totalDamage;
 
       if (playerLifestealMultiplier > 0) {
         // Limit lifesteal to the enemy's remaining health
@@ -263,7 +269,7 @@ const handleSkillDamage = (
           playerAfterDamage.actionPoints += 2;
         }
 
-        console.log(playerAfterDamage);
+        // console.log(playerAfterDamage);
 
         enemiesAfterDamage.splice(enemyIndex, 1);
         addLog({
@@ -308,6 +314,7 @@ const handleSkillDamage = (
         totalDamageToPlayer = 0;
       }
 
+      // playerAfterDamage.health = damageEntity(playerAfterDamage, totalDamageToPlayer, `${}`);
       playerAfterDamage.health = playerAfterDamage.health - totalDamageToPlayer;
 
       // Log damage
