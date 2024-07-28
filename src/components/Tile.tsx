@@ -120,6 +120,7 @@ export const Tile: FC<{
       return (
         <div className="absolute z-50 bottom-[35%] left-0 w-full h-full flex justify-center items-end">
           <Sprite
+            id={`${enemy.entityType}_${enemy.id}`}
             sprite={enemy.sprite}
             width={enemy.sprite_size}
             height={enemy.sprite_size}
@@ -174,6 +175,7 @@ export const Tile: FC<{
       onMouseLeave={onMouseLeave}
     >
       <Sprite
+        id={`tile_${tileID}`}
         sprite={sprite}
         backgroundSprite={
           // Bottom, left, right wall IDs

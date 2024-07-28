@@ -17,6 +17,7 @@ import { useGameStateStore } from '../store/game';
 import { usePlayerStore } from '../store/player';
 import { useEnemyStore } from '../store/enemy';
 import {
+  damageEntity,
   getEntityPosition,
   getPlayerTotalDefense,
   handlePlayerEndTurn,
@@ -524,7 +525,12 @@ export const Room: FC<{
       // Compute base attack damage based on the higher of player's strength or intelligence
       const totalDamage = playerBaseAttackDamage + statusDamageBonus;
       const newEnemy = { ...enemy };
-      newEnemy.health = newEnemy.health - totalDamage;
+      newEnemy.health = damageEntity(
+        newEnemy,
+        totalDamage,
+        `${enemy.entityType}_${enemy.id}`
+      );
+      // newEnemy.health = newEnemy.health - totalDamage;
 
       if (playerLifestealMultiplier > 0) {
         // Limit lifesteal to the enemy's remaining health
