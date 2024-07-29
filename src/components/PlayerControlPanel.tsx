@@ -16,7 +16,6 @@ import {
   PLAYER_CONTROL_PANEL_HEIGHT,
   PLAYER_CONTROL_PANEL_ICON_SIZE,
 } from '../constants/game';
-
 export const PlayerControlPanel: FC = () => {
   const {
     turnCycle,

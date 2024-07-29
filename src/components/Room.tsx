@@ -18,6 +18,7 @@ import { usePlayerStore } from '../store/player';
 import { useEnemyStore } from '../store/enemy';
 import {
   damageEntity,
+  displayStatusEffect,
   getEntityPosition,
   getPlayerTotalDefense,
   handlePlayerEndTurn,
@@ -448,9 +449,17 @@ export const Room: FC<{
           });
 
           // Filter out statuses with duration 0
-          const filteredStatuses = decreasedStatuses.filter(
-            (status) => status.durationCounter > 0
-          );
+          const filteredStatuses = decreasedStatuses.filter((status) => {
+            if (status.durationCounter <= 0) {
+              displayStatusEffect(
+                status,
+                false,
+                `${enemy.entityType}_${enemy.id}`
+              );
+              return false;
+            }
+            return true;
+          });
 
           // Update enemy with new statuses
           const newEnemy = {

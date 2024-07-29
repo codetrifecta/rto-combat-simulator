@@ -8,6 +8,7 @@ import { STATUS_ID, STATUSES } from './constants/status';
 import { IEnemy, ILog, IPlayer, ISkill, IStatus } from './types';
 import {
   damageEntity,
+  displayStatusEffect,
   getEntityPosition,
   getPlayerLifestealMultiplier,
   getPlayerTotalDefense,
@@ -449,6 +450,12 @@ const handleSkillStatus = (
       type: 'info',
     });
 
+    displayStatusEffect(
+      statusToBeApplied,
+      true,
+      `${playerAfterStatus.entityType}_${playerAfterStatus.id}`
+    );
+
     return { playerAfterStatus, enemiesAfterStatus };
   }
 
@@ -495,6 +502,12 @@ const handleSkillStatus = (
           });
         }
 
+        displayStatusEffect(
+          statusToBeApplied,
+          true,
+          `${newEnemy.entityType}_${newEnemy.id}`
+        );
+
         enemiesAfterStatus[enemyIndex] = newEnemy;
       }
     } else if (entityType === ENTITY_TYPE.PLAYER) {
@@ -520,6 +533,12 @@ const handleSkillStatus = (
           ),
           type: 'info',
         });
+
+        displayStatusEffect(
+          statusToBeApplied,
+          true,
+          `${playerAfterStatus.entityType}_${playerAfterStatus.id}`
+        );
       }
     }
   });

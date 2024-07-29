@@ -1,6 +1,6 @@
 import { ENTITY_TYPE } from './constants/entity';
 import { TILE_SIZE, TILE_TYPE } from './constants/tile';
-import { IEnemy, IEntity, IPlayer } from './types';
+import { IEnemy, IEntity, IPlayer, IStatus } from './types';
 
 /**
  * Generate initial room matrix based on the room length
@@ -225,9 +225,13 @@ export const handlePlayerEndTurn = (
     });
 
     // Filter out the new statuses with duration 0
-    const filteredStatuses = newStatuses.filter(
-      (status) => status.durationCounter > 0
-    );
+    const filteredStatuses = newStatuses.filter((status) => {
+      if (status.durationCounter <= 0) {
+        displayStatusEffect(status, false, `${player.entityType}_${player.id}`);
+        return false;
+      }
+      return true;
+    });
 
     // Update player
     setPlayer({
@@ -472,5 +476,43 @@ const displayHealNumbers = (entitySpriteID: string, heal: number) => {
   // Remove heal numbers after 1.5 seconds
   setTimeout(() => {
     healNumbers.remove();
+  }, 1500);
+};
+
+export const displayStatusEffect = (
+  status: IStatus,
+  gain: boolean,
+  entitySpriteID: string
+) => {
+  // Find sprite position
+  const sprite = document.querySelector(`#${entitySpriteID}`);
+  if (!sprite) {
+    console.error('displayDamageNumbers: Sprite not found');
+    return;
+  }
+  const spriteX = sprite.getBoundingClientRect().left;
+  const spriteY = sprite.getBoundingClientRect().top;
+  const spriteWidth = sprite.getBoundingClientRect().width;
+
+  // Display status effect
+  const statusIndicator = document.createElement('div');
+  statusIndicator.textContent = gain ? `+ ${status.name}` : `- ${status.name}`;
+
+  // Construct status effect and add it to the document body
+  statusIndicator.style.fontWeight = 'bold';
+  statusIndicator.style.fontSize = '1.5rem';
+  document.body.appendChild(statusIndicator);
+
+  statusIndicator.style.position = 'absolute';
+  statusIndicator.style.top = `${spriteY - TILE_SIZE}px`;
+  statusIndicator.style.left = `${spriteX + spriteWidth / 2 - statusIndicator.getBoundingClientRect().width / 2}px`;
+  statusIndicator.style.zIndex = '100';
+  statusIndicator.style.color = gain ? 'green' : 'red';
+
+  statusIndicator.classList.add('animate-floatUpAndFadeOut');
+
+  // Remove status effect after 1.5 seconds
+  setTimeout(() => {
+    statusIndicator.remove();
   }, 1500);
 };
