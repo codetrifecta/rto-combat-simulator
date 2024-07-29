@@ -76,34 +76,19 @@ export const Tile: FC<{
 
   // Effect zone classes
   // Return flat string instead of formatted because getting an error where class is not applied
-  const effectBorderClasses = useMemo(() => {
+  const effectZoneClasses = useMemo(() => {
     let classStr = 'group-hover:opacity-80 ';
 
-    if (isEffectZone) {
-      if (playerState.isAttacking && isAttackEffectTile) {
-        classStr += 'shadow-mild-red z-10';
-      } else if (playerState.isMoving && isMovingEffectTile) {
-        classStr += 'shadow-mild-blue z-10';
-      } else if (playerState.isUsingSkill && isSkillEffectTile) {
-        if (isTargetZone) {
-          // Checking for AOE skills
-          if (hasPlayer) {
-            classStr += '!shadow-intense-green  z-40';
-          } else if (hasEnemy) {
-            // Make sure enemy target skills highlight red on enemy tile
-            classStr += '!shadow-intense-red  z-40';
-          } else {
-            // Make other target skills highlight yellow on empty tile
-            classStr += 'shadow-mild-yellow  z-10';
-          }
-        } else {
-          if (hasPlayer) {
-            // Make sure self target skills highlight yellow on player tile
-            classStr += 'group-hover:opacity-80 !shadow-mild-yellow z-10';
-          }
-          classStr += 'shadow-mild-yellow z-10';
-        }
+    if (playerState.isAttacking && isAttackEffectTile) {
+      classStr += 'shadow-mild-red z-10';
+    } else if (playerState.isMoving && isMovingEffectTile) {
+      classStr += 'shadow-mild-blue z-10';
+    } else if (playerState.isUsingSkill && isSkillEffectTile) {
+      if (hasPlayer) {
+        // Make sure self target skills highlight yellow on player tile
+        classStr += 'group-hover:opacity-80 !shadow-mild-yellow z-10';
       }
+      classStr += 'shadow-mild-yellow z-10';
     }
     return classStr;
   }, [
@@ -116,6 +101,22 @@ export const Tile: FC<{
     isMovingEffectTile,
     isSkillEffectTile,
   ]);
+
+  const targetZoneClasses = useMemo(() => {
+    let classStr = 'opacity-80 ';
+
+    if (isTargetZone) {
+      // Checking for AOE skills
+      if (hasPlayer) {
+        classStr += '!shadow-intense-green z-40';
+      } else if (hasEnemy) {
+        // Make sure enemy target skills highlight red on enemy tile
+        classStr += '!shadow-intense-red z-40';
+      }
+    }
+
+    return classStr;
+  }, [isTargetZone, hasPlayer, hasEnemy]);
 
   const renderEntity = () => {
     if (!entityIfExist) return null;
@@ -189,12 +190,14 @@ export const Tile: FC<{
           'z-0': !active,
 
           // Effect zone
-          [effectBorderClasses]:
+          [effectZoneClasses]:
             isEffectZone &&
             (isAttackEffectTile || isMovingEffectTile || isSkillEffectTile),
 
           // Target zone
-          'opacity-80': isTargetZone && isSkillEffectTile,
+          // 'opacity-80': isTargetZone && isSkillEffectTile,
+          [targetZoneClasses]:
+            isTargetZone && (isAttackEffectTile || isSkillEffectTile),
           // 'shadow-mild-green': isTargetZone && isSkillEffectTile && hasPlayer,
         })}
       >
