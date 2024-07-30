@@ -52,6 +52,7 @@ function App() {
   const roomScrollRef = useRef<HTMLDivElement>(null);
 
   const {
+    isRoomOver,
     turnCycle,
     isInventoryOpen,
     isGameLogOpen,
@@ -361,18 +362,20 @@ function App() {
         </header>
 
         {/* Game Info (Currently only displays turn cycle) */}
-        <section
-          className="fixed z-40 mt-10 mb-6"
-          style={{
-            left: '50%',
-            transform: 'translateX(-50%)',
-          }}
-        >
-          <TurnInfo
-            currentHoveredEntity={currentHoveredEntity}
-            setCurrentHoveredEntity={setCurrentHoveredEntity}
-          />
-        </section>
+        {!isRoomOver ? (
+          <section
+            className="fixed z-40 mt-10 mb-6"
+            style={{
+              left: '50%',
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <TurnInfo
+              currentHoveredEntity={currentHoveredEntity}
+              setCurrentHoveredEntity={setCurrentHoveredEntity}
+            />
+          </section>
+        ) : null}
 
         <div
           className={clsx('fixed left-10 top-60 w-[23%] max-h-[200px]', {
