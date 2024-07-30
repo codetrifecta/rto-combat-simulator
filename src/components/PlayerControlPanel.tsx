@@ -138,21 +138,35 @@ export const PlayerControlPanel: FC = () => {
         )}
       >
         {openSkills ? (
-          <div
-            className={clsx('flex justify-center items-center', {
-              'pointer-events-none': disabled,
-            })}
-          >
+          <div className={clsx('flex justify-center items-center')}>
             {player.skills.map((skill) => (
               <div key={skill.id} className="relative">
                 <IconButton
                   onClick={() => {
-                    setPlayerState({
-                      isAttacking: false,
-                      isMoving: false,
-                      isUsingSkill: !player.state.isUsingSkill,
-                      skillId: skill.id,
-                    });
+                    if (player.state.isUsingSkill) {
+                      if (player.state.skillId === skill.id) {
+                        setPlayerState({
+                          isAttacking: false,
+                          isMoving: false,
+                          isUsingSkill: false,
+                          skillId: undefined,
+                        });
+                      } else {
+                        setPlayerState({
+                          isAttacking: false,
+                          isMoving: false,
+                          isUsingSkill: player.state.isUsingSkill,
+                          skillId: skill.id,
+                        });
+                      }
+                    } else {
+                      setPlayerState({
+                        isAttacking: false,
+                        isMoving: false,
+                        isUsingSkill: !player.state.isUsingSkill,
+                        skillId: skill.id,
+                      });
+                    }
                   }}
                   disabled={
                     disabled ||
@@ -160,6 +174,10 @@ export const PlayerControlPanel: FC = () => {
                     skill.cooldownCounter > 0 ||
                     (skill.id === SKILL_ID.WHIRLWIND &&
                       player.equipment.weapon === null)
+                  }
+                  active={
+                    player.state.isUsingSkill &&
+                    player.state.skillId === skill.id
                   }
                 >
                   <Icon
@@ -180,7 +198,6 @@ export const PlayerControlPanel: FC = () => {
                 });
                 setOpenSkills(false);
               }}
-              disabled={disabled}
               neutral
             >
               Cancel
@@ -245,9 +262,7 @@ export const PlayerControlPanel: FC = () => {
 
             {/* Combat buttons */}
             <div
-              className={clsx('flex justify-center items-center col-span-1', {
-                'pointer-events-none': disabled,
-              })}
+              className={clsx('flex justify-center items-center col-span-1')}
             >
               <div className="relative">
                 <IconButton
@@ -304,7 +319,7 @@ export const PlayerControlPanel: FC = () => {
                       isUsingSkill: false,
                     });
                   }}
-                  disabled={disabled}
+                  disabled={disabled || isRoomOver}
                 >
                   <Icon
                     icon={ICON_ID.MOVE}
@@ -330,7 +345,6 @@ export const PlayerControlPanel: FC = () => {
                       isUsingSkill: false,
                     });
                   }}
-                  disabled={disabled || isRoomOver}
                 >
                   <Icon
                     icon={ICON_ID.SKILLS}

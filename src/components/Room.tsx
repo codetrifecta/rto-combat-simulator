@@ -619,6 +619,11 @@ export const Room: FC<{
   const handlePlayerMove = (row: number, col: number) => {
     console.log('handlePlayerMove');
 
+    // Do nothing if player is already in the tile they are trying to move to
+    if (playerPosition[0] === row && playerPosition[1] === col) {
+      return;
+    }
+
     // Update player's position in the entity positions map
     setRoomEntityPositions(
       updateRoomEntityPositions([row, col], playerPosition, roomEntityPositions)
@@ -1176,6 +1181,26 @@ export const Room: FC<{
                   player.state.isUsingSkill,
                   player.state.skillId
                 );
+
+                // If room is over, player can move to any valid tile (floor, door)
+                if (isRoomOver) {
+                  if (tileType === TILE_TYPE.DOOR) {
+                    addLog({
+                      message: (
+                        <>
+                          <span className="text-green-500">{player.name}</span>{' '}
+                          moved to the next room.
+                        </>
+                      ),
+                      type: 'info',
+                    });
+                  } else if (tileType === TILE_TYPE.FLOOR) {
+                    handlePlayerMove(rowIndex, columnIndex);
+                  }
+
+                  return;
+                }
+
                 if (isEffectZone) {
                   if (
                     player.state.isAttacking &&
@@ -1190,16 +1215,6 @@ export const Room: FC<{
                     tileType !== TILE_TYPE.DOOR
                   ) {
                     handlePlayerMove(rowIndex, columnIndex);
-                  } else if (
-                    player.state.isMoving &&
-                    tileType === TILE_TYPE.DOOR &&
-                    isRoomOver
-                  ) {
-                    addLog({
-                      message: 'Player moved to the next room!',
-                      type: 'info',
-                    });
-                    // TODO: Reset room and generate new room matrix
                   } else if (
                     player.state.isUsingSkill &&
                     player.state.skillId
