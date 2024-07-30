@@ -143,12 +143,30 @@ export const PlayerControlPanel: FC = () => {
               <div key={skill.id} className="relative">
                 <IconButton
                   onClick={() => {
-                    setPlayerState({
-                      isAttacking: false,
-                      isMoving: false,
-                      isUsingSkill: !player.state.isUsingSkill,
-                      skillId: skill.id,
-                    });
+                    if (player.state.isUsingSkill) {
+                      if (player.state.skillId === skill.id) {
+                        setPlayerState({
+                          isAttacking: false,
+                          isMoving: false,
+                          isUsingSkill: false,
+                          skillId: undefined,
+                        });
+                      } else {
+                        setPlayerState({
+                          isAttacking: false,
+                          isMoving: false,
+                          isUsingSkill: player.state.isUsingSkill,
+                          skillId: skill.id,
+                        });
+                      }
+                    } else {
+                      setPlayerState({
+                        isAttacking: false,
+                        isMoving: false,
+                        isUsingSkill: !player.state.isUsingSkill,
+                        skillId: skill.id,
+                      });
+                    }
                   }}
                   disabled={
                     disabled ||
@@ -156,6 +174,10 @@ export const PlayerControlPanel: FC = () => {
                     skill.cooldownCounter > 0 ||
                     (skill.id === SKILL_ID.WHIRLWIND &&
                       player.equipment.weapon === null)
+                  }
+                  active={
+                    player.state.isUsingSkill &&
+                    player.state.skillId === skill.id
                   }
                 >
                   <Icon
