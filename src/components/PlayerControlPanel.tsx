@@ -138,11 +138,7 @@ export const PlayerControlPanel: FC = () => {
         )}
       >
         {openSkills ? (
-          <div
-            className={clsx('flex justify-center items-center', {
-              'pointer-events-none': disabled,
-            })}
-          >
+          <div className={clsx('flex justify-center items-center')}>
             {player.skills.map((skill) => (
               <div key={skill.id} className="relative">
                 <IconButton
@@ -180,7 +176,6 @@ export const PlayerControlPanel: FC = () => {
                 });
                 setOpenSkills(false);
               }}
-              disabled={disabled}
               neutral
             >
               Cancel
@@ -245,9 +240,7 @@ export const PlayerControlPanel: FC = () => {
 
             {/* Combat buttons */}
             <div
-              className={clsx('flex justify-center items-center col-span-1', {
-                'pointer-events-none': disabled,
-              })}
+              className={clsx('flex justify-center items-center col-span-1')}
             >
               <div className="relative">
                 <IconButton
@@ -304,7 +297,7 @@ export const PlayerControlPanel: FC = () => {
                       isUsingSkill: false,
                     });
                   }}
-                  disabled={disabled}
+                  disabled={disabled || isRoomOver}
                 >
                   <Icon
                     icon={ICON_ID.MOVE}
@@ -330,7 +323,6 @@ export const PlayerControlPanel: FC = () => {
                       isUsingSkill: false,
                     });
                   }}
-                  disabled={disabled || isRoomOver}
                 >
                   <Icon
                     icon={ICON_ID.SKILLS}
