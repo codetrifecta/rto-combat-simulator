@@ -18,8 +18,18 @@ import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
 // Flag for first room render
 
 // Camera movement speed
-const cameraStraightMoveSpeed = 7;
-const cameraDiagonalMoveSpeed = Math.sqrt(cameraStraightMoveSpeed ** 2 / 2);
+// const cameraStraightMoveSpeed = 7;
+// const cameraDiagonalMoveSpeed = Math.sqrt(cameraStraightMoveSpeed ** 2 / 2);
+
+const MAX_CAMERA_STRIGHT_MOVE_SPEED = 8;
+const MAX_CAMERA_DIAGONAL_MOVE_SPEED = Math.sqrt(
+  MAX_CAMERA_STRIGHT_MOVE_SPEED ** 2 / 2
+);
+const DELTA_ACCELERATION = 0.05;
+const DELTA_DECELERATION = 0.94;
+
+let deltaX = 0;
+let deltaY = 0;
 
 // Keys that are available for camera movement
 const availableKeys = ['w', 'a', 's', 'd', 'l', 'c', 'i', '+', '=', '-'];
@@ -120,7 +130,7 @@ function App() {
       }, 100);
 
     scrollIntoMiddleOfRoom();
-  }, [roomContainerRef.current]);
+  }, [roomContainerRef.current, roomScrollRef.current]);
 
   // Check every 50ms to check input to move camera
   useEffect(() => {
@@ -129,25 +139,121 @@ function App() {
 
       if (roomContainerRef.current && roomScrollRef.current) {
         if (keyPressed['w'] === true && keyPressed['a'] === true) {
-          roomScrollRef.current.scrollTop -= cameraDiagonalMoveSpeed;
-          roomScrollRef.current.scrollLeft -= cameraDiagonalMoveSpeed;
+          if (Math.abs(deltaY) < MAX_CAMERA_DIAGONAL_MOVE_SPEED) {
+            deltaY -= MAX_CAMERA_DIAGONAL_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaY = -MAX_CAMERA_DIAGONAL_MOVE_SPEED;
+          }
+
+          if (Math.abs(deltaX) < MAX_CAMERA_DIAGONAL_MOVE_SPEED) {
+            deltaX -= MAX_CAMERA_DIAGONAL_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaX = -MAX_CAMERA_DIAGONAL_MOVE_SPEED;
+          }
+
+          // roomScrollRef.current.scrollTop -= cameraDiagonalMoveSpeed;
+          // roomScrollRef.current.scrollLeft -= cameraDiagonalMoveSpeed;
+        } else if (keyPressed['w'] === true && keyPressed['s'] === true) {
+          // Do nothing if both w and s are pressed
         } else if (keyPressed['w'] === true && keyPressed['d'] === true) {
-          roomScrollRef.current.scrollTop -= cameraDiagonalMoveSpeed;
-          roomScrollRef.current.scrollLeft += cameraDiagonalMoveSpeed;
+          if (Math.abs(deltaY) < MAX_CAMERA_DIAGONAL_MOVE_SPEED) {
+            deltaY -= MAX_CAMERA_DIAGONAL_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaY = -MAX_CAMERA_DIAGONAL_MOVE_SPEED;
+          }
+
+          if (Math.abs(deltaX) < MAX_CAMERA_DIAGONAL_MOVE_SPEED) {
+            deltaX += MAX_CAMERA_DIAGONAL_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaX = MAX_CAMERA_DIAGONAL_MOVE_SPEED;
+          }
+
+          // roomScrollRef.current.scrollTop -= cameraDiagonalMoveSpeed;
+          // roomScrollRef.current.scrollLeft += cameraDiagonalMoveSpeed;
         } else if (keyPressed['s'] === true && keyPressed['a'] === true) {
-          roomScrollRef.current.scrollTop += cameraDiagonalMoveSpeed;
-          roomScrollRef.current.scrollLeft -= cameraDiagonalMoveSpeed;
+          if (Math.abs(deltaY) < MAX_CAMERA_DIAGONAL_MOVE_SPEED) {
+            deltaY += MAX_CAMERA_DIAGONAL_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaY = MAX_CAMERA_DIAGONAL_MOVE_SPEED;
+          }
+
+          if (Math.abs(deltaX) < MAX_CAMERA_DIAGONAL_MOVE_SPEED) {
+            deltaX -= MAX_CAMERA_DIAGONAL_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaX = -MAX_CAMERA_DIAGONAL_MOVE_SPEED;
+          }
+
+          // roomScrollRef.current.scrollTop += cameraDiagonalMoveSpeed;
+          // roomScrollRef.current.scrollLeft -= cameraDiagonalMoveSpeed;
         } else if (keyPressed['s'] === true && keyPressed['d'] === true) {
-          roomScrollRef.current.scrollTop += cameraDiagonalMoveSpeed;
-          roomScrollRef.current.scrollLeft += cameraDiagonalMoveSpeed;
+          if (Math.abs(deltaY) < MAX_CAMERA_DIAGONAL_MOVE_SPEED) {
+            deltaY += MAX_CAMERA_DIAGONAL_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaY = MAX_CAMERA_DIAGONAL_MOVE_SPEED;
+          }
+
+          if (Math.abs(deltaX) < MAX_CAMERA_DIAGONAL_MOVE_SPEED) {
+            deltaX += MAX_CAMERA_DIAGONAL_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaX = MAX_CAMERA_DIAGONAL_MOVE_SPEED;
+          }
+
+          // roomScrollRef.current.scrollTop += cameraDiagonalMoveSpeed;
+          // roomScrollRef.current.scrollLeft += cameraDiagonalMoveSpeed;
+        } else if (keyPressed['a'] === true && keyPressed['d'] === true) {
+          // Do nothing if both w and s are pressed
         } else if (keyPressed['w'] === true) {
-          roomScrollRef.current.scrollTop -= cameraStraightMoveSpeed;
+          if (deltaY > -MAX_CAMERA_STRIGHT_MOVE_SPEED) {
+            deltaY -= MAX_CAMERA_STRIGHT_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaY = -MAX_CAMERA_STRIGHT_MOVE_SPEED;
+          }
+          // roomScrollRef.current.scrollTop -= cameraStraightMoveSpeed;
         } else if (keyPressed['a'] === true) {
-          roomScrollRef.current.scrollLeft -= cameraStraightMoveSpeed;
+          if (deltaX > -MAX_CAMERA_STRIGHT_MOVE_SPEED) {
+            deltaX -= MAX_CAMERA_STRIGHT_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaX = -MAX_CAMERA_STRIGHT_MOVE_SPEED;
+          }
+
+          // roomScrollRef.current.scrollLeft -= cameraStraightMoveSpeed;
         } else if (keyPressed['s'] === true) {
-          roomScrollRef.current.scrollTop += cameraStraightMoveSpeed;
+          if (deltaY < MAX_CAMERA_STRIGHT_MOVE_SPEED) {
+            deltaY += MAX_CAMERA_STRIGHT_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaY = MAX_CAMERA_STRIGHT_MOVE_SPEED;
+          }
+
+          // roomScrollRef.current.scrollTop += cameraStraightMoveSpeed;
         } else if (keyPressed['d'] === true) {
-          roomScrollRef.current.scrollLeft += cameraStraightMoveSpeed;
+          if (deltaX < MAX_CAMERA_STRIGHT_MOVE_SPEED) {
+            deltaX += MAX_CAMERA_STRIGHT_MOVE_SPEED * DELTA_ACCELERATION;
+          } else {
+            deltaX = MAX_CAMERA_STRIGHT_MOVE_SPEED;
+          }
+
+          // roomScrollRef.current.scrollLeft += cameraStraightMoveSpeed;
+        }
+
+        roomScrollRef.current.scrollTop =
+          roomScrollRef.current.scrollTop + deltaY;
+        roomScrollRef.current.scrollLeft =
+          roomScrollRef.current.scrollLeft + deltaX;
+
+        // If no movement keys are pressed, decelerate
+        if (!keyPressed['a'] && !keyPressed['d']) {
+          if (Math.abs(deltaX) < 0.8) {
+            deltaX = 0;
+          } else {
+            deltaX *= DELTA_DECELERATION;
+          }
+        }
+        if (!keyPressed['w'] && !keyPressed['s']) {
+          if (Math.abs(deltaY) < 0.8) {
+            deltaY = 0;
+          } else {
+            deltaY *= DELTA_DECELERATION;
+          }
         }
 
         if (keyPressed['+'] === true || keyPressed['='] === true) {
