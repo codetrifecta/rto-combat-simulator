@@ -125,7 +125,7 @@ export const Tile: FC<{
       return (
         <div
           id="player_1"
-          className="absolute z-50 top-0 left-0 w-full h-full flex items-center justify-center cursor-pointer"
+          className="absolute z-[35] top-0 left-0 w-full h-full flex items-center justify-center cursor-pointer"
         >
           <div className="bg-green-500 w-[16px] h-[16px]"></div>
         </div>
@@ -138,7 +138,7 @@ export const Tile: FC<{
       if (!enemy) return null;
 
       return (
-        <div className="absolute z-50 bottom-[35%] left-0 w-full h-full flex justify-center items-end cursor-pointer">
+        <div className="absolute z-[35] bottom-[35%] left-0 w-full h-full flex justify-center items-end cursor-pointer">
           <Sprite
             id={`${enemy.entityType}_${enemy.id}`}
             sprite={enemy.sprite}
