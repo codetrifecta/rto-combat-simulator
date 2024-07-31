@@ -80,15 +80,15 @@ export const Tile: FC<{
     let classStr = 'group-hover:opacity-80 ';
 
     if (playerState.isAttacking && isAttackEffectTile) {
-      classStr += 'shadow-mild-red z-10';
+      classStr += 'shadow-mild-red z-10 ';
     } else if (playerState.isMoving && isMovingEffectTile) {
-      classStr += 'shadow-mild-blue z-10';
+      classStr += 'shadow-mild-blue z-10 ';
     } else if (playerState.isUsingSkill && isSkillEffectTile) {
       if (hasPlayer) {
         // Make sure self target skills highlight yellow on player tile
-        classStr += 'group-hover:opacity-80 !shadow-mild-yellow z-10';
+        classStr += 'group-hover:opacity-80 shadow-mild-yellow z-10 ';
       }
-      classStr += 'shadow-mild-yellow z-10';
+      classStr += 'shadow-mild-yellow z-10 ';
     }
     return classStr;
   }, [
@@ -108,10 +108,10 @@ export const Tile: FC<{
     if (isTargetZone) {
       // Checking for AOE skills
       if (hasPlayer) {
-        classStr += '!shadow-intense-green z-40';
+        classStr += '!shadow-intense-green z-[31]';
       } else if (hasEnemy) {
         // Make sure enemy target skills highlight red on enemy tile
-        classStr += '!shadow-intense-red z-40';
+        classStr += '!shadow-intense-red z-[31]';
       }
     }
 
