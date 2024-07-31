@@ -458,7 +458,7 @@ const displayHealNumbers = (entitySpriteID: string, heal: number) => {
 
   // Display heal numbers
   const healNumbers = document.createElement('h1');
-  healNumbers.textContent = `-${heal}`;
+  healNumbers.textContent = `+${heal}`;
 
   // Construct heal numbers and add it to the document body
   healNumbers.style.fontWeight = 'bold';
