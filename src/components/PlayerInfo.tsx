@@ -1,10 +1,10 @@
-import { FC } from "react";
-import { ActionPoints } from "./ActionPoints";
-import { useGameStateStore } from "../store/game";
-import clsx from "clsx";
-import { StatusEffect } from "./StatusEffect";
-import { usePlayerStore } from "../store/player";
-import { Healthbar } from "./Healthbar";
+import { FC } from 'react';
+import { ActionPoints } from './ActionPoints';
+import { useGameStateStore } from '../store/game';
+import clsx from 'clsx';
+import { StatusEffect } from './StatusEffect';
+import { usePlayerStore } from '../store/player';
+import { Healthbar } from './Healthbar';
 
 export const PlayerInfo: FC = () => {
   const { getPlayer } = usePlayerStore();
@@ -31,7 +31,7 @@ export const PlayerInfo: FC = () => {
         )}
         <div
           className={clsx(
-            "flex items-center w-[400px] border border-white py-2 px-3 bg-neutral-900"
+            'flex items-center w-[400px] border border-white py-2 px-3 bg-neutral-900'
           )}
         >
           <Healthbar entity={player} />

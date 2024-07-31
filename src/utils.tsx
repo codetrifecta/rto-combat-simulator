@@ -536,3 +536,13 @@ export const displayStatusEffect = (
     statusIndicator.remove();
   }, 1500);
 };
+
+export const getPotionHealAmount = (player: IPlayer) => {
+  const newPlayer = { ...player };
+
+  // Potion heal percentage
+  const healPercentage = 0.2;
+  const healAmount = Math.round(newPlayer.maxHealth * healPercentage);
+
+  return healAmount;
+};
