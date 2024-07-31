@@ -441,7 +441,6 @@ function App() {
           <InventoryChooser />
           <div></div>
         </section>
-        {/* )} */}
 
         {/* <div className="fixed bottom-0 flex flex-col justify-between items-center"> */}
         {/* Player Info */}

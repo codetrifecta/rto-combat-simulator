@@ -12,6 +12,7 @@ import {
   IStatus,
   IWeapon,
 } from '../types';
+import { getPlayerMaxHealth } from '../utils';
 
 interface IPlayerStore extends IPlayer {
   getPlayer: () => IPlayer;
@@ -36,6 +37,8 @@ interface IPlayerStore extends IPlayer {
 
 export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   ...PLAYER,
+  health: getPlayerMaxHealth(PLAYER),
+  maxHealth: getPlayerMaxHealth(PLAYER),
   id: 1,
 
   getPlayer: () => {
@@ -220,12 +223,28 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
 
   setPlayerState: (state: IPlayerState) => set({ state }),
 
-  setPlayerWeapon: (weapon: IWeapon | null) =>
-    set({ equipment: { ...get().equipment, weapon } }),
-  setPlayerHelmet: (helmet: IHelmet | null) =>
-    set({ equipment: { ...get().equipment, helmet } }),
-  setPlayerChestpiece: (chestpiece: IChestpiece | null) =>
-    set({ equipment: { ...get().equipment, chestpiece } }),
-  setPlayerLegging: (legging: ILegging | null) =>
-    set({ equipment: { ...get().equipment, legging } }),
+  setPlayerWeapon: (weapon: IWeapon | null) => {
+    const newEquipment = { ...get().equipment, weapon };
+    const newPlayer = { ...get().getPlayer(), equipment: newEquipment };
+    const maxHealth = getPlayerMaxHealth(newPlayer);
+    set({ maxHealth, equipment: { ...get().equipment, weapon } });
+  },
+  setPlayerHelmet: (helmet: IHelmet | null) => {
+    const newEquipment = { ...get().equipment, helmet };
+    const newPlayer = { ...get().getPlayer(), equipment: newEquipment };
+    const maxHealth = getPlayerMaxHealth(newPlayer);
+    set({ maxHealth, equipment: { ...get().equipment, helmet } });
+  },
+  setPlayerChestpiece: (chestpiece: IChestpiece | null) => {
+    const newEquipment = { ...get().equipment, chestpiece };
+    const newPlayer = { ...get().getPlayer(), equipment: newEquipment };
+    const maxHealth = getPlayerMaxHealth(newPlayer);
+    set({ maxHealth, equipment: { ...get().equipment, chestpiece } });
+  },
+  setPlayerLegging: (legging: ILegging | null) => {
+    const newEquipment = { ...get().equipment, legging };
+    const newPlayer = { ...get().getPlayer(), equipment: newEquipment };
+    const maxHealth = getPlayerMaxHealth(newPlayer);
+    set({ maxHealth, equipment: { ...get().equipment, legging } });
+  },
 }));

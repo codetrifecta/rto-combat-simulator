@@ -13,12 +13,14 @@ export enum ENTITY_TYPE {
   ENEMY = 'enemy',
 }
 
+export const STARTING_MAX_HEALTH = 25;
+
 export const PLAYER: IPlayer = {
   id: 1,
   name: 'Kratos',
   entityType: ENTITY_TYPE.PLAYER,
-  health: 40,
-  maxHealth: 40,
+  health: 1,
+  maxHealth: 1,
   damageBonus: 0,
   actionPoints: STARTING_ACTION_POINTS,
   skills: SKILLS,
