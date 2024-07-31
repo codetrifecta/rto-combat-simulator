@@ -507,7 +507,7 @@ export const displayStatusEffect = (
   statusIndicator.style.top = `${spriteY - TILE_SIZE}px`;
   statusIndicator.style.left = `${spriteX + spriteWidth / 2 - statusIndicator.getBoundingClientRect().width / 2}px`;
   statusIndicator.style.zIndex = '100';
-  statusIndicator.style.color = gain ? 'green' : 'red';
+  statusIndicator.style.color = 'yellow';
 
   statusIndicator.classList.add('animate-floatUpAndFadeOut');
 
