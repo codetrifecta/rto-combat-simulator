@@ -2,7 +2,7 @@ import { useMemo, useState, type FC } from 'react';
 import clsx from 'clsx';
 import { usePlayerStore } from '../store/player';
 import { useGameStateStore } from '../store/game';
-import { handlePlayerEndTurn, healEntity } from '../utils';
+import { getPotionHealAmount, handlePlayerEndTurn, healEntity } from '../utils';
 import { useLogStore } from '../store/log';
 import { Tooltip } from './Tooltip';
 import { ISkill } from '../types';
@@ -366,11 +366,9 @@ export const PlayerControlPanel: FC = () => {
 
                     const newPlayer = { ...player };
 
-                    let healAmount = 20;
+                    let healAmount = getPotionHealAmount(newPlayer);
 
-                    if (player.health + healAmount === player.maxHealth) {
-                      healAmount = 0;
-                    } else if (player.health + healAmount >= player.maxHealth) {
+                    if (player.health + healAmount >= player.maxHealth) {
                       healAmount = player.maxHealth - player.health;
                     }
 
@@ -397,7 +395,10 @@ export const PlayerControlPanel: FC = () => {
                 </IconButton>
                 <Tooltip>
                   <h2>Health Potion</h2>
-                  <p>Consume a health potion to gain 20 HP.</p>
+                  <p>
+                    Consume a health potion to gain{' '}
+                    {getPotionHealAmount(player)} HP.
+                  </p>
                   <p>Uses left: {player.healthPotions}</p>
                   <p>Cost: 1 AP</p>
                   <p></p>

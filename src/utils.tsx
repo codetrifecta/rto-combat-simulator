@@ -1,4 +1,4 @@
-import { ENTITY_TYPE } from './constants/entity';
+import { ENTITY_TYPE, STARTING_MAX_HEALTH } from './constants/entity';
 import { TILE_SIZE, TILE_TYPE } from './constants/tile';
 import { IEnemy, IEntity, IPlayer, IStatus } from './types';
 
@@ -383,6 +383,26 @@ export const getPlayerLifestealMultiplier = (player: IPlayer) => {
   return lifestealMultiplier;
 };
 
+export const getPlayerMaxHealth = (player: IPlayer) => {
+  const weaponMaxConstitution =
+    player.equipment.weapon?.stats.constitution || 0;
+  const helmetMaxConstitution =
+    player.equipment.helmet?.stats.constitution || 0;
+  const chestpieceMaxConstitution =
+    player.equipment.chestpiece?.stats.constitution || 0;
+  const leggingMaxConstitution =
+    player.equipment.legging?.stats.constitution || 0;
+
+  const totalMaxConstitution =
+    STARTING_MAX_HEALTH +
+    weaponMaxConstitution +
+    helmetMaxConstitution +
+    chestpieceMaxConstitution +
+    leggingMaxConstitution;
+
+  return totalMaxConstitution;
+};
+
 export const damageEntity = (
   entity: IPlayer | IEnemy,
   damage: number,
@@ -515,4 +535,14 @@ export const displayStatusEffect = (
   setTimeout(() => {
     statusIndicator.remove();
   }, 1500);
+};
+
+export const getPotionHealAmount = (player: IPlayer) => {
+  const newPlayer = { ...player };
+
+  // Potion heal percentage
+  const healPercentage = 0.2;
+  const healAmount = Math.round(newPlayer.maxHealth * healPercentage);
+
+  return healAmount;
 };
