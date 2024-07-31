@@ -51,6 +51,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       statuses: get().statuses,
       state: get().state,
       equipment: get().equipment,
+      healthPotions: get().healthPotions,
     };
     return player;
   },

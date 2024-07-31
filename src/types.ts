@@ -26,6 +26,7 @@ export interface IPlayer extends IEntity {
     chestpiece: IChestpiece | null;
     legging: ILegging | null;
   };
+  healthPotions: number;
 }
 
 export interface IPlayerState {

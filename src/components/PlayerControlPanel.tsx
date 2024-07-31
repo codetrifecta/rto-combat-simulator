@@ -2,7 +2,7 @@ import { useMemo, useState, type FC } from 'react';
 import clsx from 'clsx';
 import { usePlayerStore } from '../store/player';
 import { useGameStateStore } from '../store/game';
-import { handlePlayerEndTurn } from '../utils';
+import { handlePlayerEndTurn, healEntity } from '../utils';
 import { useLogStore } from '../store/log';
 import { Tooltip } from './Tooltip';
 import { ISkill } from '../types';
@@ -355,6 +355,52 @@ export const PlayerControlPanel: FC = () => {
                 <Tooltip>
                   <h2>Skills</h2>
                   <p>See available skills</p>
+                </Tooltip>
+              </div>
+
+              <div className="relative">
+                <IconButton
+                  onClick={() => {
+                    // Defensive programming: prevent player from using health potion when they have none left
+                    if (player.healthPotions === 0) return;
+
+                    const newPlayer = { ...player };
+
+                    let healAmount = 20;
+
+                    if (player.health + healAmount === player.maxHealth) {
+                      healAmount = 0;
+                    } else if (player.health + healAmount >= player.maxHealth) {
+                      healAmount = player.maxHealth - player.health;
+                    }
+
+                    setPlayer({
+                      ...newPlayer,
+                      health: newPlayer.health + healAmount,
+                      healthPotions: player.healthPotions - 1,
+                      actionPoints: player.actionPoints - 1,
+                    });
+
+                    healEntity(
+                      newPlayer,
+                      healAmount,
+                      `${newPlayer.entityType}_${newPlayer.id}`
+                    );
+                  }}
+                  disabled={disabled || player.healthPotions === 0}
+                >
+                  <Icon
+                    icon={ICON_ID.HEALTH_POTION}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                  />
+                </IconButton>
+                <Tooltip>
+                  <h2>Health Potion</h2>
+                  <p>Consume a health potion to gain 20 HP.</p>
+                  <p>Uses left: {player.healthPotions}</p>
+                  <p>Cost: 1 AP</p>
+                  <p></p>
                 </Tooltip>
               </div>
 
