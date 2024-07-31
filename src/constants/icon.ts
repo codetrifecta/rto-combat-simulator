@@ -2,6 +2,7 @@
 import basic_attack from '../assets/icons/icon_basic_attack.png';
 import move from '../assets/icons/icon_move.png';
 import skills from '../assets/icons/icon_skills.png';
+import health_potion from '../assets/icons/icon_health_potion.png';
 import end_turn from '../assets/icons/icon_end_turn.png';
 
 // UI
@@ -88,6 +89,7 @@ export enum ICON_ID {
   BASIC_ATTACK = 'basic_attack',
   MOVE = 'move',
   SKILLS = 'skills',
+  HEALTH_POTION = 'health_potion',
   END_TURN = 'end_turn',
 
   // UI
@@ -175,6 +177,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.BASIC_ATTACK]: basic_attack,
   [ICON_ID.MOVE]: move,
   [ICON_ID.SKILLS]: skills,
+  [ICON_ID.HEALTH_POTION]: health_potion,
   [ICON_ID.END_TURN]: end_turn,
 
   // UI

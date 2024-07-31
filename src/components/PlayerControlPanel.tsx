@@ -361,6 +361,31 @@ export const PlayerControlPanel: FC = () => {
               <div className="relative">
                 <IconButton
                   onClick={() => {
+                    // setPlayerState({
+                    //   isAttacking: false,
+                    //   isMoving: !player.state.isMoving,
+                    //   isUsingSkill: false,
+                    // });
+                  }}
+                  disabled={disabled}
+                >
+                  <Icon
+                    icon={ICON_ID.HEALTH_POTION}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                  />
+                </IconButton>
+                <Tooltip>
+                  <h2>Health Potion</h2>
+                  <p>Consume a health potion to gain 20 HP.</p>
+                  <p>Cost: 1 AP</p>
+                  <p></p>
+                </Tooltip>
+              </div>
+
+              <div className="relative">
+                <IconButton
+                  onClick={() => {
                     handleEndTurnClick();
                     addLog({
                       message: (
