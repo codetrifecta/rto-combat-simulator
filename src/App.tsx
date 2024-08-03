@@ -387,7 +387,7 @@ function App() {
             ref={roomScrollRef}
           >
             <div
-              className="relative min-w-[2000px] min-h-[2000px] flex justify-center items-center"
+              className="relative min-w-[2000px] min-h-[1500px] flex justify-center items-center"
               ref={roomContainerRef}
             >
               <Room
