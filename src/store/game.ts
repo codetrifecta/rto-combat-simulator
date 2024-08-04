@@ -3,6 +3,7 @@ import { IEntity } from '../types';
 import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_TYPE } from '../constants/tile';
 import { generateRoomEntityPositions, generateRoomTileMatrix } from '../utils';
+import { ROOM_LENGTH } from '../constants/game';
 
 interface IGameStateStore {
   roomLength: number;
@@ -34,8 +35,8 @@ interface IGameStateStore {
 }
 
 export const useGameStateStore = create<IGameStateStore>((set, get) => ({
-  roomLength: 11,
-  roomTileMatrix: generateRoomTileMatrix(11),
+  roomLength: ROOM_LENGTH,
+  roomTileMatrix: generateRoomTileMatrix(ROOM_LENGTH),
   roomEntityPositions: generateRoomEntityPositions(),
   turnCycle: [],
   isRoomOver: false,
