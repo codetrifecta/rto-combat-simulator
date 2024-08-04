@@ -1,4 +1,5 @@
 import { IEnemy, IPlayer } from '../types';
+import { getPlayerMaxHealth } from '../utils';
 import { LEGGINGS } from './armor';
 import { SKILLS } from './skill';
 import { SPRITE_ID } from './sprite';
@@ -37,6 +38,14 @@ export const PLAYER: IPlayer = {
     legging: LEGGINGS.find((legging) => legging.id === 1) || null,
   },
   healthPotions: 2,
+};
+
+export const getDefaultPlayer = (): IPlayer => {
+  return {
+    ...PLAYER,
+    health: getPlayerMaxHealth(PLAYER),
+    maxHealth: getPlayerMaxHealth(PLAYER),
+  };
 };
 
 export enum ENEMY_PRESET_ID {
