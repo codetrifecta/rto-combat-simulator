@@ -21,7 +21,7 @@ export const Tile: FC<{
 }> = ({
   tileType,
   entityIfExist,
-  playerState,
+  // playerState,
   active,
   isEffectZone,
   isTargetZone = false,
@@ -51,19 +51,19 @@ export const Tile: FC<{
     );
   }, [hasPlayer, tileType]);
 
-  const isMovingEffectTile = useMemo(() => {
-    if (isRoomOver) {
-      // Player can move to the door when the room is over (door restriction is lifted)
-      return tileType !== TILE_TYPE.WALL && !hasPlayer && !hasEnemy;
-    } else {
-      return (
-        tileType !== TILE_TYPE.WALL &&
-        tileType !== TILE_TYPE.DOOR &&
-        !hasPlayer &&
-        !hasEnemy
-      );
-    }
-  }, [hasEnemy, hasPlayer, isRoomOver, tileType]);
+  // const isMovingEffectTile = useMemo(() => {
+  //   if (isRoomOver) {
+  //     // Player can move to the door when the room is over (door restriction is lifted)
+  //     return tileType !== TILE_TYPE.WALL && !hasPlayer && !hasEnemy;
+  //   } else {
+  //     return (
+  //       tileType !== TILE_TYPE.WALL &&
+  //       tileType !== TILE_TYPE.DOOR &&
+  //       !hasPlayer &&
+  //       !hasEnemy
+  //     );
+  //   }
+  // }, [hasEnemy, hasPlayer, isRoomOver, tileType]);
 
   const isSkillEffectTile = useMemo(() => {
     return tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR;
@@ -71,33 +71,33 @@ export const Tile: FC<{
 
   // Effect zone classes
   // Return flat string instead of formatted because getting an error where class is not applied
-  const effectZoneClasses = useMemo(() => {
-    let classStr = 'group-hover:opacity-80 ';
+  // const effectZoneClasses = useMemo(() => {
+  //   let classStr = 'group-hover:opacity-80 ';
 
-    if (playerState.isAttacking && isAttackEffectTile) {
-      classStr += 'shadow-mild-red z-10 ';
-    } else if (playerState.isMoving && isMovingEffectTile) {
-      classStr += 'shadow-mild-blue z-10 ';
-    } else if (playerState.isUsingSkill && isSkillEffectTile) {
-      if (hasPlayer) {
-        // Make sure self target skills highlight yellow on player tile
-        // classStr += 'group-hover:opacity-80 shadow-mild-yellow z-10 ';
-        classStr += 'group-hover:opacity-80 z-10 ';
-      }
-      // classStr += 'shadow-mild-yellow z-10 ';
-      classStr += 'group-hover:opacity-80 z-10 ';
-    }
-    return classStr;
-  }, [
-    isTargetZone,
-    isEffectZone,
-    playerState.isAttacking,
-    playerState.isMoving,
-    playerState.isUsingSkill,
-    isAttackEffectTile,
-    isMovingEffectTile,
-    isSkillEffectTile,
-  ]);
+  //   if (playerState.isAttacking && isAttackEffectTile) {
+  //     classStr += 'shadow-mild-red z-10 ';
+  //   } else if (playerState.isMoving && isMovingEffectTile) {
+  //     classStr += 'shadow-mild-blue z-10 ';
+  //   } else if (playerState.isUsingSkill && isSkillEffectTile) {
+  //     if (hasPlayer) {
+  //       // Make sure self target skills highlight yellow on player tile
+  //       // classStr += 'group-hover:opacity-80 shadow-mild-yellow z-10 ';
+  //       classStr += 'group-hover:opacity-80 z-10 ';
+  //     }
+  //     // classStr += 'shadow-mild-yellow z-10 ';
+  //     classStr += 'group-hover:opacity-80 z-10 ';
+  //   }
+  //   return classStr;
+  // }, [
+  //   isTargetZone,
+  //   isEffectZone,
+  //   playerState.isAttacking,
+  //   playerState.isMoving,
+  //   playerState.isUsingSkill,
+  //   isAttackEffectTile,
+  //   isMovingEffectTile,
+  //   isSkillEffectTile,
+  // ]);
 
   const targetZoneClasses = useMemo(() => {
     let classStr = '';
@@ -193,9 +193,9 @@ export const Tile: FC<{
           'z-0': !active,
 
           // Effect zone
-          [effectZoneClasses]:
-            isEffectZone &&
-            (isAttackEffectTile || isMovingEffectTile || isSkillEffectTile),
+          // [effectZoneClasses]:
+          //   isEffectZone &&
+          //   (isAttackEffectTile || isMovingEffectTile || isSkillEffectTile),
 
           // Target zone
           // 'opacity-80': isTargetZone && isSkillEffectTile,
