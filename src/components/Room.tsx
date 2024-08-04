@@ -904,12 +904,14 @@ export const Room: FC<{
 
           // Check if player is moving (move state)
           // Highlight tiles that can be moved to by player (5x5 area around player not including wall or door tiles).
+          // Excluding wall and door tiles and floor tiles that have entities on them
           // If room is over, then the player can move anywhere in the room.
           if (player.state.isMoving) {
             if (isRoomOver) {
               isEffectZone = true;
             } else {
               if (
+                !entityIfExists &&
                 rowIndex >= playerRow - 2 &&
                 rowIndex <= playerRow + 2 &&
                 columnIndex >= playerCol - 2 &&
