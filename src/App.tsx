@@ -14,6 +14,7 @@ import { InventoryChooser } from './components/InventoryChooser';
 import { CharacterSheet } from './components/CharacterSheet';
 import { GenerateRoomModal } from './components/GenerateRoomModal';
 import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
+import { RoomTileSprites } from './components/RoomTileSprites';
 
 // Flag for first room render
 
@@ -390,11 +391,23 @@ function App() {
               className="relative min-w-[2000px] min-h-[1500px] flex justify-center items-center"
               ref={roomContainerRef}
             >
-              <Room
-                currentHoveredEntity={currentHoveredEntity}
-                setCurrentHoveredEntity={setCurrentHoveredEntity}
-                pr-2
-              />
+              <div>
+                <div
+                  className="absolute top-50 left-50 bg-black bg-opacity-20 z-10"
+                  style={{ transform: 'translateX(-50%) translateY(-50%)' }}
+                >
+                  <Room
+                    currentHoveredEntity={currentHoveredEntity}
+                    setCurrentHoveredEntity={setCurrentHoveredEntity}
+                  />
+                </div>
+                <div
+                  className="absolute top-50 left-50 bg-black bg-opacity-20 z-0"
+                  style={{ transform: 'translateX(-50%) translateY(-50%)' }}
+                >
+                  <RoomTileSprites />
+                </div>
+              </div>
             </div>
           </div>
         </section>

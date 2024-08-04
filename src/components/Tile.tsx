@@ -5,11 +5,8 @@ import clsx from 'clsx';
 import { IPlayerState } from '../types';
 import { useEnemyStore } from '../store/enemy';
 import { Sprite } from './Sprite';
-import { SPRITE_ID } from '../constants/sprite';
 
 export const Tile: FC<{
-  tileID: number;
-  sprite: SPRITE_ID | null;
   tileType: number;
   entityIfExist?: [ENTITY_TYPE, number] | undefined;
   playerState: IPlayerState;
@@ -22,9 +19,7 @@ export const Tile: FC<{
   onMouseLeave: () => void;
   classNames?: string;
 }> = ({
-  tileID,
   tileType,
-  sprite,
   entityIfExist,
   playerState,
   active,
@@ -200,29 +195,7 @@ export const Tile: FC<{
             isTargetZone && (isAttackEffectTile || isSkillEffectTile),
           // 'shadow-mild-green': isTargetZone && isSkillEffectTile && hasPlayer,
         })}
-      >
-        {sprite !== null ? (
-          <Sprite
-            id={`tile_${tileID}`}
-            sprite={sprite}
-            backgroundSprite={
-              // Bottom, left, right wall IDs
-              [2, 66, 67].includes(tileID)
-                ? SPRITE_ID.CELLAR_FLOOR_001
-                : // Door IDs - Door background sprite is the same as wall sprite
-                  // Top door IDs
-                  [365, 366, 367].includes(tileID)
-                  ? SPRITE_ID.CELLAR_WALL_005
-                  : // Bottom door IDs
-                    [396, 398].includes(tileID)
-                    ? SPRITE_ID.CELLAR_WALL_035
-                    : undefined
-            }
-            width={TILE_SIZE}
-            height={TILE_SIZE}
-          />
-        ) : null}
-      </div>
+      ></div>
       {renderEntity()}
     </div>
   );

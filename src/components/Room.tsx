@@ -1160,9 +1160,7 @@ export const Room: FC<{
 
           return (
             <Tile
-              tileID={tileID}
               tileType={tileType}
-              sprite={sprite}
               entityIfExist={roomEntityPositions.get(
                 `${rowIndex},${columnIndex}`
               )}
