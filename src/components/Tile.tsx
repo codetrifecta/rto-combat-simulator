@@ -81,9 +81,11 @@ export const Tile: FC<{
     } else if (playerState.isUsingSkill && isSkillEffectTile) {
       if (hasPlayer) {
         // Make sure self target skills highlight yellow on player tile
-        classStr += 'group-hover:opacity-80 shadow-mild-yellow z-10 ';
+        // classStr += 'group-hover:opacity-80 shadow-mild-yellow z-10 ';
+        classStr += 'group-hover:opacity-80 z-10 ';
       }
-      classStr += 'shadow-mild-yellow z-10 ';
+      // classStr += 'shadow-mild-yellow z-10 ';
+      classStr += 'group-hover:opacity-80 z-10 ';
     }
     return classStr;
   }, [
@@ -98,7 +100,7 @@ export const Tile: FC<{
   ]);
 
   const targetZoneClasses = useMemo(() => {
-    let classStr = 'opacity-80 ';
+    let classStr = '';
 
     if (isTargetZone) {
       // Checking for AOE skills
@@ -147,14 +149,20 @@ export const Tile: FC<{
 
   return (
     <div
-      style={{ width: TILE_SIZE, height: TILE_SIZE }}
+      style={{
+        width: TILE_SIZE,
+        height: TILE_SIZE,
+      }}
       className="relative group"
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <div
-        style={{ width: TILE_SIZE, height: TILE_SIZE }}
+        style={{
+          width: TILE_SIZE,
+          height: TILE_SIZE,
+        }}
         className={clsx('absolute top-0 left-0 ', classNames, {
           // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
           'cursor-pointer ':
@@ -170,8 +178,8 @@ export const Tile: FC<{
             (tileType == TILE_TYPE.DOOR && isRoomOver),
 
           // Tile type color
-          'bg-white': tileType === TILE_TYPE.FLOOR,
-          'bg-yellow-500': tileType === TILE_TYPE.DOOR,
+          // 'bg-white': tileType === TILE_TYPE.FLOOR,
+          // 'bg-yellow-500': tileType === TILE_TYPE.DOOR,
 
           // Player and enemy tile
           'group-hover:shadow-intense-green': hasPlayer,
@@ -194,6 +202,17 @@ export const Tile: FC<{
           [targetZoneClasses]:
             isTargetZone && (isAttackEffectTile || isSkillEffectTile),
           // 'shadow-mild-green': isTargetZone && isSkillEffectTile && hasPlayer,
+        })}
+      ></div>
+      <div
+        style={{ width: TILE_SIZE, height: TILE_SIZE }}
+        className={clsx('absolute top-0 left-0 ', {
+          // Effect zone
+          'bg-black group-hover:opacity-50 opacity-30':
+            isEffectZone && isSkillEffectTile && !isTargetZone,
+
+          // Target zone
+          'bg-black opacity-50': isTargetZone && isSkillEffectTile,
         })}
       ></div>
       {renderEntity()}

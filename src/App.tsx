@@ -393,7 +393,7 @@ function App() {
             >
               <div>
                 <div
-                  className="absolute top-50 left-50 bg-black bg-opacity-20 z-10"
+                  className="absolute top-50 left-50 z-10"
                   style={{ transform: 'translateX(-50%) translateY(-50%)' }}
                 >
                   <Room
@@ -402,7 +402,7 @@ function App() {
                   />
                 </div>
                 <div
-                  className="absolute top-50 left-50 bg-black bg-opacity-20 z-0"
+                  className="absolute top-50 left-50 z-0"
                   style={{ transform: 'translateX(-50%) translateY(-50%)' }}
                 >
                   <RoomTileSprites />

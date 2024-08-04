@@ -1119,7 +1119,7 @@ export const Room: FC<{
                     if (isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
 
-                      console.log('Effect zone hovered', effectZoneHovered);
+                      // console.log('Effect zone hovered', effectZoneHovered);
                       // For leap slam and flame dive, the target zone is a 3x3 area around the hovered effect zone tile not including the hovered tile
                       if (
                         effectZoneHovered &&
@@ -1281,13 +1281,6 @@ export const Room: FC<{
                       return;
                     }
 
-                    console.log(
-                      'pre handleSkill',
-                      player,
-                      enemies,
-                      roomEntityPositions
-                    );
-
                     const { newPlayer, newEnemies, newRoomEntityPositions } =
                       handleSkill(
                         skill,
@@ -1298,13 +1291,6 @@ export const Room: FC<{
                         roomEntityPositions,
                         addLog
                       );
-
-                    console.log(
-                      'post handleSkill',
-                      newPlayer,
-                      newEnemies,
-                      newRoomEntityPositions
-                    );
 
                     setRoomEntityPositions(newRoomEntityPositions);
                     setEnemies([...newEnemies]);
