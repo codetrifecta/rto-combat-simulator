@@ -1,3 +1,6 @@
+// PLAYER
+import player_01 from '../assets/sprites/players/sprite_player_01.png';
+
 // ENEMIES
 import enemy_demon_02 from '../assets/sprites/enemies/sprite_enemy_demon_02.png';
 import enemy_demon_10 from '../assets/sprites/enemies/sprite_enemy_demon_10.png';
@@ -43,6 +46,9 @@ export const SPRITE_SIZE = 64;
 export const FLOOR_SIZE = 32;
 
 export enum SPRITE_ID {
+  // PLAYER
+  PLAYER_01 = 'PLAYER_01',
+
   // ENEMIES
   DEMON_02 = 'DEMON_02',
   DEMON_10 = 'DEMON_10',
@@ -86,6 +92,9 @@ export enum SPRITE_ID {
 }
 
 export const SPRITES: Record<SPRITE_ID, string> = {
+  // PLAYER
+  [SPRITE_ID.PLAYER_01]: player_01,
+
   // ENEMIES
   [SPRITE_ID.DEMON_02]: enemy_demon_02,
   [SPRITE_ID.DEMON_10]: enemy_demon_10,
