@@ -32,7 +32,9 @@ export default {
       },
       animation: {
         floatUpAndFadeOut: 'floatUpAndFadeOut 1.5s linear',
-        entityIdle: 'entityIdle 3s steps(6) infinite',
+        playerIdle: 'entityIdle 2s steps(6) infinite',
+        enemyIdle: 'entityIdle 0.8s steps(6) infinite',
+        entityIdle: 'entityIdle 0.8s steps(6) infinite',
       }
     },
   },

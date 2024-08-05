@@ -133,7 +133,7 @@ export const Tile: FC<{
             }}
           >
             <div
-              className="animate-entityIdle"
+              className="animate-playerIdle"
               style={{
                 width: player.sprite_size * 6,
                 height: player.sprite_size * 12,
@@ -157,13 +157,35 @@ export const Tile: FC<{
       if (!enemy) return null;
 
       return (
-        <div className="absolute z-[35] bottom-[35%] left-0 w-full h-full flex justify-center items-end cursor-pointer">
-          <Sprite
+        <div className="absolute z-[35] bottom-[35%] left-[-15%] w-full h-full flex justify-center items-end cursor-pointer">
+          {/* <Sprite
             id={`${enemy.entityType}_${enemy.id}`}
             sprite={enemy.sprite}
             width={enemy.sprite_size}
             height={enemy.sprite_size}
-          />
+          /> */}
+          <div
+            className="overflow-hidden"
+            style={{
+              width: enemy.sprite_size,
+              height: enemy.sprite_size,
+            }}
+          >
+            <div
+              className="animate-enemyIdle"
+              style={{
+                width: enemy.sprite_size * 6,
+                height: enemy.sprite_size * 5,
+              }}
+            >
+              <Sprite
+                id={`${enemy.entityType}_${enemy.id}`}
+                sprite={enemy.sprite}
+                width={enemy.sprite_size * 6}
+                height={enemy.sprite_size * 5}
+              />
+            </div>
+          </div>
         </div>
       );
     }
