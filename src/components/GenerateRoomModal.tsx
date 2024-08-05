@@ -5,7 +5,7 @@ import {
   ENEMY_PRESET_ID,
   ENEMY_PRESETS,
   ENTITY_TYPE,
-  PLAYER,
+  getDefaultPlayer,
 } from '../constants/entity';
 import { IEnemy } from '../types';
 import { useEnemyStore } from '../store/enemy';
@@ -118,7 +118,7 @@ export const GenerateRoomModal: FC = () => {
     setTurnCycle([player, ...newEnemies]);
     setRoomEntityPositions(newRoomEntityPositions);
     setRoomTileMatrix(parsedRoomMatrix);
-    setPlayer({ ...PLAYER, statuses: [] });
+    setPlayer({ ...getDefaultPlayer(), statuses: [] });
     setIsGameOver(false);
     setIsGenerateRoomOpen(false);
   };

@@ -5,11 +5,8 @@ import clsx from 'clsx';
 import { IPlayerState } from '../types';
 import { useEnemyStore } from '../store/enemy';
 import { Sprite } from './Sprite';
-import { SPRITE_ID } from '../constants/sprite';
 
 export const Tile: FC<{
-  tileID: number;
-  sprite: SPRITE_ID | null;
   tileType: number;
   entityIfExist?: [ENTITY_TYPE, number] | undefined;
   playerState: IPlayerState;
@@ -22,11 +19,9 @@ export const Tile: FC<{
   onMouseLeave: () => void;
   classNames?: string;
 }> = ({
-  tileID,
   tileType,
-  sprite,
   entityIfExist,
-  playerState,
+  // playerState,
   active,
   isEffectZone,
   isTargetZone = false,
@@ -56,19 +51,19 @@ export const Tile: FC<{
     );
   }, [hasPlayer, tileType]);
 
-  const isMovingEffectTile = useMemo(() => {
-    if (isRoomOver) {
-      // Player can move to the door when the room is over (door restriction is lifted)
-      return tileType !== TILE_TYPE.WALL && !hasPlayer && !hasEnemy;
-    } else {
-      return (
-        tileType !== TILE_TYPE.WALL &&
-        tileType !== TILE_TYPE.DOOR &&
-        !hasPlayer &&
-        !hasEnemy
-      );
-    }
-  }, [hasEnemy, hasPlayer, isRoomOver, tileType]);
+  // const isMovingEffectTile = useMemo(() => {
+  //   if (isRoomOver) {
+  //     // Player can move to the door when the room is over (door restriction is lifted)
+  //     return tileType !== TILE_TYPE.WALL && !hasPlayer && !hasEnemy;
+  //   } else {
+  //     return (
+  //       tileType !== TILE_TYPE.WALL &&
+  //       tileType !== TILE_TYPE.DOOR &&
+  //       !hasPlayer &&
+  //       !hasEnemy
+  //     );
+  //   }
+  // }, [hasEnemy, hasPlayer, isRoomOver, tileType]);
 
   const isSkillEffectTile = useMemo(() => {
     return tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR;
@@ -76,34 +71,36 @@ export const Tile: FC<{
 
   // Effect zone classes
   // Return flat string instead of formatted because getting an error where class is not applied
-  const effectZoneClasses = useMemo(() => {
-    let classStr = 'group-hover:opacity-80 ';
+  // const effectZoneClasses = useMemo(() => {
+  //   let classStr = 'group-hover:opacity-80 ';
 
-    if (playerState.isAttacking && isAttackEffectTile) {
-      classStr += 'shadow-mild-red z-10 ';
-    } else if (playerState.isMoving && isMovingEffectTile) {
-      classStr += 'shadow-mild-blue z-10 ';
-    } else if (playerState.isUsingSkill && isSkillEffectTile) {
-      if (hasPlayer) {
-        // Make sure self target skills highlight yellow on player tile
-        classStr += 'group-hover:opacity-80 shadow-mild-yellow z-10 ';
-      }
-      classStr += 'shadow-mild-yellow z-10 ';
-    }
-    return classStr;
-  }, [
-    isTargetZone,
-    isEffectZone,
-    playerState.isAttacking,
-    playerState.isMoving,
-    playerState.isUsingSkill,
-    isAttackEffectTile,
-    isMovingEffectTile,
-    isSkillEffectTile,
-  ]);
+  //   if (playerState.isAttacking && isAttackEffectTile) {
+  //     classStr += 'shadow-mild-red z-10 ';
+  //   } else if (playerState.isMoving && isMovingEffectTile) {
+  //     classStr += 'shadow-mild-blue z-10 ';
+  //   } else if (playerState.isUsingSkill && isSkillEffectTile) {
+  //     if (hasPlayer) {
+  //       // Make sure self target skills highlight yellow on player tile
+  //       // classStr += 'group-hover:opacity-80 shadow-mild-yellow z-10 ';
+  //       classStr += 'group-hover:opacity-80 z-10 ';
+  //     }
+  //     // classStr += 'shadow-mild-yellow z-10 ';
+  //     classStr += 'group-hover:opacity-80 z-10 ';
+  //   }
+  //   return classStr;
+  // }, [
+  //   isTargetZone,
+  //   isEffectZone,
+  //   playerState.isAttacking,
+  //   playerState.isMoving,
+  //   playerState.isUsingSkill,
+  //   isAttackEffectTile,
+  //   isMovingEffectTile,
+  //   isSkillEffectTile,
+  // ]);
 
   const targetZoneClasses = useMemo(() => {
-    let classStr = 'opacity-80 ';
+    let classStr = '';
 
     if (isTargetZone) {
       // Checking for AOE skills
@@ -152,14 +149,20 @@ export const Tile: FC<{
 
   return (
     <div
-      style={{ width: TILE_SIZE, height: TILE_SIZE }}
+      style={{
+        width: TILE_SIZE,
+        height: TILE_SIZE,
+      }}
       className="relative group"
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <div
-        style={{ width: TILE_SIZE, height: TILE_SIZE }}
+        style={{
+          width: TILE_SIZE,
+          height: TILE_SIZE,
+        }}
         className={clsx('absolute top-0 left-0 ', classNames, {
           // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
           'cursor-pointer ':
@@ -175,8 +178,8 @@ export const Tile: FC<{
             (tileType == TILE_TYPE.DOOR && isRoomOver),
 
           // Tile type color
-          'bg-white': tileType === TILE_TYPE.FLOOR,
-          'bg-yellow-500': tileType === TILE_TYPE.DOOR,
+          // 'bg-white': tileType === TILE_TYPE.FLOOR,
+          // 'bg-yellow-500': tileType === TILE_TYPE.DOOR,
 
           // Player and enemy tile
           'group-hover:shadow-intense-green': hasPlayer,
@@ -190,9 +193,9 @@ export const Tile: FC<{
           'z-0': !active,
 
           // Effect zone
-          [effectZoneClasses]:
-            isEffectZone &&
-            (isAttackEffectTile || isMovingEffectTile || isSkillEffectTile),
+          // [effectZoneClasses]:
+          //   isEffectZone &&
+          //   (isAttackEffectTile || isMovingEffectTile || isSkillEffectTile),
 
           // Target zone
           // 'opacity-80': isTargetZone && isSkillEffectTile,
@@ -200,29 +203,18 @@ export const Tile: FC<{
             isTargetZone && (isAttackEffectTile || isSkillEffectTile),
           // 'shadow-mild-green': isTargetZone && isSkillEffectTile && hasPlayer,
         })}
-      >
-        {sprite !== null ? (
-          <Sprite
-            id={`tile_${tileID}`}
-            sprite={sprite}
-            backgroundSprite={
-              // Bottom, left, right wall IDs
-              [2, 66, 67].includes(tileID)
-                ? SPRITE_ID.CELLAR_FLOOR_001
-                : // Door IDs - Door background sprite is the same as wall sprite
-                  // Top door IDs
-                  [365, 366, 367].includes(tileID)
-                  ? SPRITE_ID.CELLAR_WALL_005
-                  : // Bottom door IDs
-                    [396, 398].includes(tileID)
-                    ? SPRITE_ID.CELLAR_WALL_035
-                    : undefined
-            }
-            width={TILE_SIZE}
-            height={TILE_SIZE}
-          />
-        ) : null}
-      </div>
+      ></div>
+      <div
+        style={{ width: TILE_SIZE, height: TILE_SIZE }}
+        className={clsx('absolute top-0 left-0 ', {
+          // Effect zone
+          'bg-black group-hover:opacity-50 opacity-30':
+            isEffectZone && isSkillEffectTile && !isTargetZone,
+
+          // Target zone
+          'bg-black opacity-50': isTargetZone && isSkillEffectTile,
+        })}
+      ></div>
       {renderEntity()}
     </div>
   );

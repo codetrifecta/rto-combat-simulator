@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { PLAYER } from '../constants/entity';
+import { getDefaultPlayer } from '../constants/entity';
 import { WEAPON_TYPE, WEAPON_ATTACK_TYPE } from '../constants/weapon';
 import {
   IChestpiece,
@@ -36,10 +36,7 @@ interface IPlayerStore extends IPlayer {
 }
 
 export const usePlayerStore = create<IPlayerStore>((set, get) => ({
-  ...PLAYER,
-  health: getPlayerMaxHealth(PLAYER),
-  maxHealth: getPlayerMaxHealth(PLAYER),
-  id: 1,
+  ...getDefaultPlayer(),
 
   getPlayer: () => {
     const player: IPlayer = {
