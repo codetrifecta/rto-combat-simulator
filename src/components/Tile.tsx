@@ -6,7 +6,6 @@ import { IPlayerState } from '../types';
 import { useEnemyStore } from '../store/enemy';
 import { Sprite } from './Sprite';
 import { usePlayerStore } from '../store/player';
-import { getSpriteSrc, SPRITE_ID } from '../constants/sprite';
 
 export const Tile: FC<{
   tileType: number;
@@ -124,21 +123,14 @@ export const Tile: FC<{
 
     if (hasPlayer) {
       return (
-        <div
-          id="player_1"
-          className="absolute z-[35] bottom-[45%] left-[-15%] w-full h-full flex items-center justify-center cursor-pointer"
-        >
-          {/* <div className="bg-green-500 w-[16px] h-[16px]"></div> */}
-          {/* <Sprite
-            id={`${player.entityType}_${player.id}`}
-            sprite={player.sprite}
-            width={player.sprite_size}
-            height={player.sprite_size}
-          /> */}
+        <div className="absolute z-[35] bottom-[45%] left-[-15%] w-full h-full flex items-center justify-center cursor-pointer">
           {/* Animated Sprite */}
           <div
             className="overflow-hidden"
-            style={{ width: player.sprite_size, height: player.sprite_size }}
+            style={{
+              width: player.sprite_size,
+              height: player.sprite_size,
+            }}
           >
             <div
               className="animate-entityIdle"
@@ -154,13 +146,6 @@ export const Tile: FC<{
                 height={player.sprite_size * 12}
               />
             </div>
-
-            {/* <img
-              src={getSpriteSrc(SPRITE_ID.PLAYER_01)}
-              style={{ maxWidth: 'none', height: 'auto' }}
-              width={player.sprite_size * 6}
-              height={player.sprite_size * 12}
-            /> */}
           </div>
         </div>
       );
