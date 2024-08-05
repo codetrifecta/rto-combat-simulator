@@ -42,6 +42,8 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
     const player: IPlayer = {
       id: get().id,
       name: get().name,
+      sprite: get().sprite,
+      sprite_size: get().sprite_size,
       entityType: get().entityType,
       health: get().health,
       maxHealth: get().maxHealth,

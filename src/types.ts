@@ -17,6 +17,8 @@ export interface IEntity {
 export type IAllEntity = IEntity | IPlayer | IEnemy;
 
 export interface IPlayer extends IEntity {
+  sprite: SPRITE_ID;
+  sprite_size: number;
   actionPoints: number;
   skills: ISkill[];
   state: IPlayerState;

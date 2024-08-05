@@ -117,3 +117,16 @@ button {
     background-color: #f9f9f9;
   }
 }
+
+@keyframes entityIdle {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+.entity-idle {
+  animation: entityIdle 0.5s steps(6) infinite;
+}

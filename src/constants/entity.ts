@@ -19,6 +19,8 @@ export const STARTING_MAX_HEALTH = 25;
 export const PLAYER: IPlayer = {
   id: 1,
   name: 'Kratos',
+  sprite: SPRITE_ID.PLAYER_01,
+  sprite_size: 64,
   entityType: ENTITY_TYPE.PLAYER,
   health: 1,
   maxHealth: 1,
