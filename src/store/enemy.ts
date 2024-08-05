@@ -23,7 +23,7 @@ export const useEnemyStore = create<IEnemyStore>((set, get) => ({
       id: 2,
     },
     {
-      ...ENEMY_PRESETS[ENEMY_PRESET_ID.HARPY],
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.CYCLOPS],
       id: 3,
     },
     {

@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { ENTITY_TYPE } from '../constants/entity';
+import { ENEMY_PRESET_ID, ENTITY_TYPE } from '../constants/entity';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import clsx from 'clsx';
 import { IPlayerState } from '../types';
@@ -156,33 +156,35 @@ export const Tile: FC<{
 
       if (!enemy) return null;
 
+      const spriteSheetWidth = enemy.sprite_size * 6;
+      let spriteSheetHeight = enemy.sprite_size * 5;
+
+      if (enemy.name === 'Minotaur') {
+        spriteSheetHeight = enemy.sprite_size * 7;
+      }
+
       return (
-        <div className="absolute z-[35] bottom-[35%] left-[-15%] w-full h-full flex justify-center items-end cursor-pointer">
-          {/* <Sprite
-            id={`${enemy.entityType}_${enemy.id}`}
-            sprite={enemy.sprite}
-            width={enemy.sprite_size}
-            height={enemy.sprite_size}
-          /> */}
+        <div className="absolute z-[35] bottom-0 left-0 w-full h-full flex justify-center items-end cursor-pointer">
           <div
-            className="overflow-hidden"
+            className="absolute bottom-[10px] left-0 overflow-hidden"
             style={{
               width: enemy.sprite_size,
               height: enemy.sprite_size,
             }}
           >
             <div
-              className="animate-enemyIdle"
+              className="absolute animate-enemyIdle top-0"
               style={{
-                width: enemy.sprite_size * 6,
-                height: enemy.sprite_size * 5,
+                width: spriteSheetWidth,
+                height: spriteSheetHeight,
+                left: -10,
               }}
             >
               <Sprite
                 id={`${enemy.entityType}_${enemy.id}`}
                 sprite={enemy.sprite}
-                width={enemy.sprite_size * 6}
-                height={enemy.sprite_size * 5}
+                width={spriteSheetWidth}
+                height={spriteSheetHeight}
               />
             </div>
           </div>

@@ -89,8 +89,8 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
   [ENEMY_PRESET_ID.CYCLOPS]: {
     id: 0,
     name: 'Cyclops',
-    sprite: SPRITE_ID.DEMON_10,
-    sprite_size: 48,
+    sprite: SPRITE_ID.ENEMY_005_A,
+    sprite_size: 128,
     entityType: ENTITY_TYPE.ENEMY,
     health: 40,
     maxHealth: 40,
@@ -115,8 +115,8 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
   [ENEMY_PRESET_ID.MINOTAUR]: {
     id: 0,
     name: 'Minotaur',
-    sprite: SPRITE_ID.DEMON_12,
-    sprite_size: 64,
+    sprite: SPRITE_ID.ENEMY_017_B,
+    sprite_size: 128,
     entityType: ENTITY_TYPE.ENEMY,
     health: 50,
     maxHealth: 50,
