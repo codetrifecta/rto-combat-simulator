@@ -82,6 +82,18 @@ export const Room: FC<{
     }
   }, [player, roomEntityPositions]);
 
+  // Get player's available movement possibilities (based on player's action points)
+  // const playerMovementPossibilities = useMemo(() => {
+  //   console.log('playerMovementPossibilities');
+  //   const movementPossibilities = find_paths(
+  //     playerPosition,
+  //     roomTileMatrix,
+  //     player.actionPoints
+  //   );
+  //   console.log(movementPossibilities);
+  //   return movementPossibilities;
+  // }, [player.actionPoints, playerPosition, roomTileMatrix]);
+
   // When an enemy is defeated (i.e. removed from the game),
   // remove it from the room matrix,
   // remove it from the turn cycle and,
@@ -919,6 +931,12 @@ export const Room: FC<{
               ) {
                 isEffectZone = true;
               }
+
+              // if (
+              //   playerMovementPossibilities[`[${rowIndex}, ${columnIndex}]`]
+              // ) {
+              //   isEffectZone = true;
+              // }
             }
           }
 

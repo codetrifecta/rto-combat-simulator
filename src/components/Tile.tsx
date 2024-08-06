@@ -81,29 +81,44 @@ export const Tile: FC<{
       return (
         <div
           id={`${player.entityType}_${player.id}`}
-          className="absolute z-[35] bottom-[45%] left-[-15%] w-full h-full flex items-center justify-center cursor-pointer"
+          className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer"
         >
-          {/* Animated Sprite */}
+          {/* Cap off extra width and height */}
           <div
-            className="overflow-hidden"
+            className="absolute flex justify-center items-center overflow-hidden"
             style={{
-              width: player.sprite_size,
-              height: player.sprite_size,
+              width:
+                player.sprite_size < TILE_SIZE
+                  ? player.sprite_size
+                  : TILE_SIZE * 1.5,
+              height:
+                player.sprite_size < TILE_SIZE
+                  ? player.sprite_size
+                  : TILE_SIZE * 1.7,
             }}
           >
+            {/* Animated Sprite */}
             <div
-              className="animate-playerIdle"
+              className="overflow-hidden"
               style={{
-                width: player.sprite_size * 6,
-                height: player.sprite_size * 12,
+                width: player.sprite_size,
+                height: player.sprite_size,
               }}
             >
-              <Sprite
-                id={`sprite_${player.entityType}_${player.id}`}
-                sprite={player.sprite}
-                width={player.sprite_size * 6}
-                height={player.sprite_size * 12}
-              />
+              <div
+                className="animate-playerIdle"
+                style={{
+                  width: player.sprite_size * 6,
+                  height: player.sprite_size * 12,
+                }}
+              >
+                <Sprite
+                  id={`sprite_${player.entityType}_${player.id}`}
+                  sprite={player.sprite}
+                  width={player.sprite_size * 6}
+                  height={player.sprite_size * 12}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -125,29 +140,44 @@ export const Tile: FC<{
       return (
         <div
           id={`${enemy.entityType}_${enemy.id}`}
-          className="absolute z-[35] bottom-0 left-0 w-full h-full flex justify-center items-end cursor-pointer"
+          className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer"
         >
+          {/* Cap off extra width and height */}
           <div
-            className="absolute bottom-[10px] left-0 overflow-hidden"
+            className="absolute flex justify-center items-center overflow-hidden"
             style={{
-              width: enemy.sprite_size,
-              height: enemy.sprite_size,
+              width:
+                enemy.sprite_size < TILE_SIZE
+                  ? enemy.sprite_size
+                  : TILE_SIZE * 1.5,
+              height:
+                enemy.sprite_size < TILE_SIZE
+                  ? enemy.sprite_size
+                  : TILE_SIZE * 1.7,
             }}
           >
             <div
-              className="absolute animate-enemyIdle top-0"
+              className="absolute bottom-[10px] overflow-hidden"
               style={{
-                width: spriteSheetWidth,
-                height: spriteSheetHeight,
-                left: -10,
+                width: enemy.sprite_size,
+                height: enemy.sprite_size,
               }}
             >
-              <Sprite
-                id={`sprite_${enemy.entityType}_${enemy.id}`}
-                sprite={enemy.sprite}
-                width={spriteSheetWidth}
-                height={spriteSheetHeight}
-              />
+              <div
+                className="animate-enemyIdle"
+                style={{
+                  width: spriteSheetWidth,
+                  height: spriteSheetHeight,
+                  left: -10,
+                }}
+              >
+                <Sprite
+                  id={`sprite_${enemy.entityType}_${enemy.id}`}
+                  sprite={enemy.sprite}
+                  width={spriteSheetWidth}
+                  height={spriteSheetHeight}
+                />
+              </div>
             </div>
           </div>
         </div>
