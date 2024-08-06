@@ -57,7 +57,7 @@ const add_dict = (
 };
 
 // Funciton to find a path taking in the tuple of current player location, the room state, and the path dictionary to be filled, given current AP
-function find_paths(
+export function find_paths(
   player_loc: [number, number],
   room: [TILE_TYPE, number][][],
   AP: number
@@ -155,7 +155,7 @@ interface AP_dict {
   [key: string]: number;
 }
 
-function AP_cost(paths: Path_Dict): AP_dict {
+export function AP_cost(paths: Path_Dict): AP_dict {
   const AP: AP_dict = {};
 
   for (const key in paths) {
