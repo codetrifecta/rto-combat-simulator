@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { ENEMY_PRESET_ID, ENTITY_TYPE } from '../constants/entity';
+import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import clsx from 'clsx';
 import { IPlayerState } from '../types';
@@ -79,7 +79,10 @@ export const Tile: FC<{
 
     if (hasPlayer) {
       return (
-        <div className="absolute z-[35] bottom-[45%] left-[-15%] w-full h-full flex items-center justify-center cursor-pointer">
+        <div
+          id={`${player.entityType}_${player.id}`}
+          className="absolute z-[35] bottom-[45%] left-[-15%] w-full h-full flex items-center justify-center cursor-pointer"
+        >
           {/* Animated Sprite */}
           <div
             className="overflow-hidden"
@@ -96,7 +99,7 @@ export const Tile: FC<{
               }}
             >
               <Sprite
-                id={`${player.entityType}_${player.id}`}
+                id={`sprite_${player.entityType}_${player.id}`}
                 sprite={player.sprite}
                 width={player.sprite_size * 6}
                 height={player.sprite_size * 12}
@@ -120,7 +123,10 @@ export const Tile: FC<{
       }
 
       return (
-        <div className="absolute z-[35] bottom-0 left-0 w-full h-full flex justify-center items-end cursor-pointer">
+        <div
+          id={`${enemy.entityType}_${enemy.id}`}
+          className="absolute z-[35] bottom-0 left-0 w-full h-full flex justify-center items-end cursor-pointer"
+        >
           <div
             className="absolute bottom-[10px] left-0 overflow-hidden"
             style={{
@@ -137,7 +143,7 @@ export const Tile: FC<{
               }}
             >
               <Sprite
-                id={`${enemy.entityType}_${enemy.id}`}
+                id={`sprite_${enemy.entityType}_${enemy.id}`}
                 sprite={enemy.sprite}
                 width={spriteSheetWidth}
                 height={spriteSheetHeight}
