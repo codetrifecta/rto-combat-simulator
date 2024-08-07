@@ -6,7 +6,7 @@ enum TILE_TYPE {
 }
 
 // Initialize the room 2d array
-function init_room(size: number): [TILE_TYPE, number][][] {
+function initRoom(size: number): [TILE_TYPE, number][][] {
   const room_arr: [TILE_TYPE, number][][] = new Array(size);
 
   for (let i = 0; i < size; i++) {
@@ -26,7 +26,7 @@ function init_room(size: number): [TILE_TYPE, number][][] {
 
 const size: number = 5;
 
-const room: [TILE_TYPE, number][][] = init_room(size);
+const room: [TILE_TYPE, number][][] = initRoom(size);
 
 console.log(room);
 
