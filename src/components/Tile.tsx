@@ -106,7 +106,7 @@ export const Tile: FC<{
               }}
             >
               <div
-                className="animate-playerIdle"
+                className="animate-entityIdle20"
                 style={{
                   width: player.sprite_size * 6,
                   height: player.sprite_size * 12,
@@ -164,7 +164,7 @@ export const Tile: FC<{
               }}
             >
               <div
-                className="animate-enemyIdle"
+                className="animate-entityIdle08"
                 style={{
                   width: spriteSheetWidth,
                   height: spriteSheetHeight,
