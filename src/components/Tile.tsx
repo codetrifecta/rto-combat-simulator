@@ -79,12 +79,10 @@ export const Tile: FC<{
 
     if (hasPlayer) {
       return (
-        <div
-          id={`${player.entityType}_${player.id}`}
-          className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer"
-        >
+        <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
           {/* Cap off extra width and height */}
           <div
+            id={`${player.entityType}_${player.id}`}
             className="absolute flex justify-center items-center overflow-hidden"
             style={{
               width:
@@ -138,12 +136,10 @@ export const Tile: FC<{
       }
 
       return (
-        <div
-          id={`${enemy.entityType}_${enemy.id}`}
-          className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer"
-        >
+        <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
           {/* Cap off extra width and height */}
           <div
+            id={`${enemy.entityType}_${enemy.id}`}
             className="absolute flex justify-center items-center overflow-hidden"
             style={{
               width:
