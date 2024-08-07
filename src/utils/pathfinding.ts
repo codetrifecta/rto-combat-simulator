@@ -30,38 +30,14 @@ const room: [TILE_TYPE, number][][] = init_room(size);
 
 console.log(room);
 
-// Initialize path dictionary interface
-interface Path_Dict {
-  [dest_key: string]: [number, number][];
-}
-// Function to add a new path to the dictionary (dictionary, key and value), via function interface
-const add_new_path = (
-  dict: Path_Dict,
-  dest_key: string,
-  tuple_values: [number, number][]
-): void => {
-  dict[dest_key] = tuple_values;
-};
-
-//Initilize explore dictionary interface
-interface Explore_Dict {
-  [dest_key: string]: [number, number];
-}
-// Function to add a new position (dicitonary, key and value), via function interface
-const add_dict = (
-  dict: Explore_Dict,
-  dest_key: string,
-  tuple_value: [number, number] | any
-): void => {
-  dict[dest_key] = tuple_value;
-};
+// --------------------------------------------------------------------------------------------------
 
 // Funciton to find a path taking in the tuple of current player location, the room state, and the path dictionary to be filled, given current AP
-export function find_paths(
-  player_loc: [number, number],
+export function findPathsFromCurrentLocation(
+  playerLoc: [number, number],
   room: [TILE_TYPE, number][][],
   AP: number
-): Path_Dict {
+): Map<string, [number, number][]> {
   // player_loc is starting coordinate
   const dir: [number, number][] = [
     [0, 1], // Right
@@ -74,13 +50,13 @@ export function find_paths(
     [1, 1], // Down-Right Diagonal
   ]; // (vertical is tuple[0], horizontal is tuple[1])
 
-  const path_dict: Path_Dict = {}; // Initialize path dictionary
+  const path_dict = new Map<string, [number, number][]>(); // Initialize path dictionary
 
   const frontier_queue: [number, number][] = []; // Initialize frontier queue
-  frontier_queue.push(player_loc); // Push start coordinate to frontier
+  frontier_queue.push(playerLoc); // Push start coordinate to frontier
 
-  const explored: Explore_Dict = {}; // Initialize explored dictionary
-  add_dict(explored, `[${player_loc[0]}, ${player_loc[1]}]`, null); // Add start coordinate to explored dict
+  const explored = new Map<string, [number, number]>(); // Initialize explored dictionary
+  explored.set(`${playerLoc[0]},${playerLoc[1]}`, [-1, -1]) // Add start coordinate to explored dict
 
   // Explore room
   while (frontier_queue.length > 0) {
@@ -99,12 +75,12 @@ export function find_paths(
         b >= 0 &&
         a < room[0].length &&
         b < room.length &&
-        !explored.hasOwnProperty(`[${a}, ${b}]`) &&
+        !explored.has(`${a},${b}`) &&
         room[a][b][0] == TILE_TYPE.FLOOR &&
         room[a][b][1] == 1
       ) {
         frontier_queue.push([a, b]); // Push [a, b] location to frontier
-        add_dict(explored, `[${a}, ${b}]`, current); // Add current to explored
+        explored.set(`${a},${b}`, current) // Add current to explored
         // console.log(explored)
       }
     }
@@ -117,7 +93,7 @@ export function find_paths(
   // Get goal coordinates
   for (let i = 0; i < room.length; i++) {
     for (let j = 0; j < room[0].length; j++) {
-      if (player_loc[0] == i && player_loc[1] == j) {
+      if (playerLoc[0] == i && playerLoc[1] == j) {
         continue;
       }
       if (room[i][j][0] == TILE_TYPE.FLOOR && room[i][j][1] == 1) {
@@ -134,38 +110,42 @@ export function find_paths(
     goal.shift(); // Pop the first element in goal
 
     const pathway: [number, number][] = []; // Initialize pathway array
-    while (current != player_loc) {
+    while (current != playerLoc) {
       // Until we reach back to the beginning
       pathway.push(current); // Push current coordinate to pathway list
       if (current.length > 1) {
-        current = explored[`[${current[0]}, ${current[1]}]`]; // Update new current
+        const temp = explored.get(`${current[0]},${current[1]}`)
+        if (temp !== undefined) {
+          current = temp // Update new current
+        }
       }
     }
     pathway.reverse(); // Reverse order of path from beginning to goal/end
 
     if (pathway.length / 2 <= AP) {
-      add_new_path(path_dict, `[${key[0]}, ${key[1]}]`, pathway);
+      path_dict.set(`${key[0]},${key[1]}`, pathway)
     }
   }
 
   return path_dict;
 }
 
-interface AP_dict {
-  [key: string]: number;
-}
+export function getApCostForPath(paths: Map<string, [number, number][]>): Map<string, number> {
+  const AP = new Map<string, number>();
 
-export function AP_cost(paths: Path_Dict): AP_dict {
-  const AP: AP_dict = {};
-
-  for (const key in paths) {
-    AP[key] = paths[key].length;
+  for (const key of paths.keys()) {
+    const temp = paths.get(key)
+    if (temp !== undefined) {
+      AP.set(key, temp.length)
+    }
   }
 
   return AP;
 }
 
-const get_path: Path_Dict = find_paths([0, 0], room, 3);
-const AP: AP_dict = AP_cost(get_path);
+// --------------------------------------------------------------------------------------------------
+
+const get_path: Map<string, [number, number][]> = findPathsFromCurrentLocation([0, 0], room, 3);
+const AP: Map<string, number> = getApCostForPath(get_path);
 console.log(get_path);
 console.log(AP);
