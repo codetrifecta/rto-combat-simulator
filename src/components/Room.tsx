@@ -30,6 +30,10 @@ import {
 import { useLogStore } from '../store/log';
 import { handleSkill } from '../skill_utils';
 import { SPRITE_ID } from '../constants/sprite';
+import {
+  findPathsFromCurrentLocation,
+  getApCostForPath,
+} from '../utils/pathfinding';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -83,16 +87,23 @@ export const Room: FC<{
   }, [player, roomEntityPositions]);
 
   // Get player's available movement possibilities (based on player's action points)
-  // const playerMovementPossibilities = useMemo(() => {
-  //   console.log('playerMovementPossibilities');
-  //   const movementPossibilities = find_paths(
-  //     playerPosition,
-  //     roomTileMatrix,
-  //     player.actionPoints
-  //   );
-  //   console.log(movementPossibilities);
-  //   return movementPossibilities;
-  // }, [player.actionPoints, playerPosition, roomTileMatrix]);
+  const playerMovementPossibilities: [
+    Map<string, [number, number][]>,
+    Map<string, number>,
+  ] = useMemo(() => {
+    console.log('playerMovementPossibilities');
+    const movementPossibilities = findPathsFromCurrentLocation(
+      playerPosition,
+      roomTileMatrix,
+      player.actionPoints
+    );
+
+    const apCostForMovementPossibilities = getApCostForPath(
+      movementPossibilities
+    );
+
+    return [movementPossibilities, apCostForMovementPossibilities];
+  }, [player.actionPoints, playerPosition, roomTileMatrix]);
 
   // When an enemy is defeated (i.e. removed from the game),
   // remove it from the room matrix,
@@ -923,20 +934,10 @@ export const Room: FC<{
               isEffectZone = true;
             } else {
               if (
-                !entityIfExists &&
-                rowIndex >= playerRow - 2 &&
-                rowIndex <= playerRow + 2 &&
-                columnIndex >= playerCol - 2 &&
-                columnIndex <= playerCol + 2
+                playerMovementPossibilities[0].get(`${rowIndex},${columnIndex}`)
               ) {
                 isEffectZone = true;
               }
-
-              // if (
-              //   playerMovementPossibilities[`[${rowIndex}, ${columnIndex}]`]
-              // ) {
-              //   isEffectZone = true;
-              // }
             }
           }
 
