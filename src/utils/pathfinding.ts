@@ -1,9 +1,4 @@
-enum TILE_TYPE {
-  NULL = -1,
-  FLOOR = 0,
-  WALL = 1,
-  DOOR = 2,
-}
+import { TILE_TYPE } from '../constants/tile';
 
 // Initialize the room 2d array
 function initRoom(size: number): [TILE_TYPE, number][][] {
@@ -56,7 +51,7 @@ export function findPathsFromCurrentLocation(
   frontier_queue.push(playerLoc); // Push start coordinate to frontier
 
   const explored = new Map<string, [number, number]>(); // Initialize explored dictionary
-  explored.set(`${playerLoc[0]},${playerLoc[1]}`, [-1, -1]) // Add start coordinate to explored dict
+  explored.set(`${playerLoc[0]},${playerLoc[1]}`, [-1, -1]); // Add start coordinate to explored dict
 
   // Explore room
   while (frontier_queue.length > 0) {
@@ -80,7 +75,7 @@ export function findPathsFromCurrentLocation(
         room[a][b][1] == 1
       ) {
         frontier_queue.push([a, b]); // Push [a, b] location to frontier
-        explored.set(`${a},${b}`, current) // Add current to explored
+        explored.set(`${a},${b}`, current); // Add current to explored
         // console.log(explored)
       }
     }
@@ -114,29 +109,31 @@ export function findPathsFromCurrentLocation(
       // Until we reach back to the beginning
       pathway.push(current); // Push current coordinate to pathway list
       if (current.length > 1) {
-        const temp = explored.get(`${current[0]},${current[1]}`)
+        const temp = explored.get(`${current[0]},${current[1]}`);
         if (temp !== undefined) {
-          current = temp // Update new current
+          current = temp; // Update new current
         }
       }
     }
     pathway.reverse(); // Reverse order of path from beginning to goal/end
 
     if (pathway.length / 2 <= AP) {
-      path_dict.set(`${key[0]},${key[1]}`, pathway)
+      path_dict.set(`${key[0]},${key[1]}`, pathway);
     }
   }
 
   return path_dict;
 }
 
-export function getApCostForPath(paths: Map<string, [number, number][]>): Map<string, number> {
+export function getApCostForPath(
+  paths: Map<string, [number, number][]>
+): Map<string, number> {
   const AP = new Map<string, number>();
 
   for (const key of paths.keys()) {
-    const temp = paths.get(key)
+    const temp = paths.get(key);
     if (temp !== undefined) {
-      AP.set(key, temp.length)
+      AP.set(key, Math.round(temp.length / 2));
     }
   }
 
@@ -145,7 +142,11 @@ export function getApCostForPath(paths: Map<string, [number, number][]>): Map<st
 
 // --------------------------------------------------------------------------------------------------
 
-const get_path: Map<string, [number, number][]> = findPathsFromCurrentLocation([0, 0], room, 3);
+const get_path: Map<string, [number, number][]> = findPathsFromCurrentLocation(
+  [0, 0],
+  room,
+  3
+);
 const AP: Map<string, number> = getApCostForPath(get_path);
 console.log(get_path);
 console.log(AP);
