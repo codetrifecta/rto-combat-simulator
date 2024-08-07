@@ -424,9 +424,9 @@ const displayDamageNumbers = (entitySpriteID: string, damage: number) => {
     console.error('displayDamageNumbers: Sprite not found');
     return;
   }
-  const spriteX = sprite.getBoundingClientRect().left;
-  const spriteY = sprite.getBoundingClientRect().top;
-  const spriteWidth = sprite.getBoundingClientRect().width;
+  // const spriteX = sprite.getBoundingClientRect().left;
+  // const spriteY = sprite.getBoundingClientRect().top;
+  // const spriteWidth = sprite.getBoundingClientRect().width;
 
   // Display damage numbers
   const damageNumbers = document.createElement('h1');
@@ -434,12 +434,16 @@ const displayDamageNumbers = (entitySpriteID: string, damage: number) => {
 
   // Construct damage numbers and add it to the document body
   damageNumbers.style.fontWeight = 'bold';
+  // damageNumbers.style.fontSize = '1.5rem';
   damageNumbers.style.fontSize = '1.5rem';
-  document.body.appendChild(damageNumbers);
+  damageNumbers.style.whiteSpace = 'nowrap';
+  sprite.parentElement?.appendChild(damageNumbers);
+  // document.body.appendChild(damageNumbers);
 
   damageNumbers.style.position = 'absolute';
-  damageNumbers.style.top = `${spriteY - TILE_SIZE / 2}px`;
-  damageNumbers.style.left = `${spriteX + spriteWidth / 2 - damageNumbers.getBoundingClientRect().width / 2}px`;
+  damageNumbers.style.bottom = `${TILE_SIZE * 1.5}px`;
+  // damageNumbers.style.top = `${spriteY - TILE_SIZE / 2}px`;
+  // damageNumbers.style.left = `${spriteX + spriteWidth / 2 - damageNumbers.getBoundingClientRect().width / 2}px`;
   damageNumbers.style.zIndex = '100';
   damageNumbers.style.color = 'red';
 
@@ -472,9 +476,9 @@ const displayHealNumbers = (entitySpriteID: string, heal: number) => {
     console.error('displayDamageNumbers: Sprite not found');
     return;
   }
-  const spriteX = sprite.getBoundingClientRect().left;
-  const spriteY = sprite.getBoundingClientRect().top;
-  const spriteWidth = sprite.getBoundingClientRect().width;
+  // const spriteX = sprite.getBoundingClientRect().left;
+  // const spriteY = sprite.getBoundingClientRect().top;
+  // const spriteWidth = sprite.getBoundingClientRect().width;
 
   // Display heal numbers
   const healNumbers = document.createElement('h1');
@@ -482,12 +486,16 @@ const displayHealNumbers = (entitySpriteID: string, heal: number) => {
 
   // Construct heal numbers and add it to the document body
   healNumbers.style.fontWeight = 'bold';
+  // healNumbers.style.fontSize = '1.5rem';
   healNumbers.style.fontSize = '1.5rem';
-  document.body.appendChild(healNumbers);
+  healNumbers.style.whiteSpace = 'nowrap';
+  sprite.parentElement?.appendChild(healNumbers);
+  // document.body.appendChild(healNumbers);
 
   healNumbers.style.position = 'absolute';
-  healNumbers.style.top = `${spriteY - TILE_SIZE / 2}px`;
-  healNumbers.style.left = `${spriteX + spriteWidth / 2 - healNumbers.getBoundingClientRect().width / 2}px`;
+  healNumbers.style.bottom = `${TILE_SIZE * 1.5}px`;
+  // healNumbers.style.top = `${spriteY - TILE_SIZE / 2}px`;
+  // healNumbers.style.left = `${spriteX + spriteWidth / 2 - healNumbers.getBoundingClientRect().width / 2}px`;
   healNumbers.style.zIndex = '100';
   healNumbers.style.color = 'green';
 
@@ -510,22 +518,24 @@ export const displayStatusEffect = (
     console.error('displayDamageNumbers: Sprite not found');
     return;
   }
-  const spriteX = sprite.getBoundingClientRect().left;
-  const spriteY = sprite.getBoundingClientRect().top;
-  const spriteWidth = sprite.getBoundingClientRect().width;
+  // const spriteX = sprite.getBoundingClientRect().left;
+  // const spriteY = sprite.getBoundingClientRect().top;
+  // const spriteWidth = sprite.getBoundingClientRect().width;
 
   // Display status effect
-  const statusIndicator = document.createElement('div');
+  const statusIndicator = document.createElement('h1');
   statusIndicator.textContent = gain ? `+ ${status.name}` : `- ${status.name}`;
 
   // Construct status effect and add it to the document body
   statusIndicator.style.fontWeight = 'bold';
   statusIndicator.style.fontSize = '1.5rem';
-  document.body.appendChild(statusIndicator);
+  statusIndicator.style.whiteSpace = 'nowrap';
+  sprite.parentElement?.appendChild(statusIndicator);
 
   statusIndicator.style.position = 'absolute';
-  statusIndicator.style.top = `${spriteY - TILE_SIZE}px`;
-  statusIndicator.style.left = `${spriteX + spriteWidth / 2 - statusIndicator.getBoundingClientRect().width / 2}px`;
+  statusIndicator.style.bottom = `${TILE_SIZE}px`;
+  // statusIndicator.style.top = `${spriteY - TILE_SIZE}px`;
+  // statusIndicator.style.left = `${spriteX + spriteWidth / 2 - statusIndicator.getBoundingClientRect().width / 2}px`;
   statusIndicator.style.zIndex = '100';
   statusIndicator.style.color = 'yellow';
 
