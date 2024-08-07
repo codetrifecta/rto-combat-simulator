@@ -7,6 +7,11 @@ import enemy_demon_10 from '../assets/sprites/enemies/sprite_enemy_demon_10.png'
 import enemy_demon_12 from '../assets/sprites/enemies/sprite_enemy_demon_12.png';
 import enemy_demon_13 from '../assets/sprites/enemies/sprite_enemy_demon_13.png';
 
+// From Rogue Adventures Asset Pack
+import enemy_005_A from '../assets/sprites/enemies/sprite_enemy_005_A.png';
+import enemy_008_A from '../assets/sprites/enemies/sprite_enemy_008_A.png';
+import enemy_017_B from '../assets/sprites/enemies/sprite_enemy_017_B.png';
+
 // FLOORS
 import tile_cellar_039 from '../assets/sprites/tiles/cellar/floor/sprite_tile_cellar_039.png';
 
@@ -55,6 +60,11 @@ export enum SPRITE_ID {
   DEMON_12 = 'DEMON_12',
   DEMON_13 = 'DEMON_13',
 
+  // From Rogue Adventures Asset Pack
+  ENEMY_005_A = 'ENEMY_005_A',
+  ENEMY_008_A = 'ENEMY_008_A',
+  ENEMY_017_B = 'ENEMY_017_B',
+
   // FLOORS
   CELLAR_FLOOR_001 = 'tile_cellar_039',
 
@@ -100,6 +110,11 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.DEMON_10]: enemy_demon_10,
   [SPRITE_ID.DEMON_12]: enemy_demon_12,
   [SPRITE_ID.DEMON_13]: enemy_demon_13,
+
+  // From Rogue Adventures Asset Pack
+  [SPRITE_ID.ENEMY_005_A]: enemy_005_A,
+  [SPRITE_ID.ENEMY_008_A]: enemy_008_A,
+  [SPRITE_ID.ENEMY_017_B]: enemy_017_B,
 
   // FLOORS
   [SPRITE_ID.CELLAR_FLOOR_001]: tile_cellar_039,

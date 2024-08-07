@@ -54,53 +54,9 @@ export const Tile: FC<{
     );
   }, [hasPlayer, tileType]);
 
-  // const isMovingEffectTile = useMemo(() => {
-  //   if (isRoomOver) {
-  //     // Player can move to the door when the room is over (door restriction is lifted)
-  //     return tileType !== TILE_TYPE.WALL && !hasPlayer && !hasEnemy;
-  //   } else {
-  //     return (
-  //       tileType !== TILE_TYPE.WALL &&
-  //       tileType !== TILE_TYPE.DOOR &&
-  //       !hasPlayer &&
-  //       !hasEnemy
-  //     );
-  //   }
-  // }, [hasEnemy, hasPlayer, isRoomOver, tileType]);
-
   const isSkillEffectTile = useMemo(() => {
     return tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR;
   }, [tileType]);
-
-  // Effect zone classes
-  // Return flat string instead of formatted because getting an error where class is not applied
-  // const effectZoneClasses = useMemo(() => {
-  //   let classStr = 'group-hover:opacity-80 ';
-
-  //   if (playerState.isAttacking && isAttackEffectTile) {
-  //     classStr += 'shadow-mild-red z-10 ';
-  //   } else if (playerState.isMoving && isMovingEffectTile) {
-  //     classStr += 'shadow-mild-blue z-10 ';
-  //   } else if (playerState.isUsingSkill && isSkillEffectTile) {
-  //     if (hasPlayer) {
-  //       // Make sure self target skills highlight yellow on player tile
-  //       // classStr += 'group-hover:opacity-80 shadow-mild-yellow z-10 ';
-  //       classStr += 'group-hover:opacity-80 z-10 ';
-  //     }
-  //     // classStr += 'shadow-mild-yellow z-10 ';
-  //     classStr += 'group-hover:opacity-80 z-10 ';
-  //   }
-  //   return classStr;
-  // }, [
-  //   isTargetZone,
-  //   isEffectZone,
-  //   playerState.isAttacking,
-  //   playerState.isMoving,
-  //   playerState.isUsingSkill,
-  //   isAttackEffectTile,
-  //   isMovingEffectTile,
-  //   isSkillEffectTile,
-  // ]);
 
   const targetZoneClasses = useMemo(() => {
     let classStr = '';
@@ -123,28 +79,46 @@ export const Tile: FC<{
 
     if (hasPlayer) {
       return (
-        <div className="absolute z-[35] bottom-[45%] left-[-15%] w-full h-full flex items-center justify-center cursor-pointer">
-          {/* Animated Sprite */}
+        <div
+          id={`${player.entityType}_${player.id}`}
+          className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer"
+        >
+          {/* Cap off extra width and height */}
           <div
-            className="overflow-hidden"
+            className="absolute flex justify-center items-center overflow-hidden"
             style={{
-              width: player.sprite_size,
-              height: player.sprite_size,
+              width:
+                player.sprite_size < TILE_SIZE
+                  ? player.sprite_size
+                  : TILE_SIZE * 1.5,
+              height:
+                player.sprite_size < TILE_SIZE
+                  ? player.sprite_size
+                  : TILE_SIZE * 1.7,
             }}
           >
+            {/* Animated Sprite */}
             <div
-              className="animate-entityIdle"
+              className="overflow-hidden"
               style={{
-                width: player.sprite_size * 6,
-                height: player.sprite_size * 12,
+                width: player.sprite_size,
+                height: player.sprite_size,
               }}
             >
-              <Sprite
-                id={`${player.entityType}_${player.id}`}
-                sprite={player.sprite}
-                width={player.sprite_size * 6}
-                height={player.sprite_size * 12}
-              />
+              <div
+                className="animate-entityIdle20"
+                style={{
+                  width: player.sprite_size * 6,
+                  height: player.sprite_size * 12,
+                }}
+              >
+                <Sprite
+                  id={`sprite_${player.entityType}_${player.id}`}
+                  sprite={player.sprite}
+                  width={player.sprite_size * 6}
+                  height={player.sprite_size * 12}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -156,14 +130,56 @@ export const Tile: FC<{
 
       if (!enemy) return null;
 
+      const spriteSheetWidth = enemy.sprite_size * 6;
+      let spriteSheetHeight = enemy.sprite_size * 5;
+
+      if (enemy.name === 'Minotaur') {
+        spriteSheetHeight = enemy.sprite_size * 7;
+      }
+
       return (
-        <div className="absolute z-[35] bottom-[35%] left-0 w-full h-full flex justify-center items-end cursor-pointer">
-          <Sprite
-            id={`${enemy.entityType}_${enemy.id}`}
-            sprite={enemy.sprite}
-            width={enemy.sprite_size}
-            height={enemy.sprite_size}
-          />
+        <div
+          id={`${enemy.entityType}_${enemy.id}`}
+          className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer"
+        >
+          {/* Cap off extra width and height */}
+          <div
+            className="absolute flex justify-center items-center overflow-hidden"
+            style={{
+              width:
+                enemy.sprite_size < TILE_SIZE
+                  ? enemy.sprite_size
+                  : TILE_SIZE * 1.5,
+              height:
+                enemy.sprite_size < TILE_SIZE
+                  ? enemy.sprite_size
+                  : TILE_SIZE * 1.7,
+            }}
+          >
+            <div
+              className="absolute bottom-[10px] overflow-hidden"
+              style={{
+                width: enemy.sprite_size,
+                height: enemy.sprite_size,
+              }}
+            >
+              <div
+                className="animate-entityIdle08"
+                style={{
+                  width: spriteSheetWidth,
+                  height: spriteSheetHeight,
+                  left: -10,
+                }}
+              >
+                <Sprite
+                  id={`sprite_${enemy.entityType}_${enemy.id}`}
+                  sprite={enemy.sprite}
+                  width={spriteSheetWidth}
+                  height={spriteSheetHeight}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       );
     }
