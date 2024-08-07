@@ -56,6 +56,7 @@ export enum ENEMY_PRESET_ID {
   CYCLOPS = 3,
   HARPY = 4,
   MINOTAUR = 5,
+  FLAMING_SKULL_A = 6,
 }
 
 export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
@@ -88,8 +89,8 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
   [ENEMY_PRESET_ID.CYCLOPS]: {
     id: 0,
     name: 'Cyclops',
-    sprite: SPRITE_ID.DEMON_10,
-    sprite_size: 48,
+    sprite: SPRITE_ID.ENEMY_005_A,
+    sprite_size: 96,
     entityType: ENTITY_TYPE.ENEMY,
     health: 40,
     maxHealth: 40,
@@ -114,13 +115,26 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
   [ENEMY_PRESET_ID.MINOTAUR]: {
     id: 0,
     name: 'Minotaur',
-    sprite: SPRITE_ID.DEMON_12,
-    sprite_size: 64,
+    sprite: SPRITE_ID.ENEMY_017_B,
+    sprite_size: 115,
     entityType: ENTITY_TYPE.ENEMY,
     health: 50,
     maxHealth: 50,
     range: 1,
     damage: 10,
+    damageBonus: 0,
+    statuses: [],
+  },
+  [ENEMY_PRESET_ID.FLAMING_SKULL_A]: {
+    id: 0,
+    name: 'Flaming Skull',
+    sprite: SPRITE_ID.ENEMY_008_A,
+    sprite_size: 64,
+    entityType: ENTITY_TYPE.ENEMY,
+    health: 10,
+    maxHealth: 10,
+    range: 1,
+    damage: 5,
     damageBonus: 0,
     statuses: [],
   },
