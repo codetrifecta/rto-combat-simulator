@@ -15,6 +15,8 @@ import { CharacterSheet } from './components/CharacterSheet';
 import { GenerateRoomModal } from './components/GenerateRoomModal';
 import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
 import { RoomTileSprites } from './components/RoomTileSprites';
+import { EntitySpritePositions } from './components/EntitySpritePositions';
+import { TILE_SIZE } from './constants/tile';
 
 // Flag for first room render
 
@@ -53,6 +55,7 @@ function App() {
   const roomScrollRef = useRef<HTMLDivElement>(null);
 
   const {
+    roomLength,
     isRoomOver,
     turnCycle,
     isInventoryOpen,
@@ -391,20 +394,25 @@ function App() {
               className="relative min-w-[2000px] min-h-[1500px] flex justify-center items-center"
               ref={roomContainerRef}
             >
-              <div>
-                <div
-                  className="absolute top-50 left-50 z-10"
-                  style={{ transform: 'translateX(-50%) translateY(-50%)' }}
-                >
+              <div
+                className="relative"
+                style={{
+                  width: roomLength * TILE_SIZE,
+                  height: roomLength * TILE_SIZE,
+                }}
+              >
+                <div className="absolute top-0 left-0 z-20">
+                  <EntitySpritePositions
+                    setCurrentHoveredEntity={setCurrentHoveredEntity}
+                  />
+                </div>
+                <div className="absolute z-10">
                   <Room
                     currentHoveredEntity={currentHoveredEntity}
                     setCurrentHoveredEntity={setCurrentHoveredEntity}
                   />
                 </div>
-                <div
-                  className="absolute top-50 left-50 z-0"
-                  style={{ transform: 'translateX(-50%) translateY(-50%)' }}
-                >
+                <div className="absolute z-0">
                   <RoomTileSprites />
                 </div>
               </div>

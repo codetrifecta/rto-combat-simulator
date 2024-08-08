@@ -827,8 +827,6 @@ export const Room: FC<{
   return (
     <div
       style={{
-        width: roomLength * TILE_SIZE,
-        height: roomLength * TILE_SIZE,
         display: 'grid',
         gridTemplateColumns: `repeat(${roomLength}, ${TILE_SIZE}px)`,
         gridTemplateRows: `repeat(${roomLength}, ${TILE_SIZE}px)`,
@@ -890,14 +888,21 @@ export const Room: FC<{
           // Check if tile is active (i.e. it's the entity's turn)
           let active: boolean = false;
           if (
-            (entityType !== null &&
-              turnCycle[0] !== null &&
-              turnCycle[0].entityType === entityType &&
-              turnCycle[0].id === entityId) ||
-            (currentHoveredEntity?.entityType === entityType &&
-              currentHoveredEntity?.id === entityId)
+            entityType !== null &&
+            turnCycle[0] !== null &&
+            turnCycle[0].entityType === entityType &&
+            turnCycle[0].id === entityId
           ) {
             active = true;
+          }
+
+          // Check if tile (entity) is hovered
+          let hovered: boolean = false;
+          if (
+            currentHoveredEntity?.entityType === entityType &&
+            currentHoveredEntity?.id === entityId
+          ) {
+            hovered = true;
           }
 
           // Check if tile is an effect zone
@@ -1188,6 +1193,7 @@ export const Room: FC<{
               key={`${rowIndex}-${columnIndex}`}
               playerState={player.state}
               active={active}
+              hovered={hovered}
               isEffectZone={isEffectZone}
               isRoomOver={isRoomOver}
               isTargetZone={isTargetZone}
