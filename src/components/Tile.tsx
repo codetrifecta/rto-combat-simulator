@@ -9,6 +9,7 @@ export const Tile: FC<{
   entityIfExist?: [ENTITY_TYPE, number] | undefined;
   playerState: IPlayerState;
   active: boolean;
+  hovered: boolean;
   isEffectZone: boolean;
   isTargetZone: boolean | null;
   isRoomOver: boolean;
@@ -21,6 +22,7 @@ export const Tile: FC<{
   entityIfExist,
   // playerState,
   active,
+  hovered,
   isEffectZone,
   isTargetZone = false,
   isRoomOver,
@@ -209,12 +211,12 @@ export const Tile: FC<{
           // 'bg-yellow-500': tileType === TILE_TYPE.DOOR,
 
           // Player and enemy tile
-          'group-hover:shadow-intense-green': hasPlayer,
-          'group-hover:shadow-intense-red': hasEnemy,
+          'shadow-intense-green': hasPlayer && hovered,
+          'shadow-intense-red': hasEnemy && hovered,
 
           // Active tile
-          'shadow-mild-green z-20': hasPlayer && active,
-          'shadow-mild-red z-20': hasEnemy && active,
+          'shadow-mild-green z-20': hasPlayer && active && !hovered,
+          'shadow-mild-red z-20': hasEnemy && active && !hovered,
 
           // Non-active tile
           'z-0': !active,
