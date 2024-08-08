@@ -816,8 +816,6 @@ export const Room: FC<{
   return (
     <div
       style={{
-        width: roomLength * TILE_SIZE,
-        height: roomLength * TILE_SIZE,
         display: 'grid',
         gridTemplateColumns: `repeat(${roomLength}, ${TILE_SIZE}px)`,
         gridTemplateRows: `repeat(${roomLength}, ${TILE_SIZE}px)`,

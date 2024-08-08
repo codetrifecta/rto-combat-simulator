@@ -3,9 +3,6 @@ import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import clsx from 'clsx';
 import { IPlayerState } from '../types';
-import { useEnemyStore } from '../store/enemy';
-import { Sprite } from './Sprite';
-import { usePlayerStore } from '../store/player';
 
 export const Tile: FC<{
   tileType: number;
@@ -32,10 +29,6 @@ export const Tile: FC<{
   onMouseLeave,
   classNames = '',
 }) => {
-  const { enemies } = useEnemyStore();
-  const { getPlayer } = usePlayerStore();
-  const player = getPlayer();
-
   const hasPlayer = useMemo(() => {
     if (entityIfExist) {
       return entityIfExist[0] === ENTITY_TYPE.PLAYER;
@@ -74,112 +67,112 @@ export const Tile: FC<{
     return classStr;
   }, [isTargetZone, hasPlayer, hasEnemy]);
 
-  const renderEntity = () => {
-    if (!entityIfExist) return null;
+  // const renderEntity = () => {
+  //   if (!entityIfExist) return null;
 
-    if (hasPlayer) {
-      return (
-        <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
-          {/* Cap off extra width and height */}
-          <div
-            id={`${player.entityType}_${player.id}`}
-            className="absolute flex justify-center items-center overflow-hidden"
-            style={{
-              width:
-                player.sprite_size < TILE_SIZE
-                  ? player.sprite_size
-                  : TILE_SIZE * 1.5,
-              height:
-                player.sprite_size < TILE_SIZE
-                  ? player.sprite_size
-                  : TILE_SIZE * 1.7,
-            }}
-          >
-            {/* Animated Sprite */}
-            <div
-              className="overflow-hidden"
-              style={{
-                width: player.sprite_size,
-                height: player.sprite_size,
-              }}
-            >
-              <div
-                className="animate-entityIdle20"
-                style={{
-                  width: player.sprite_size * 6,
-                  height: player.sprite_size * 12,
-                }}
-              >
-                <Sprite
-                  id={`sprite_${player.entityType}_${player.id}`}
-                  sprite={player.sprite}
-                  width={player.sprite_size * 6}
-                  height={player.sprite_size * 12}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
+  //   if (hasPlayer) {
+  //     return (
+  //       <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
+  //         {/* Cap off extra width and height */}
+  //         <div
+  //           id={`${player.entityType}_${player.id}`}
+  //           className="absolute flex justify-center items-center overflow-hidden"
+  //           style={{
+  //             width:
+  //               player.sprite_size < TILE_SIZE
+  //                 ? player.sprite_size
+  //                 : TILE_SIZE * 1.5,
+  //             height:
+  //               player.sprite_size < TILE_SIZE
+  //                 ? player.sprite_size
+  //                 : TILE_SIZE * 1.7,
+  //           }}
+  //         >
+  //           {/* Animated Sprite */}
+  //           <div
+  //             className="overflow-hidden"
+  //             style={{
+  //               width: player.sprite_size,
+  //               height: player.sprite_size,
+  //             }}
+  //           >
+  //             <div
+  //               className="animate-entityIdle20"
+  //               style={{
+  //                 width: player.sprite_size * 6,
+  //                 height: player.sprite_size * 12,
+  //               }}
+  //             >
+  //               <Sprite
+  //                 id={`sprite_${player.entityType}_${player.id}`}
+  //                 sprite={player.sprite}
+  //                 width={player.sprite_size * 6}
+  //                 height={player.sprite_size * 12}
+  //               />
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     );
+  //   }
 
-    if (hasEnemy) {
-      const enemy = enemies.find((enemy) => enemy.id === entityIfExist[1]);
+  //   if (hasEnemy) {
+  //     const enemy = enemies.find((enemy) => enemy.id === entityIfExist[1]);
 
-      if (!enemy) return null;
+  //     if (!enemy) return null;
 
-      const spriteSheetWidth = enemy.sprite_size * 6;
-      let spriteSheetHeight = enemy.sprite_size * 5;
+  //     const spriteSheetWidth = enemy.sprite_size * 6;
+  //     let spriteSheetHeight = enemy.sprite_size * 5;
 
-      if (enemy.name === 'Minotaur') {
-        spriteSheetHeight = enemy.sprite_size * 7;
-      }
+  //     if (enemy.name === 'Minotaur') {
+  //       spriteSheetHeight = enemy.sprite_size * 7;
+  //     }
 
-      return (
-        <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
-          {/* Cap off extra width and height */}
-          <div
-            id={`${enemy.entityType}_${enemy.id}`}
-            className="absolute flex justify-center items-center overflow-hidden"
-            style={{
-              width:
-                enemy.sprite_size < TILE_SIZE
-                  ? enemy.sprite_size
-                  : TILE_SIZE * 1.5,
-              height:
-                enemy.sprite_size < TILE_SIZE
-                  ? enemy.sprite_size
-                  : TILE_SIZE * 1.7,
-            }}
-          >
-            <div
-              className="absolute bottom-[10px] overflow-hidden"
-              style={{
-                width: enemy.sprite_size,
-                height: enemy.sprite_size,
-              }}
-            >
-              <div
-                className="animate-entityIdle08"
-                style={{
-                  width: spriteSheetWidth,
-                  height: spriteSheetHeight,
-                  left: -10,
-                }}
-              >
-                <Sprite
-                  id={`sprite_${enemy.entityType}_${enemy.id}`}
-                  sprite={enemy.sprite}
-                  width={spriteSheetWidth}
-                  height={spriteSheetHeight}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-  };
+  //     return (
+  //       <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
+  //         {/* Cap off extra width and height */}
+  //         <div
+  //           id={`${enemy.entityType}_${enemy.id}`}
+  //           className="absolute flex justify-center items-center overflow-hidden"
+  //           style={{
+  //             width:
+  //               enemy.sprite_size < TILE_SIZE
+  //                 ? enemy.sprite_size
+  //                 : TILE_SIZE * 1.5,
+  //             height:
+  //               enemy.sprite_size < TILE_SIZE
+  //                 ? enemy.sprite_size
+  //                 : TILE_SIZE * 1.7,
+  //           }}
+  //         >
+  //           <div
+  //             className="absolute bottom-[10px] overflow-hidden"
+  //             style={{
+  //               width: enemy.sprite_size,
+  //               height: enemy.sprite_size,
+  //             }}
+  //           >
+  //             <div
+  //               className="animate-entityIdle08"
+  //               style={{
+  //                 width: spriteSheetWidth,
+  //                 height: spriteSheetHeight,
+  //                 left: -10,
+  //               }}
+  //             >
+  //               <Sprite
+  //                 id={`sprite_${enemy.entityType}_${enemy.id}`}
+  //                 sprite={enemy.sprite}
+  //                 width={spriteSheetWidth}
+  //                 height={spriteSheetHeight}
+  //               />
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     );
+  //   }
+  // };
 
   return (
     <div
@@ -249,7 +242,7 @@ export const Tile: FC<{
           'bg-black opacity-50': isTargetZone && isSkillEffectTile,
         })}
       ></div>
-      {renderEntity()}
+      {/* {renderEntity()} */}
     </div>
   );
 };
