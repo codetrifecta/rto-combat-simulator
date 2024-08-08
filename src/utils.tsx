@@ -420,13 +420,13 @@ export const damageEntity = (
 const displayDamageNumbers = (entitySpriteID: string, damage: number) => {
   // Find sprite position
   const sprite = document.querySelector(`#${entitySpriteID}`);
-  const tile = document.querySelector(`#${entitySpriteID}`)?.parentElement
-    ?.parentElement;
 
   if (!sprite) {
     console.error('displayDamageNumbers: Sprite not found');
     return;
   }
+
+  const tile = sprite.parentElement?.parentElement;
 
   if (!tile) {
     console.error('displayDamageNumbers: Tile not found');
@@ -474,13 +474,13 @@ export const healEntity = (
 const displayHealNumbers = (entitySpriteID: string, heal: number) => {
   // Find sprite position
   const sprite = document.querySelector(`#${entitySpriteID}`);
-  const tile = document.querySelector(`#${entitySpriteID}`)?.parentElement
-    ?.parentElement;
 
   if (!sprite) {
     console.error('displayDamageNumbers: Sprite not found');
     return;
   }
+
+  const tile = sprite.parentElement?.parentElement;
 
   if (!tile) {
     console.error('displayDamageNumbers: Tile not found');
@@ -518,13 +518,13 @@ export const displayStatusEffect = (
 ) => {
   // Find sprite position
   const sprite = document.querySelector(`#${entitySpriteID}`);
-  const tile = document.querySelector(`#${entitySpriteID}`)?.parentElement
-    ?.parentElement;
 
   if (!sprite) {
     console.error('displayStatusEffect: Sprite not found');
     return;
   }
+
+  const tile = sprite.parentElement?.parentElement;
 
   if (!tile) {
     console.error('displayStatusEffect: Tile not found');
