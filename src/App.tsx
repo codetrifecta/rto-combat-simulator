@@ -402,7 +402,9 @@ function App() {
                 }}
               >
                 <div className="absolute top-0 left-0 z-20">
-                  <EntitySpritePositions />
+                  <EntitySpritePositions
+                    setCurrentHoveredEntity={setCurrentHoveredEntity}
+                  />
                 </div>
                 <div className="absolute z-10">
                   <Room

@@ -3,12 +3,14 @@ import { usePlayerStore } from '../store/player';
 import { useGameStateStore } from '../store/game';
 import { Sprite } from './Sprite';
 import { TILE_SIZE } from '../constants/tile';
-import { IEnemy, IPlayer } from '../types';
+import { IEnemy, IEntity, IPlayer } from '../types';
 import { ENTITY_TYPE } from '../constants/entity';
 import { useEnemyStore } from '../store/enemy';
 import clsx from 'clsx';
 
-export const EntitySpritePositions: FC = () => {
+export const EntitySpritePositions: FC<{
+  setCurrentHoveredEntity: (entity: IEntity | null) => void;
+}> = ({ setCurrentHoveredEntity }) => {
   const { getPlayer } = usePlayerStore();
 
   const { roomEntityPositions } = useGameStateStore();
@@ -128,6 +130,8 @@ export const EntitySpritePositions: FC = () => {
                 id={`sprite_player_${player.id}`}
                 row={row}
                 col={col}
+                onMouseEnter={() => setCurrentHoveredEntity(player)}
+                onMouseLeave={() => setCurrentHoveredEntity(null)}
               >
                 {renderPlayer(player)}
               </EntitySpritePositionContainer>
@@ -146,6 +150,8 @@ export const EntitySpritePositions: FC = () => {
                 id={`sprite_enemy_${enemy.id}`}
                 row={row}
                 col={col}
+                onMouseEnter={() => setCurrentHoveredEntity(enemy)}
+                onMouseLeave={() => setCurrentHoveredEntity(null)}
               >
                 {renderEnemy(enemy)}
               </EntitySpritePositionContainer>
@@ -163,8 +169,19 @@ const EntitySpritePositionContainer: FC<{
   classNames?: string;
   row: number;
   col: number;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
   children: JSX.Element;
-}> = ({ key, id, classNames, row, col, children }) => {
+}> = ({
+  key,
+  id,
+  classNames,
+  row,
+  col,
+  children,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
   return (
     <div
       key={key}
@@ -174,6 +191,8 @@ const EntitySpritePositionContainer: FC<{
         top: (row + 1) * TILE_SIZE,
         left: col * TILE_SIZE + TILE_SIZE / 2,
       }}
+      onMouseEnter={() => onMouseEnter && onMouseEnter()}
+      onMouseLeave={() => onMouseLeave && onMouseLeave()}
     >
       {children}
     </div>
