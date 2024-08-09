@@ -37,9 +37,9 @@ export const GenerateRoomModal: FC = () => {
   const [enemyPositionsInput, setEnemyPositionsInput] = useState<
     [string, string, ENEMY_PRESET_ID][]
   >([
-    ['7', '4', ENEMY_PRESET_ID.SHADE],
-    ['6', '6', ENEMY_PRESET_ID.SHADE],
-    ['3', '8', ENEMY_PRESET_ID.HARPY],
+    ['7', '4', ENEMY_PRESET_ID.FLAMING_SKULL_A],
+    ['6', '6', ENEMY_PRESET_ID.FLAMING_SKULL_A],
+    ['3', '8', ENEMY_PRESET_ID.CYCLOPS],
     ['3', '2', ENEMY_PRESET_ID.MINOTAUR],
   ]);
 
