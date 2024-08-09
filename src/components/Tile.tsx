@@ -211,8 +211,8 @@ export const Tile: FC<{
           // 'bg-yellow-500': tileType === TILE_TYPE.DOOR,
 
           // Player and enemy tile
-          'shadow-intense-green': hasPlayer && hovered,
-          'shadow-intense-red': hasEnemy && hovered,
+          'shadow-intense-green z-[31]': hasPlayer && hovered,
+          'shadow-intense-red z-[31]': hasEnemy && hovered,
 
           // Active tile
           'shadow-mild-green z-20': hasPlayer && active && !hovered,

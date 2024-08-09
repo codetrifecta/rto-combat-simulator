@@ -75,36 +75,6 @@ export const Room: FC<{
 
   const { addLog } = useLogStore();
 
-  // Get player's position in the room matrix
-  const playerPosition: [number, number] = useMemo(() => {
-    if (roomEntityPositions) {
-      const playerPos = getEntityPosition(player, roomEntityPositions);
-      return playerPos;
-    } else {
-      console.error('Room entity positions not found!');
-      return [-1, -1];
-    }
-  }, [player, roomEntityPositions]);
-
-  // Get player's available movement possibilities (based on player's action points)
-  const playerMovementPossibilities: [
-    Map<string, [number, number][]>,
-    Map<string, number>,
-  ] = useMemo(() => {
-    console.log('playerMovementPossibilities');
-    const movementPossibilities = findPathsFromCurrentLocation(
-      playerPosition,
-      roomTileMatrix,
-      player.actionPoints
-    );
-
-    const apCostForMovementPossibilities = getApCostForPath(
-      movementPossibilities
-    );
-
-    return [movementPossibilities, apCostForMovementPossibilities];
-  }, [player.actionPoints, playerPosition, roomTileMatrix]);
-
   // When an enemy is defeated (i.e. removed from the game),
   // remove it from the room matrix,
   // remove it from the turn cycle and,
@@ -540,8 +510,40 @@ export const Room: FC<{
     handlePlayerDefeat();
   }, [isGameOver, player.health, player.name, addLog]);
 
+  // Get player's position in the room matrix
+  const playerPosition: [number, number] = useMemo(() => {
+    if (roomEntityPositions) {
+      const playerPos = getEntityPosition(player, roomEntityPositions);
+      return playerPos;
+    } else {
+      console.error('Room entity positions not found!');
+      return [-1, -1];
+    }
+  }, [player, roomEntityPositions]);
+
+  // Get player's available movement possibilities (based on player's action points)
+  const playerMovementPossibilities: [
+    Map<string, [number, number][]>,
+    Map<string, number>,
+  ] = useMemo(() => {
+    console.log('playerMovementPossibilities');
+    const movementPossibilities = findPathsFromCurrentLocation(
+      playerPosition,
+      roomTileMatrix,
+      player.actionPoints
+    );
+
+    const apCostForMovementPossibilities = getApCostForPath(
+      movementPossibilities
+    );
+
+    return [movementPossibilities, apCostForMovementPossibilities];
+  }, [player.actionPoints, playerPosition, roomTileMatrix.length]);
+
   // Handle player attacking an enemy
   const handleEnemyClick = (entityId: number | null) => {
+    console.log('handleEnemyClick');
+
     if (entityId === null) {
       return;
     }

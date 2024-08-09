@@ -12,7 +12,9 @@ export const EntitySpritePositions: FC<{
   setCurrentHoveredEntity: (entity: IEntity | null) => void;
 }> = ({ setCurrentHoveredEntity }) => {
   const { getPlayer } = usePlayerStore();
+  const { enemies } = useEnemyStore();
 
+  const player = getPlayer();
   const { roomEntityPositions } = useGameStateStore();
 
   const renderPlayer = (player: IPlayer) => {
@@ -118,12 +120,11 @@ export const EntitySpritePositions: FC<{
     <div>
       {Array.from(roomEntityPositions).map(
         ([positionString, [entityType, entityID]]) => {
-          console.log(positionString, entityType, entityID);
+          // console.log(positionString, entityType, entityID);
 
           const [row, col] = positionString.split(',').map(Number);
 
           if (entityType === ENTITY_TYPE.PLAYER) {
-            const player = getPlayer();
             return (
               <EntitySpritePositionContainer
                 key={`sprite_player_${player.id}`}
@@ -137,7 +138,6 @@ export const EntitySpritePositions: FC<{
               </EntitySpritePositionContainer>
             );
           } else if (entityType === ENTITY_TYPE.ENEMY) {
-            const { enemies } = useEnemyStore();
             const enemy = enemies.find((enemy) => enemy.id === entityID);
 
             if (!enemy) {
@@ -186,7 +186,7 @@ const EntitySpritePositionContainer: FC<{
     <div
       key={key}
       id={id}
-      className={clsx('absolute', classNames)}
+      className={clsx('absolute pointer-events-none', classNames)}
       style={{
         top: (row + 1) * TILE_SIZE,
         left: col * TILE_SIZE + TILE_SIZE / 2,
