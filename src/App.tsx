@@ -364,7 +364,7 @@ function App() {
 
         <div
           className={clsx('fixed left-10 top-60 w-[23%] max-h-[200px]', {
-            'z-20': isGameLogOpen,
+            'z-[50]': isGameLogOpen,
             'z-[-10] opacity-0': !isGameLogOpen,
           })}
         >
@@ -373,7 +373,7 @@ function App() {
 
         <div
           className={clsx(
-            'fixed left-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0 z-30'
+            'fixed left-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0 z-[51]'
           )}
           style={{
             height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
@@ -433,7 +433,7 @@ function App() {
 
         {/* Inventory Chooser */}
         <section
-          className="fixed z-[30] top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
+          className="fixed z-[51] top-0 w-[400px] shadow-lg transition-all ease duration-300 delay-0"
           style={{
             height: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
             right: isInventoryOpen ? 0 : -400,
