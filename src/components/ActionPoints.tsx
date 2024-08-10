@@ -1,11 +1,11 @@
-import { type FC } from "react";
-import { MAX_ACTION_POINTS } from "../constants/entity";
-import { useLogStore } from "../store/log";
-import { usePlayerStore } from "../store/player";
+import { type FC } from 'react';
+import { MAX_ACTION_POINTS } from '../constants/entity';
+import { useLogStore } from '../store/log';
+import { usePlayerStore } from '../store/player';
 
 // Display action points as circles
 export const ActionPoints: FC = () => {
-  const { getPlayer } = usePlayerStore();
+  const { playerMovementAPCost, getPlayer } = usePlayerStore();
 
   const player = getPlayer();
 
@@ -29,13 +29,13 @@ export const ActionPoints: FC = () => {
             equipped.
           </>
         ),
-        type: "error",
+        type: 'error',
       });
       return;
     }
     usedActionPoints = weapon.cost;
   } else if (state.isMoving) {
-    usedActionPoints = 1;
+    usedActionPoints = playerMovementAPCost;
   } else if (state.isUsingSkill) {
     const skill = player.skills.find((skill) => skill.id === state.skillId);
     if (!skill) {
@@ -46,7 +46,7 @@ export const ActionPoints: FC = () => {
             any skill.
           </>
         ),
-        type: "error",
+        type: 'error',
       });
       return;
     }
