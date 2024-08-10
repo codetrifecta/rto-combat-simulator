@@ -60,6 +60,8 @@ export const Room: FC<{
     setIsRoomOver,
   } = useGameStateStore();
   const {
+    playerMovementAPCost,
+    setPlayerMovementAPCost,
     getPlayer,
     getPlayerBaseAttackDamage,
     getPlayerLifestealMultiplier,
@@ -664,7 +666,7 @@ export const Room: FC<{
       type: 'info',
     });
     if (!isRoomOver) {
-      setPlayerActionPoints(player.actionPoints - 1);
+      setPlayerActionPoints(player.actionPoints - playerMovementAPCost);
     }
     setPlayerState({
       ...player.state,
@@ -940,9 +942,11 @@ export const Room: FC<{
             if (isRoomOver) {
               isEffectZone = true;
             } else {
-              if (
-                playerMovementPossibilities[0].get(`${rowIndex},${columnIndex}`)
-              ) {
+              const possibleMove = playerMovementPossibilities[0].get(
+                `${rowIndex},${columnIndex}`
+              );
+
+              if (possibleMove) {
                 isEffectZone = true;
               }
             }
@@ -1367,6 +1371,17 @@ export const Room: FC<{
                 ) {
                   // Set currentHoveredEntity to the player when mouse enters player tile
                   setCurrentHoveredEntity(player);
+                }
+
+                // Update ap cost for movement possibilities
+                if (player.state.isMoving) {
+                  const APCost = playerMovementPossibilities[1].get(
+                    `${rowIndex},${columnIndex}`
+                  );
+                  if (APCost !== undefined) {
+                    // console.log(APCost);
+                    setPlayerMovementAPCost(APCost);
+                  }
                 }
               }}
               onMouseLeave={() => {

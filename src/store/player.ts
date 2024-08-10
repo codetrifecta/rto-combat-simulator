@@ -15,6 +15,8 @@ import {
 import { getPlayerMaxHealth } from '../utils';
 
 interface IPlayerStore extends IPlayer {
+  playerMovementAPCost: number;
+  setPlayerMovementAPCost: (playerMovementAPCost: number) => void;
   getPlayer: () => IPlayer;
   getPlayerBaseAttackDamage: () => number;
   getPlayerBonusDamage: () => number;
@@ -37,6 +39,11 @@ interface IPlayerStore extends IPlayer {
 
 export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   ...getDefaultPlayer(),
+
+  playerMovementAPCost: 1,
+
+  setPlayerMovementAPCost: (playerMovementAPCost: number) =>
+    set({ playerMovementAPCost }),
 
   getPlayer: () => {
     const player: IPlayer = {
