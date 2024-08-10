@@ -195,7 +195,6 @@ export const EntitySpritePositions: FC<{
 };
 
 const EntitySpritePositionContainer: FC<{
-  key: string;
   id: string;
   classNames?: string;
   row: number;
@@ -203,19 +202,9 @@ const EntitySpritePositionContainer: FC<{
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   children: JSX.Element;
-}> = ({
-  key,
-  id,
-  classNames,
-  row,
-  col,
-  children,
-  onMouseEnter,
-  onMouseLeave,
-}) => {
+}> = ({ id, classNames, row, col, children, onMouseEnter, onMouseLeave }) => {
   return (
     <div
-      key={key}
       id={id}
       className={clsx(
         'absolute pointer-events-none transition-all',
