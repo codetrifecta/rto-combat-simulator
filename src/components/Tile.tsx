@@ -43,6 +43,22 @@ export const Tile: FC<{
     }
   }, [entityIfExist]);
 
+  const entityTileID = useMemo(() => {
+    let idString = 'tile_';
+
+    if (entityIfExist) {
+      if (entityIfExist[0] === ENTITY_TYPE.PLAYER) {
+        idString += 'player_';
+      } else if (entityIfExist[0] === ENTITY_TYPE.ENEMY) {
+        idString += 'enemy_';
+      }
+
+      idString += entityIfExist[1];
+    }
+
+    return idString;
+  }, [entityIfExist]);
+
   const isAttackEffectTile = useMemo(() => {
     return (
       tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR && !hasPlayer
@@ -186,6 +202,7 @@ export const Tile: FC<{
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      id={entityTileID}
     >
       <div
         style={{

@@ -220,7 +220,7 @@ const handleSkillDamage = (
       newEnemy.health = damageEntity(
         newEnemy,
         totalDamage,
-        `${newEnemy.entityType}_${newEnemy.id}`
+        `tile_${newEnemy.entityType}_${newEnemy.id}`
       );
       // newEnemy.health = newEnemy.health - totalDamage;
 
@@ -242,7 +242,7 @@ const handleSkillDamage = (
         playerAfterDamage.health = healEntity(
           playerAfterDamage,
           lifestealAmount,
-          `${player.entityType}_${player.id}`
+          `tile_${player.entityType}_${player.id}`
         );
       }
 
@@ -329,7 +329,7 @@ const handleSkillDamage = (
       playerAfterDamage.health = damageEntity(
         playerAfterDamage,
         totalDamageToPlayer,
-        `${playerAfterDamage.entityType}_${playerAfterDamage.id}`
+        `tile_${playerAfterDamage.entityType}_${playerAfterDamage.id}`
       );
       // playerAfterDamage.health = playerAfterDamage.health - totalDamageToPlayer;
 
@@ -453,7 +453,7 @@ const handleSkillStatus = (
     displayStatusEffect(
       statusToBeApplied,
       true,
-      `${playerAfterStatus.entityType}_${playerAfterStatus.id}`
+      `tile_${playerAfterStatus.entityType}_${playerAfterStatus.id}`
     );
 
     return { playerAfterStatus, enemiesAfterStatus };
@@ -505,7 +505,7 @@ const handleSkillStatus = (
         displayStatusEffect(
           statusToBeApplied,
           true,
-          `${newEnemy.entityType}_${newEnemy.id}`
+          `tile_${newEnemy.entityType}_${newEnemy.id}`
         );
 
         enemiesAfterStatus[enemyIndex] = newEnemy;
@@ -537,7 +537,7 @@ const handleSkillStatus = (
         displayStatusEffect(
           statusToBeApplied,
           true,
-          `${playerAfterStatus.entityType}_${playerAfterStatus.id}`
+          `tile_${playerAfterStatus.entityType}_${playerAfterStatus.id}`
         );
       }
     }
