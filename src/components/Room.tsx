@@ -260,7 +260,7 @@ export const Room: FC<{
             affectedEnemy.health = damageEntity(
               affectedEnemy,
               totalDamage,
-              `${enemy.entityType}_${enemy.id}`
+              `tile_${enemy.entityType}_${enemy.id}`
             );
 
             if (affectedEnemy.health <= 0) {
@@ -310,7 +310,7 @@ export const Room: FC<{
           affectedPlayer.health = damageEntity(
             affectedPlayer,
             totalDamage,
-            `${player.entityType}_${player.id}`
+            `tile_${player.entityType}_${player.id}`
           );
           // affectedPlayer.health -= totalDamage;
 
@@ -504,7 +504,7 @@ export const Room: FC<{
               displayStatusEffect(
                 status,
                 false,
-                `${enemy.entityType}_${enemy.id}`
+                `tile_${enemy.entityType}_${enemy.id}`
               );
               return false;
             }
@@ -583,7 +583,7 @@ export const Room: FC<{
     Map<string, [number, number][]>,
     Map<string, number>,
   ] = useMemo(() => {
-    console.log('playerMovementPossibilities');
+    // console.log('playerMovementPossibilities');
     const movementPossibilities = findPathsFromCurrentLocation(
       playerPosition,
       roomTileMatrix,
@@ -629,7 +629,7 @@ export const Room: FC<{
       newEnemy.health = damageEntity(
         newEnemy,
         totalDamage,
-        `${enemy.entityType}_${enemy.id}`
+        `tile_${enemy.entityType}_${enemy.id}`
       );
       // newEnemy.health = newEnemy.health - totalDamage;
 
@@ -647,7 +647,7 @@ export const Room: FC<{
         newPlayer.health = healEntity(
           newPlayer,
           lifestealAmount,
-          `${player.entityType}_${player.id}`
+          `tile_${player.entityType}_${player.id}`
         );
       }
 
