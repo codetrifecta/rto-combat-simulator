@@ -40,7 +40,7 @@ interface IPlayerStore extends IPlayer {
 export const usePlayerStore = create<IPlayerStore>((set, get) => ({
   ...getDefaultPlayer(),
 
-  playerMovementAPCost: 1,
+  playerMovementAPCost: 0,
 
   setPlayerMovementAPCost: (playerMovementAPCost: number) =>
     set({ playerMovementAPCost }),

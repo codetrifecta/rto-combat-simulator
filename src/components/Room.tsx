@@ -44,6 +44,12 @@ export const Room: FC<{
   const [effectZoneHovered, setEffectZoneHovered] = useState<
     [number, number] | null
   >(null);
+
+  // For handling player movement
+  const [playerMovementPath, setPlayerMovementPath] = useState<
+    [number, number][]
+  >([]);
+
   const targetZones = useRef<[number, number][]>([]); // saves the target zones (row, col) for AOE skills
 
   const {
@@ -76,6 +82,45 @@ export const Room: FC<{
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
 
   const { addLog } = useLogStore();
+
+  // When player movement path changes,
+  // Handle player movement
+  useEffect(() => {
+    console.log('handlePlayerMovement');
+
+    const handlePlayerPathMovement = () => {
+      if (playerMovementPath.length > 0) {
+        const [row, col] = playerMovementPath[0];
+
+        // Update player's position in the entity positions map
+        setRoomEntityPositions(
+          updateRoomEntityPositions(
+            [row, col],
+            playerPosition,
+            roomEntityPositions
+          )
+        );
+
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> moved to
+              tile ({col}, {row})
+            </>
+          ),
+          type: 'info',
+        });
+
+        // Delete the first element in the path array
+
+        setTimeout(() => {
+          setPlayerMovementPath(playerMovementPath.slice(1));
+        }, 500);
+      }
+    };
+
+    handlePlayerPathMovement();
+  }, [playerMovementPath.length]);
 
   // When an enemy is defeated (i.e. removed from the game),
   // remove it from the room matrix,
@@ -155,7 +200,12 @@ export const Room: FC<{
     console.log('automaticallyEndPlayerTurn');
 
     const automaticallyEndPlayerTurn = () => {
-      if (player.actionPoints === 0 && !isRoomOver && enemies.length > 0) {
+      if (
+        player.actionPoints === 0 &&
+        playerMovementPath.length === 0 &&
+        !isRoomOver &&
+        enemies.length > 0
+      ) {
         handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
         addLog({
           message: (
@@ -169,7 +219,12 @@ export const Room: FC<{
       }
     };
     automaticallyEndPlayerTurn();
-  }, [player.actionPoints, isRoomOver, enemies.length]);
+  }, [
+    player.actionPoints,
+    playerMovementPath.length,
+    isRoomOver,
+    enemies.length,
+  ]);
 
   // When turn cycle changes,
   // Handle DoT effects,
@@ -651,27 +706,28 @@ export const Room: FC<{
       return;
     }
 
-    // Update player's position in the entity positions map
-    setRoomEntityPositions(
-      updateRoomEntityPositions([row, col], playerPosition, roomEntityPositions)
-    );
-
-    addLog({
-      message: (
-        <>
-          <span className="text-green-500">{player.name}</span> moved to tile (
-          {col}, {row}).
-        </>
-      ),
-      type: 'info',
-    });
-    if (!isRoomOver) {
-      setPlayerActionPoints(player.actionPoints - playerMovementAPCost);
+    if (playerMovementPossibilities[0].size === 0) {
+      addLog({
+        message: 'No available movement possibilities!',
+        type: 'error',
+      });
+      return;
     }
+
+    const path = playerMovementPossibilities[0].get(`${row},${col}`);
+
+    if (!path) {
+      addLog({ message: 'Invalid movement!', type: 'error' });
+      return;
+    }
+
+    setPlayerMovementPath(path);
     setPlayerState({
       ...player.state,
       isMoving: false,
     });
+
+    setPlayerActionPoints(player.actionPoints - playerMovementAPCost);
   };
 
   // Handle enemy movement (naive)
