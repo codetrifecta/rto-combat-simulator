@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { usePlayerStore } from '../store/player';
 import { useGameStateStore } from '../store/game';
 import { Sprite } from './Sprite';
@@ -16,6 +16,39 @@ export const EntitySpritePositions: FC<{
 
   const player = getPlayer();
   const { roomEntityPositions } = useGameStateStore();
+
+  const roomEntityPositionsFlipped: [
+    [ENTITY_TYPE, number],
+    [number, number],
+  ][] = useMemo(() => {
+    // Flipping the map and storing it in a sorted list where player is first and enemies are next in order of their id
+    const flipped: [[ENTITY_TYPE, number], [number, number]][] = new Array(
+      roomEntityPositions.size
+    );
+
+    Array.from(roomEntityPositions).forEach(
+      ([positionString, [entityType, entityID]]) => {
+        const [row, col] = positionString.split(',').map(Number);
+
+        // Take advantage of the fact that entity IDs are unique and start from 1 for each type
+        // Subtracting 1 from player ID to get the correct index
+        // Since only 1 player can exist currently, we can index enemies directly by their ID
+        if (entityType === ENTITY_TYPE.PLAYER) {
+          flipped[entityID - 1] = [
+            [entityType, entityID],
+            [row, col],
+          ];
+        } else if (entityType === ENTITY_TYPE.ENEMY) {
+          flipped[entityID] = [
+            [entityType, entityID],
+            [row, col],
+          ];
+        }
+      }
+    );
+
+    return flipped;
+  }, [roomEntityPositions]);
 
   const renderPlayer = (player: IPlayer) => {
     return (
@@ -118,47 +151,45 @@ export const EntitySpritePositions: FC<{
 
   return (
     <div>
-      {Array.from(roomEntityPositions).map(
-        ([positionString, [entityType, entityID]]) => {
-          // console.log(positionString, entityType, entityID);
+      {roomEntityPositionsFlipped.map((entityPosition) => {
+        // console.log(positionString, entityType, entityID);
 
-          const [row, col] = positionString.split(',').map(Number);
+        const [[entityType, entityID], [row, col]] = entityPosition;
 
-          if (entityType === ENTITY_TYPE.PLAYER) {
-            return (
-              <EntitySpritePositionContainer
-                key={`sprite_player_${player.id}`}
-                id={`sprite_player_${player.id}`}
-                row={row}
-                col={col}
-                onMouseEnter={() => setCurrentHoveredEntity(player)}
-                onMouseLeave={() => setCurrentHoveredEntity(null)}
-              >
-                {renderPlayer(player)}
-              </EntitySpritePositionContainer>
-            );
-          } else if (entityType === ENTITY_TYPE.ENEMY) {
-            const enemy = enemies.find((enemy) => enemy.id === entityID);
+        if (entityType === ENTITY_TYPE.PLAYER) {
+          return (
+            <EntitySpritePositionContainer
+              key={`sprite_player_${player.id}`}
+              id={`sprite_player_${player.id}`}
+              row={row}
+              col={col}
+              onMouseEnter={() => setCurrentHoveredEntity(player)}
+              onMouseLeave={() => setCurrentHoveredEntity(null)}
+            >
+              {renderPlayer(player)}
+            </EntitySpritePositionContainer>
+          );
+        } else if (entityType === ENTITY_TYPE.ENEMY) {
+          const enemy = enemies.find((enemy) => enemy.id === entityID);
 
-            if (!enemy) {
-              return null;
-            }
-
-            return (
-              <EntitySpritePositionContainer
-                key={`sprite_enemy_${enemy.id}`}
-                id={`sprite_enemy_${enemy.id}`}
-                row={row}
-                col={col}
-                onMouseEnter={() => setCurrentHoveredEntity(enemy)}
-                onMouseLeave={() => setCurrentHoveredEntity(null)}
-              >
-                {renderEnemy(enemy)}
-              </EntitySpritePositionContainer>
-            );
+          if (!enemy) {
+            return null;
           }
+
+          return (
+            <EntitySpritePositionContainer
+              key={`sprite_enemy_${enemy.id}`}
+              id={`sprite_enemy_${enemy.id}`}
+              row={row}
+              col={col}
+              onMouseEnter={() => setCurrentHoveredEntity(enemy)}
+              onMouseLeave={() => setCurrentHoveredEntity(null)}
+            >
+              {renderEnemy(enemy)}
+            </EntitySpritePositionContainer>
+          );
         }
-      )}
+      })}
     </div>
   );
 };
@@ -186,7 +217,10 @@ const EntitySpritePositionContainer: FC<{
     <div
       key={key}
       id={id}
-      className={clsx('absolute pointer-events-none', classNames)}
+      className={clsx(
+        'absolute pointer-events-none transition-all',
+        classNames
+      )}
       style={{
         top: (row + 1) * TILE_SIZE,
         left: col * TILE_SIZE + TILE_SIZE / 2,
