@@ -789,7 +789,7 @@ export const Room: FC<{
       const playerHealth = damageEntity(
         player,
         totalDamage,
-        `${player.entityType}_${player.id}`
+        `tile_${player.entityType}_${player.id}`
       );
 
       if (playerHealth <= 0) {
