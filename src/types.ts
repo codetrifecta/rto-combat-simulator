@@ -1,6 +1,6 @@
 import { ENTITY_TYPE } from './constants/entity';
 import { ICON_ID } from './constants/icon';
-import { SKILL_TAG, SKILL_TYPE } from './constants/skill';
+import { SKILL_ID, SKILL_TAG, SKILL_TYPE } from './constants/skill';
 import { SPRITE_ID } from './constants/sprite';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from './constants/weapon';
 
@@ -46,7 +46,7 @@ export interface IEnemy extends IEntity {
 }
 
 export interface ISkill {
-  id: number;
+  id: SKILL_ID;
   name: string;
   icon: ICON_ID;
   tags: SKILL_TAG[];

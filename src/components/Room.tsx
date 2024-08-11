@@ -1113,7 +1113,8 @@ export const Room: FC<{
                 // Check for the specific skill's effect zone
                 switch (skill.id) {
                   case SKILL_ID.FLY:
-                    // For fly, player can target any empty tile that does not have an entity
+                    // For movement skills like fly, leap slam, and flame dive, player can target any empty tile that does not have an entity
+                    // Leap Slam and Flame Dive handled in the AOE case
                     if (
                       tileType === TILE_TYPE.FLOOR &&
                       !entityIfExists &&
@@ -1154,15 +1155,43 @@ export const Room: FC<{
                   }
                 }
 
-                if (
-                  rowIndex >= playerRow - range &&
-                  rowIndex <= playerRow + range &&
-                  columnIndex >= playerCol - range &&
-                  columnIndex <= playerCol + range &&
-                  (!(rowIndex === playerRow && columnIndex === playerCol) ||
-                    skill.id === SKILL_ID.FIREBALL) // For fireball, player can target themselves
-                ) {
-                  isEffectZone = true;
+                // Determine if tile is in effect zone
+                switch (skill.id) {
+                  case SKILL_ID.FIREBALL:
+                    if (
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
+                  case SKILL_ID.LEAP_SLAM:
+                  case SKILL_ID.FLAME_DIVE:
+                    if (
+                      tileType === TILE_TYPE.FLOOR &&
+                      !entityIfExists &&
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
+                  default:
+                    if (
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range &&
+                      !(rowIndex === playerRow && columnIndex === playerCol) // For fireball, player can target themselves
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
                 }
 
                 // Compute target zone based on the specific skill requirement
