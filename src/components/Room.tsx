@@ -112,10 +112,24 @@ export const Room: FC<{
         });
 
         // Delete the first element in the path array
-
         setTimeout(() => {
           setPlayerMovementPath(playerMovementPath.slice(1));
         }, 500);
+      } else {
+        // When player finishes moving, set player's animation back to idle
+        const playerSpriteSheetContainer = document.getElementById(
+          `spritesheet_container_${player.entityType}_${player.id}`
+        );
+
+        if (!playerSpriteSheetContainer) {
+          console.error('Player spritesheet container not found!');
+          return;
+        }
+
+        playerSpriteSheetContainer.classList.remove('animate-entityIdle08');
+
+        playerSpriteSheetContainer.style.top = '0px';
+        playerSpriteSheetContainer.classList.add('animate-entityIdle20');
       }
     };
 
@@ -720,6 +734,26 @@ export const Room: FC<{
       addLog({ message: 'Invalid movement!', type: 'error' });
       return;
     }
+
+    // Set player animation to walking animation
+
+    // Get spritesheet container
+    const playerSpriteSheetContainer = document.getElementById(
+      `spritesheet_container_${player.entityType}_${player.id}`
+    );
+
+    if (!playerSpriteSheetContainer) {
+      console.error('Player spritesheet container not found!');
+      return;
+    }
+
+    // console.log('playerSpriteSheetContainer', playerSpriteSheetContainer);
+
+    // Set player animation to walking by increasing animtions sprite x axis change speed and shifting position downwards on the spritesheet
+    playerSpriteSheetContainer.classList.remove('animate-entityIdle20');
+
+    playerSpriteSheetContainer.style.top = '-' + player.sprite_size + 'px';
+    playerSpriteSheetContainer.classList.add('animate-entityIdle08');
 
     setPlayerMovementPath(path);
     setPlayerState({
