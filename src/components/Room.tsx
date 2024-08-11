@@ -636,7 +636,8 @@ export const Room: FC<{
     const movementPossibilities = findPathsFromCurrentLocation(
       playerPosition,
       roomTileMatrix,
-      player.actionPoints
+      player.actionPoints,
+      roomEntityPositions
     );
 
     const apCostForMovementPossibilities = getApCostForPath(
