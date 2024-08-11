@@ -86,11 +86,41 @@ export const Room: FC<{
   // When player movement path changes,
   // Handle player movement
   useEffect(() => {
-    console.log('handlePlayerMovement');
+    // When player finishes moving, set player's animation back to idle
+    const playerSpriteSheetContainer = document.getElementById(
+      `spritesheet_container_${player.entityType}_${player.id}`
+    );
+
+    if (!playerSpriteSheetContainer) {
+      console.error('Player spritesheet container not found!');
+      return;
+    }
 
     const handlePlayerPathMovement = () => {
+      console.log('handlePlayerMovement');
       if (playerMovementPath.length > 0) {
         const [row, col] = playerMovementPath[0];
+
+        // Update player walking animation direction based on movement path
+        if (col < playerPosition[1]) {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
+          );
+          playerSpriteSheetContainer.classList.add(
+            'animate-entityAnimateLeft08'
+          );
+        } else {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
+          );
+          playerSpriteSheetContainer.classList.add('animate-entityAnimate08');
+        }
 
         // Update player's position in the entity positions map
         setRoomEntityPositions(
@@ -116,20 +146,25 @@ export const Room: FC<{
           setPlayerMovementPath(playerMovementPath.slice(1));
         }, 500);
       } else {
-        // When player finishes moving, set player's animation back to idle
-        const playerSpriteSheetContainer = document.getElementById(
-          `spritesheet_container_${player.entityType}_${player.id}`
-        );
-
-        if (!playerSpriteSheetContainer) {
-          console.error('Player spritesheet container not found!');
-          return;
-        }
-
-        playerSpriteSheetContainer.classList.remove('animate-entityIdle08');
-
+        // Remove walking animation and set player back to idle depending on direction (left or right)
         playerSpriteSheetContainer.style.top = '0px';
-        playerSpriteSheetContainer.classList.add('animate-entityIdle20');
+        if (
+          playerSpriteSheetContainer.classList.contains(
+            'animate-entityAnimateLeft08'
+          )
+        ) {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
+          );
+          playerSpriteSheetContainer.classList.add(
+            'animate-entityAnimateLeft20'
+          );
+        } else {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
+        }
       }
     };
 
@@ -750,10 +785,10 @@ export const Room: FC<{
     // console.log('playerSpriteSheetContainer', playerSpriteSheetContainer);
 
     // Set player animation to walking by increasing animtions sprite x axis change speed and shifting position downwards on the spritesheet
-    playerSpriteSheetContainer.classList.remove('animate-entityIdle20');
+    playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
+    playerSpriteSheetContainer.classList.remove('animate-entityAnimateLeft20');
 
     playerSpriteSheetContainer.style.top = '-' + player.sprite_size + 'px';
-    playerSpriteSheetContainer.classList.add('animate-entityIdle08');
 
     setPlayerMovementPath(path);
     setPlayerState({

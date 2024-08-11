@@ -28,13 +28,29 @@ export default {
         entityIdle: {
           '0%': { transform: 'translate3d(0,0,0)' },
           '100%': { transform: 'translate3d(-100%,0,0)' },
-        }
+        },
+        entityAnimate: {
+          '0%': { transform: 'translate3d(0,0,0)' },
+          '100%': { transform: 'translate3d(-100%,0,0)' },
+        },
+        entityAnimateLeft: {
+          '0%': { transform: 'translate3d(0,0,0) scaleX(-1)' },
+          '100%': { transform: 'translate3d(-100%,0,0) scaleX(-1)' },
+        },
       },
       animation: {
         floatUpAndFadeOut: 'floatUpAndFadeOut 1.5s linear',
         entityIdle05: 'entityIdle 0.5s steps(6) infinite',
         entityIdle08: 'entityIdle 0.8s steps(6) infinite',
         entityIdle20: 'entityIdle 2s steps(6) infinite',
+
+        entityAnimate05: 'entityAnimate 0.5s steps(6) infinite',
+        entityAnimate08: 'entityAnimate 0.8s steps(6) infinite',
+        entityAnimate20: 'entityAnimate 2s steps(6) infinite',
+
+        entityAnimateLeft05: 'entityAnimateLeft 0.5s steps(6) infinite',
+        entityAnimateLeft08: 'entityAnimateLeft 0.8s steps(6) infinite',
+        entityAnimateLeft20: 'entityAnimateLeft 2s steps(6) infinite',
       }
     },
   },
