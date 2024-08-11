@@ -55,31 +55,31 @@ export const RoomTileSprites: FC = () => {
             return null;
           }
 
+          if (sprite === null) {
+            return null;
+          }
+
           return (
-            <>
-              {sprite !== null ? (
-                <Sprite
-                  key={`tile_sprite_${rowIndex}_${columnIndex}`}
-                  id={`tile_sprite_${tileID}`}
-                  sprite={sprite}
-                  backgroundSprite={
-                    // Bottom, left, right wall IDs
-                    [2, 66, 67].includes(tileID)
-                      ? SPRITE_ID.CELLAR_FLOOR_001
-                      : // Door IDs - Door background sprite is the same as wall sprite
-                        // Top door IDs
-                        [365, 366, 367].includes(tileID)
-                        ? SPRITE_ID.CELLAR_WALL_005
-                        : // Bottom door IDs
-                          [396, 398].includes(tileID)
-                          ? SPRITE_ID.CELLAR_WALL_035
-                          : undefined
-                  }
-                  width={TILE_SIZE}
-                  height={TILE_SIZE}
-                />
-              ) : null}
-            </>
+            <Sprite
+              key={`tile_sprite_${rowIndex}_${columnIndex}`}
+              id={`tile_sprite_${tileID}`}
+              sprite={sprite}
+              backgroundSprite={
+                // Bottom, left, right wall IDs
+                [2, 66, 67].includes(tileID)
+                  ? SPRITE_ID.CELLAR_FLOOR_001
+                  : // Door IDs - Door background sprite is the same as wall sprite
+                    // Top door IDs
+                    [365, 366, 367].includes(tileID)
+                    ? SPRITE_ID.CELLAR_WALL_005
+                    : // Bottom door IDs
+                      [396, 398].includes(tileID)
+                      ? SPRITE_ID.CELLAR_WALL_035
+                      : undefined
+              }
+              width={TILE_SIZE}
+              height={TILE_SIZE}
+            />
           );
         });
       })}

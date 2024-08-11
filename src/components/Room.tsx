@@ -44,6 +44,12 @@ export const Room: FC<{
   const [effectZoneHovered, setEffectZoneHovered] = useState<
     [number, number] | null
   >(null);
+
+  // For handling player movement
+  const [playerMovementPath, setPlayerMovementPath] = useState<
+    [number, number][]
+  >([]);
+
   const targetZones = useRef<[number, number][]>([]); // saves the target zones (row, col) for AOE skills
 
   const {
@@ -76,6 +82,94 @@ export const Room: FC<{
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
 
   const { addLog } = useLogStore();
+
+  // When player movement path changes,
+  // Handle player movement
+  useEffect(() => {
+    // When player finishes moving, set player's animation back to idle
+    const playerSpriteSheetContainer = document.getElementById(
+      `spritesheet_container_${player.entityType}_${player.id}`
+    );
+
+    if (!playerSpriteSheetContainer) {
+      console.error('Player spritesheet container not found!');
+      return;
+    }
+
+    const handlePlayerPathMovement = () => {
+      console.log('handlePlayerMovement');
+      if (playerMovementPath.length > 0) {
+        const [row, col] = playerMovementPath[0];
+
+        // Update player walking animation direction based on movement path
+        if (col < playerPosition[1]) {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
+          );
+          playerSpriteSheetContainer.classList.add(
+            'animate-entityAnimateLeft08'
+          );
+        } else {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
+          );
+          playerSpriteSheetContainer.classList.add('animate-entityAnimate08');
+        }
+
+        // Update player's position in the entity positions map
+        setRoomEntityPositions(
+          updateRoomEntityPositions(
+            [row, col],
+            playerPosition,
+            roomEntityPositions
+          )
+        );
+
+        addLog({
+          message: (
+            <>
+              <span className="text-green-500">{player.name}</span> moved to
+              tile ({col}, {row})
+            </>
+          ),
+          type: 'info',
+        });
+
+        // Delete the first element in the path array
+        setTimeout(() => {
+          setPlayerMovementPath(playerMovementPath.slice(1));
+        }, 500);
+      } else {
+        // Remove walking animation and set player back to idle depending on direction (left or right)
+        playerSpriteSheetContainer.style.top = '0px';
+        if (
+          playerSpriteSheetContainer.classList.contains(
+            'animate-entityAnimateLeft08'
+          )
+        ) {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
+          );
+          playerSpriteSheetContainer.classList.add(
+            'animate-entityAnimateLeft20'
+          );
+        } else {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
+        }
+      }
+    };
+
+    handlePlayerPathMovement();
+  }, [playerMovementPath.length]);
 
   // When an enemy is defeated (i.e. removed from the game),
   // remove it from the room matrix,
@@ -155,7 +249,12 @@ export const Room: FC<{
     console.log('automaticallyEndPlayerTurn');
 
     const automaticallyEndPlayerTurn = () => {
-      if (player.actionPoints === 0 && !isRoomOver && enemies.length > 0) {
+      if (
+        player.actionPoints === 0 &&
+        playerMovementPath.length === 0 &&
+        !isRoomOver &&
+        enemies.length > 0
+      ) {
         handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
         addLog({
           message: (
@@ -169,7 +268,12 @@ export const Room: FC<{
       }
     };
     automaticallyEndPlayerTurn();
-  }, [player.actionPoints, isRoomOver, enemies.length]);
+  }, [
+    player.actionPoints,
+    playerMovementPath.length,
+    isRoomOver,
+    enemies.length,
+  ]);
 
   // When turn cycle changes,
   // Handle DoT effects,
@@ -205,7 +309,7 @@ export const Room: FC<{
             affectedEnemy.health = damageEntity(
               affectedEnemy,
               totalDamage,
-              `${enemy.entityType}_${enemy.id}`
+              `tile_${enemy.entityType}_${enemy.id}`
             );
 
             if (affectedEnemy.health <= 0) {
@@ -255,7 +359,7 @@ export const Room: FC<{
           affectedPlayer.health = damageEntity(
             affectedPlayer,
             totalDamage,
-            `${player.entityType}_${player.id}`
+            `tile_${player.entityType}_${player.id}`
           );
           // affectedPlayer.health -= totalDamage;
 
@@ -449,7 +553,7 @@ export const Room: FC<{
               displayStatusEffect(
                 status,
                 false,
-                `${enemy.entityType}_${enemy.id}`
+                `tile_${enemy.entityType}_${enemy.id}`
               );
               return false;
             }
@@ -528,11 +632,12 @@ export const Room: FC<{
     Map<string, [number, number][]>,
     Map<string, number>,
   ] = useMemo(() => {
-    console.log('playerMovementPossibilities');
+    // console.log('playerMovementPossibilities');
     const movementPossibilities = findPathsFromCurrentLocation(
       playerPosition,
       roomTileMatrix,
-      player.actionPoints
+      player.actionPoints,
+      roomEntityPositions
     );
 
     const apCostForMovementPossibilities = getApCostForPath(
@@ -574,7 +679,7 @@ export const Room: FC<{
       newEnemy.health = damageEntity(
         newEnemy,
         totalDamage,
-        `${enemy.entityType}_${enemy.id}`
+        `tile_${enemy.entityType}_${enemy.id}`
       );
       // newEnemy.health = newEnemy.health - totalDamage;
 
@@ -592,7 +697,7 @@ export const Room: FC<{
         newPlayer.health = healEntity(
           newPlayer,
           lifestealAmount,
-          `${player.entityType}_${player.id}`
+          `tile_${player.entityType}_${player.id}`
         );
       }
 
@@ -651,27 +756,48 @@ export const Room: FC<{
       return;
     }
 
-    // Update player's position in the entity positions map
-    setRoomEntityPositions(
-      updateRoomEntityPositions([row, col], playerPosition, roomEntityPositions)
+    if (playerMovementPossibilities[0].size === 0) {
+      addLog({
+        message: 'No available movement possibilities!',
+        type: 'error',
+      });
+      return;
+    }
+
+    const path = playerMovementPossibilities[0].get(`${row},${col}`);
+
+    if (!path) {
+      addLog({ message: 'Invalid movement!', type: 'error' });
+      return;
+    }
+
+    // Set player animation to walking animation
+
+    // Get spritesheet container
+    const playerSpriteSheetContainer = document.getElementById(
+      `spritesheet_container_${player.entityType}_${player.id}`
     );
 
-    addLog({
-      message: (
-        <>
-          <span className="text-green-500">{player.name}</span> moved to tile (
-          {col}, {row}).
-        </>
-      ),
-      type: 'info',
-    });
-    if (!isRoomOver) {
-      setPlayerActionPoints(player.actionPoints - playerMovementAPCost);
+    if (!playerSpriteSheetContainer) {
+      console.error('Player spritesheet container not found!');
+      return;
     }
+
+    // console.log('playerSpriteSheetContainer', playerSpriteSheetContainer);
+
+    // Set player animation to walking by increasing animtions sprite x axis change speed and shifting position downwards on the spritesheet
+    playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
+    playerSpriteSheetContainer.classList.remove('animate-entityAnimateLeft20');
+
+    playerSpriteSheetContainer.style.top = '-' + player.sprite_size + 'px';
+
+    setPlayerMovementPath(path);
     setPlayerState({
       ...player.state,
       isMoving: false,
     });
+
+    setPlayerActionPoints(player.actionPoints - playerMovementAPCost);
   };
 
   // Handle enemy movement (naive)
@@ -987,7 +1113,8 @@ export const Room: FC<{
                 // Check for the specific skill's effect zone
                 switch (skill.id) {
                   case SKILL_ID.FLY:
-                    // For fly, player can target any empty tile that does not have an entity
+                    // For movement skills like fly, leap slam, and flame dive, player can target any empty tile that does not have an entity
+                    // Leap Slam and Flame Dive handled in the AOE case
                     if (
                       tileType === TILE_TYPE.FLOOR &&
                       !entityIfExists &&
@@ -1028,15 +1155,43 @@ export const Room: FC<{
                   }
                 }
 
-                if (
-                  rowIndex >= playerRow - range &&
-                  rowIndex <= playerRow + range &&
-                  columnIndex >= playerCol - range &&
-                  columnIndex <= playerCol + range &&
-                  (!(rowIndex === playerRow && columnIndex === playerCol) ||
-                    skill.id === SKILL_ID.FIREBALL) // For fireball, player can target themselves
-                ) {
-                  isEffectZone = true;
+                // Determine if tile is in effect zone
+                switch (skill.id) {
+                  case SKILL_ID.FIREBALL:
+                    if (
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
+                  case SKILL_ID.LEAP_SLAM:
+                  case SKILL_ID.FLAME_DIVE:
+                    if (
+                      tileType === TILE_TYPE.FLOOR &&
+                      !entityIfExists &&
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
+                  default:
+                    if (
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range &&
+                      !(rowIndex === playerRow && columnIndex === playerCol) // For fireball, player can target themselves
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
                 }
 
                 // Compute target zone based on the specific skill requirement

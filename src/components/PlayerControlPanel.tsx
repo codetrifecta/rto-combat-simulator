@@ -382,7 +382,7 @@ export const PlayerControlPanel: FC = () => {
                     healEntity(
                       newPlayer,
                       healAmount,
-                      `${newPlayer.entityType}_${newPlayer.id}`
+                      `tile_${newPlayer.entityType}_${newPlayer.id}`
                     );
                   }}
                   disabled={disabled || player.healthPotions === 0}
