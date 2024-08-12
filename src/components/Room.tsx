@@ -34,6 +34,7 @@ import {
   findPathsFromCurrentLocation,
   getApCostForPath,
 } from '../utils/pathfinding';
+import { getVisionFromEntityPosition } from '../utils/vision';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -640,6 +641,32 @@ export const Room: FC<{
     }
   }, [player, roomEntityPositions]);
 
+  // Get player's vision range for weapon attack
+  const playerVisionRange = useMemo(() => {
+    if (player) {
+      const weapon = player.equipment.weapon;
+
+      if (!weapon) {
+        return;
+      }
+
+      const weaponRange = weapon.range;
+
+      const visionRangeForWeaponAttack = getVisionFromEntityPosition(
+        roomTileMatrix,
+        playerPosition,
+        weaponRange,
+        roomEntityPositions
+        // 360,
+        // 20
+      );
+
+      // console.log('visionRangeForWeaponAttack', visionRangeForWeaponAttack);
+
+      return visionRangeForWeaponAttack;
+    }
+  }, [player.state.isAttacking]);
+
   // Get player's available movement possibilities (based on player's action points)
   const playerMovementPossibilities: [
     Map<string, [number, number][]>,
@@ -1085,13 +1112,20 @@ export const Room: FC<{
           // Check if player is attacking (basic attack)
           // Highlight tiles that can be attacked by player based on weapon range
           if (player.state.isAttacking && player.equipment.weapon) {
-            const range = player.equipment.weapon.range;
+            // const weaponRange = player.equipment.weapon.range;
+
+            // if (
+            //   rowIndex >= playerRow - weaponRange &&
+            //   rowIndex <= playerRow + weaponRange &&
+            //   columnIndex >= playerCol - weaponRange &&
+            //   columnIndex <= playerCol + weaponRange
+            // ) {
+            //   isEffectZone = true;
+            // }
 
             if (
-              rowIndex >= playerRow - range &&
-              rowIndex <= playerRow + range &&
-              columnIndex >= playerCol - range &&
-              columnIndex <= playerCol + range
+              playerVisionRange &&
+              playerVisionRange[rowIndex][columnIndex] === true
             ) {
               isEffectZone = true;
             }
