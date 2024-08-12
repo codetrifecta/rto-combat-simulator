@@ -336,11 +336,11 @@ export const Room: FC<{
 
               const damagedEnemy = setEnemy(affectedEnemy);
 
-              handleEnemyEndTurn(damagedEnemy);
+              handleEnemyTurn(damagedEnemy);
             }
           }, 1000);
         } else {
-          handleEnemyEndTurn(affectedEnemy);
+          handleEnemyTurn(affectedEnemy);
         }
       } else if (
         turnCycle.length > 0 &&
@@ -391,7 +391,7 @@ export const Room: FC<{
     };
 
     // Handle enemy's action and end turn
-    const handleEnemyEndTurn = (affectedEnemy: IEnemy) => {
+    const handleEnemyTurn = (affectedEnemy: IEnemy) => {
       if (
         turnCycle.length > 0 &&
         turnCycle[0].entityType === ENTITY_TYPE.ENEMY &&
@@ -446,6 +446,19 @@ export const Room: FC<{
           if (!cannotMove) {
             setTimeout(() => {
               enemyPosition = handleEnemyMovement(affectedEnemy);
+
+              // Remove walking animation and set enemy back to idle depending on direction (left or right)
+              setTimeout(() => {
+                const enemySpriteSheetContainer = document.getElementById(
+                  `spritesheet_container_${enemy.entityType}_${enemy.id}`
+                );
+                if (!enemySpriteSheetContainer) {
+                  console.error('Enemy spritesheet container not found!');
+                  return;
+                }
+
+                enemySpriteSheetContainer.style.top = '0px';
+              }, 500);
 
               // Make enemy attack player if they can attack
               if (!cannotAttack) {
@@ -834,6 +847,30 @@ export const Room: FC<{
       // Do nothing if random move is out of bounds or not an empty tile
       return;
     }
+
+    // Change class of enemy sprite to animate movement
+    const enemySpriteSheetContainer = document.getElementById(
+      `spritesheet_container_${enemy.entityType}_${enemy.id}`
+    );
+
+    if (!enemySpriteSheetContainer) {
+      console.error('Enemy spritesheet container not found!');
+      return;
+    }
+
+    // Update enemy walking animation direction based on movement path
+    if (randomMove[1] < enemyCol) {
+      enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
+      enemySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+    } else {
+      enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
+      enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
+    }
+
+    // Change spritesheet position to animate movement
+    enemySpriteSheetContainer.style.top = '-' + enemy.sprite_size + 'px';
 
     // Update room matrix to move enemy to random adjacent tile
     if (randomMove[0] >= 0 && randomMove[0] < roomLength) {
