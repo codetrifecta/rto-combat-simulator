@@ -1,14 +1,23 @@
+import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_TYPE } from '../constants/tile';
 
-// Function to cast a ray from the current position in a specific direction based on angle input in radians (angleRad)
-// Takes in the room, current position (locRow and locCol), and the max distance of the skill (skillDistance)
-// NOTE: angle rad/deg = 0, is south direction and turns counterclockwise.
+/**
+ * Function to cast a ray from the current position in a specific direction based on angle input in radians (angleRad).
+ * NOTE: angle rad/deg = 0, is south direction and turns counterclockwise.
+ * @param room - 2D matrix of type [TILE_TYPE, number][][]
+ * @param startRow - The starting row of the player/enemy in the room
+ * @param startCol - The starting column of the player/enemy in the room
+ * @param angleRad - The angle at which the ray is being cast (in radians)
+ * @param skillRadius - The range of the skill set for maximum distance to cast ray
+ * @param roomEntityPositions - The location of any enities in the room (player/enemy), type Map<string, [ENTITY_TYPE, number]>
+ */
 function castRayAtAngle(
   room: [TILE_TYPE, number][][],
   startRow: number,
   startCol: number,
   angleRad: number,
-  skillRadius: number
+  skillRadius: number,
+  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
 ): boolean[][] {
   // Initialize a boolean array of size room and fill with false.
   const visibleTiles: boolean[][] = Array.from({ length: room.length }, () =>
@@ -46,6 +55,11 @@ function castRayAtAngle(
     // If the current tile is a wall, break
     if (room[currentRow][currentCol][0] == TILE_TYPE.WALL) {
       break;
+    } else {
+      // If current tile has an entity
+      if (roomEntityPositions.has(`${currentRow},${currentCol}`)) {
+        break;
+      }
     }
 
     // Increment the ray length in the direction of the direction vector
@@ -56,14 +70,21 @@ function castRayAtAngle(
   return visibleTiles;
 }
 
-// Function to determine which tiles from startLoc (player or enemy) are valid for skill range (skillDistance).
-// numRays is the number of rays to cast (default 360)
-// NOTE: angle rad/deg = 0, is south direction and turns counterclockwise.
+/**
+ * Function to determine which tiles from startLoc (player or enemy) are valid for skill range (skillDistance).
+ * NOTE: angle rad/deg = 0, is south direction and turns counterclockwise.
+ * @param room - 2D matrix of type [TILE_TYPE, number][][]
+ * @param startLoc - The starting location of the player/enemy in the room
+ * @param numRays - The number of rays set to cover in 360 degrees (default 360 deg for 1 deg intervals)
+ * @param skillRadius - The range of the skill set for maximum distance to cast ray
+ * @param roomEntityPositions - The location of any enities in the room (player/enemy), type Map<string, [ENTITY_TYPE, number]>
+ */
 export function visionForSkills(
   room: [TILE_TYPE, number][][],
   startLoc: [number, number],
-  numRays: number,
-  skillRadius: number
+  numRays: number = 360,
+  skillRadius: number,
+  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
 ): boolean[][] {
   // Initialize a boolean array of size room and fill with false.
   const validTiles: boolean[][] = Array.from({ length: room.length }, () =>
@@ -79,7 +100,8 @@ export function visionForSkills(
       startRow,
       startCol,
       angleRad,
-      skillRadius
+      skillRadius,
+      roomEntityPositions
     ); // Get grid of size room filled with true/false
 
     // Combine the rayValidTile maps from each ray into validTiles
