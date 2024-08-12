@@ -117,11 +117,11 @@ export const EntitySpritePositions: FC<{
             width:
               enemy.sprite_size < TILE_SIZE
                 ? enemy.sprite_size
-                : TILE_SIZE * 1.5,
+                : TILE_SIZE * 1.8,
             height:
               enemy.sprite_size < TILE_SIZE
                 ? enemy.sprite_size
-                : TILE_SIZE * 1.7,
+                : TILE_SIZE * 1.8,
           }}
         >
           <div
@@ -135,9 +135,11 @@ export const EntitySpritePositions: FC<{
               id={`spritesheet_container_${enemy.entityType}_${enemy.id}`}
               className="animate-entityAnimate08"
               style={{
+                position: 'absolute',
                 width: spriteSheetWidth,
                 height: spriteSheetHeight,
-                left: -10,
+                top: 0,
+                // left: -10,
               }}
             >
               <Sprite
