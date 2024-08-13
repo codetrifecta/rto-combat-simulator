@@ -2,14 +2,15 @@ import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_TYPE } from '../constants/tile';
 
 /**
- * Function to cast a ray from the current position in a specific direction based on angle input in radians (angleRad).
+ * Helper function to cast a ray from the current position in a specific (one) direction based on angle input in radians (angleRad).
  * NOTE: angle rad/deg = 0, is south direction and turns counterclockwise.
  * @param room - 2D matrix of type [TILE_TYPE, number][][]
  * @param startRow - The starting row of the player/enemy in the room
  * @param startCol - The starting column of the player/enemy in the room
  * @param angleRad - The angle at which the ray is being cast (in radians)
  * @param skillRadius - The range of the skill set for maximum distance to cast ray
- * @param roomEntityPositions - The location of any enities in the room (player/enemy), type Map<string, [ENTITY_TYPE, number]>
+ * @param roomEntityPositions - The location of any enities in the room (player/enemy), of type Map<string, [ENTITY_TYPE, number]>
+ * @returns A boolean grid of size room, with the tiles the entity (player/enemy) can "see" having true and the ones they can't having false, in the direction set by angleRad.
  */
 function castRayAtAngle(
   room: [TILE_TYPE, number][][],
@@ -33,25 +34,29 @@ function castRayAtAngle(
   let rayCol = startCol + 0.5;
 
   // Iterate through each tile in one direction (based on angleRad) over the skill distance
-  for (let tile = 0; tile <= skillRadius; tile++) {
+  for (let tile = 0; tile <= skillRadius + 1; tile++) {
     // Get current location row and colum and revert from float to integer, rounded down
     const currentRow = Math.floor(rayRow);
     const currentCol = Math.floor(rayCol);
 
-    // If current row and column is the starting location, continue
+    // If current row and column is the starting location, increment ray length and continue
     if (currentRow === startRow && currentCol === startCol) {
       rayRow += dRow;
       rayCol += dCol;
       continue;
     }
 
-    // If the current row and column are NOT valid, and the current tile is NOT within the bounds of the room, break
+    // If the current row and column are NOT valid, and the current tile is NOT within the bounds of the skill radius, break
     if (
       !(
-        currentRow >= 0 &&
-        currentCol >= 0 &&
-        currentRow < room.length &&
-        currentCol < room[currentRow].length
+        (
+          currentRow >= 0 &&
+          currentCol >= 0 &&
+          currentRow <= startRow + skillRadius && // Current row is between startRow +- skillRadius
+          currentRow >= startRow - skillRadius && // Current row is between startRow +- skillRadius
+          currentCol <= startCol + skillRadius && // Current column is between startRow +- skillRadius
+          currentCol >= startCol - skillRadius
+        ) // Current column is between startRow +- skillRadius
       )
     ) {
       break;
@@ -63,7 +68,7 @@ function castRayAtAngle(
     if (room[currentRow][currentCol][0] === TILE_TYPE.WALL) {
       break;
     } else {
-      // If current tile has an entity
+      // If current tile is a floor but has an entity
       if (roomEntityPositions.has(`${currentRow},${currentCol}`)) {
         break;
       }
@@ -83,8 +88,9 @@ function castRayAtAngle(
  * @param room - 2D matrix of type [TILE_TYPE, number][][]
  * @param startLoc - The starting location of the player/enemy in the room
  * @param skillRadius - The range of the skill set for maximum distance to cast ray
- * @param roomEntityPositions - The location of any enities in the room (player/enemy), type Map<string, [ENTITY_TYPE, number]>
+ * @param roomEntityPositions - The location of any enities in the room (player/enemy), of type Map<string, [ENTITY_TYPE, number]>
  * @param numRays - The number of rays set to cover in 360 degrees (default 360 deg for 1 deg intervals)
+ * @returns A boolean grid of size room, with the tiles the entity (player/enemy) can "see" having true and the ones they can't having false for the entire room.
  */
 export function getVisionFromEntityPosition(
   room: [TILE_TYPE, number][][],
@@ -135,43 +141,43 @@ export function getVisionFromEntityPosition(
 //   DOOR = 2,
 // }
 
-const room: [TILE_TYPE, number][][] = [
-  [
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-  ],
-  [
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.WALL, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.WALL, 1],
-    [TILE_TYPE.FLOOR, 1],
-  ],
-  [
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.WALL, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.WALL, 1],
-    [TILE_TYPE.FLOOR, 1],
-  ],
-  [
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.WALL, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-  ],
-  [
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-    [TILE_TYPE.FLOOR, 1],
-  ],
-];
+// const room: [TILE_TYPE, number][][] = [
+//   [
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//   ],
+//   [
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.WALL, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.WALL, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//   ],
+//   [
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.WALL, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.WALL, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//   ],
+//   [
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.WALL, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//   ],
+//   [
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//     [TILE_TYPE.FLOOR, 1],
+//   ],
+// ];
 
 // // Room with all floors
 // const room: [TILE_TYPE, number][][] = [
@@ -230,58 +236,58 @@ const room: [TILE_TYPE, number][][] = [
 //   ]
 //   */
 
-console.log(room);
+// console.log(room);
 
-const startLoc: [number, number] = [2, 2];
-const numRays = 360; // Number of rays (1 degree interval), default 360
-const skillRadius = 5; // Skill radius distance
+// const startLoc: [number, number] = [2, 2];
+// const numRays = 360; // Number of rays (1 degree interval), default 360
+// const skillRadius = 5; // Skill radius distance
 
-const MOCK_ROOM_ENTITY_POSITIONS = new Map<string, [ENTITY_TYPE, number]>();
-MOCK_ROOM_ENTITY_POSITIONS.set(`${startLoc[0]},${startLoc[1]}`, [
-  ENTITY_TYPE.PLAYER,
-  1,
-]);
-MOCK_ROOM_ENTITY_POSITIONS.set(`1,2`, [ENTITY_TYPE.ENEMY, 1]);
-MOCK_ROOM_ENTITY_POSITIONS.set(`3,1`, [ENTITY_TYPE.ENEMY, 1]);
+// const MOCK_ROOM_ENTITY_POSITIONS = new Map<string, [ENTITY_TYPE, number]>();
+// MOCK_ROOM_ENTITY_POSITIONS.set(`${startLoc[0]},${startLoc[1]}`, [
+//   ENTITY_TYPE.PLAYER,
+//   1,
+// ]);
+// MOCK_ROOM_ENTITY_POSITIONS.set(`1,2`, [ENTITY_TYPE.ENEMY, 1]);
+// MOCK_ROOM_ENTITY_POSITIONS.set(`3,1`, [ENTITY_TYPE.ENEMY, 1]);
 
-const validityMap = getVisionFromEntityPosition(
-  room,
-  startLoc,
-  skillRadius,
-  MOCK_ROOM_ENTITY_POSITIONS,
-  numRays
-);
-console.log('validityMap\n', validityMap);
+// const validityMap = getVisionFromEntityPosition(
+//   room,
+//   startLoc,
+//   skillRadius,
+//   MOCK_ROOM_ENTITY_POSITIONS,
+//   numRays
+// );
+// console.log('validityMap\n', validityMap);
 
-// Output the grid
-for (let i = 0; i < room.length; i++) {
-  let row = '[ ';
-  for (let j = 0; j < room[i].length; j++) {
-    if (validityMap[i][j]) {
-      // If the tile is visible
-      if (room[i][j][0] == TILE_TYPE.FLOOR) {
-        // If the tile is a floor
-        row += '. ';
-      } else {
-        // If the tile is a wall
-        row += '# ';
-      }
-    } else {
-      // If the tile is not visible
-      row += 'X ';
-    }
-  }
-  row += ']';
-  console.log(row);
-}
+// // Output the grid
+// for (let i = 0; i < room.length; i++) {
+//   let row = '[ ';
+//   for (let j = 0; j < room[i].length; j++) {
+//     if (validityMap[i][j]) {
+//       // If the tile is visible
+//       if (room[i][j][0] == TILE_TYPE.FLOOR) {
+//         // If the tile is a floor
+//         row += '. ';
+//       } else {
+//         // If the tile is a wall
+//         row += '# ';
+//       }
+//     } else {
+//       // If the tile is not visible
+//       row += 'X ';
+//     }
+//   }
+//   row += ']';
+//   console.log(row);
+// }
 
-// Expected grid
-/*
-  [
-    [X  .  .  .  X],
-    [X  #  .  #  X],
-    [X  #  @  #  X],
-    [.  .  #  .  .],
-    [.  .  X  .  .]
-  ]
-  */
+// // Expected grid
+// /*
+//   [
+//     [X  .  .  .  X],
+//     [X  #  .  #  X],
+//     [X  #  @  #  X],
+//     [.  .  #  .  .],
+//     [.  .  X  .  .]
+//   ]
+//   */
