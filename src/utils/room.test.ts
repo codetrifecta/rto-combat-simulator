@@ -1,6 +1,7 @@
 import { TILE_TYPE } from '../constants/tile';
 import { describe, expect, it } from 'vitest';
-import { initRoomWithOnlyFloors } from './room';
+import { initRoomWithOnlyFloors, roomToStringArray } from './room';
+import { ENTITY_TYPE } from '../constants/entity';
 
 describe('Initialize Floor-Only Room', () => {
   it('returns a 1x1 2D array of floor tiles', () => {
@@ -65,5 +66,92 @@ describe('Initialize Floor-Only Room', () => {
     }
 
     expect(isFloor).toBe(true);
+  });
+});
+
+describe('Print Room', () => {
+  it('prints a 1x1 room with no entities', () => {
+    const room = initRoomWithOnlyFloors(1);
+    const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>();
+
+    const roomStrArr = roomToStringArray(room, roomEntityPositions);
+
+    expect(roomStrArr).toStrictEqual([' . ']);
+  });
+
+  it('prints a 3x3 room with no entities', () => {
+    const room = initRoomWithOnlyFloors(3);
+    const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>();
+
+    const roomStrArr = roomToStringArray(room, roomEntityPositions);
+
+    expect(roomStrArr).toStrictEqual([' . . . ', ' . . . ', ' . . . ']);
+  });
+
+  it('prints a 7x7 room with some walls', () => {
+    const room = initRoomWithOnlyFloors(7);
+    room[2][2] = [TILE_TYPE.WALL, 1];
+    room[2][3] = [TILE_TYPE.WALL, 1];
+    room[2][4] = [TILE_TYPE.WALL, 1];
+
+    const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>();
+
+    const roomStrArr = roomToStringArray(room, roomEntityPositions);
+
+    expect(roomStrArr).toStrictEqual([
+      ' . . . . . . . ',
+      ' . . . . . . . ',
+      ' . . # # # . . ',
+      ' . . . . . . . ',
+      ' . . . . . . . ',
+      ' . . . . . . . ',
+      ' . . . . . . . ',
+    ]);
+  });
+
+  it('prints a 7x7 room with some walls and player entity', () => {
+    const room = initRoomWithOnlyFloors(7);
+    room[2][2] = [TILE_TYPE.WALL, 1];
+    room[2][3] = [TILE_TYPE.WALL, 1];
+    room[2][4] = [TILE_TYPE.WALL, 1];
+
+    const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>();
+    roomEntityPositions.set('3,3', [ENTITY_TYPE.PLAYER, 1]);
+
+    const roomStrArr = roomToStringArray(room, roomEntityPositions);
+
+    expect(roomStrArr).toStrictEqual([
+      ' . . . . . . . ',
+      ' . . . . . . . ',
+      ' . . # # # . . ',
+      ' . . . P . . . ',
+      ' . . . . . . . ',
+      ' . . . . . . . ',
+      ' . . . . . . . ',
+    ]);
+  });
+
+  it('prints a 7x7 room with some walls, player, and enemy entities', () => {
+    const room = initRoomWithOnlyFloors(7);
+    room[2][2] = [TILE_TYPE.WALL, 1];
+    room[2][3] = [TILE_TYPE.WALL, 1];
+    room[2][4] = [TILE_TYPE.WALL, 1];
+
+    const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>();
+    roomEntityPositions.set('3,3', [ENTITY_TYPE.PLAYER, 1]);
+    roomEntityPositions.set('3,5', [ENTITY_TYPE.ENEMY, 2]);
+    roomEntityPositions.set('5,6', [ENTITY_TYPE.ENEMY, 3]);
+
+    const roomStrArr = roomToStringArray(room, roomEntityPositions);
+
+    expect(roomStrArr).toStrictEqual([
+      ' . . . . . . . ',
+      ' . . . . . . . ',
+      ' . . # # # . . ',
+      ' . . . P . E . ',
+      ' . . . . . . . ',
+      ' . . . . . . E ',
+      ' . . . . . . . ',
+    ]);
   });
 });

@@ -8,8 +8,8 @@ const MOCK_ROOM = initRoomWithOnlyFloors(11);
 const MOCK_EMPTY_ROOM_ENTITY_POSITIONS: Map<string, [ENTITY_TYPE, number]> =
   new Map();
 
-describe('Pathfinding and cost for Movement', () => {
-  it('returns the path with no entities without walls', () => {
+describe('Pathfinding for Movement', () => {
+  it('returns path without entities without walls', () => {
     const startPos: [number, number] = [3, 3];
 
     const paths = findPathsFromCurrentLocation(
@@ -33,7 +33,7 @@ describe('Pathfinding and cost for Movement', () => {
     return true;
   });
 
-  it('returns the path with no entities with walls', () => {
+  it('returns path without entities with walls', () => {
     const startPos: [number, number] = [3, 3];
 
     const roomWithWalls = initRoomWithOnlyFloors(7);
@@ -62,7 +62,7 @@ describe('Pathfinding and cost for Movement', () => {
     return true;
   });
 
-  it('returns the path with just the player entity without walls', () => {
+  it('returns path with just the player entity without walls', () => {
     const startPos: [number, number] = [3, 3];
 
     const roomEntityPositions: Map<string, [ENTITY_TYPE, number]> = new Map();
@@ -89,7 +89,7 @@ describe('Pathfinding and cost for Movement', () => {
     return true;
   });
 
-  it('returns the path with player and enemy entities without walls', () => {
+  it('returns path with player and enemy entities without walls', () => {
     const startPos: [number, number] = [3, 3];
 
     const roomEntityPositions: Map<string, [ENTITY_TYPE, number]> = new Map();
@@ -122,7 +122,7 @@ describe('Pathfinding and cost for Movement', () => {
     return true;
   });
 
-  it('returns the path with player and enemy entities with walls', () => {
+  it('returns path with player and enemy entities with walls', () => {
     const startPos: [number, number] = [3, 3];
 
     const roomWithWalls = initRoomWithOnlyFloors(7);
@@ -141,8 +141,6 @@ describe('Pathfinding and cost for Movement', () => {
       1,
       roomEntityPositions
     );
-
-    console.log(roomWithWalls);
 
     // Starting position should not be in the paths
     expect(paths.get('3,3')).toBeUndefined();
@@ -171,7 +169,9 @@ describe('Pathfinding and cost for Movement', () => {
 
     return true;
   });
+});
 
+describe('AP Cost for Path', () => {
   it('returns the AP cost for the path', () => {
     const startPos: [number, number] = [3, 3];
 
