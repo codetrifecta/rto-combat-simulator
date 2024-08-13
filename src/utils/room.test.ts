@@ -2,7 +2,7 @@ import { TILE_TYPE } from '../constants/tile';
 import { describe, expect, it } from 'vitest';
 import { initRoomWithOnlyFloors } from './room';
 
-describe('Initialize Room', () => {
+describe('Initialize Floor-Only Room', () => {
   it('returns a 1x1 2D array of floor tiles', () => {
     const room = initRoomWithOnlyFloors(1);
 
