@@ -1,6 +1,6 @@
 import { findPathsFromCurrentLocation, getApCostForPath } from './pathfinding';
 import { describe, expect, it } from 'vitest';
-import { initRoomWithOnlyFloors } from './room';
+import { initRoomWithOnlyFloors /*roomToStringArray*/ } from './room';
 import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_TYPE } from '../constants/tile';
 
@@ -166,6 +166,8 @@ describe('Pathfinding for Movement', () => {
       [4, 3],
       [5, 3],
     ]);
+
+    // console.log(roomToStringArray(roomWithWalls, roomEntityPositions));
 
     return true;
   });
