@@ -1,6 +1,10 @@
 import { TILE_TYPE } from '../constants/tile';
 
-// Initialize room 2d array
+/**
+ * Initialize a room with only floor tiles
+ * @param size Size of the room
+ * @returns 2D array of floor tiles
+ */
 export function initRoomWithOnlyFloors(size: number): [TILE_TYPE, number][][] {
   const room_arr: [TILE_TYPE, number][][] = new Array(size);
 
