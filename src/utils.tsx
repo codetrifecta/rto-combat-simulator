@@ -436,7 +436,7 @@ export const damageEntity = (
       );
       playerSpriteSheetContainer.style.top =
         '-' + entity.sprite_size * 8 + 'px';
-      playerSpriteSheetContainer.style.left = 0 + 'px';
+      playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
       setTimeout(() => {
         playerSpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
@@ -519,8 +519,6 @@ export const damageEntity = (
       }
 
       // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
-      playerSpriteSheetContainer.style.top = 0 + 'px';
-      playerSpriteSheetContainer.style.left = 0 + 'px';
 
       if (
         playerSpriteSheetContainer.classList.contains(
@@ -531,6 +529,7 @@ export const damageEntity = (
           'animate-entityAnimateLeft08'
         );
         playerSpriteSheetContainer.style.top = 0 + 'px';
+        playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
         setTimeout(() => {
           playerSpriteSheetContainer.classList.add(
@@ -540,6 +539,7 @@ export const damageEntity = (
       } else {
         playerSpriteSheetContainer.classList.remove('animate-entityAnimate08');
         playerSpriteSheetContainer.style.top = 0 + 'px';
+        playerSpriteSheetContainer.style.left = 0 + 'px';
 
         setTimeout(() => {
           playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
