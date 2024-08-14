@@ -110,6 +110,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
+          playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
           playerSpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft08'
           );
@@ -120,6 +121,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
+          playerSpriteSheetContainer.style.left = '0px';
           playerSpriteSheetContainer.classList.add('animate-entityAnimate08');
         }
 
@@ -157,6 +159,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
+          playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
           playerSpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft20'
           );
@@ -164,6 +167,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimate08'
           );
+          playerSpriteSheetContainer.style.left = '0px';
           playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
         }
       }
@@ -459,6 +463,32 @@ export const Room: FC<{
                 }
 
                 enemySpriteSheetContainer.style.top = '0px';
+
+                // Update enemy walking animation direction based on movement path
+                if (
+                  enemySpriteSheetContainer.classList.contains(
+                    'animate-entityAnimateLeft08'
+                  )
+                ) {
+                  // If enemy is facing left, face left
+                  enemySpriteSheetContainer.classList.remove(
+                    'animate-entityAnimateLeft08'
+                  );
+                  enemySpriteSheetContainer.style.left =
+                    enemy.sprite_size + 'px';
+                  enemySpriteSheetContainer.classList.add(
+                    'animate-entityAnimateLeft08'
+                  );
+                } else {
+                  // If enemy is not facing left, face right
+                  enemySpriteSheetContainer.classList.remove(
+                    'animate-entityAnimate08'
+                  );
+                  enemySpriteSheetContainer.style.left = '0px';
+                  enemySpriteSheetContainer.classList.add(
+                    'animate-entityAnimate08'
+                  );
+                }
               }, 500);
 
               // Make enemy attack player if they can attack
@@ -889,10 +919,12 @@ export const Room: FC<{
     if (randomMove[1] < enemyCol) {
       enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
       enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
+      enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
       enemySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
     } else {
       enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
       enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
+      enemySpriteSheetContainer.style.left = '0px';
       enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
     }
 
