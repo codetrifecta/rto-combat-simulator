@@ -83,6 +83,7 @@ export const EntitySpritePositions: FC<{
                 width: player.sprite_size * 6,
                 height: player.sprite_size * 12,
                 top: 0,
+                left: 0,
               }}
             >
               <Sprite

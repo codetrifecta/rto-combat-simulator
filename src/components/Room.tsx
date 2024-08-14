@@ -109,6 +109,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
+          playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
           playerSpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft08'
           );
@@ -119,6 +120,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
+          playerSpriteSheetContainer.style.left = '0px';
           playerSpriteSheetContainer.classList.add('animate-entityAnimate08');
         }
 
@@ -156,6 +158,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
+          playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
           playerSpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft20'
           );
@@ -163,6 +166,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimate08'
           );
+          playerSpriteSheetContainer.style.left = '0px';
           playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
         }
       }
