@@ -65,12 +65,11 @@ export const EntitySpritePositions: FC<{
             height:
               player.sprite_size < TILE_SIZE
                 ? player.sprite_size
-                : TILE_SIZE * 1.7,
+                : TILE_SIZE * 1.5,
           }}
         >
-          {/* Animated Sprite */}
           <div
-            className="overflow-hidden"
+            className="absolute bottom-[10px] overflow-hidden"
             style={{
               width: player.sprite_size,
               height: player.sprite_size,
@@ -84,6 +83,7 @@ export const EntitySpritePositions: FC<{
                 width: player.sprite_size * 6,
                 height: player.sprite_size * 12,
                 top: 0,
+                left: 0,
               }}
             >
               <Sprite
@@ -139,7 +139,7 @@ export const EntitySpritePositions: FC<{
                 width: spriteSheetWidth,
                 height: spriteSheetHeight,
                 top: 0,
-                // left: -10,
+                left: 0,
               }}
             >
               <Sprite

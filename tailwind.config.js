@@ -1,24 +1,24 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       boxShadow: {
-        "intense-black": "0 0 5px 5px black",
-        "intense-white": "0 0 5px 5px white",
-        "intense-gray": "0 0 5px 5px gray",
-        "intense-red": "0 0 5px 5px red",
-        "intense-green": "0 0 5px 5px green",
-        "intense-blue": "0 0 5px 5px blue",
-        "intense-yellow": "0 0 5px 5px yellow",
+        'intense-black': '0 0 5px 5px black',
+        'intense-white': '0 0 5px 5px white',
+        'intense-gray': '0 0 5px 5px gray',
+        'intense-red': '0 0 5px 5px red',
+        'intense-green': '0 0 5px 5px green',
+        'intense-blue': '0 0 5px 5px blue',
+        'intense-yellow': '0 0 5px 5px yellow',
 
-        "mild-black": "0 0 2px 2px black",
-        "mild-white": "0 0 2px 2px white",
-        "mild-gray": "0 0 2px 2px gray",
-        "mild-red": "0 0 2px 2px red",
-        "mild-green": "0 0 2px 2px green",
-        "mild-blue": "0 0 2px 2px blue",
-        "mild-yellow": "0 0 2px 2px yellow",
+        'mild-black': '0 0 2px 2px black',
+        'mild-white': '0 0 2px 2px white',
+        'mild-gray': '0 0 2px 2px gray',
+        'mild-red': '0 0 2px 2px red',
+        'mild-green': '0 0 2px 2px green',
+        'mild-blue': '0 0 2px 2px blue',
+        'mild-yellow': '0 0 2px 2px yellow',
       },
       keyframes: {
         floatUpAndFadeOut: {
@@ -34,6 +34,10 @@ export default {
           '100%': { transform: 'translate3d(-100%,0,0)' },
         },
         entityAnimateLeft: {
+          '0%': { transform: 'translate3d(-100%,0,0) scaleX(-1)' },
+          '100%': { transform: 'translate3d(0,0,0) scaleX(-1)' },
+        },
+        playerAninmateLeft: {
           '0%': { transform: 'translate3d(0,0,0) scaleX(-1)' },
           '100%': { transform: 'translate3d(-100%,0,0) scaleX(-1)' },
         },
@@ -51,7 +55,7 @@ export default {
         entityAnimateLeft05: 'entityAnimateLeft 0.5s steps(6) infinite',
         entityAnimateLeft08: 'entityAnimateLeft 0.8s steps(6) infinite',
         entityAnimateLeft20: 'entityAnimateLeft 2s steps(6) infinite',
-      }
+      },
     },
   },
   plugins: [],
