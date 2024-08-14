@@ -462,6 +462,17 @@ export const Room: FC<{
                 }
 
                 enemySpriteSheetContainer.style.top = '0px';
+
+                if (
+                  enemySpriteSheetContainer.classList.contains(
+                    'animate-entityAnimateLeft08'
+                  )
+                ) {
+                  enemySpriteSheetContainer.style.left =
+                    enemy.sprite_size + 'px';
+                } else {
+                  enemySpriteSheetContainer.style.left = '0px';
+                }
               }, 500);
 
               // Make enemy attack player if they can attack
@@ -866,10 +877,12 @@ export const Room: FC<{
     if (randomMove[1] < enemyCol) {
       enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
       enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
+      enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
       enemySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
     } else {
       enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
       enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
+      enemySpriteSheetContainer.style.left = '0px';
       enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
     }
 
