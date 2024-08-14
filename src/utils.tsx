@@ -407,9 +407,103 @@ export const damageEntity = (
   entity: IPlayer | IEnemy,
   damage: number,
   elementID: string
-) => {
+): number => {
   // console.log('damageEntity', entity, damage, elementID);
   const newHealth = entity.health - damage;
+
+  // Change entity sprite to damaged sprite animation
+  if (entity.entityType === ENTITY_TYPE.PLAYER) {
+    console.log('Change entity to damaged sprite animation');
+    const playerSpriteSheetContainer = document.getElementById(
+      `spritesheet_container_${entity.entityType}_${entity.id}`
+    );
+
+    if (!playerSpriteSheetContainer) {
+      console.error('Player spritesheet container not found!');
+      return newHealth;
+    }
+
+    // console.log('playerSpriteSheetContainer', playerSpriteSheetContainer);
+
+    // Set entity animation to damaged by increasing changing animation speed,
+    // and shifting position downwards on the spritesheet
+    if (
+      playerSpriteSheetContainer.classList.contains(
+        'animate-entityAnimateLeft20'
+      )
+    ) {
+      playerSpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft20'
+      );
+      playerSpriteSheetContainer.style.top =
+        '-' + entity.sprite_size * 8 + 'px';
+      playerSpriteSheetContainer.style.left = 0 + 'px';
+
+      setTimeout(() => {
+        playerSpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
+    } else {
+      playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
+      playerSpriteSheetContainer.style.top =
+        '-' + entity.sprite_size * 8 + 'px';
+      playerSpriteSheetContainer.style.left = 0 + 'px';
+
+      setTimeout(() => {
+        playerSpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    }
+  } else {
+    console.log('Change entity to damaged sprite animation');
+  }
+
+  setTimeout(() => {
+    console.log('Revert entity back to idle sprite animation');
+
+    // Revert entity back to idle sprite animation
+    if (entity.entityType === ENTITY_TYPE.PLAYER) {
+      const playerSpriteSheetContainer = document.getElementById(
+        `spritesheet_container_${entity.entityType}_${entity.id}`
+      );
+
+      if (!playerSpriteSheetContainer) {
+        console.error('Player spritesheet container not found!');
+        return newHealth;
+      }
+
+      // console.log('playerSpriteSheetContainer', playerSpriteSheetContainer);
+
+      // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
+
+      playerSpriteSheetContainer.style.top = 0 + 'px';
+      playerSpriteSheetContainer.style.left = 0 + 'px';
+
+      if (
+        playerSpriteSheetContainer.classList.contains(
+          'animate-entityAnimateLeft08'
+        )
+      ) {
+        playerSpriteSheetContainer.classList.remove(
+          'animate-entityAnimateLeft08'
+        );
+        playerSpriteSheetContainer.style.top = 0 + 'px';
+
+        setTimeout(() => {
+          playerSpriteSheetContainer.classList.add(
+            'animate-entityAnimateLeft20'
+          );
+        }, 1);
+      } else {
+        playerSpriteSheetContainer.classList.remove('animate-entityAnimate08');
+        playerSpriteSheetContainer.style.top = 0 + 'px';
+
+        setTimeout(() => {
+          playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
+        }, 1);
+      }
+    } else {
+      console.log('Revert entity back to idle sprite animation');
+    }
+  }, 800);
 
   // Display damage numbers
   displayDamageNumbers(elementID, damage);
