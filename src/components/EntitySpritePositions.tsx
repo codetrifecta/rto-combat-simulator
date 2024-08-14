@@ -115,13 +115,9 @@ export const EntitySpritePositions: FC<{
           className="absolute flex justify-center items-center overflow-hidden"
           style={{
             width:
-              enemy.sprite_size < TILE_SIZE
-                ? enemy.sprite_size
-                : TILE_SIZE * 1.8,
+              enemy.sprite_size < TILE_SIZE ? enemy.sprite_size : TILE_SIZE * 3,
             height:
-              enemy.sprite_size < TILE_SIZE
-                ? enemy.sprite_size
-                : TILE_SIZE * 1.8,
+              enemy.sprite_size < TILE_SIZE ? enemy.sprite_size : TILE_SIZE * 4,
           }}
         >
           <div

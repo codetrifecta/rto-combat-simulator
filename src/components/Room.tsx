@@ -744,8 +744,29 @@ export const Room: FC<{
         );
       }
 
+      const newPlayerState = {
+        ...newPlayer.state,
+        isAttacking: false,
+        isMoving: false,
+        isUsingSkill: false,
+      };
+
       if (newEnemy.health <= 0) {
-        setEnemies(enemies.filter((e) => e.id !== entityId));
+        // Wait for defeat animation to end before removing enemy from room
+        setTimeout(() => {
+          setEnemies(enemies.filter((e) => e.id !== entityId));
+
+          if (!newPlayer.equipment.weapon) {
+            console.error('No weapon found');
+          } else {
+            setPlayer({
+              ...newPlayer,
+              actionPoints:
+                newPlayer.actionPoints - newPlayer.equipment.weapon.cost,
+              state: newPlayerState,
+            });
+          }
+        }, 1000);
         addLog({
           message: (
             <>
@@ -773,20 +794,15 @@ export const Room: FC<{
           ),
           type: 'info',
         });
+        setPlayer({
+          ...newPlayer,
+          actionPoints:
+            newPlayer.actionPoints - newPlayer.equipment.weapon.cost,
+        });
       }
 
-      setPlayer({
-        ...newPlayer,
-        actionPoints: newPlayer.actionPoints - newPlayer.equipment.weapon.cost,
-      });
+      setPlayerState(newPlayerState);
     }
-
-    setPlayerState({
-      ...player.state,
-      isAttacking: false,
-      isMoving: false,
-      isUsingSkill: false,
-    });
   };
 
   // Update room matrix when player moves
