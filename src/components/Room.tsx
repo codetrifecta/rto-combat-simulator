@@ -463,15 +463,30 @@ export const Room: FC<{
 
                 enemySpriteSheetContainer.style.top = '0px';
 
+                // Update enemy walking animation direction based on movement path
                 if (
                   enemySpriteSheetContainer.classList.contains(
                     'animate-entityAnimateLeft08'
                   )
                 ) {
+                  // If enemy is facing left, face left
+                  enemySpriteSheetContainer.classList.remove(
+                    'animate-entityAnimateLeft08'
+                  );
                   enemySpriteSheetContainer.style.left =
                     enemy.sprite_size + 'px';
+                  enemySpriteSheetContainer.classList.add(
+                    'animate-entityAnimateLeft08'
+                  );
                 } else {
+                  // If enemy is not facing left, face right
+                  enemySpriteSheetContainer.classList.remove(
+                    'animate-entityAnimate08'
+                  );
                   enemySpriteSheetContainer.style.left = '0px';
+                  enemySpriteSheetContainer.classList.add(
+                    'animate-entityAnimate08'
+                  );
                 }
               }, 500);
 

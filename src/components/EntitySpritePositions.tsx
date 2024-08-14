@@ -139,7 +139,7 @@ export const EntitySpritePositions: FC<{
                 width: spriteSheetWidth,
                 height: spriteSheetHeight,
                 top: 0,
-                // left: -10,
+                left: 0,
               }}
             >
               <Sprite

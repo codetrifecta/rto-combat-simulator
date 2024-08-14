@@ -1,4 +1,5 @@
 import { ENTITY_TYPE, STARTING_MAX_HEALTH } from './constants/entity';
+import { SPRITE_ID } from './constants/sprite';
 import { TILE_SIZE, TILE_TYPE } from './constants/tile';
 import { IEnemy, IEntity, IPlayer, IStatus } from './types';
 
@@ -423,9 +424,7 @@ export const damageEntity = (
       return newHealth;
     }
 
-    // console.log('playerSpriteSheetContainer', playerSpriteSheetContainer);
-
-    // Set entity animation to damaged by increasing changing animation speed,
+    // Set entity animation to damaged by changing animation speed,
     // and shifting position downwards on the spritesheet
     if (
       playerSpriteSheetContainer.classList.contains(
@@ -454,6 +453,55 @@ export const damageEntity = (
     }
   } else {
     console.log('Change entity to damaged sprite animation');
+
+    const enemySpriteSheetContainer = document.getElementById(
+      `spritesheet_container_${entity.entityType}_${entity.id}`
+    );
+
+    if (!enemySpriteSheetContainer) {
+      console.error('Enemy spritesheet container not found!');
+      return newHealth;
+    }
+
+    if (
+      enemySpriteSheetContainer.classList.contains(
+        'animate-entityAnimateLeft08'
+      )
+    ) {
+      enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
+      enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
+      switch (entity.sprite) {
+        case SPRITE_ID.ENEMY_017_B:
+          enemySpriteSheetContainer.style.top =
+            '-' + entity.sprite_size * 5 + 'px';
+          break;
+        default:
+          enemySpriteSheetContainer.style.top =
+            '-' + entity.sprite_size * 3 + 'px';
+          break;
+      }
+
+      setTimeout(() => {
+        enemySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
+    } else {
+      enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      enemySpriteSheetContainer.style.left = 0 + 'px';
+      switch (entity.sprite) {
+        case SPRITE_ID.ENEMY_017_B:
+          enemySpriteSheetContainer.style.top =
+            '-' + entity.sprite_size * 5 + 'px';
+          break;
+        default:
+          enemySpriteSheetContainer.style.top =
+            '-' + entity.sprite_size * 3 + 'px';
+          break;
+      }
+
+      setTimeout(() => {
+        enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    }
   }
 
   setTimeout(() => {
@@ -470,10 +518,7 @@ export const damageEntity = (
         return newHealth;
       }
 
-      // console.log('playerSpriteSheetContainer', playerSpriteSheetContainer);
-
       // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
-
       playerSpriteSheetContainer.style.top = 0 + 'px';
       playerSpriteSheetContainer.style.left = 0 + 'px';
 
@@ -501,7 +546,41 @@ export const damageEntity = (
         }, 1);
       }
     } else {
-      console.log('Revert entity back to idle sprite animation');
+      const enemySpriteSheetContainer = document.getElementById(
+        `spritesheet_container_${entity.entityType}_${entity.id}`
+      );
+
+      if (!enemySpriteSheetContainer) {
+        console.error('Enemy spritesheet container not found!');
+        return newHealth;
+      }
+
+      // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
+      if (
+        enemySpriteSheetContainer.classList.contains(
+          'animate-entityAnimateLeft08'
+        )
+      ) {
+        enemySpriteSheetContainer.classList.remove(
+          'animate-entityAnimateLeft08'
+        );
+        enemySpriteSheetContainer.style.top = 0 + 'px';
+        enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
+
+        setTimeout(() => {
+          enemySpriteSheetContainer.classList.add(
+            'animate-entityAnimateLeft08'
+          );
+        }, 1);
+      } else {
+        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+        enemySpriteSheetContainer.style.top = 0 + 'px';
+        enemySpriteSheetContainer.style.left = 0 + 'px';
+
+        setTimeout(() => {
+          enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
+        }, 1);
+      }
     }
   }, 800);
 
