@@ -519,31 +519,65 @@ export const damageEntity = (
       }
 
       // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
-
-      if (
-        playerSpriteSheetContainer.classList.contains(
-          'animate-entityAnimateLeft08'
-        )
-      ) {
-        playerSpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft08'
-        );
-        playerSpriteSheetContainer.style.top = 0 + 'px';
-        playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
-
-        setTimeout(() => {
-          playerSpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft20'
+      if (newHealth > 0) {
+        if (
+          playerSpriteSheetContainer.classList.contains(
+            'animate-entityAnimateLeft08'
+          )
+        ) {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
           );
-        }, 1);
-      } else {
-        playerSpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        playerSpriteSheetContainer.style.top = 0 + 'px';
-        playerSpriteSheetContainer.style.left = 0 + 'px';
+          playerSpriteSheetContainer.style.top = 0 + 'px';
+          playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
-        setTimeout(() => {
-          playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
-        }, 1);
+          setTimeout(() => {
+            playerSpriteSheetContainer.classList.add(
+              'animate-entityAnimateLeft20'
+            );
+          }, 1);
+        } else {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.style.top = 0 + 'px';
+          playerSpriteSheetContainer.style.left = 0 + 'px';
+
+          setTimeout(() => {
+            playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
+          }, 1);
+        }
+      } else {
+        // Set entity animation to defeated by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
+        if (
+          playerSpriteSheetContainer.classList.contains(
+            'animate-entityAnimateLeft08'
+          )
+        ) {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
+          );
+          playerSpriteSheetContainer.style.top =
+            '-' + entity.sprite_size * 9 + 'px';
+          playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
+
+          setTimeout(() => {
+            playerSpriteSheetContainer.classList.add(
+              'animate-entityAnimateLeft20'
+            );
+          }, 1);
+        } else {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.style.top =
+            '-' + entity.sprite_size * 9 + 'px';
+          playerSpriteSheetContainer.style.left = 0 + 'px';
+
+          setTimeout(() => {
+            playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
+          }, 1);
+        }
       }
     } else {
       const enemySpriteSheetContainer = document.getElementById(
