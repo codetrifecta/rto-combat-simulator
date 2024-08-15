@@ -330,7 +330,16 @@ export const Room: FC<{
                 ),
                 type: 'info',
               });
-              setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+
+              setEnemies(
+                enemies.map((e) =>
+                  e.id === affectedEnemy.id ? affectedEnemy : e
+                )
+              );
+
+              setTimeout(() => {
+                setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+              }, 1000);
             } else {
               addLog({
                 message: (
