@@ -686,7 +686,7 @@ export const Room: FC<{
         roomTileMatrix,
         playerPosition,
         weaponRange,
-        roomEntityPositions
+        new Map()
       );
 
       // console.log('visionRangeForWeaponAttack', visionRangeForWeaponAttack);
@@ -717,7 +717,7 @@ export const Room: FC<{
         roomTileMatrix,
         playerPosition,
         range,
-        roomEntityPositions
+        new Map()
       );
 
       // console.log('visionRangeForWeaponAttack', visionRangeForWeaponAttack);
