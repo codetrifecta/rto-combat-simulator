@@ -281,9 +281,8 @@ const handleSkillDamage = (
           playerAfterDamage.actionPoints += 2;
         }
 
-        // console.log(playerAfterDamage);
+        // enemiesAfterDamage.splice(enemyIndex, 1);
 
-        enemiesAfterDamage.splice(enemyIndex, 1);
         addLog({
           message: (
             <>
@@ -294,7 +293,6 @@ const handleSkillDamage = (
           type: 'info',
         });
       } else {
-        enemiesAfterDamage[enemyIndex] = newEnemy;
         addLog({
           message: (
             <>
@@ -305,6 +303,7 @@ const handleSkillDamage = (
           type: 'info',
         });
       }
+      enemiesAfterDamage[enemyIndex] = newEnemy;
 
       // eslint-disable-next-line no-empty
     } else if (entityType === ENTITY_TYPE.PLAYER) {
