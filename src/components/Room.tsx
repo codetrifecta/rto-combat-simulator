@@ -301,6 +301,10 @@ export const Room: FC<{
           return;
         }
 
+        if (enemy.health <= 0) {
+          return;
+        }
+
         const affectedEnemy = { ...enemy };
 
         const burnedDoT = affectedEnemy.statuses.find(
@@ -327,7 +331,16 @@ export const Room: FC<{
                 ),
                 type: 'info',
               });
-              setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+
+              setEnemies(
+                enemies.map((e) =>
+                  e.id === affectedEnemy.id ? affectedEnemy : e
+                )
+              );
+
+              setTimeout(() => {
+                setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
+              }, 1200);
             } else {
               addLog({
                 message: (
@@ -806,8 +819,29 @@ export const Room: FC<{
         );
       }
 
+      const newPlayerState = {
+        ...newPlayer.state,
+        isAttacking: false,
+        isMoving: false,
+        isUsingSkill: false,
+      };
+
       if (newEnemy.health <= 0) {
-        setEnemies(enemies.filter((e) => e.id !== entityId));
+        // Wait for defeat animation to end before removing enemy from room
+        setTimeout(() => {
+          setEnemies(enemies.filter((e) => e.id !== entityId));
+
+          if (!newPlayer.equipment.weapon) {
+            console.error('No weapon found');
+          } else {
+            setPlayer({
+              ...newPlayer,
+              actionPoints:
+                newPlayer.actionPoints - newPlayer.equipment.weapon.cost,
+              state: newPlayerState,
+            });
+          }
+        }, 1000);
         addLog({
           message: (
             <>
@@ -835,20 +869,15 @@ export const Room: FC<{
           ),
           type: 'info',
         });
+        setPlayer({
+          ...newPlayer,
+          actionPoints:
+            newPlayer.actionPoints - newPlayer.equipment.weapon.cost,
+        });
       }
 
-      setPlayer({
-        ...newPlayer,
-        actionPoints: newPlayer.actionPoints - newPlayer.equipment.weapon.cost,
-      });
+      setPlayerState(newPlayerState);
     }
-
-    setPlayerState({
-      ...player.state,
-      isAttacking: false,
-      isMoving: false,
-      isUsingSkill: false,
-    });
   };
 
   // Update room matrix when player moves
@@ -1087,6 +1116,7 @@ export const Room: FC<{
 
   return (
     <div
+      id="room"
       style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${roomLength}, ${TILE_SIZE}px)`,
@@ -1604,8 +1634,21 @@ export const Room: FC<{
                         addLog
                       );
 
-                    setRoomEntityPositions(newRoomEntityPositions);
+                    const isEnemyDead = newEnemies.some((enemy) => {
+                      return enemy.health <= 0;
+                    });
+
                     setEnemies([...newEnemies]);
+
+                    if (isEnemyDead) {
+                      setTimeout(() => {
+                        setEnemies(
+                          newEnemies.filter((enemy) => enemy.health > 0)
+                        );
+                      }, 1000);
+                    }
+
+                    setRoomEntityPositions(newRoomEntityPositions);
                     setPlayer({
                       ...newPlayer,
                       state: {

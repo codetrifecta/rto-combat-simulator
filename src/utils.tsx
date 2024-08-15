@@ -228,7 +228,11 @@ export const handlePlayerEndTurn = (
     // Filter out the new statuses with duration 0
     const filteredStatuses = newStatuses.filter((status) => {
       if (status.durationCounter <= 0) {
-        displayStatusEffect(status, false, `${player.entityType}_${player.id}`);
+        displayStatusEffect(
+          status,
+          false,
+          `tile_${player.entityType}_${player.id}`
+        );
         return false;
       }
       return true;
@@ -436,7 +440,7 @@ export const damageEntity = (
       );
       playerSpriteSheetContainer.style.top =
         '-' + entity.sprite_size * 8 + 'px';
-      playerSpriteSheetContainer.style.left = 0 + 'px';
+      playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
       setTimeout(() => {
         playerSpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
@@ -463,49 +467,102 @@ export const damageEntity = (
       return newHealth;
     }
 
-    if (
-      enemySpriteSheetContainer.classList.contains(
-        'animate-entityAnimateLeft08'
-      )
-    ) {
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
-      enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
-      switch (entity.sprite) {
-        case SPRITE_ID.ENEMY_017_B:
-          enemySpriteSheetContainer.style.top =
-            '-' + entity.sprite_size * 5 + 'px';
-          break;
-        default:
-          enemySpriteSheetContainer.style.top =
-            '-' + entity.sprite_size * 3 + 'px';
-          break;
-      }
+    // Depending on enemy health, play either damaged or defeat animation
+    if (newHealth > 0) {
+      if (
+        enemySpriteSheetContainer.classList.contains(
+          'animate-entityAnimateLeft08'
+        )
+      ) {
+        enemySpriteSheetContainer.classList.remove(
+          'animate-entityAnimateLeft08'
+        );
+        enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
+        switch (entity.sprite) {
+          case SPRITE_ID.ENEMY_017_B:
+            enemySpriteSheetContainer.style.top =
+              '-' + entity.sprite_size * 5 + 'px';
+            break;
+          default:
+            enemySpriteSheetContainer.style.top =
+              '-' + entity.sprite_size * 3 + 'px';
+            break;
+        }
 
-      setTimeout(() => {
-        enemySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
-      }, 1);
+        setTimeout(() => {
+          enemySpriteSheetContainer.classList.add(
+            'animate-entityAnimateLeft08'
+          );
+        }, 1);
+      } else {
+        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+        enemySpriteSheetContainer.style.left = 0 + 'px';
+        switch (entity.sprite) {
+          case SPRITE_ID.ENEMY_017_B:
+            enemySpriteSheetContainer.style.top =
+              '-' + entity.sprite_size * 5 + 'px';
+            break;
+          default:
+            enemySpriteSheetContainer.style.top =
+              '-' + entity.sprite_size * 3 + 'px';
+            break;
+        }
+
+        setTimeout(() => {
+          enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
+        }, 1);
+      }
     } else {
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-      enemySpriteSheetContainer.style.left = 0 + 'px';
-      switch (entity.sprite) {
-        case SPRITE_ID.ENEMY_017_B:
-          enemySpriteSheetContainer.style.top =
-            '-' + entity.sprite_size * 5 + 'px';
-          break;
-        default:
-          enemySpriteSheetContainer.style.top =
-            '-' + entity.sprite_size * 3 + 'px';
-          break;
-      }
+      if (
+        enemySpriteSheetContainer.classList.contains(
+          'animate-entityAnimateLeft08'
+        )
+      ) {
+        enemySpriteSheetContainer.classList.remove(
+          'animate-entityAnimateLeft08'
+        );
+        switch (entity.sprite) {
+          case SPRITE_ID.ENEMY_017_B:
+            enemySpriteSheetContainer.style.top =
+              '-' + entity.sprite_size * 6 + 'px';
+            break;
+          default:
+            enemySpriteSheetContainer.style.top =
+              '-' + entity.sprite_size * 4 + 'px';
+            break;
+        }
+        enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
-      setTimeout(() => {
-        enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
-      }, 1);
+        setTimeout(() => {
+          enemySpriteSheetContainer.classList.add(
+            'animate-entityAnimateOnceLeft08'
+          );
+        }, 1);
+      } else {
+        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+        switch (entity.sprite) {
+          case SPRITE_ID.ENEMY_017_B:
+            enemySpriteSheetContainer.style.top =
+              '-' + entity.sprite_size * 6 + 'px';
+            break;
+          default:
+            enemySpriteSheetContainer.style.top =
+              '-' + entity.sprite_size * 4 + 'px';
+            break;
+        }
+        enemySpriteSheetContainer.style.left = 0 + 'px';
+
+        setTimeout(() => {
+          enemySpriteSheetContainer.classList.add(
+            'animate-entityAnimateOnce08'
+          );
+        }, 1);
+      }
     }
   }
 
   setTimeout(() => {
-    console.log('Revert entity back to idle sprite animation');
+    console.log('Revert entity back to idle or defeat sprite animation');
 
     // Revert entity back to idle sprite animation
     if (entity.entityType === ENTITY_TYPE.PLAYER) {
@@ -519,33 +576,71 @@ export const damageEntity = (
       }
 
       // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
-      playerSpriteSheetContainer.style.top = 0 + 'px';
-      playerSpriteSheetContainer.style.left = 0 + 'px';
-
-      if (
-        playerSpriteSheetContainer.classList.contains(
-          'animate-entityAnimateLeft08'
-        )
-      ) {
-        playerSpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft08'
-        );
-        playerSpriteSheetContainer.style.top = 0 + 'px';
-
-        setTimeout(() => {
-          playerSpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft20'
+      if (newHealth > 0) {
+        if (
+          playerSpriteSheetContainer.classList.contains(
+            'animate-entityAnimateLeft08'
+          )
+        ) {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
           );
-        }, 1);
-      } else {
-        playerSpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        playerSpriteSheetContainer.style.top = 0 + 'px';
+          playerSpriteSheetContainer.style.top = 0 + 'px';
+          playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
-        setTimeout(() => {
-          playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
-        }, 1);
+          setTimeout(() => {
+            playerSpriteSheetContainer.classList.add(
+              'animate-entityAnimateLeft20'
+            );
+          }, 1);
+        } else {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.style.top = 0 + 'px';
+          playerSpriteSheetContainer.style.left = 0 + 'px';
+
+          setTimeout(() => {
+            playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
+          }, 1);
+        }
+      } else {
+        // Set entity animation to defeated by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
+        if (
+          playerSpriteSheetContainer.classList.contains(
+            'animate-entityAnimateLeft08'
+          )
+        ) {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeft08'
+          );
+          playerSpriteSheetContainer.style.top =
+            '-' + entity.sprite_size * 9 + 'px';
+          playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
+
+          setTimeout(() => {
+            playerSpriteSheetContainer.classList.add(
+              'animate-entityAnimateLeftOnce20'
+            );
+          }, 1);
+        } else {
+          playerSpriteSheetContainer.classList.remove(
+            'animate-entityAnimate08'
+          );
+          playerSpriteSheetContainer.style.top =
+            '-' + entity.sprite_size * 9 + 'px';
+          playerSpriteSheetContainer.style.left = 0 + 'px';
+
+          setTimeout(() => {
+            playerSpriteSheetContainer.classList.add(
+              'animate-entityAnimateOnce20'
+            );
+          }, 1);
+        }
       }
     } else {
+      // ENEMY
+      console.log('Set enemy animation to defeated sprite animation');
       const enemySpriteSheetContainer = document.getElementById(
         `spritesheet_container_${entity.entityType}_${entity.id}`
       );
@@ -555,31 +650,35 @@ export const damageEntity = (
         return newHealth;
       }
 
-      // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
-      if (
-        enemySpriteSheetContainer.classList.contains(
-          'animate-entityAnimateLeft08'
-        )
-      ) {
-        enemySpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft08'
-        );
-        enemySpriteSheetContainer.style.top = 0 + 'px';
-        enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add(
+      if (newHealth > 0) {
+        // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
+        if (
+          enemySpriteSheetContainer.classList.contains(
+            'animate-entityAnimateLeft08'
+          )
+        ) {
+          enemySpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
-        }, 1);
-      } else {
-        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        enemySpriteSheetContainer.style.top = 0 + 'px';
-        enemySpriteSheetContainer.style.left = 0 + 'px';
+          enemySpriteSheetContainer.style.top = 0 + 'px';
+          enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
-        }, 1);
+          setTimeout(() => {
+            enemySpriteSheetContainer.classList.add(
+              'animate-entityAnimateLeft08'
+            );
+          }, 1);
+        } else {
+          enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+          enemySpriteSheetContainer.style.top = 0 + 'px';
+          enemySpriteSheetContainer.style.left = 0 + 'px';
+
+          setTimeout(() => {
+            enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
+          }, 1);
+        }
+      } else {
+        console.log('SET ENTITY SPRITE TO DEFEATED');
       }
     }
   }, 800);
@@ -592,12 +691,26 @@ export const damageEntity = (
 
 const displayDamageNumbers = (elementID: string, damage: number) => {
   // Find tile position of sprite
-  const tile = document.querySelector(`#${elementID}`);
+  const tile = document.getElementById(`${elementID}`);
+
+  // Find room element
+  const entitySpritePositions = document.getElementById(
+    'entity_sprite_positions'
+  );
 
   if (!tile) {
-    console.error('displayDamageNumbers: Tile not found');
+    console.error('displayStatusEffect: Tile not found');
     return;
   }
+
+  if (!entitySpritePositions) {
+    console.error('displayStatusEffect: entitySpritePositions not found');
+    return;
+  }
+
+  // Get position of tile relative to the parent element
+  const tileLeftPosition = tile.offsetLeft;
+  const tileTopPosition = tile.offsetTop;
 
   // Display damage numbers
   const damageNumbers = document.createElement('h1');
@@ -607,11 +720,11 @@ const displayDamageNumbers = (elementID: string, damage: number) => {
   damageNumbers.style.fontWeight = 'bold';
   damageNumbers.style.fontSize = '1.5rem';
   damageNumbers.style.whiteSpace = 'nowrap';
-  tile.appendChild(damageNumbers);
+  entitySpritePositions.appendChild(damageNumbers);
 
   damageNumbers.style.position = 'absolute';
-  damageNumbers.style.bottom = `${TILE_SIZE * 1.5}px`;
-  damageNumbers.style.left = `${TILE_SIZE / 2 - damageNumbers.offsetWidth / 2}px`;
+  damageNumbers.style.top = `${tileTopPosition - TILE_SIZE * 1.5}px`;
+  damageNumbers.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - damageNumbers.offsetWidth / 2)}px`;
   damageNumbers.style.zIndex = '100';
   damageNumbers.style.color = 'red';
 
@@ -639,12 +752,26 @@ export const healEntity = (
 
 const displayHealNumbers = (elementID: string, heal: number) => {
   // Find tile position of sprite
-  const tile = document.querySelector(`#${elementID}`);
+  const tile = document.getElementById(`${elementID}`);
+
+  // Find room element
+  const entitySpritePositions = document.getElementById(
+    'entity_sprite_positions'
+  );
 
   if (!tile) {
-    console.error('displayHealNumbers: Tile not found');
+    console.error('displayStatusEffect: Tile not found');
     return;
   }
+
+  if (!entitySpritePositions) {
+    console.error('displayStatusEffect: entitySpritePositions not found');
+    return;
+  }
+
+  // Get position of tile relative to the parent element
+  const tileLeftPosition = tile.offsetLeft;
+  const tileTopPosition = tile.offsetTop;
 
   // Display heal numbers
   const healNumbers = document.createElement('h1');
@@ -654,11 +781,11 @@ const displayHealNumbers = (elementID: string, heal: number) => {
   healNumbers.style.fontWeight = 'bold';
   healNumbers.style.fontSize = '1.5rem';
   healNumbers.style.whiteSpace = 'nowrap';
-  tile.appendChild(healNumbers);
+  entitySpritePositions.appendChild(healNumbers);
 
   healNumbers.style.position = 'absolute';
-  healNumbers.style.bottom = `${TILE_SIZE * 1.5}px`;
-  healNumbers.style.left = `${TILE_SIZE / 2 - healNumbers.offsetWidth / 2}px`;
+  healNumbers.style.top = `${tileTopPosition - TILE_SIZE * 1.5}px`;
+  healNumbers.style.left = `${tileLeftPosition + TILE_SIZE / 2 - healNumbers.offsetWidth / 2}px`;
   healNumbers.style.zIndex = '100';
   healNumbers.style.color = 'green';
 
@@ -676,12 +803,35 @@ export const displayStatusEffect = (
   elementID: string
 ) => {
   // Find tile position of sprite
-  const tile = document.querySelector(`#${elementID}`);
+  const tile = document.getElementById(`${elementID}`);
+
+  // Find room element
+  const entitySpritePositions = document.getElementById(
+    'entity_sprite_positions'
+  );
 
   if (!tile) {
     console.error('displayStatusEffect: Tile not found');
     return;
   }
+
+  if (!entitySpritePositions) {
+    console.error('displayStatusEffect: entitySpritePositions not found');
+    return;
+  }
+
+  // Get position of tile relative to the parent element
+  const tileLeftPosition = tile.offsetLeft;
+  const tileTopPosition = tile.offsetTop;
+
+  // console.log(
+  //   'displayStatusEffect',
+  //   status,
+  //   gain,
+  //   elementID,
+  //   tileLeftPosition,
+  //   tileTopPosition
+  // );
 
   // Display status effect
   const statusIndicator = document.createElement('h1');
@@ -691,11 +841,11 @@ export const displayStatusEffect = (
   statusIndicator.style.fontWeight = 'bold';
   statusIndicator.style.fontSize = '1.5rem';
   statusIndicator.style.whiteSpace = 'nowrap';
-  tile.appendChild(statusIndicator);
+  entitySpritePositions.appendChild(statusIndicator);
 
   statusIndicator.style.position = 'absolute';
-  statusIndicator.style.bottom = `${TILE_SIZE}px`;
-  statusIndicator.style.left = `${TILE_SIZE / 2 - statusIndicator.offsetWidth / 2}px`;
+  statusIndicator.style.top = `${tileTopPosition - TILE_SIZE}px`;
+  statusIndicator.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - statusIndicator.offsetWidth / 2)}px`;
   statusIndicator.style.zIndex = '100';
   statusIndicator.style.color = 'yellow';
 
