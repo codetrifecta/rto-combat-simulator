@@ -300,6 +300,10 @@ export const Room: FC<{
           return;
         }
 
+        if (enemy.health <= 0) {
+          return;
+        }
+
         const affectedEnemy = { ...enemy };
 
         const burnedDoT = affectedEnemy.statuses.find(
@@ -1565,8 +1569,21 @@ export const Room: FC<{
                         addLog
                       );
 
-                    setRoomEntityPositions(newRoomEntityPositions);
+                    const isEnemyDead = newEnemies.some((enemy) => {
+                      return enemy.health <= 0;
+                    });
+
                     setEnemies([...newEnemies]);
+
+                    if (isEnemyDead) {
+                      setTimeout(() => {
+                        setEnemies(
+                          newEnemies.filter((enemy) => enemy.health > 0)
+                        );
+                      }, 1000);
+                    }
+
+                    setRoomEntityPositions(newRoomEntityPositions);
                     setPlayer({
                       ...newPlayer,
                       state: {
