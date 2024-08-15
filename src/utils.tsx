@@ -771,12 +771,26 @@ export const displayStatusEffect = (
   elementID: string
 ) => {
   // Find tile position of sprite
-  const tile = document.querySelector(`#${elementID}`);
+  const tile = document.getElementById(`${elementID}`);
+
+  // Find room element
+  const entitySpritePositions = document.getElementById(
+    'entity_sprite_positions'
+  );
 
   if (!tile) {
     console.error('displayStatusEffect: Tile not found');
     return;
   }
+
+  if (!entitySpritePositions) {
+    console.error('displayStatusEffect: entitySpritePositions not found');
+    return;
+  }
+
+  // Get position of tile relative to the parent element
+  const tileLeftPosition = tile.offsetLeft;
+  const tileTopPosition = tile.offsetTop;
 
   // Display status effect
   const statusIndicator = document.createElement('h1');
@@ -786,11 +800,11 @@ export const displayStatusEffect = (
   statusIndicator.style.fontWeight = 'bold';
   statusIndicator.style.fontSize = '1.5rem';
   statusIndicator.style.whiteSpace = 'nowrap';
-  tile.appendChild(statusIndicator);
+  entitySpritePositions.appendChild(statusIndicator);
 
   statusIndicator.style.position = 'absolute';
-  statusIndicator.style.bottom = `${TILE_SIZE}px`;
-  statusIndicator.style.left = `${TILE_SIZE / 2 - statusIndicator.offsetWidth / 2}px`;
+  statusIndicator.style.top = `${tileTopPosition - TILE_SIZE}px`;
+  statusIndicator.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - statusIndicator.offsetWidth / 2)}px`;
   statusIndicator.style.zIndex = '100';
   statusIndicator.style.color = 'yellow';
 
