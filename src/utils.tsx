@@ -228,7 +228,11 @@ export const handlePlayerEndTurn = (
     // Filter out the new statuses with duration 0
     const filteredStatuses = newStatuses.filter((status) => {
       if (status.durationCounter <= 0) {
-        displayStatusEffect(status, false, `${player.entityType}_${player.id}`);
+        displayStatusEffect(
+          status,
+          false,
+          `tile_${player.entityType}_${player.id}`
+        );
         return false;
       }
       return true;
@@ -687,12 +691,26 @@ export const damageEntity = (
 
 const displayDamageNumbers = (elementID: string, damage: number) => {
   // Find tile position of sprite
-  const tile = document.querySelector(`#${elementID}`);
+  const tile = document.getElementById(`${elementID}`);
+
+  // Find room element
+  const entitySpritePositions = document.getElementById(
+    'entity_sprite_positions'
+  );
 
   if (!tile) {
-    console.error('displayDamageNumbers: Tile not found');
+    console.error('displayStatusEffect: Tile not found');
     return;
   }
+
+  if (!entitySpritePositions) {
+    console.error('displayStatusEffect: entitySpritePositions not found');
+    return;
+  }
+
+  // Get position of tile relative to the parent element
+  const tileLeftPosition = tile.offsetLeft;
+  const tileTopPosition = tile.offsetTop;
 
   // Display damage numbers
   const damageNumbers = document.createElement('h1');
@@ -702,11 +720,11 @@ const displayDamageNumbers = (elementID: string, damage: number) => {
   damageNumbers.style.fontWeight = 'bold';
   damageNumbers.style.fontSize = '1.5rem';
   damageNumbers.style.whiteSpace = 'nowrap';
-  tile.appendChild(damageNumbers);
+  entitySpritePositions.appendChild(damageNumbers);
 
   damageNumbers.style.position = 'absolute';
-  damageNumbers.style.bottom = `${TILE_SIZE * 1.5}px`;
-  damageNumbers.style.left = `${TILE_SIZE / 2 - damageNumbers.offsetWidth / 2}px`;
+  damageNumbers.style.top = `${tileTopPosition - TILE_SIZE * 1.5}px`;
+  damageNumbers.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - damageNumbers.offsetWidth / 2)}px`;
   damageNumbers.style.zIndex = '100';
   damageNumbers.style.color = 'red';
 
@@ -734,12 +752,26 @@ export const healEntity = (
 
 const displayHealNumbers = (elementID: string, heal: number) => {
   // Find tile position of sprite
-  const tile = document.querySelector(`#${elementID}`);
+  const tile = document.getElementById(`${elementID}`);
+
+  // Find room element
+  const entitySpritePositions = document.getElementById(
+    'entity_sprite_positions'
+  );
 
   if (!tile) {
-    console.error('displayHealNumbers: Tile not found');
+    console.error('displayStatusEffect: Tile not found');
     return;
   }
+
+  if (!entitySpritePositions) {
+    console.error('displayStatusEffect: entitySpritePositions not found');
+    return;
+  }
+
+  // Get position of tile relative to the parent element
+  const tileLeftPosition = tile.offsetLeft;
+  const tileTopPosition = tile.offsetTop;
 
   // Display heal numbers
   const healNumbers = document.createElement('h1');
@@ -749,11 +781,11 @@ const displayHealNumbers = (elementID: string, heal: number) => {
   healNumbers.style.fontWeight = 'bold';
   healNumbers.style.fontSize = '1.5rem';
   healNumbers.style.whiteSpace = 'nowrap';
-  tile.appendChild(healNumbers);
+  entitySpritePositions.appendChild(healNumbers);
 
   healNumbers.style.position = 'absolute';
-  healNumbers.style.bottom = `${TILE_SIZE * 1.5}px`;
-  healNumbers.style.left = `${TILE_SIZE / 2 - healNumbers.offsetWidth / 2}px`;
+  healNumbers.style.top = `${tileTopPosition - TILE_SIZE * 1.5}px`;
+  healNumbers.style.left = `${tileLeftPosition + TILE_SIZE / 2 - healNumbers.offsetWidth / 2}px`;
   healNumbers.style.zIndex = '100';
   healNumbers.style.color = 'green';
 
@@ -791,6 +823,15 @@ export const displayStatusEffect = (
   // Get position of tile relative to the parent element
   const tileLeftPosition = tile.offsetLeft;
   const tileTopPosition = tile.offsetTop;
+
+  // console.log(
+  //   'displayStatusEffect',
+  //   status,
+  //   gain,
+  //   elementID,
+  //   tileLeftPosition,
+  //   tileTopPosition
+  // );
 
   // Display status effect
   const statusIndicator = document.createElement('h1');
