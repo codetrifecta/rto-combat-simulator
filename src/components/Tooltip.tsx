@@ -10,13 +10,13 @@ export const Tooltip: FC<{ children: ReactNode; active?: boolean }> = ({
 
   useEffect(() => {
     // When parent element is initialized, set the tooltip position
-    if (ref.current?.parentElement) {
+    if (ref.current?.parentElement && children && tooltipRect) {
       const tooltipRect = ref.current.getBoundingClientRect();
 
       // Check if parent component is at the top half of the screen
       let isTop = false;
       const screenHeight = document.documentElement.clientHeight;
-      if (tooltipRect?.top && tooltipRect.top < screenHeight / 2) {
+      if (tooltipRect?.top && tooltipRect.top < screenHeight * 0.2) {
         isTop = true;
       } else {
         isTop = false;
@@ -36,7 +36,7 @@ export const Tooltip: FC<{ children: ReactNode; active?: boolean }> = ({
         (ref.current.parentElement.clientWidth - tooltipRect.width) / 2
       }px`;
     }
-  }, [ref.current?.parentElement, tooltipRect]);
+  }, [ref.current?.parentElement, tooltipRect, children]);
 
   return (
     <div
