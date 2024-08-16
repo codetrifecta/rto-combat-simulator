@@ -17,6 +17,7 @@ interface IGameStateStore {
   isGameLogOpen: boolean;
   isCharacterSheetOpen: boolean;
   isGenerateRoomOpen: boolean;
+  isCompendiumOpen: boolean;
   setRoomLength: (roomLength: number) => void;
   setRoomTileMatrix: (roomTileMatrix: [TILE_TYPE, number][][]) => void;
   setRoomEntityPositions: (
@@ -28,6 +29,7 @@ interface IGameStateStore {
   setIsGameLogOpen: (isGameLogOpen: boolean) => void;
   setIsCharacterSheetOpen: (isCharacterSheetOpen: boolean) => void;
   setIsGenerateRoomOpen: (isGenerateRoomOpen: boolean) => void;
+  setIsCompendiumOpen: (isCompendiumOpen: boolean) => void;
   setTurnCycle: (turnCycle: IEntity[]) => void;
   setIsRoomOver: (isRoomOver: boolean) => void;
   setIsGameOver: (isGameOver: boolean) => void;
@@ -46,6 +48,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   isGameLogOpen: true,
   isCharacterSheetOpen: false,
   isGenerateRoomOpen: false,
+  isCompendiumOpen: false,
 
   setRoomLength: (roomLength: number) => set({ roomLength }),
 
@@ -93,6 +96,8 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
 
   setIsGenerateRoomOpen: (isGenerateRoomOpen: boolean) =>
     set({ isGenerateRoomOpen }),
+
+  setIsCompendiumOpen: (isCompendiumOpen: boolean) => set({ isCompendiumOpen }),
 
   setTurnCycle: (turnCycle: IEntity[]) => set({ turnCycle }),
 

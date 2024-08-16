@@ -1,7 +1,7 @@
 import { IEnemy, IPlayer } from '../types';
 import { getPlayerMaxHealth } from '../utils';
 import { LEGGINGS } from './armor';
-import { SKILLS } from './skill';
+import { SKILL_ID, SKILLS } from './skill';
 import { SPRITE_ID } from './sprite';
 import { WEAPONS } from './weapon';
 
@@ -47,6 +47,9 @@ export const getDefaultPlayer = (): IPlayer => {
     ...PLAYER,
     health: getPlayerMaxHealth(PLAYER),
     maxHealth: getPlayerMaxHealth(PLAYER),
+    skills: SKILLS.filter((skill) =>
+      [SKILL_ID.FOCUS, SKILL_ID.CLEAVE, SKILL_ID.FIREBALL].includes(skill.id)
+    ),
   };
 };
 
