@@ -14,9 +14,7 @@ import { useGameStateStore } from '../store/game';
 const ICON_SIZE = 50;
 
 export const Compendium: FC = () => {
-  const [equippedSkills, setEquippedSkills] = useState<(ISkill | null)[]>(
-    Array(6).fill(null)
-  );
+  const [equippedSkills, setEquippedSkills] = useState<ISkill[]>([]);
 
   const { setIsCompendiumOpen } = useGameStateStore();
 
@@ -27,7 +25,7 @@ export const Compendium: FC = () => {
           case SKILL_TAG.SINGLE_TARGET:
             return 'Single Target';
           case SKILL_TAG.AOE:
-            return 'Area of Effect';
+            return 'AoE';
           default: {
             const tagString = tag.replace(/_/g, ' ');
             return tagString.charAt(0).toUpperCase() + tagString.slice(1);
@@ -73,6 +71,24 @@ export const Compendium: FC = () => {
       );
     }
   };
+
+  const addToEquippedSkills = (skill: ISkill) => {
+    if (equippedSkills.length >= 6) return;
+
+    setEquippedSkills((prevEquippedSkills) => [...prevEquippedSkills, skill]);
+  };
+
+  const removeFromEquippedSkills = (skill: ISkill) => {
+    setEquippedSkills((prevEquippedSkills) => {
+      const newEquippedSkills = prevEquippedSkills.filter(
+        (equippedSkill) =>
+          equippedSkill !== null && equippedSkill.id !== skill.id
+      );
+
+      return newEquippedSkills;
+    });
+  };
+
   return (
     <div className="bg-zinc-900 p-5 border border-white h-full w-full">
       <div className="relative">
@@ -82,13 +98,11 @@ export const Compendium: FC = () => {
         >
           X
         </div>
-        <h2 className="mb-5 pb-3 w-full border-b">Inventory Chooser</h2>
+        <h2 className="mb-5 pb-3 w-full border-b">Compendium</h2>
       </div>
 
-      <h1 className="mb-3">Compendium</h1>
-
       <div className="mb-5">
-        <h2 className="mb-3">Available skills</h2>
+        <h3 className="mb-3">Available skills</h3>
         <div
           className={`grid gap-1 grid-cols-6`}
           style={{
@@ -97,19 +111,15 @@ export const Compendium: FC = () => {
         >
           {SKILLS.map((skill, index) => (
             <div
-              key={index}
-              id={`compendium_skill_slot_${index + 1}`}
+              key={'available_skill_' + index}
+              id={`compendium_skill_${index + 1}`}
               className="bg-gray-500 relative"
               style={{ width: ICON_SIZE, height: ICON_SIZE }}
             >
               {skill !== null && (
                 <>
                   <IconButton
-                    onClick={() => {
-                      setEquippedSkills((prevEquippedSkills) =>
-                        [skill, ...prevEquippedSkills].slice(0, 6)
-                      );
-                    }}
+                    onClick={() => addToEquippedSkills(skill)}
                     disabled={
                       equippedSkills.find((equippedSkill) => {
                         if (equippedSkill === null) return;
@@ -134,34 +144,18 @@ export const Compendium: FC = () => {
       </div>
 
       <div>
-        <h2>Equipped skills</h2>
+        <h3 className="mb-3">Equipped skills</h3>
         <div className="flex gap-1 justify-center">
           {equippedSkills.map((skill, index) => (
             <div
-              key={index}
+              key={'equipped_skill_' + index}
               id={`compendium_skill_slot_${index + 1}`}
-              className="relative bg-gray-500"
+              className="bg-gray-500 relative"
               style={{ width: ICON_SIZE, height: ICON_SIZE }}
             >
               {skill !== null && (
                 <>
-                  <IconButton
-                    onClick={() => {
-                      setEquippedSkills((prevEquippedSkills) => {
-                        const newEquippedSkills = prevEquippedSkills.filter(
-                          (equippedSkill) =>
-                            equippedSkill !== null &&
-                            equippedSkill.id !== skill.id
-                        );
-
-                        while (newEquippedSkills.length < 6) {
-                          newEquippedSkills.push(null);
-                        }
-
-                        return newEquippedSkills;
-                      });
-                    }}
-                  >
+                  <IconButton onClick={() => removeFromEquippedSkills(skill)}>
                     <Icon
                       icon={skill.icon}
                       width={ICON_SIZE}
@@ -172,6 +166,14 @@ export const Compendium: FC = () => {
                 </>
               )}
             </div>
+          ))}
+          {Array.from({ length: 6 - equippedSkills.length }).map((_, index) => (
+            <div
+              key={index}
+              id={`compendium_skill_slot_${equippedSkills.length + index + 1}`}
+              className="bg-gray-500"
+              style={{ width: ICON_SIZE, height: ICON_SIZE }}
+            />
           ))}
         </div>
       </div>
