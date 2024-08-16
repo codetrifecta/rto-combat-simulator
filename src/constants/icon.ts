@@ -10,6 +10,7 @@ import log from '../assets/icons/icon_log.png';
 import character from '../assets/icons/icon_character.png';
 import inventory from '../assets/icons/icon_inventory.png';
 import generate_room from '../assets/icons/icon_generate_room.png';
+import compendium from '../assets/icons/icon_compendium.png';
 
 // WEAPONS
 import fist from '../assets/icons/weapons/icon_weapon_fist.png';
@@ -97,6 +98,7 @@ export enum ICON_ID {
   CHARACTER = 'character',
   INVENTORY = 'inventory',
   GENERATE_ROOM = 'generate_room',
+  COMPENDIUM = 'compendium',
 
   // WEAPONS
   WEAPON_FIST = 'weapon_fist',
@@ -185,6 +187,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.CHARACTER]: character,
   [ICON_ID.INVENTORY]: inventory,
   [ICON_ID.GENERATE_ROOM]: generate_room,
+  [ICON_ID.COMPENDIUM]: compendium,
 
   // WEAPONS
   [ICON_ID.WEAPON_FIST]: fist,
