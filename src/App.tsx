@@ -17,7 +17,7 @@ import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
 import { RoomTileSprites } from './components/RoomTileSprites';
 import { EntitySpritePositions } from './components/EntitySpritePositions';
 import { TILE_SIZE } from './constants/tile';
-import { Compendium } from './components/Compenium';
+import { Compendium } from './components/Compendium';
 
 // Flag for first room render
 

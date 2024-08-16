@@ -1,8 +1,13 @@
 import clsx from 'clsx';
 import { FC, ReactNode, useEffect, useRef } from 'react';
 
-export const Tooltip: FC<{ children: ReactNode; active?: boolean }> = ({
+export const Tooltip: FC<{
+  children: ReactNode;
+  active?: boolean;
+  width?: number;
+}> = ({
   children,
+  width = 300,
   // active = false,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -56,6 +61,7 @@ export const Tooltip: FC<{ children: ReactNode; active?: boolean }> = ({
         'absolute inline-block bg-neutral-900 text-white p-2 rounded-lg shadow-sm shadow-black transition-all ease duration-200 w-[300px] opacity-0 invisible peer-hover:opacity-100 peer-hover:z-50 peer-hover:visible'
       )}
       ref={ref}
+      style={{ width }}
     >
       {children}
     </div>

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   intelligenceBasedSkillIDs,
   SKILL_TAG,
@@ -10,13 +10,25 @@ import { ISkill } from '../types';
 import { IconButton } from './IconButton';
 import { Tooltip } from './Tooltip';
 import { useGameStateStore } from '../store/game';
+import { usePlayerStore } from '../store/player';
+import { Button } from './Button';
 
 const ICON_SIZE = 50;
 
 export const Compendium: FC = () => {
-  const [equippedSkills, setEquippedSkills] = useState<ISkill[]>([]);
+  const { getPlayer, setPlayerSkills } = usePlayerStore();
+  const player = getPlayer();
 
-  const { setIsCompendiumOpen } = useGameStateStore();
+  const [equippedSkills, setEquippedSkills] = useState<ISkill[]>(player.skills);
+
+  const { isCompendiumOpen, setIsCompendiumOpen } = useGameStateStore();
+
+  useEffect(() => {
+    if (isCompendiumOpen === false) {
+      // Reset player skills to equipped skills
+      setEquippedSkills(player.skills);
+    }
+  }, [player.skills, isCompendiumOpen]);
 
   const renderSkillButtonTooltip = (skill: ISkill) => {
     const tagString = skill.tags
@@ -37,7 +49,7 @@ export const Compendium: FC = () => {
     // Strength-based skills vs Intelligence-based skills
     if (strengthBasedSkillIDs.includes(skill.id)) {
       return (
-        <Tooltip>
+        <Tooltip width={450}>
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
@@ -49,7 +61,7 @@ export const Compendium: FC = () => {
       );
     } else if (intelligenceBasedSkillIDs.includes(skill.id)) {
       return (
-        <Tooltip>
+        <Tooltip width={450}>
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
@@ -61,7 +73,7 @@ export const Compendium: FC = () => {
       );
     } else {
       return (
-        <Tooltip>
+        <Tooltip width={450}>
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
@@ -143,7 +155,7 @@ export const Compendium: FC = () => {
         </div>
       </div>
 
-      <div>
+      <div className="mb-6">
         <h3 className="mb-3">Equipped skills</h3>
         <div className="flex gap-1 justify-center">
           {equippedSkills.map((skill, index) => (
@@ -177,6 +189,15 @@ export const Compendium: FC = () => {
           ))}
         </div>
       </div>
+
+      <Button
+        onClick={() => {
+          setPlayerSkills(equippedSkills);
+          setIsCompendiumOpen(false);
+        }}
+      >
+        Save Skills
+      </Button>
     </div>
   );
 };
