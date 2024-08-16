@@ -26,10 +26,12 @@ export const PlayerControlPanel: FC = () => {
     isGameLogOpen,
     isCharacterSheetOpen,
     isGenerateRoomOpen,
+    isCompendiumOpen,
     setIsCharacterSheetOpen,
     setIsInventoryOpen,
     setIsGameLogOpen,
     setIsGenerateRoomOpen,
+    setIsCompendiumOpen,
   } = useGameStateStore();
 
   const {
@@ -256,6 +258,23 @@ export const PlayerControlPanel: FC = () => {
                 </IconButton>
                 <Tooltip>
                   <p>Inventory (I)</p>
+                </Tooltip>
+              </div>
+              <div className="relative">
+                <IconButton
+                  onClick={() => {
+                    setIsGenerateRoomOpen(false);
+                    setIsCompendiumOpen(!isCompendiumOpen);
+                  }}
+                >
+                  <Icon
+                    icon={ICON_ID.COMPENDIUM}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                  />
+                </IconButton>
+                <Tooltip>
+                  <p>Compendium (K)</p>
                 </Tooltip>
               </div>
             </div>

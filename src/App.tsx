@@ -17,6 +17,7 @@ import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
 import { RoomTileSprites } from './components/RoomTileSprites';
 import { EntitySpritePositions } from './components/EntitySpritePositions';
 import { TILE_SIZE } from './constants/tile';
+import { Compendium } from './components/Compendium';
 
 // Flag for first room render
 
@@ -62,6 +63,7 @@ function App() {
     isGameLogOpen,
     isCharacterSheetOpen,
     isGenerateRoomOpen,
+    isCompendiumOpen,
     setIsInventoryOpen,
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
@@ -432,6 +434,17 @@ function App() {
           }}
         >
           <GenerateRoomModal />
+        </section>
+
+        <section
+          className="fixed z-[60] top-[50%] left-[50%]  shadow-lg flex"
+          style={{
+            maxHeight: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
+            visibility: isCompendiumOpen ? 'visible' : 'hidden',
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <Compendium />
         </section>
 
         {/* Inventory Chooser */}

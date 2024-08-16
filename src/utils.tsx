@@ -535,7 +535,7 @@ export const damageEntity = (
 
         setTimeout(() => {
           enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateOnceLeft08'
+            'animate-entityAnimateLeftOnce08'
           );
         }, 1);
       } else {

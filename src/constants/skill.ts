@@ -56,7 +56,6 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
 ];
 
 export const intelligenceBasedSkillIDs: SKILL_ID[] = [
-  SKILL_ID.GORGONS_GAZE,
   SKILL_ID.LIGHTNING,
   SKILL_ID.FIREBALL,
   SKILL_ID.FREEZE,
