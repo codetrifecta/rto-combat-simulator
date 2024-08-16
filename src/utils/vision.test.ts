@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { initRoomWithOnlyFloors } from './room';
+import { initBoolMatrix, initRoomWithOnlyFloors } from './room';
 import { ENTITY_TYPE } from '../constants/entity';
 import { getVisionFromEntityPosition } from './vision';
 import { TILE_TYPE } from '../constants/tile';
@@ -1333,7 +1333,7 @@ describe('Casting Ray Vision in an empty Room with Walls', () => {
     room[5][6] = [TILE_TYPE.WALL, 1];
     const startLoc: [number, number] = [5, 5];
     const numRays = 360;
-    const skillRadius = 2; // 3x3 range
+    const skillRadius = 2; // 5x5 range
     let isRoomVisible = true;
 
     const visionMap = getVisionFromEntityPosition(
@@ -1344,131 +1344,45 @@ describe('Casting Ray Vision in an empty Room with Walls', () => {
       numRays
     );
 
-    // console.log(visionMap);
-
-    const expectedMap: boolean[][] = [
-      [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-      ],
-      [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-      ],
-      [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-      ],
-      [
-        false,
-        false,
-        false,
-        false,
-        true,
-        true,
-        true,
-        false,
-        false,
-        false,
-        false,
-      ],
-      [false, false, false, true, true, true, true, false, false, false, false],
-      [false, false, false, true, true, true, true, false, false, false, false],
-      [false, false, false, true, true, true, true, false, false, false, false],
-      [
-        false,
-        false,
-        false,
-        true,
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-      ],
-      [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-      ],
-      [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-      ],
-      [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-      ],
+    const expectedMap: boolean[][] = initBoolMatrix(11, false);
+    const trueIndices = [
+      [3, 4],
+      [3, 5],
+      [3, 6],
+      [4, 3],
+      [4, 4],
+      [4, 5],
+      [4, 6],
+      [5, 3],
+      [5, 4],
+      [5, 5],
+      [5, 6],
+      [6, 3],
+      [6, 4],
+      [6, 5],
+      [6, 6],
+      [7, 3],
+      [7, 4],
     ];
-    /**
-     * [
-     * [X X X X X X X X X X X X X]
-     * [X X X X X X X X X X X X X]
-     * [X X X X X X X X X X X X X]
-     * [X X X X X . . . X X X X X]
-     * [X X X X . # . # X X X X X]
-     * [X X X X . . . # X X X X X]
-     * [X X X X . . # # X X X X X]
-     * [X X X X . . X X X X X X X]
-     * [X X X X X X X X X X X X X]
-     * [X X X X X X X X X X X X X]
-     * [X X X X X X X X X X X X X]
-     * ]
+
+    for (const index of trueIndices) {
+      expectedMap[index[0]][index[1]] = true;
+    }
+
+    /*
+      [
+        [ X X X X X X X X X X X ]
+        [ X X X X X X X X X X X ]
+        [ X X X X X X X X X X X ]
+        [ X X X X . . . X X X X ]
+        [ X X X . # . # X X X X ]
+        [ X X X . . . # X X X X ]
+        [ X X X . . # # X X X X ]
+        [ X X X . . X X X X X X ]
+        [ X X X X X X X X X X X ]
+        [ X X X X X X X X X X X ]
+        [ X X X X X X X X X X X ]
+     ]
      */
 
     // console.log(expectedMap);
@@ -1477,31 +1391,14 @@ describe('Casting Ray Vision in an empty Room with Walls', () => {
       for (let j = 0; j < room[0].length; j++) {
         if (visionMap[i][j] !== expectedMap[i][j]) {
           isRoomVisible = false;
+          console.log(i, j);
+          break;
         }
       }
     }
 
-    // // Output the grid
-    // for (let i = 0; i < room.length; i++) {
-    //   let row = '[ ';
-    //   for (let j = 0; j < room[i].length; j++) {
-    //     if (validityMap[i][j]) {
-    //       // If the tile is visible
-    //       if (room[i][j][0] == TILE_TYPE.FLOOR) {
-    //         // If the tile is a floor
-    //         row += '. ';
-    //       } else {
-    //         // If the tile is a wall
-    //         row += '# ';
-    //       }
-    //     } else {
-    //       // If the tile is not visible
-    //       row += 'X ';
-    //     }
-    //   }
-    //   row += ']';
-    //   console.log(row);
-    // }
+    // Output the grid
+    // console.log(roomToStringArray(room, new Map(), visionMap));
 
     expect(isRoomVisible).toBe(true);
   });

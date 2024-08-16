@@ -1,6 +1,10 @@
 import { TILE_TYPE } from '../constants/tile';
 import { describe, expect, it } from 'vitest';
-import { initRoomWithOnlyFloors, roomToStringArray } from './room';
+import {
+  initBoolMatrix,
+  initRoomWithOnlyFloors,
+  roomToStringArray,
+} from './room';
 import { ENTITY_TYPE } from '../constants/entity';
 
 describe('Initialize Floor-Only Room', () => {
@@ -66,6 +70,88 @@ describe('Initialize Floor-Only Room', () => {
     }
 
     expect(isFloor).toBe(true);
+  });
+});
+
+describe('Intialize boolean matrix', () => {
+  it('returns a 1x1 2D array of false booleans', () => {
+    const matrix = initBoolMatrix(1);
+
+    let isFalse = true;
+    for (let row = 0; row < 1; row++) {
+      for (let col = 0; col < 1; col++) {
+        if (matrix[row][col] !== false) {
+          isFalse = false;
+          break;
+        }
+      }
+    }
+
+    expect(isFalse).toBe(true);
+  });
+
+  it('returns a 2x2 2D array of false booleans', () => {
+    const matrix = initBoolMatrix(2);
+
+    let isFalse = true;
+    for (let row = 0; row < 2; row++) {
+      for (let col = 0; col < 2; col++) {
+        if (matrix[row][col] !== false) {
+          isFalse = false;
+          break;
+        }
+      }
+    }
+
+    expect(isFalse).toBe(true);
+  });
+
+  it('returns a 3x3 2D array of false booleans', () => {
+    const matrix = initBoolMatrix(3);
+
+    let isFalse = true;
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        if (matrix[row][col] !== false) {
+          isFalse = false;
+          break;
+        }
+      }
+    }
+
+    expect(isFalse).toBe(true);
+  });
+
+  it('returns a 4x4 2D array of true booleans', () => {
+    const matrix = initBoolMatrix(4, true);
+
+    let isFalse = true;
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        if (matrix[row][col] !== true) {
+          isFalse = false;
+          break;
+        }
+      }
+    }
+
+    expect(isFalse).toBe(true);
+  });
+
+  it('returns a 5x5 2D array of true booleans', () => {
+    const matrix = initBoolMatrix(5, true);
+
+    let isFalse = true;
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (matrix[row][col] !== true) {
+          isFalse = false;
+          break;
+        }
+      }
+    }
+
+    expect(isFalse).toBe(true);
   });
 });
 

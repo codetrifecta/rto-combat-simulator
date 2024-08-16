@@ -23,9 +23,29 @@ export const initRoomWithOnlyFloors = (
 };
 
 /**
+ * Initialize a boolean matrix with a default value
+ * @param size Size of the matrix
+ * @param bool (Optional) Default value for the matrix
+ * @returns 2D array of booleans
+ */
+export const initBoolMatrix = (
+  size: number,
+  bool: boolean = false
+): boolean[][] => {
+  const matrix: boolean[][] = new Array(size);
+
+  for (let row = 0; row < size; row++) {
+    matrix[row] = new Array(size).fill(bool);
+  }
+
+  return matrix;
+};
+
+/**
  * Convert a room to a string array
  * @param room 2D array of tiles
  * @param roomEntityPositions Map of entity positions
+ * @param visionMap 2D array of booleans representing the vision of the entity (default: true 2d array)
  * @returns String array of the room where
  *          floor tiles are represented by '.' and wall tiles are represented by '#',
  *          and entities are represented by 'P' for player and 'E' for enemy,
@@ -33,12 +53,18 @@ export const initRoomWithOnlyFloors = (
  */
 export const roomToStringArray = (
   room: [TILE_TYPE, number][][],
-  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
+  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
+  visionMap: boolean[][] = initBoolMatrix(room.length, true)
 ): string[] => {
   const roomString: string[] = [];
   for (let row = 0; row < room.length; row++) {
     let rowStr = ' ';
     for (let col = 0; col < room[row].length; col++) {
+      if (visionMap && !visionMap[row][col]) {
+        rowStr += 'X ';
+        continue;
+      }
+
       const entityKey = `${row},${col}`;
       if (roomEntityPositions.has(entityKey)) {
         const entityIfExists = roomEntityPositions.get(entityKey);
@@ -57,4 +83,35 @@ export const roomToStringArray = (
   }
 
   return roomString;
+};
+
+/**
+ * Print a room string to the console (only tiles, no entities)
+ * @param room 2D array of tiles
+ * @param visionMap 2D array of booleans representing the vision of the entity
+ */
+export const printRoomString = (
+  room: [TILE_TYPE, number][][],
+  visionMap: boolean[][]
+) => {
+  for (let i = 0; i < room.length; i++) {
+    let row = '[ ';
+    for (let j = 0; j < room[i].length; j++) {
+      if (visionMap[i][j]) {
+        // If the tile is visible
+        if (room[i][j][0] == TILE_TYPE.FLOOR) {
+          // If the tile is a floor
+          row += '. ';
+        } else {
+          // If the tile is a wall
+          row += '# ';
+        }
+      } else {
+        // If the tile is not visible
+        row += 'X ';
+      }
+    }
+    row += ']';
+    console.log(row);
+  }
 };
