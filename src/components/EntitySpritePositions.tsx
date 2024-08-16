@@ -152,7 +152,7 @@ export const EntitySpritePositions: FC<{
   };
 
   return (
-    <div>
+    <>
       {roomEntityPositionsFlipped.map((entityPosition) => {
         // console.log(positionString, entityType, entityID);
 
@@ -192,7 +192,7 @@ export const EntitySpritePositions: FC<{
           );
         }
       })}
-    </div>
+    </>
   );
 };
 

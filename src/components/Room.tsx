@@ -339,7 +339,7 @@ export const Room: FC<{
 
               setTimeout(() => {
                 setEnemies(enemies.filter((e) => e.id !== affectedEnemy.id));
-              }, 1000);
+              }, 1200);
             } else {
               addLog({
                 message: (
@@ -1054,6 +1054,7 @@ export const Room: FC<{
 
   return (
     <div
+      id="room"
       style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${roomLength}, ${TILE_SIZE}px)`,

@@ -403,7 +403,10 @@ function App() {
                   height: roomLength * TILE_SIZE,
                 }}
               >
-                <div className="absolute top-0 left-0 z-20">
+                <div
+                  id="entity_sprite_positions"
+                  className="absolute top-0 left-0 z-20"
+                >
                   <EntitySpritePositions
                     setCurrentHoveredEntity={setCurrentHoveredEntity}
                   />
