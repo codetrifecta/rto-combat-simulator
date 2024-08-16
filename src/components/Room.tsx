@@ -34,6 +34,7 @@ import {
   findPathsFromCurrentLocation,
   getApCostForPath,
 } from '../utils/pathfinding';
+import { getVisionFromEntityPosition } from '../utils/vision';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -683,6 +684,67 @@ export const Room: FC<{
     }
   }, [player, roomEntityPositions]);
 
+  // Get player's vision range for weapon attack
+  const playerVisionRange = useMemo(() => {
+    if (player.state.isAttacking) {
+      const weapon = player.equipment.weapon;
+
+      if (!weapon) {
+        return;
+      }
+
+      const weaponRange = weapon.range;
+
+      const visionRangeForWeaponAttack = getVisionFromEntityPosition(
+        roomTileMatrix,
+        playerPosition,
+        weaponRange,
+        new Map()
+      );
+
+      // console.log('visionRangeForWeaponAttack', visionRangeForWeaponAttack);
+
+      return visionRangeForWeaponAttack;
+    } else if (player.state.isUsingSkill) {
+      const skill = player.skills.find(
+        (skill) => skill.id === player.state.skillId
+      );
+
+      if (!skill) {
+        return;
+      }
+
+      const skillRange = skill.range;
+      let range = skillRange;
+
+      // Check if skill is a weapon-based skill and if player has a weapon equipped
+      if (weaponBasedSkillIDs.includes(skill.id)) {
+        if (player.equipment.weapon) {
+          if (player.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
+            range = player.equipment.weapon.range;
+          }
+        }
+      }
+
+      const visionRangeForSkill = getVisionFromEntityPosition(
+        roomTileMatrix,
+        playerPosition,
+        range,
+        new Map()
+      );
+
+      // console.log('visionRangeForWeaponAttack', visionRangeForWeaponAttack);
+
+      return visionRangeForSkill;
+    } else {
+      return;
+    }
+  }, [
+    player.state.isAttacking,
+    player.state.isUsingSkill,
+    player.state.skillId,
+  ]);
+
   // Get player's available movement possibilities (based on player's action points)
   const playerMovementPossibilities: [
     Map<string, [number, number][]>,
@@ -1147,13 +1209,9 @@ export const Room: FC<{
           // Check if player is attacking (basic attack)
           // Highlight tiles that can be attacked by player based on weapon range
           if (player.state.isAttacking && player.equipment.weapon) {
-            const range = player.equipment.weapon.range;
-
             if (
-              rowIndex >= playerRow - range &&
-              rowIndex <= playerRow + range &&
-              columnIndex >= playerCol - range &&
-              columnIndex <= playerCol + range
+              playerVisionRange &&
+              playerVisionRange[rowIndex][columnIndex] === true
             ) {
               isEffectZone = true;
             }
@@ -1195,43 +1253,52 @@ export const Room: FC<{
                 }
               } else if (skill.skillType === SKILL_TYPE.ST) {
                 // If skill is single target, highlight tiles that can be affected by the skill
-                let range = skill.range;
+                // let range = skill.range;
 
-                // Check for weapon (range) dependent skills
-                if (weaponBasedSkillIDs.includes(skill.id)) {
-                  if (player.equipment.weapon) {
-                    if (
-                      player.equipment.weapon.attackType ===
-                      WEAPON_ATTACK_TYPE.MELEE
-                    ) {
-                      range = player.equipment.weapon.range;
-                    }
-                  }
-                }
+                // // Check for weapon (range) dependent skills
+                // if (weaponBasedSkillIDs.includes(skill.id)) {
+                //   if (player.equipment.weapon) {
+                //     if (
+                //       player.equipment.weapon.attackType ===
+                //       WEAPON_ATTACK_TYPE.MELEE
+                //     ) {
+                //       range = player.equipment.weapon.range;
+                //     }
+                //   }
+                // }
 
                 // Check for the specific skill's effect zone
+                // Depending on the skill, the effect zone could be different.
+                // By default, single target will depend on the player's vision range.
                 switch (skill.id) {
                   case SKILL_ID.FLY:
-                    // For movement skills like fly, leap slam, and flame dive, player can target any empty tile that does not have an entity
-                    // Leap Slam and Flame Dive handled in the AOE case
-                    if (
-                      tileType === TILE_TYPE.FLOOR &&
-                      !entityIfExists &&
-                      rowIndex >= playerRow - range &&
-                      rowIndex <= playerRow + range &&
-                      columnIndex >= playerCol - range &&
-                      columnIndex <= playerCol + range &&
-                      !(rowIndex === playerRow && columnIndex === playerCol)
-                    ) {
-                      isEffectZone = true;
+                    {
+                      // For movement skills like fly, leap slam, and flame dive, player can target any empty tile that does not have an entity
+                      // Leap Slam and Flame Dive handled in the AOE case
+                      const range = skill.range;
+                      if (
+                        tileType === TILE_TYPE.FLOOR &&
+                        rowIndex >= playerRow - range &&
+                        rowIndex <= playerRow + range &&
+                        columnIndex >= playerCol - range &&
+                        columnIndex <= playerCol + range
+                      ) {
+                        if (entityIfExists) {
+                          if (entityIfExists[0] === ENTITY_TYPE.PLAYER) {
+                            isEffectZone = true;
+                          } else {
+                            isEffectZone = false;
+                          }
+                        } else {
+                          isEffectZone = true;
+                        }
+                      }
                     }
                     break;
                   default:
                     if (
-                      rowIndex >= playerRow - range &&
-                      rowIndex <= playerRow + range &&
-                      columnIndex >= playerCol - range &&
-                      columnIndex <= playerCol + range &&
+                      playerVisionRange &&
+                      playerVisionRange[rowIndex][columnIndex] === true &&
                       !(rowIndex === playerRow && columnIndex === playerCol)
                     ) {
                       isEffectZone = true;
@@ -1255,13 +1322,15 @@ export const Room: FC<{
                 }
 
                 // Determine if tile is in effect zone
+                // Depending on the skill, the effect zone could be different
+                // For example, projectile based AOE skills like fireball will need to depend on the player's vision range.
+                // Whereas a skill like whirlwind and cleave will only need to depend on the player's target zone.
                 switch (skill.id) {
                   case SKILL_ID.FIREBALL:
                     if (
-                      rowIndex >= playerRow - range &&
-                      rowIndex <= playerRow + range &&
-                      columnIndex >= playerCol - range &&
-                      columnIndex <= playerCol + range
+                      playerVisionRange &&
+                      playerVisionRange[rowIndex][columnIndex] === true
+                      // For fireball, player can target themselves
                     ) {
                       isEffectZone = true;
                     }
@@ -1270,14 +1339,20 @@ export const Room: FC<{
                   case SKILL_ID.FLAME_DIVE:
                     if (
                       tileType === TILE_TYPE.FLOOR &&
-                      !entityIfExists &&
                       rowIndex >= playerRow - range &&
                       rowIndex <= playerRow + range &&
                       columnIndex >= playerCol - range &&
-                      columnIndex <= playerCol + range &&
-                      !(rowIndex === playerRow && columnIndex === playerCol)
+                      columnIndex <= playerCol + range
                     ) {
-                      isEffectZone = true;
+                      if (entityIfExists) {
+                        if (entityIfExists[0] === ENTITY_TYPE.PLAYER) {
+                          isEffectZone = true;
+                        } else {
+                          isEffectZone = false;
+                        }
+                      } else {
+                        isEffectZone = true;
+                      }
                     }
                     break;
                   default:

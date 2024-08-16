@@ -1,7 +1,13 @@
 import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_TYPE } from '../constants/tile';
 
-// Functon to find a path taking in the tuple of current player location, the room state, and the path dictionary to be filled, given current AP
+/**
+ * Functon to find a path taking in the tuple of current player location, the room state, and the path dictionary to be filled, given current AP
+ * @param playerLoc - Current location in room of player
+ * @param room - 2D matrix of type [TILE_TYPE, number][][]
+ * @param AP - The number of AP the player has
+ * @returns A map of coordinates of each tile within reach and the path to get to it, of type Map<string, [number, number][]>
+ */
 export function findPathsFromCurrentLocationDEPRECATED(
   playerLoc: [number, number],
   room: [TILE_TYPE, number][][],
@@ -98,6 +104,15 @@ export function findPathsFromCurrentLocationDEPRECATED(
   return path_dict;
 }
 
+/**
+ * Functon to find a path taking in the tuple of current player location, the room state, and the path dictionary to be filled, given current AP
+ * Returns a map of type Map<string, [number, number][]>
+ * @param playerLoc - Current location in room of player
+ * @param room - 2D matrix of type [TILE_TYPE, number][][]
+ * @param AP - The number of AP the player has
+ * @param roomEntityPositions - Dictionary of the positions of room entities (players and enemies) of type Map<string, [ENTITY_TYPE, number]>
+ * @returns A map of coordinates of each tile within reach and the path to get to it, of type Map<string, [number, number][]>
+ */
 export function findPathsFromCurrentLocation(
   playerLoc: [number, number],
   room: [TILE_TYPE, number][][],
@@ -207,6 +222,10 @@ export function findPathsFromCurrentLocation(
   return path_dict;
 }
 
+/**
+ * @param paths - A dictionary of type Map<string, [number, number][], which has the tiles within reach of the player and the tiles to reach it.
+ * @returns A map which has the tiles within reach of the player and the number of AP required to reach it.
+ */
 export function getApCostForPath(
   paths: Map<string, [number, number][]>
 ): Map<string, number> {
@@ -221,50 +240,3 @@ export function getApCostForPath(
 
   return AP;
 }
-
-// --------------------------------------------------------------------------------------------------
-
-// Uncomment the following code to test the pathfinding functions
-
-// Initialize the room 2d array
-// function initRoom(size: number): [TILE_TYPE, number][][] {
-//   const room_arr: [TILE_TYPE, number][][] = new Array(size);
-
-//   for (let i = 0; i < size; i++) {
-//     room_arr[i] = [];
-
-//     for (let j = 0; j < size; j++) {
-//       room_arr[i][j] = [TILE_TYPE.FLOOR, 1];
-//     }
-//   }
-
-//   // for (let i = 0; i < size; i++) {
-//   //   console.log(room_arr[i]);
-//   // }
-
-//   return room_arr;
-// }
-
-// const size: number = 5;
-
-// const room: [TILE_TYPE, number][][] = initRoom(size);
-
-// console.log(room);
-
-// const MOCK_ROOM_ENTITY_POSITIONS: Map<string, [ENTITY_TYPE, number]> =
-//   new Map();
-
-// MOCK_ROOM_ENTITY_POSITIONS.set('0,1', [ENTITY_TYPE.ENEMY, 1]);
-// MOCK_ROOM_ENTITY_POSITIONS.set('1,1', [ENTITY_TYPE.ENEMY, 2]);
-// MOCK_ROOM_ENTITY_POSITIONS.set('2,1', [ENTITY_TYPE.ENEMY, 3]);
-// MOCK_ROOM_ENTITY_POSITIONS.set('3,1', [ENTITY_TYPE.ENEMY, 4]);
-
-// const get_path: Map<string, [number, number][]> = findPathsFromCurrentLocation(
-//   [0, 0],
-//   room,
-//   3,
-//   MOCK_ROOM_ENTITY_POSITIONS
-// );
-// const AP: Map<string, number> = getApCostForPath(get_path);
-// console.log(get_path);
-// console.log(AP);
