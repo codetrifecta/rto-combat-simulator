@@ -1272,15 +1272,27 @@ export const Room: FC<{
                 // By default, single target will depend on the player's vision range.
                 switch (skill.id) {
                   case SKILL_ID.FLY:
-                    // For movement skills like fly, leap slam, and flame dive, player can target any empty tile that does not have an entity
-                    // Leap Slam and Flame Dive handled in the AOE case
-                    if (
-                      tileType === TILE_TYPE.FLOOR &&
-                      !entityIfExists &&
-                      playerVisionRange &&
-                      playerVisionRange[rowIndex][columnIndex] === true
-                    ) {
-                      isEffectZone = true;
+                    {
+                      // For movement skills like fly, leap slam, and flame dive, player can target any empty tile that does not have an entity
+                      // Leap Slam and Flame Dive handled in the AOE case
+                      const range = skill.range;
+                      if (
+                        tileType === TILE_TYPE.FLOOR &&
+                        rowIndex >= playerRow - range &&
+                        rowIndex <= playerRow + range &&
+                        columnIndex >= playerCol - range &&
+                        columnIndex <= playerCol + range
+                      ) {
+                        if (entityIfExists) {
+                          if (entityIfExists[0] === ENTITY_TYPE.PLAYER) {
+                            isEffectZone = true;
+                          } else {
+                            isEffectZone = false;
+                          }
+                        } else {
+                          isEffectZone = true;
+                        }
+                      }
                     }
                     break;
                   default:
@@ -1327,12 +1339,20 @@ export const Room: FC<{
                   case SKILL_ID.FLAME_DIVE:
                     if (
                       tileType === TILE_TYPE.FLOOR &&
-                      !entityIfExists &&
-                      playerVisionRange &&
-                      playerVisionRange[rowIndex][columnIndex] === true &&
-                      !(rowIndex === playerRow && columnIndex === playerCol)
+                      rowIndex >= playerRow - range &&
+                      rowIndex <= playerRow + range &&
+                      columnIndex >= playerCol - range &&
+                      columnIndex <= playerCol + range
                     ) {
-                      isEffectZone = true;
+                      if (entityIfExists) {
+                        if (entityIfExists[0] === ENTITY_TYPE.PLAYER) {
+                          isEffectZone = true;
+                        } else {
+                          isEffectZone = false;
+                        }
+                      } else {
+                        isEffectZone = true;
+                      }
                     }
                     break;
                   default:
