@@ -3,10 +3,10 @@ import { SPRITE_ID } from './sprite';
 export const TILE_SIZE = 48; // Default to 50
 
 export enum TILE_TYPE {
-  NULL = -1,
-  FLOOR = 0,
-  WALL = 1,
-  DOOR = 2,
+  NULL = 1,
+  FLOOR = 2,
+  WALL = 3,
+  DOOR = 4,
 }
 
 interface ITile {
