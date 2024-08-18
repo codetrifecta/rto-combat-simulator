@@ -4,6 +4,11 @@ import { useGameStateStore } from '../store/game';
 import { Sprite } from './Sprite';
 import { SPRITE_ID } from '../constants/sprite';
 
+/**
+ * Room tile sprites component
+ * DEPRECATED: This component is no longer used
+ * @returns JSX.Element
+ */
 export const RoomTileSprites: FC = () => {
   const { isRoomOver, roomTileMatrix, roomLength } = useGameStateStore();
 
@@ -16,7 +21,7 @@ export const RoomTileSprites: FC = () => {
       }}
     >
       {roomTileMatrix.map((row, rowIndex) => {
-        return row.map(([tileType, tileID], columnIndex) => {
+        return row.map((tileType, columnIndex) => {
           let sprite: SPRITE_ID | null | undefined = null;
 
           switch (tileType) {

@@ -14,10 +14,10 @@ import { InventoryChooser } from './components/InventoryChooser';
 import { CharacterSheet } from './components/CharacterSheet';
 import { GenerateRoomModal } from './components/GenerateRoomModal';
 import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
-import { RoomTileSprites } from './components/RoomTileSprites';
 import { EntitySpritePositions } from './components/EntitySpritePositions';
 import { TILE_SIZE } from './constants/tile';
 import { Compendium } from './components/Compendium';
+import { RoomArt } from './components/RoomArt';
 
 // Flag for first room render
 
@@ -418,7 +418,11 @@ function App() {
                   />
                 </div>
                 <div className="absolute z-0">
-                  <RoomTileSprites />
+                  <RoomArt
+                    width={roomLength * TILE_SIZE}
+                    height={roomLength * TILE_SIZE}
+                    imgSrc={''}
+                  />
                 </div>
               </div>
             </div>
