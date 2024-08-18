@@ -828,6 +828,15 @@ export const Room: FC<{
 
       if (newEnemy.health <= 0) {
         // Wait for defeat animation to end before removing enemy from room
+        // Also set enemy health to their new health (<= 0) if defeated
+        setEnemies(
+          enemies.map((e) => {
+            if (e.id === entityId) {
+              return newEnemy;
+            }
+            return e;
+          })
+        );
         setTimeout(() => {
           setEnemies(enemies.filter((e) => e.id !== entityId));
 
@@ -980,20 +989,27 @@ export const Room: FC<{
     }
 
     // Update enemy walking animation direction based on movement path
+    // Change spritesheet position to animate movement
+
     if (randomMove[1] < enemyCol) {
       enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
       enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
       enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
-      enemySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      enemySpriteSheetContainer.style.top = '-' + enemy.sprite_size + 'px';
+
+      setTimeout(() => {
+        enemySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
     } else {
       enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
       enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
       enemySpriteSheetContainer.style.left = '0px';
-      enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
-    }
+      enemySpriteSheetContainer.style.top = '-' + enemy.sprite_size + 'px';
 
-    // Change spritesheet position to animate movement
-    enemySpriteSheetContainer.style.top = '-' + enemy.sprite_size + 'px';
+      setTimeout(() => {
+        enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    }
 
     // Update room matrix to move enemy to random adjacent tile
     if (randomMove[0] >= 0 && randomMove[0] < roomLength) {
@@ -1043,6 +1059,77 @@ export const Room: FC<{
       Math.abs(playerCol - enemyCol) <= enemy.range;
 
     if (canAttackPlayer) {
+      // Change sprite animation from idle to attack
+      const enemySpriteSheetContainer = document.getElementById(
+        `spritesheet_container_${enemy.entityType}_${enemy.id}`
+      );
+      if (!enemySpriteSheetContainer) {
+        console.error('Enemy spritesheet container not found!');
+        return;
+      }
+
+      let topPosition = enemy.sprite_size * 2;
+
+      if (enemy.sprite === SPRITE_ID.ENEMY_017_B) {
+        topPosition = enemy.sprite_size * 4;
+      }
+
+      if (playerCol < enemyCol) {
+        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+        enemySpriteSheetContainer.classList.remove(
+          'animate-entityAnimateLeft08'
+        );
+        enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
+        enemySpriteSheetContainer.style.top = '-' + topPosition + 'px';
+
+        setTimeout(() => {
+          enemySpriteSheetContainer.classList.add(
+            'animate-entityAnimateLeftOnce05'
+          );
+        }, 1);
+      } else {
+        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+        enemySpriteSheetContainer.classList.remove(
+          'animate-entityAnimateLeft08'
+        );
+        enemySpriteSheetContainer.style.left = '0px';
+        enemySpriteSheetContainer.style.top = '-' + topPosition + 'px';
+
+        setTimeout(() => {
+          enemySpriteSheetContainer.classList.add(
+            'animate-entityAnimateOnce05'
+          );
+        }, 1);
+      }
+
+      // After attack animation ends, change back to idle animation
+      setTimeout(() => {
+        if (
+          enemySpriteSheetContainer.classList.contains(
+            'animate-entityAnimateLeftOnce05'
+          )
+        ) {
+          // If enemy is facing left, face left
+          enemySpriteSheetContainer.classList.remove(
+            'animate-entityAnimateLeftOnce05'
+          );
+          enemySpriteSheetContainer.style.top = '0px';
+          enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
+          enemySpriteSheetContainer.classList.add(
+            'animate-entityAnimateLeft08'
+          );
+        } else {
+          // If enemy is not facing left, face right
+          enemySpriteSheetContainer.classList.remove(
+            'animate-entityAnimateOnce05'
+          );
+          enemySpriteSheetContainer.style.top = '0px';
+          enemySpriteSheetContainer.style.left = '0px';
+          enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
+        }
+      }, 500);
+
+      // Calculate damage
       const baseDamage = enemy.damage;
 
       const statusDamageBonus = enemy.statuses.reduce((acc, status) => {

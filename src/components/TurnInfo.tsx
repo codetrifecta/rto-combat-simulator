@@ -123,11 +123,16 @@ const EntityCard: FC<{
               'bg-red-700': entity.entityType === ENTITY_TYPE.ENEMY,
             }
           )}
-          style={{ height: (entity.health / entity.maxHealth) * 100 + '%' }}
+          style={{
+            height:
+              ((entity.health > 0 ? entity.health : 0) / entity.maxHealth) *
+                100 +
+              '%',
+          }}
         ></div>
         <h3>{entity.name}</h3>
         <h4>
-          HP: {entity.health} / {entity.maxHealth}
+          HP: {entity.health > 0 ? entity.health : 0} / {entity.maxHealth}
         </h4>
       </div>
       {/* Display statuses if present */}

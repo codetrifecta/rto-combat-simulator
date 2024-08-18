@@ -23,6 +23,7 @@ export default {
       keyframes: {
         floatUpAndFadeOut: {
           '0%': { transform: 'translateY(0)', opacity: 1 },
+          '80%': { transform: 'translateY(-20px)', opacity: 0 },
           '100%': { transform: 'translateY(-20px)', opacity: 0 },
         },
         entityIdle: {
@@ -49,11 +50,13 @@ export default {
         entityIdle20: 'entityIdle 2s steps(6) infinite',
 
         entityAnimate05: 'entityAnimate 0.5s steps(6) infinite',
+        entityAnimateOnce05: 'entityAnimate 0.5s steps(6) infinite',
         entityAnimate08: 'entityAnimate 0.8s steps(6) infinite',
         entityAnimateOnce08: 'entityAnimate 0.8s steps(6) forwards',
         entityAnimate20: 'entityAnimate 2s steps(6) infinite',
 
         entityAnimateLeft05: 'entityAnimateLeft 0.5s steps(6) infinite',
+        entityAnimateLeftOnce05: 'entityAnimateLeft 0.5s steps(6) infinite',
         entityAnimateLeft08: 'entityAnimateLeft 0.8s steps(6) infinite',
         entityAnimateLeftOnce08: 'entityAnimateLeft 0.8s steps(6) forwards',
         entityAnimateLeft20: 'entityAnimateLeft 2s steps(6) infinite',

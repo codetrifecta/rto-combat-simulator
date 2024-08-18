@@ -389,7 +389,7 @@ function App() {
         {/* Combat Room */}
         <section className="relative max-w-screen max-h-screen">
           <div
-            className="relative max-w-screen max-h-screen pr-10 hidden-scrollbar overflow-scroll"
+            className="relative max-w-screen max-h-screen pr-10 hidden-scrollbar overflow-scroll outline-none"
             ref={roomScrollRef}
           >
             <div
