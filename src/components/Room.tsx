@@ -828,6 +828,15 @@ export const Room: FC<{
 
       if (newEnemy.health <= 0) {
         // Wait for defeat animation to end before removing enemy from room
+        // Also set enemy health to their new health (<= 0) if defeated
+        setEnemies(
+          enemies.map((e) => {
+            if (e.id === entityId) {
+              return newEnemy;
+            }
+            return e;
+          })
+        );
         setTimeout(() => {
           setEnemies(enemies.filter((e) => e.id !== entityId));
 
