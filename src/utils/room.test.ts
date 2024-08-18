@@ -14,7 +14,7 @@ describe('Initialize Floor-Only Room', () => {
     let isFloor = true;
     for (let row = 0; row < 1; row++) {
       for (let col = 0; col < 1; col++) {
-        if (room[row][col][0] !== TILE_TYPE.FLOOR) {
+        if (room[row][col] !== TILE_TYPE.FLOOR) {
           isFloor = false;
           break;
         }
@@ -30,7 +30,7 @@ describe('Initialize Floor-Only Room', () => {
     let isFloor = true;
     for (let row = 0; row < 2; row++) {
       for (let col = 0; col < 2; col++) {
-        if (room[row][col][0] !== TILE_TYPE.FLOOR) {
+        if (room[row][col] !== TILE_TYPE.FLOOR) {
           isFloor = false;
           break;
         }
@@ -46,7 +46,7 @@ describe('Initialize Floor-Only Room', () => {
     let isFloor = true;
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 3; col++) {
-        if (room[row][col][0] !== TILE_TYPE.FLOOR) {
+        if (room[row][col] !== TILE_TYPE.FLOOR) {
           isFloor = false;
           break;
         }
@@ -62,7 +62,7 @@ describe('Initialize Floor-Only Room', () => {
     let isFloor = true;
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
-        if (room[row][col][0] !== TILE_TYPE.FLOOR) {
+        if (room[row][col] !== TILE_TYPE.FLOOR) {
           isFloor = false;
           break;
         }
@@ -176,9 +176,9 @@ describe('Print Room', () => {
 
   it('prints a 7x7 room with some walls', () => {
     const room = initRoomWithOnlyFloors(7);
-    room[2][2] = [TILE_TYPE.WALL, 1];
-    room[2][3] = [TILE_TYPE.WALL, 1];
-    room[2][4] = [TILE_TYPE.WALL, 1];
+    room[2][2] = TILE_TYPE.WALL;
+    room[2][3] = TILE_TYPE.WALL;
+    room[2][4] = TILE_TYPE.WALL;
 
     const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>();
 
@@ -197,9 +197,9 @@ describe('Print Room', () => {
 
   it('prints a 7x7 room with some walls and player entity', () => {
     const room = initRoomWithOnlyFloors(7);
-    room[2][2] = [TILE_TYPE.WALL, 1];
-    room[2][3] = [TILE_TYPE.WALL, 1];
-    room[2][4] = [TILE_TYPE.WALL, 1];
+    room[2][2] = TILE_TYPE.WALL;
+    room[2][3] = TILE_TYPE.WALL;
+    room[2][4] = TILE_TYPE.WALL;
 
     const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>();
     roomEntityPositions.set('3,3', [ENTITY_TYPE.PLAYER, 1]);
@@ -219,9 +219,9 @@ describe('Print Room', () => {
 
   it('prints a 7x7 room with some walls, player, and enemy entities', () => {
     const room = initRoomWithOnlyFloors(7);
-    room[2][2] = [TILE_TYPE.WALL, 1];
-    room[2][3] = [TILE_TYPE.WALL, 1];
-    room[2][4] = [TILE_TYPE.WALL, 1];
+    room[2][2] = TILE_TYPE.WALL;
+    room[2][3] = TILE_TYPE.WALL;
+    room[2][4] = TILE_TYPE.WALL;
 
     const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>();
     roomEntityPositions.set('3,3', [ENTITY_TYPE.PLAYER, 1]);

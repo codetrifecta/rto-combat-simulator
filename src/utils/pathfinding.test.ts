@@ -37,9 +37,9 @@ describe('Pathfinding for Movement', () => {
     const startPos: [number, number] = [3, 3];
 
     const roomWithWalls = initRoomWithOnlyFloors(7);
-    roomWithWalls[2][4] = [TILE_TYPE.WALL, 1];
-    roomWithWalls[3][4] = [TILE_TYPE.WALL, 1];
-    roomWithWalls[4][5] = [TILE_TYPE.WALL, 1];
+    roomWithWalls[2][4] = TILE_TYPE.WALL;
+    roomWithWalls[3][4] = TILE_TYPE.WALL;
+    roomWithWalls[4][5] = TILE_TYPE.WALL;
 
     const paths = findPathsFromCurrentLocation(
       startPos,
@@ -126,9 +126,9 @@ describe('Pathfinding for Movement', () => {
     const startPos: [number, number] = [3, 3];
 
     const roomWithWalls = initRoomWithOnlyFloors(7);
-    roomWithWalls[2][2] = [TILE_TYPE.WALL, 1];
-    roomWithWalls[3][2] = [TILE_TYPE.WALL, 1];
-    roomWithWalls[4][2] = [TILE_TYPE.WALL, 1];
+    roomWithWalls[2][2] = TILE_TYPE.WALL;
+    roomWithWalls[3][2] = TILE_TYPE.WALL;
+    roomWithWalls[4][2] = TILE_TYPE.WALL;
 
     const roomEntityPositions: Map<string, [ENTITY_TYPE, number]> = new Map();
     roomEntityPositions.set('3,3', [ENTITY_TYPE.PLAYER, 1]);

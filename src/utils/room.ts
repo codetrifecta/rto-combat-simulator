@@ -6,16 +6,14 @@ import { TILE_TYPE } from '../constants/tile';
  * @param size Size of the room
  * @returns 2D array of floor tiles
  */
-export const initRoomWithOnlyFloors = (
-  size: number
-): [TILE_TYPE, number][][] => {
-  const room_arr: [TILE_TYPE, number][][] = new Array(size);
+export const initRoomWithOnlyFloors = (size: number): TILE_TYPE[][] => {
+  const room_arr: TILE_TYPE[][] = new Array(size);
 
   for (let row = 0; row < size; row++) {
     room_arr[row] = [];
 
     for (let col = 0; col < size; col++) {
-      room_arr[row][col] = [TILE_TYPE.FLOOR, 1];
+      room_arr[row][col] = TILE_TYPE.FLOOR;
     }
   }
 
@@ -52,7 +50,7 @@ export const initBoolMatrix = (
  *          each separated by a space.
  */
 export const roomToStringArray = (
-  room: [TILE_TYPE, number][][],
+  room: TILE_TYPE[][],
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
   visionMap: boolean[][] = initBoolMatrix(room.length, true)
 ): string[] => {
@@ -77,7 +75,7 @@ export const roomToStringArray = (
         continue;
       }
 
-      rowStr += room[row][col][0] === TILE_TYPE.FLOOR ? '. ' : '# ';
+      rowStr += room[row][col] === TILE_TYPE.FLOOR ? '. ' : '# ';
     }
     roomString.push(rowStr);
   }
@@ -91,7 +89,7 @@ export const roomToStringArray = (
  * @param visionMap 2D array of booleans representing the vision of the entity
  */
 export const printRoomString = (
-  room: [TILE_TYPE, number][][],
+  room: TILE_TYPE[][],
   visionMap: boolean[][]
 ) => {
   for (let i = 0; i < room.length; i++) {
@@ -99,7 +97,7 @@ export const printRoomString = (
     for (let j = 0; j < room[i].length; j++) {
       if (visionMap[i][j]) {
         // If the tile is visible
-        if (room[i][j][0] == TILE_TYPE.FLOOR) {
+        if (room[i][j] == TILE_TYPE.FLOOR) {
           // If the tile is a floor
           row += '. ';
         } else {

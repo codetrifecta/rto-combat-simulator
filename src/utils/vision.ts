@@ -13,7 +13,7 @@ import { TILE_TYPE } from '../constants/tile';
  * @returns A boolean grid of size room, with the tiles the entity (player/enemy) can "see" having true and the ones they can't having false, in the direction set by angleRad.
  */
 function castRayAtAngle(
-  room: [TILE_TYPE, number][][],
+  room: TILE_TYPE[][],
   startRow: number,
   startCol: number,
   angleRad: number,
@@ -65,7 +65,7 @@ function castRayAtAngle(
     visibleTiles[currentRow][currentCol] = true; // Set the current tile as visible
 
     // If the current tile is a wall, break
-    if (room[currentRow][currentCol][0] === TILE_TYPE.WALL) {
+    if (room[currentRow][currentCol] === TILE_TYPE.WALL) {
       break;
     } else {
       // If current tile is a floor but has an entity
@@ -93,7 +93,7 @@ function castRayAtAngle(
  * @returns A boolean grid of size room, with the tiles the entity (player/enemy) can "see" having true and the ones they can't having false for the entire room.
  */
 export function getVisionFromEntityPosition(
-  room: [TILE_TYPE, number][][],
+  room: TILE_TYPE[][],
   startLoc: [number, number],
   skillRadius: number,
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,

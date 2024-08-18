@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Tile';
 import { ENTITY_TYPE, STARTING_ACTION_POINTS } from '../constants/entity';
-import { DOORS, FLOORS, TILE_SIZE, TILE_TYPE, WALLS } from '../constants/tile';
+import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import {
   aoeSkillIDs,
   selfTargetedSkillIDs,
@@ -971,7 +971,7 @@ export const Room: FC<{
       randomMove[0] >= roomLength ||
       randomMove[1] < 0 ||
       randomMove[1] >= roomLength ||
-      roomTileMatrix[randomMove[0]][randomMove[1]][0] !== TILE_TYPE.FLOOR ||
+      roomTileMatrix[randomMove[0]][randomMove[1]] !== TILE_TYPE.FLOOR ||
       roomEntityPositions.get(`${randomMove[0]},${randomMove[1]}`)
     ) {
       // Do nothing if random move is out of bounds or not an empty tile
@@ -1211,44 +1211,44 @@ export const Room: FC<{
       }}
     >
       {roomTileMatrix.map((row, rowIndex) => {
-        return row.map(([tileType, tileID], columnIndex) => {
-          let sprite: SPRITE_ID | null | undefined = null;
+        return row.map((tileType, columnIndex) => {
+          // let sprite: SPRITE_ID | null | undefined = null;
 
-          switch (tileType) {
-            case TILE_TYPE.FLOOR:
-              sprite = FLOORS.find((floor) => floor.id === tileID)?.sprite;
-              break;
-            case TILE_TYPE.WALL:
-              sprite = WALLS.find((wall) => wall.id === tileID)?.sprite;
-              break;
-            case TILE_TYPE.DOOR:
-              sprite = DOORS.find((door) => door.id === tileID)?.sprite;
-              break;
-            case TILE_TYPE.NULL:
-              sprite = null;
-              break;
-            default:
-              break;
-          }
+          // switch (tileType) {
+          //   case TILE_TYPE.FLOOR:
+          //     sprite = FLOORS.find((floor) => floor.id === tileID)?.sprite;
+          //     break;
+          //   case TILE_TYPE.WALL:
+          //     sprite = WALLS.find((wall) => wall.id === tileID)?.sprite;
+          //     break;
+          //   case TILE_TYPE.DOOR:
+          //     sprite = DOORS.find((door) => door.id === tileID)?.sprite;
+          //     break;
+          //   case TILE_TYPE.NULL:
+          //     sprite = null;
+          //     break;
+          //   default:
+          //     break;
+          // }
 
-          // Render closed door sprite when room is not over
-          if ([397, 366].includes(tileID) && !isRoomOver) {
-            switch (tileID) {
-              case 397: // Get closed door
-                sprite = DOORS.find((door) => door.id === 282)?.sprite;
-                break;
-              case 366:
-                sprite = WALLS.find((door) => door.id === 253)?.sprite;
-                break;
-              default:
-                break;
-            }
-          }
+          // // Render closed door sprite when room is not over
+          // if ([397, 366].includes(tileID) && !isRoomOver) {
+          //   switch (tileID) {
+          //     case 397: // Get closed door
+          //       sprite = DOORS.find((door) => door.id === 282)?.sprite;
+          //       break;
+          //     case 366:
+          //       sprite = WALLS.find((door) => door.id === 253)?.sprite;
+          //       break;
+          //     default:
+          //       break;
+          //   }
+          // }
 
-          if (sprite === undefined) {
-            console.error('Sprite not found!', sprite, tileType, tileID);
-            return null;
-          }
+          // if (sprite === undefined) {
+          //   console.error('Sprite not found!', sprite, tileType);
+          //   return null;
+          // }
 
           // Parse tile type to entity type
           const entityIfExists = roomEntityPositions.get(

@@ -115,7 +115,7 @@ export function findPathsFromCurrentLocationDEPRECATED(
  */
 export function findPathsFromCurrentLocation(
   playerLoc: [number, number],
-  room: [TILE_TYPE, number][][],
+  room: TILE_TYPE[][],
   AP: number,
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
 ): Map<string, [number, number][]> {
@@ -164,7 +164,7 @@ export function findPathsFromCurrentLocation(
         row < room.length &&
         col < room.length &&
         explored.has(`${row},${col}`) === false &&
-        room[row][col][0] == TILE_TYPE.FLOOR &&
+        room[row][col] == TILE_TYPE.FLOOR &&
         roomEntityPositions.has(`${row},${col}`) === false
       ) {
         frontier_queue.push([row, col]); // Push [row, col] location to frontier
@@ -192,7 +192,7 @@ export function findPathsFromCurrentLocation(
       }
 
       // If row and col indicate a floor tile, push to goal
-      if (room[row][col][0] == TILE_TYPE.FLOOR) {
+      if (room[row][col] == TILE_TYPE.FLOOR) {
         goals.push([row, col]);
       }
     }

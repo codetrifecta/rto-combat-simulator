@@ -7,7 +7,7 @@ import { ROOM_LENGTH } from '../constants/game';
 
 interface IGameStateStore {
   roomLength: number;
-  roomTileMatrix: [TILE_TYPE, number][][];
+  roomTileMatrix: TILE_TYPE[][];
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>;
   turnCycle: IEntity[];
   isRoomOver: boolean;
@@ -19,7 +19,7 @@ interface IGameStateStore {
   isGenerateRoomOpen: boolean;
   isCompendiumOpen: boolean;
   setRoomLength: (roomLength: number) => void;
-  setRoomTileMatrix: (roomTileMatrix: [TILE_TYPE, number][][]) => void;
+  setRoomTileMatrix: (roomTileMatrix: TILE_TYPE[][]) => void;
   setRoomEntityPositions: (
     roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
   ) => void;
@@ -52,7 +52,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
 
   setRoomLength: (roomLength: number) => set({ roomLength }),
 
-  setRoomTileMatrix: (roomTileMatrix: [TILE_TYPE, number][][]): void =>
+  setRoomTileMatrix: (roomTileMatrix: TILE_TYPE[][]): void =>
     set({ roomTileMatrix }),
 
   setRoomEntityPositions: (
