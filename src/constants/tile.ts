@@ -1,12 +1,12 @@
 import { SPRITE_ID } from './sprite';
 
-export const TILE_SIZE = 48; // Default to 50
+export const TILE_SIZE = 48;
 
 export enum TILE_TYPE {
-  NULL = 1,
-  FLOOR = 2,
-  WALL = 3,
-  DOOR = 4,
+  NULL = 0,
+  FLOOR = 1,
+  WALL = 2,
+  DOOR = 3,
 }
 
 interface ITile {
