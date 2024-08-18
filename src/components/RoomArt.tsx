@@ -1,7 +1,9 @@
 import { FC, useEffect, useRef } from 'react';
 
 import defaultRoomArt from '../assets/sprites/tiles/room_combat_simulator.png';
+import defaultRoomOpenArt from '../assets/sprites/tiles/room_open_combat_simulator.png';
 import { TILE_SIZE } from '../constants/tile';
+import { useGameStateStore } from '../store/game';
 
 export const RoomArt: FC<{
   width: number;
@@ -9,6 +11,8 @@ export const RoomArt: FC<{
   imgSrc: string;
   grayscale?: boolean;
 }> = ({ width, height, imgSrc, grayscale }) => {
+  const { isRoomOver } = useGameStateStore();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -28,6 +32,10 @@ export const RoomArt: FC<{
       imgSrc = defaultRoomArt;
     }
 
+    if (isRoomOver && imgSrc === defaultRoomArt) {
+      imgSrc = defaultRoomOpenArt;
+    }
+
     image.src = imgSrc;
 
     image.onload = function () {
@@ -44,7 +52,7 @@ export const RoomArt: FC<{
 
       context.drawImage(image, 0, 0, width, height);
     };
-  }, [canvasRef.current, width, height, imgSrc, grayscale]);
+  }, [canvasRef.current, width, height, imgSrc, grayscale, isRoomOver]);
 
   return (
     <canvas
