@@ -51,6 +51,8 @@ export const EntitySpritePositions: FC<{
   }, [roomEntityPositions]);
 
   const renderPlayer = (player: IPlayer) => {
+    console.log(player);
+
     return (
       <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
         {/* Cap off extra width and height */}
@@ -80,8 +82,8 @@ export const EntitySpritePositions: FC<{
               className="animate-entityAnimate20"
               style={{
                 position: 'absolute',
-                width: player.sprite_size * 6,
-                height: player.sprite_size * 12,
+                width: player.sprite_size * player.spritesheet_columns,
+                height: player.sprite_size * player.spritesheet_rows,
                 top: 0,
                 left: 0,
               }}
@@ -89,8 +91,8 @@ export const EntitySpritePositions: FC<{
               <Sprite
                 id={`sprite_${player.entityType}_${player.id}`}
                 sprite={player.sprite}
-                width={player.sprite_size * 6}
-                height={player.sprite_size * 12}
+                width={player.sprite_size * player.spritesheet_columns}
+                height={player.sprite_size * player.spritesheet_rows}
               />
             </div>
           </div>
@@ -100,12 +102,8 @@ export const EntitySpritePositions: FC<{
   };
 
   const renderEnemy = (enemy: IEnemy) => {
-    const spriteSheetWidth = enemy.sprite_size * 6;
-    let spriteSheetHeight = enemy.sprite_size * 5;
-
-    if (enemy.name === 'Minotaur') {
-      spriteSheetHeight = enemy.sprite_size * 7;
-    }
+    const spriteSheetWidth = enemy.sprite_size * enemy.spritesheet_columns;
+    const spriteSheetHeight = enemy.sprite_size * enemy.spritesheet_rows;
 
     return (
       <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">

@@ -1,5 +1,4 @@
 import { ENTITY_TYPE, STARTING_MAX_HEALTH } from './constants/entity';
-import { SPRITE_ID } from './constants/sprite';
 import { TILE_SIZE, TILE_TYPE } from './constants/tile';
 import { IEnemy, IEntity, IPlayer, IStatus } from './types';
 
@@ -429,6 +428,8 @@ export const damageEntity = (
 
     // Set entity animation to damaged by changing animation speed,
     // and shifting position downwards on the spritesheet
+    const topPosition =
+      -entity.sprite_size * entity.spritesheet_damaged_row + 'px';
     if (
       playerSpriteSheetContainer.classList.contains(
         'animate-entityAnimateLeft20'
@@ -437,8 +438,7 @@ export const damageEntity = (
       playerSpriteSheetContainer.classList.remove(
         'animate-entityAnimateLeft20'
       );
-      playerSpriteSheetContainer.style.top =
-        '-' + entity.sprite_size * 8 + 'px';
+      playerSpriteSheetContainer.style.top = topPosition;
       playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
       setTimeout(() => {
@@ -446,8 +446,7 @@ export const damageEntity = (
       }, 1);
     } else {
       playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
-      playerSpriteSheetContainer.style.top =
-        '-' + entity.sprite_size * 8 + 'px';
+      playerSpriteSheetContainer.style.top = topPosition;
       playerSpriteSheetContainer.style.left = 0 + 'px';
 
       setTimeout(() => {
@@ -468,6 +467,8 @@ export const damageEntity = (
 
     // Depending on enemy health, play either damaged or defeat animation
     if (newHealth > 0) {
+      const topPosition =
+        -entity.sprite_size * entity.spritesheet_damaged_row + 'px';
       if (
         enemySpriteSheetContainer.classList.contains(
           'animate-entityAnimateLeft08'
@@ -477,16 +478,7 @@ export const damageEntity = (
           'animate-entityAnimateLeft08'
         );
         enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
-        switch (entity.sprite) {
-          case SPRITE_ID.ENEMY_017_B:
-            enemySpriteSheetContainer.style.top =
-              '-' + entity.sprite_size * 5 + 'px';
-            break;
-          default:
-            enemySpriteSheetContainer.style.top =
-              '-' + entity.sprite_size * 3 + 'px';
-            break;
-        }
+        enemySpriteSheetContainer.style.top = topPosition;
 
         setTimeout(() => {
           enemySpriteSheetContainer.classList.add(
@@ -496,22 +488,15 @@ export const damageEntity = (
       } else {
         enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
         enemySpriteSheetContainer.style.left = 0 + 'px';
-        switch (entity.sprite) {
-          case SPRITE_ID.ENEMY_017_B:
-            enemySpriteSheetContainer.style.top =
-              '-' + entity.sprite_size * 5 + 'px';
-            break;
-          default:
-            enemySpriteSheetContainer.style.top =
-              '-' + entity.sprite_size * 3 + 'px';
-            break;
-        }
+        enemySpriteSheetContainer.style.top = topPosition;
 
         setTimeout(() => {
           enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
         }, 1);
       }
     } else {
+      const topPosition =
+        -entity.sprite_size * entity.spritesheet_defeat_row + 'px';
       if (
         enemySpriteSheetContainer.classList.contains(
           'animate-entityAnimateLeft08'
@@ -520,16 +505,7 @@ export const damageEntity = (
         enemySpriteSheetContainer.classList.remove(
           'animate-entityAnimateLeft08'
         );
-        switch (entity.sprite) {
-          case SPRITE_ID.ENEMY_017_B:
-            enemySpriteSheetContainer.style.top =
-              '-' + entity.sprite_size * 6 + 'px';
-            break;
-          default:
-            enemySpriteSheetContainer.style.top =
-              '-' + entity.sprite_size * 4 + 'px';
-            break;
-        }
+        enemySpriteSheetContainer.style.top = topPosition;
         enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
         setTimeout(() => {
@@ -539,16 +515,7 @@ export const damageEntity = (
         }, 1);
       } else {
         enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        switch (entity.sprite) {
-          case SPRITE_ID.ENEMY_017_B:
-            enemySpriteSheetContainer.style.top =
-              '-' + entity.sprite_size * 6 + 'px';
-            break;
-          default:
-            enemySpriteSheetContainer.style.top =
-              '-' + entity.sprite_size * 4 + 'px';
-            break;
-        }
+        enemySpriteSheetContainer.style.top = topPosition;
         enemySpriteSheetContainer.style.left = 0 + 'px';
 
         setTimeout(() => {
@@ -576,6 +543,8 @@ export const damageEntity = (
 
       // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
       if (newHealth > 0) {
+        const topPosition =
+          -entity.sprite_size * entity.spritesheet_idle_row + 'px';
         if (
           playerSpriteSheetContainer.classList.contains(
             'animate-entityAnimateLeft08'
@@ -584,7 +553,7 @@ export const damageEntity = (
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
-          playerSpriteSheetContainer.style.top = 0 + 'px';
+          playerSpriteSheetContainer.style.top = topPosition;
           playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
           setTimeout(() => {
@@ -596,7 +565,7 @@ export const damageEntity = (
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimate08'
           );
-          playerSpriteSheetContainer.style.top = 0 + 'px';
+          playerSpriteSheetContainer.style.top = topPosition;
           playerSpriteSheetContainer.style.left = 0 + 'px';
 
           setTimeout(() => {
@@ -605,6 +574,8 @@ export const damageEntity = (
         }
       } else {
         // Set entity animation to defeated by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
+        const topPosition =
+          -entity.sprite_size * entity.spritesheet_defeat_row + 'px';
         if (
           playerSpriteSheetContainer.classList.contains(
             'animate-entityAnimateLeft08'
@@ -613,8 +584,7 @@ export const damageEntity = (
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
-          playerSpriteSheetContainer.style.top =
-            '-' + entity.sprite_size * 9 + 'px';
+          playerSpriteSheetContainer.style.top = topPosition;
           playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
           setTimeout(() => {
@@ -626,8 +596,7 @@ export const damageEntity = (
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimate08'
           );
-          playerSpriteSheetContainer.style.top =
-            '-' + entity.sprite_size * 9 + 'px';
+          playerSpriteSheetContainer.style.top = topPosition;
           playerSpriteSheetContainer.style.left = 0 + 'px';
 
           setTimeout(() => {
@@ -648,7 +617,9 @@ export const damageEntity = (
       }
 
       if (newHealth > 0) {
-        // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
+        // Set entity animation to idle
+        const topPosition =
+          -entity.sprite_size * entity.spritesheet_idle_row + 'px';
         if (
           enemySpriteSheetContainer.classList.contains(
             'animate-entityAnimateLeft08'
@@ -657,7 +628,7 @@ export const damageEntity = (
           enemySpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
-          enemySpriteSheetContainer.style.top = 0 + 'px';
+          enemySpriteSheetContainer.style.top = topPosition;
           enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
 
           setTimeout(() => {
@@ -667,7 +638,7 @@ export const damageEntity = (
           }, 1);
         } else {
           enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-          enemySpriteSheetContainer.style.top = 0 + 'px';
+          enemySpriteSheetContainer.style.top = topPosition;
           enemySpriteSheetContainer.style.left = 0 + 'px';
 
           setTimeout(() => {
