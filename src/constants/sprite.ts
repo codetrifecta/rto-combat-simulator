@@ -8,7 +8,7 @@ import enemy_demon_12 from '../assets/sprites/enemies/sprite_enemy_demon_12.png'
 import enemy_demon_13 from '../assets/sprites/enemies/sprite_enemy_demon_13.png';
 
 // From Rogue Adventures Asset Pack
-import enemy_005_A from '../assets/sprites/enemies/sprite_enemy_005_A.png';
+import enemy_skyward_titan from '../assets/sprites/enemies/sprite_enemy_skyward_titan.png';
 import enemy_008_A from '../assets/sprites/enemies/sprite_enemy_008_A.png';
 import enemy_017_B from '../assets/sprites/enemies/sprite_enemy_017_B.png';
 
@@ -61,7 +61,7 @@ export enum SPRITE_ID {
   DEMON_13 = 'DEMON_13',
 
   // From Rogue Adventures Asset Pack
-  ENEMY_005_A = 'ENEMY_005_A',
+  ENEMY_SKYWARD_TITAN = 'ENEMY_SKYWARD_TITAN',
   ENEMY_008_A = 'ENEMY_008_A',
   ENEMY_017_B = 'ENEMY_017_B',
 
@@ -112,7 +112,7 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.DEMON_13]: enemy_demon_13,
 
   // From Rogue Adventures Asset Pack
-  [SPRITE_ID.ENEMY_005_A]: enemy_005_A,
+  [SPRITE_ID.ENEMY_SKYWARD_TITAN]: enemy_skyward_titan,
   [SPRITE_ID.ENEMY_008_A]: enemy_008_A,
   [SPRITE_ID.ENEMY_017_B]: enemy_017_B,
 

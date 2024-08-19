@@ -23,7 +23,7 @@ export const useEnemyStore = create<IEnemyStore>((set, get) => ({
       id: 2,
     },
     {
-      ...ENEMY_PRESETS[ENEMY_PRESET_ID.CYCLOPS],
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.SKYWARD_TITAN],
       id: 3,
     },
     {

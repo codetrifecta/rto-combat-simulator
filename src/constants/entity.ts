@@ -53,13 +53,15 @@ export const getDefaultPlayer = (): IPlayer => {
   };
 };
 
+let id = 1;
+
 export enum ENEMY_PRESET_ID {
-  SHADE = 1,
-  GORGON = 2,
-  CYCLOPS = 3,
-  HARPY = 4,
-  MINOTAUR = 5,
-  FLAMING_SKULL_A = 6,
+  SHADE = id++,
+  GORGON = id++,
+  SKYWARD_TITAN = id++,
+  HARPY = id++,
+  MINOTAUR = id++,
+  FLAMING_SKULL_A = id++,
 }
 
 export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
@@ -89,10 +91,10 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     damageBonus: 0,
     statuses: [],
   },
-  [ENEMY_PRESET_ID.CYCLOPS]: {
+  [ENEMY_PRESET_ID.SKYWARD_TITAN]: {
     id: 0,
-    name: 'Cyclops',
-    sprite: SPRITE_ID.ENEMY_005_A,
+    name: 'Skyward Titan',
+    sprite: SPRITE_ID.ENEMY_SKYWARD_TITAN,
     sprite_size: 96,
     entityType: ENTITY_TYPE.ENEMY,
     health: 40,
