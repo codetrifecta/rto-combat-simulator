@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useGameStateStore } from '../store/game';
 import { Button } from './Button';
 import {
@@ -16,6 +16,8 @@ const MAX_ROOM_LENGTH = 100;
 
 export const GenerateRoomModal: FC = () => {
   const {
+    file,
+    setFile,
     setRoomLength,
     setRoomTileMatrix,
     setRoomEntityPositions,
@@ -42,6 +44,126 @@ export const GenerateRoomModal: FC = () => {
     ['3', '8', ENEMY_PRESET_ID.CYCLOPS],
     ['3', '2', ENEMY_PRESET_ID.MINOTAUR],
   ]);
+
+  // When room length input changes, generate default room matrix
+  useEffect(() => {
+    const roomLength = parseInt(roomLengthInput);
+
+    let roomMatrixString = '[\n';
+    for (let row = 0; row < roomLength; row++) {
+      roomMatrixString += '[';
+      for (let col = 0; col < roomLength; col++) {
+        // Surround room with walls and place door in the middle of the top wall and bottom wall
+        if (
+          row === 0 ||
+          row === 1 ||
+          row === roomLength - 1 ||
+          col === 0 ||
+          col === roomLength - 1
+        ) {
+          if (
+            (row === 0 || row === 1) &&
+            [
+              Math.floor(roomLength / 2),
+              Math.floor(roomLength / 2) - 1,
+              Math.floor(roomLength / 2) + 1,
+            ].includes(col)
+          ) {
+            // Place door in the middle of the top wall
+            if (row === 0) {
+              // First row
+              if (col === Math.floor(roomLength / 2)) {
+                // Middle
+                roomMatrixString += `${TILE_TYPE.WALL}`;
+              } else if (col === Math.floor(roomLength / 2) - 1) {
+                // Left of middle
+                roomMatrixString += `${TILE_TYPE.WALL}`;
+              } else {
+                // Right of middle
+                roomMatrixString += `${TILE_TYPE.WALL}`;
+              }
+            } else {
+              // Second row
+              if (col === Math.floor(roomLength / 2)) {
+                // Middle
+                roomMatrixString += `${TILE_TYPE.DOOR}`;
+              } else if (col === Math.floor(roomLength / 2) - 1) {
+                // Left of middle
+                roomMatrixString += `${TILE_TYPE.WALL}`;
+              } else {
+                // Right of middle
+                roomMatrixString += `${TILE_TYPE.WALL}`;
+              }
+            }
+          } else {
+            // Place corners
+            if (row === 0 && col === 0) {
+              // Top left corner
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else if (row === 0 && col === roomLength - 1) {
+              // Top right corner
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else if (row === roomLength - 1 && col === 0) {
+              // Bottom left corner
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else if (row === roomLength - 1 && col === roomLength - 1) {
+              // Bottom right corner
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            }
+
+            // Place non-corner walls
+            else if (row === 0 && col !== 0 && col !== roomLength - 1) {
+              // Top wall
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else if (row === 1 && col > 0 && col < roomLength - 1) {
+              // Top wall - 1
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else if (row === 1 && col === 0) {
+              // Top wall - 1 left wall
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else if (row === 1 && col === roomLength - 1) {
+              // Top wall - 1 right wall
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else if (
+              row === roomLength - 1 &&
+              col !== 0 &&
+              col !== roomLength - 1
+            ) {
+              // Bottom wall
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else if (col === 0 && row !== 0 && row !== roomLength - 1) {
+              // Left wall
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else if (
+              col === roomLength - 1 &&
+              row !== 0 &&
+              row !== roomLength - 1
+            ) {
+              // Right wall
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            } else {
+              roomMatrixString += `${TILE_TYPE.WALL}`;
+            }
+          }
+        } else {
+          // Place floor tiles everywhere else
+          roomMatrixString += `${TILE_TYPE.FLOOR}`;
+        }
+
+        if (col !== roomLength - 1) {
+          roomMatrixString += ', ';
+        }
+      }
+      roomMatrixString += ']';
+      if (row !== roomLength - 1) {
+        roomMatrixString += ',\n';
+      }
+    }
+
+    roomMatrixString += '\n]';
+
+    setRoomMatrix(roomMatrixString);
+  }, [roomLengthInput]);
 
   const handleGenerateRoom = () => {
     const parsedRoomMatrix = JSON.parse(roomMatrix);
@@ -123,125 +245,16 @@ export const GenerateRoomModal: FC = () => {
     setIsGenerateRoomOpen(false);
   };
 
-  // When room length input changes, generate default room matrix
-  useEffect(() => {
-    const roomLength = parseInt(roomLengthInput);
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.files);
 
-    let roomMatrixString = '[\n';
-    for (let row = 0; row < roomLength; row++) {
-      roomMatrixString += '[';
-      for (let col = 0; col < roomLength; col++) {
-        // Surround room with walls and place door in the middle of the top wall and bottom wall
-        if (
-          row === 0 ||
-          row === 1 ||
-          row === roomLength - 1 ||
-          col === 0 ||
-          col === roomLength - 1
-        ) {
-          if (
-            (row === 0 || row === 1) &&
-            [
-              Math.floor(roomLength / 2),
-              Math.floor(roomLength / 2) - 1,
-              Math.floor(roomLength / 2) + 1,
-            ].includes(col)
-          ) {
-            // Place door in the middle of the top wall
-            if (row === 0) {
-              // First row
-              if (col === Math.floor(roomLength / 2)) {
-                // Middle
-                roomMatrixString += `[${TILE_TYPE.WALL}, 366]`;
-              } else if (col === Math.floor(roomLength / 2) - 1) {
-                // Left of middle
-                roomMatrixString += `[${TILE_TYPE.WALL}, 365]`;
-              } else {
-                // Right of middle
-                roomMatrixString += `[${TILE_TYPE.WALL}, 367]`;
-              }
-            } else {
-              // Second row
-              if (col === Math.floor(roomLength / 2)) {
-                // Middle
-                roomMatrixString += `[${TILE_TYPE.DOOR}, 397]`;
-              } else if (col === Math.floor(roomLength / 2) - 1) {
-                // Left of middle
-                roomMatrixString += `[${TILE_TYPE.WALL}, 396]`;
-              } else {
-                // Right of middle
-                roomMatrixString += `[${TILE_TYPE.WALL}, 398]`;
-              }
-            }
-          } else {
-            // Place corners
-            if (row === 0 && col === 0) {
-              // Top left corner
-              roomMatrixString += `[${TILE_TYPE.WALL}, 4]`;
-            } else if (row === 0 && col === roomLength - 1) {
-              // Top right corner
-              roomMatrixString += `[${TILE_TYPE.WALL}, 6]`;
-            } else if (row === roomLength - 1 && col === 0) {
-              // Bottom left corner
-              roomMatrixString += `[${TILE_TYPE.WALL}, 93]`;
-            } else if (row === roomLength - 1 && col === roomLength - 1) {
-              // Bottom right corner
-              roomMatrixString += `[${TILE_TYPE.WALL}, 95]`;
-            }
-
-            // Place non-corner walls
-            else if (row === 0 && col !== 0 && col !== roomLength - 1) {
-              // Top wall
-              roomMatrixString += `[${TILE_TYPE.WALL}, 5]`;
-            } else if (row === 1 && col > 0 && col < roomLength - 1) {
-              // Top wall - 1
-              roomMatrixString += `[${TILE_TYPE.WALL}, 35]`;
-            } else if (row === 1 && col === 0) {
-              // Top wall - 1 left wall
-              roomMatrixString += `[${TILE_TYPE.WALL}, 34]`;
-            } else if (row === 1 && col === roomLength - 1) {
-              // Top wall - 1 right wall
-              roomMatrixString += `[${TILE_TYPE.WALL}, 36]`;
-            } else if (
-              row === roomLength - 1 &&
-              col !== 0 &&
-              col !== roomLength - 1
-            ) {
-              // Bottom wall
-              roomMatrixString += `[${TILE_TYPE.WALL}, 2]`;
-            } else if (col === 0 && row !== 0 && row !== roomLength - 1) {
-              // Left wall
-              roomMatrixString += `[${TILE_TYPE.WALL}, 66]`;
-            } else if (
-              col === roomLength - 1 &&
-              row !== 0 &&
-              row !== roomLength - 1
-            ) {
-              // Right wall
-              roomMatrixString += `[${TILE_TYPE.WALL}, 67]`;
-            } else {
-              roomMatrixString += `[${TILE_TYPE.WALL}, 1]`;
-            }
-          }
-        } else {
-          // Place floor tiles everywhere else
-          roomMatrixString += `[${TILE_TYPE.FLOOR}, 1]`;
-        }
-
-        if (col !== roomLength - 1) {
-          roomMatrixString += ', ';
-        }
-      }
-      roomMatrixString += ']';
-      if (row !== roomLength - 1) {
-        roomMatrixString += ',\n';
-      }
+    if (e.target.files === null) {
+      console.error('Input files is null');
+      return;
     }
 
-    roomMatrixString += '\n]';
-
-    setRoomMatrix(roomMatrixString);
-  }, [roomLengthInput]);
+    setFile(URL.createObjectURL(e.target.files[0]));
+  };
 
   return (
     <div className="bg-zinc-900 p-5 border border-white h-full">
@@ -259,28 +272,58 @@ export const GenerateRoomModal: FC = () => {
         className="flex flex-col overflow-auto"
         style={{ maxHeight: 'calc(100% - 70px)' }}
       >
-        <div className="mb-5 flex items-center justify-center">
-          <div className="mr-3">
-            <label htmlFor="roomLength ">Room Length</label>
-          </div>
-          <input
-            id="roomLength"
-            className="bg-zinc-700 w-[70px] px-2"
-            value={roomLengthInput}
-            onChange={(e) => {
-              if (/\D/.test(e.target.value)) {
-                console.log('Only allow numbers (no decimals)', e.target.value);
-                // Only allow numbers (no decimals)
-                // setRoomLengthInput(roomLengthInput);
-              } else {
-                if (parseInt(e.target.value) >= MAX_ROOM_LENGTH) {
-                  setRoomLengthInput(MAX_ROOM_LENGTH + '');
+        <div className="mb-5 flex flex-col items-center justify-center">
+          <div className="mb-3 flex">
+            <div className="mr-3 ">
+              <label htmlFor="roomLength ">Room Length</label>
+            </div>
+            <input
+              id="roomLength"
+              className="bg-zinc-700 w-[70px] px-2"
+              value={roomLengthInput}
+              onChange={(e) => {
+                if (/\D/.test(e.target.value)) {
+                  console.log(
+                    'Only allow numbers (no decimals)',
+                    e.target.value
+                  );
+                  // Only allow numbers (no decimals)
+                  // setRoomLengthInput(roomLengthInput);
                 } else {
-                  setRoomLengthInput(e.target.value);
+                  if (parseInt(e.target.value) >= MAX_ROOM_LENGTH) {
+                    setRoomLengthInput(MAX_ROOM_LENGTH + '');
+                  } else {
+                    setRoomLengthInput(e.target.value);
+                  }
                 }
-              }
-            }}
-          ></input>
+              }}
+            ></input>
+          </div>
+
+          <div className="flex items-center">
+            <button
+              className="hover:border-white mr-3"
+              onClick={() => {
+                const fileInput = document.getElementById('file-input');
+
+                if (fileInput === null) {
+                  console.error('File input is null');
+                  return;
+                }
+
+                fileInput.click();
+              }}
+            >
+              Input tile art
+            </button>
+            <input
+              id="file-input"
+              className="hidden"
+              type="file"
+              onChange={handleFileChange}
+            />
+            <p>File: {file ? file : 'No file chosen'}</p>
+          </div>
         </div>
 
         <div className="mb-5">

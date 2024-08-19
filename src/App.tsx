@@ -421,7 +421,6 @@ function App() {
                   <RoomArt
                     width={roomLength * TILE_SIZE}
                     height={roomLength * TILE_SIZE}
-                    imgSrc={''}
                   />
                 </div>
               </div>
