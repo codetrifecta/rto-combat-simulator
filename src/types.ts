@@ -12,13 +12,20 @@ export interface IEntity {
   maxHealth: number;
   statuses: IStatus[];
   damageBonus: number;
+  sprite: SPRITE_ID;
+  sprite_size: number;
+  spritesheet_rows: number;
+  spritesheet_columns: number;
+  spritesheet_idle_row: number;
+  spritesheet_movement_row: number;
+  spritesheet_attack_row: number;
+  spritesheet_damaged_row: number;
+  spritesheet_defeat_row: number;
 }
 
 export type IAllEntity = IEntity | IPlayer | IEnemy;
 
 export interface IPlayer extends IEntity {
-  sprite: SPRITE_ID;
-  sprite_size: number;
   actionPoints: number;
   skills: ISkill[];
   state: IPlayerState;

@@ -39,10 +39,10 @@ export const GenerateRoomModal: FC = () => {
   const [enemyPositionsInput, setEnemyPositionsInput] = useState<
     [string, string, ENEMY_PRESET_ID][]
   >([
-    ['7', '4', ENEMY_PRESET_ID.FLAMING_SKULL_A],
-    ['6', '6', ENEMY_PRESET_ID.FLAMING_SKULL_A],
+    ['7', '4', ENEMY_PRESET_ID.STYGIAN_WRAITH],
+    ['6', '6', ENEMY_PRESET_ID.STYGIAN_WRAITH],
     ['3', '8', ENEMY_PRESET_ID.SKYWARD_TITAN],
-    ['3', '2', ENEMY_PRESET_ID.MINOTAUR],
+    ['3', '2', ENEMY_PRESET_ID.INFERNAL_MINOTAUR],
   ]);
 
   // When room length input changes, generate default room matrix
