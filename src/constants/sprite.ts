@@ -8,7 +8,18 @@ import enemy_demon_12 from '../assets/sprites/enemies/sprite_enemy_demon_12.png'
 import enemy_demon_13 from '../assets/sprites/enemies/sprite_enemy_demon_13.png';
 
 // From Rogue Adventures Asset Pack
+import enemy_abyssal_cyclopean_wraith from '../assets/sprites/enemies/sprite_enemy_abyssal_cyclopean_wraith.png';
+import cerberus_pup from '../assets/sprites/enemies/sprite_enemy_cerberus_pup.png';
+import corrupt_minotaur from '../assets/sprites/enemies/sprite_enemy_corrupt_minotaur.png';
+import corrupt_olympian from '../assets/sprites/enemies/sprite_enemy_corrupt_olympian.png';
+import erebus_fiend from '../assets/sprites/enemies/sprite_enemy_erebus_fiend.png';
+import infernal_minotaur from '../assets/sprites/enemies/sprite_enemy_infernal_minotaur.png';
+import myrmidon_hound from '../assets/sprites/enemies/sprite_enemy_myrmidon_hound.png';
 import enemy_skyward_titan from '../assets/sprites/enemies/sprite_enemy_skyward_titan.png';
+import stygian_wraith from '../assets/sprites/enemies/sprite_enemy_stygian_wraith.png';
+import tartarian_hound from '../assets/sprites/enemies/sprite_enemy_tartarian_hound.png';
+import tartarian_lycan from '../assets/sprites/enemies/sprite_enemy_tartarian_lycan.png';
+
 import enemy_008_A from '../assets/sprites/enemies/sprite_enemy_008_A.png';
 import enemy_017_B from '../assets/sprites/enemies/sprite_enemy_017_B.png';
 
@@ -61,7 +72,17 @@ export enum SPRITE_ID {
   DEMON_13 = 'DEMON_13',
 
   // From Rogue Adventures Asset Pack
+  ENEMY_ABYSSAL_CYCLOPEAN_WRAITH = 'ENEMY_ABYSSAL_CYCLOPEAN_WRAITH',
+  CERBERUS_PUP = 'CERBERUS_PUP',
+  CORRUPT_MINOTAUR = 'CORRUPT_MINOTAUR',
+  CORRUPT_OLYMPIAN = 'CORRUPT_OLYMPIAN',
+  EREBUS_FIEND = 'EREBUS_FIEND',
+  INFERNAL_MINOTAUR = 'INFERNAL_MINOTAUR',
+  MYRMIDON_HOUND = 'MYRMIDON_HOUND',
   ENEMY_SKYWARD_TITAN = 'ENEMY_SKYWARD_TITAN',
+  STYGIAN_WRAITH = 'STYGIAN_WRAITH',
+  TARTARIAN_HOUND = 'TARTARIAN_HOUND',
+  TARTARIAN_LYCAN = 'TARTARIAN_LYCAN',
   ENEMY_008_A = 'ENEMY_008_A',
   ENEMY_017_B = 'ENEMY_017_B',
 
@@ -112,7 +133,18 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.DEMON_13]: enemy_demon_13,
 
   // From Rogue Adventures Asset Pack
+  [SPRITE_ID.ENEMY_ABYSSAL_CYCLOPEAN_WRAITH]: enemy_abyssal_cyclopean_wraith,
+  [SPRITE_ID.CERBERUS_PUP]: cerberus_pup,
+  [SPRITE_ID.CORRUPT_MINOTAUR]: corrupt_minotaur,
+  [SPRITE_ID.CORRUPT_OLYMPIAN]: corrupt_olympian,
+  [SPRITE_ID.EREBUS_FIEND]: erebus_fiend,
+  [SPRITE_ID.INFERNAL_MINOTAUR]: infernal_minotaur,
+  [SPRITE_ID.MYRMIDON_HOUND]: myrmidon_hound,
   [SPRITE_ID.ENEMY_SKYWARD_TITAN]: enemy_skyward_titan,
+  [SPRITE_ID.STYGIAN_WRAITH]: stygian_wraith,
+  [SPRITE_ID.TARTARIAN_HOUND]: tartarian_hound,
+  [SPRITE_ID.TARTARIAN_LYCAN]: tartarian_lycan,
+
   [SPRITE_ID.ENEMY_008_A]: enemy_008_A,
   [SPRITE_ID.ENEMY_017_B]: enemy_017_B,
 
