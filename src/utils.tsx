@@ -619,7 +619,7 @@ export const damageEntity = (
 
           setTimeout(() => {
             playerSpriteSheetContainer.classList.add(
-              'animate-entityAnimateLeftOnce20'
+              'animate-entityAnimateLeft20'
             );
           }, 1);
         } else {
@@ -631,9 +631,7 @@ export const damageEntity = (
           playerSpriteSheetContainer.style.left = 0 + 'px';
 
           setTimeout(() => {
-            playerSpriteSheetContainer.classList.add(
-              'animate-entityAnimateOnce20'
-            );
+            playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
           }, 1);
         }
       }
