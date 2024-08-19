@@ -8,10 +8,9 @@ import { useGameStateStore } from '../store/game';
 export const RoomArt: FC<{
   width: number;
   height: number;
-  imgSrc: string;
   grayscale?: boolean;
-}> = ({ width, height, imgSrc, grayscale }) => {
-  const { isRoomOver } = useGameStateStore();
+}> = ({ width, height, grayscale }) => {
+  const { isRoomOver, file } = useGameStateStore();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -27,6 +26,8 @@ export const RoomArt: FC<{
     }
 
     const image = new Image();
+
+    let imgSrc = file;
 
     if (!imgSrc) {
       imgSrc = defaultRoomArt;
@@ -52,7 +53,7 @@ export const RoomArt: FC<{
 
       context.drawImage(image, 0, 0, width, height);
     };
-  }, [canvasRef.current, width, height, imgSrc, grayscale, isRoomOver]);
+  }, [canvasRef.current, width, height, grayscale, isRoomOver, file]);
 
   return (
     <canvas
