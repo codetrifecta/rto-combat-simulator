@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 
-import defaultRoomArt from '../assets/sprites/tiles/room_combat_simulator.png';
-import defaultRoomOpenArt from '../assets/sprites/tiles/room_open_combat_simulator.png';
+import defaultRoomArt from '../assets/sprites/tiles/room_open_cavern_2.png';
+import defaultRoomOpenArt from '../assets/sprites/tiles/room_open_cavern_2.png';
 import { TILE_SIZE } from '../constants/tile';
 import { useGameStateStore } from '../store/game';
 

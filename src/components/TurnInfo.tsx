@@ -34,32 +34,6 @@ export const TurnInfo: FC<{
     });
   }, [enemies, player, turnCycle]);
 
-  const renderEntityTurnText = (entity: IEntity | null) => {
-    if (!entity) {
-      return '';
-    }
-
-    if (entity.entityType === ENTITY_TYPE.PLAYER) {
-      return (
-        <>
-          <span className="text-green-500">{entity.name + "'s"}</span> turn
-        </>
-      );
-    } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
-      return (
-        <>
-          <span className="text-red-500">{entity.name + "'s"}</span> turn
-        </>
-      );
-    }
-
-    return (
-      <>
-        <span>{entity.name + "'s"}</span> turn
-      </>
-    );
-  };
-
   return (
     <div className="flex flex-col items-center">
       <div className="w-full h-[135px] mx-auto flex justify-center">
@@ -82,9 +56,6 @@ export const TurnInfo: FC<{
             </div>
           );
         })}
-      </div>
-      <div className="fixed top-36 flex justify-center items-center bg-neutral-900 px-5 py-1 border border-white">
-        <h2>{renderEntityTurnText(turnEntities[0])}</h2>
       </div>
     </div>
   );
@@ -130,8 +101,8 @@ const EntityCard: FC<{
               '%',
           }}
         ></div>
-        <h3>{entity.name}</h3>
-        <h4>
+        <h3 className="whitespace-nowrap">{entity.name}</h3>
+        <h4 className="whitespace-nowrap">
           HP: {entity.health > 0 ? entity.health : 0} / {entity.maxHealth}
         </h4>
       </div>

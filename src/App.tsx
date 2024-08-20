@@ -18,6 +18,7 @@ import { EntitySpritePositions } from './components/EntitySpritePositions';
 import { TILE_SIZE } from './constants/tile';
 import { Compendium } from './components/Compendium';
 import { RoomArt } from './components/RoomArt';
+import { EntityTurnText } from './components/EntityTurnText';
 
 // Flag for first room render
 
@@ -123,7 +124,7 @@ function App() {
             roomScrollRef.current.scrollLeft =
               roomContainerX - window.innerWidth / 2;
             roomScrollRef.current.scrollTop =
-              roomContainerY - window.innerHeight / 2;
+              roomContainerY - window.innerHeight / 2 + 70;
 
             bufferArtRender();
           }
@@ -351,7 +352,7 @@ function App() {
         {/* Game Info (Currently only displays turn cycle) */}
         {!isRoomOver ? (
           <section
-            className="fixed z-40 mt-10 mb-6"
+            className="fixed z-40 mt-1 mb-6"
             style={{
               left: '50%',
               transform: 'translateX(-50%)',
@@ -428,6 +429,17 @@ function App() {
           </div>
         </section>
 
+        <div
+          className="fixed z-40"
+          style={{
+            bottom: `${PLAYER_CONTROL_PANEL_HEIGHT + 90}px`,
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+        >
+          <EntityTurnText />
+        </div>
+
         {/* Generate Room */}
         <section
           className="fixed z-[60] top-0 w-screen shadow-lg"
@@ -466,8 +478,9 @@ function App() {
         {/* <div className="fixed bottom-0 flex flex-col justify-between items-center"> */}
         {/* Player Info */}
         <section
-          className="mb-1 max-w-[3400px] fixed bottom-[80px] z-50"
+          className="max-w-[3400px] fixed z-50"
           style={{
+            bottom: `${PLAYER_CONTROL_PANEL_HEIGHT}px`,
             left: '50%',
             transform: 'translateX(-50%)',
           }}

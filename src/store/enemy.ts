@@ -15,7 +15,7 @@ interface IEnemyStore extends IEnemies {
 export const useEnemyStore = create<IEnemyStore>((set, get) => ({
   enemies: [
     {
-      ...ENEMY_PRESETS[ENEMY_PRESET_ID.STYGIAN_WRAITH],
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.CERBERUS_PUP],
       id: 1,
     },
     {
@@ -23,7 +23,7 @@ export const useEnemyStore = create<IEnemyStore>((set, get) => ({
       id: 2,
     },
     {
-      ...ENEMY_PRESETS[ENEMY_PRESET_ID.SKYWARD_TITAN],
+      ...ENEMY_PRESETS[ENEMY_PRESET_ID.ABYSSAL_CYCLOPEAN_WRAITH],
       id: 3,
     },
     {
