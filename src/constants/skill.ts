@@ -39,6 +39,10 @@ export enum SKILL_ID {
   ENTANGLE = id++,
   LEAP_SLAM = id++,
   FLAME_DIVE = id++,
+  HIDE = id++,
+  HIDDEN_BLADE = id++,
+  SWIFT_MOVEMENT = id++,
+  THROWING_KNIVES = id++,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -53,7 +57,6 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.EXECUTE,
   SKILL_ID.CLEAVE,
   SKILL_ID.ANNIHILATE,
-  SKILL_ID.WARCRY,
   SKILL_ID.LEAP_SLAM,
 ];
 
@@ -79,7 +82,7 @@ export const SKILLS: ISkill[] = [
     range: 1,
     cooldown: 3,
     cooldownCounter: 0,
-    cost: 3,
+    cost: 2,
   },
   {
     id: SKILL_ID.WHIRLWIND,
@@ -122,6 +125,34 @@ export const SKILLS: ISkill[] = [
     cooldown: 4,
     cooldownCounter: 0,
     cost: 5,
+  },
+  {
+    id: SKILL_ID.HIDDEN_BLADE,
+    name: 'Shadow Strike',
+    icon: ICON_ID.SKILL_HIDDEN_BLADE,
+    skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
+    description:
+      'Deal critical damage to an enemy, for 100% more damage (2x damage). More damage when hidden. Deal bleeding to an enemy for 1 turns.',
+    damageMultiplier: 1.2,
+    range: 1,
+    cooldown: 2,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.THROWING_KNIVES,
+    name: 'Throwing Knives',
+    icon: ICON_ID.SKILL_THROWING_KNIVES,
+    skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
+    description:
+      'Throw a barrage of knives in all directions, dealing your normal amount of damage. 15% chance of dealing 100% more of base damage (critical hit) for each enemy. And deal bleeding to them for 1 turn.',
+    damageMultiplier: 1,
+    range: 4,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 3,
   },
 
   // Intelligence-based skills
@@ -180,7 +211,7 @@ export const SKILLS: ISkill[] = [
     range: 0,
     cooldown: 3,
     cooldownCounter: 0,
-    cost: 2,
+    cost: 1,
   },
   {
     id: SKILL_ID.IRONFLESH,
@@ -194,7 +225,7 @@ export const SKILLS: ISkill[] = [
     range: 0,
     cooldown: 3,
     cooldownCounter: 0,
-    cost: 2,
+    cost: 1,
   },
   {
     id: SKILL_ID.WARCRY,
@@ -208,7 +239,7 @@ export const SKILLS: ISkill[] = [
     range: 3,
     cooldown: 3,
     cooldownCounter: 0,
-    cost: 3,
+    cost: 2,
   },
   {
     id: SKILL_ID.BLOODLUST,
@@ -221,7 +252,7 @@ export const SKILLS: ISkill[] = [
     range: 0,
     cooldown: 3,
     cooldownCounter: 0,
-    cost: 3,
+    cost: 2,
   },
   {
     id: SKILL_ID.FOCUS,
@@ -235,7 +266,7 @@ export const SKILLS: ISkill[] = [
     range: 0,
     cooldown: 3,
     cooldownCounter: 0,
-    cost: 2,
+    cost: 1,
   },
   {
     id: SKILL_ID.ENLIGHTEN,
@@ -249,7 +280,35 @@ export const SKILLS: ISkill[] = [
     range: 0,
     cooldown: 3,
     cooldownCounter: 0,
+    cost: 1,
+  },
+  {
+    id: SKILL_ID.HIDE,
+    name: 'Hide',
+    icon: ICON_ID.SKILL_HIDE,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Become invisible to enemies, stopping them from attacking you for 2 turns.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 4,
+    cooldownCounter: 0,
     cost: 2,
+  },
+  {
+    id: SKILL_ID.SWIFT_MOVEMENT,
+    name: 'Swift Movement',
+    icon: ICON_ID.SKILL_SWIFT_MOVEMENT,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Applies siftness for 2 turns. Use 1 AP to move 3 tiles instead of 2. Gain 1 additional AP per turn for the duration',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 1,
   },
 
   // Debuff skills
