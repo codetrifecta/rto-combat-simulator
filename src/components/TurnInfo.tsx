@@ -130,8 +130,8 @@ const EntityCard: FC<{
               '%',
           }}
         ></div>
-        <h3>{entity.name}</h3>
-        <h4>
+        <h3 className="whitespace-nowrap">{entity.name}</h3>
+        <h4 className="whitespace-nowrap">
           HP: {entity.health > 0 ? entity.health : 0} / {entity.maxHealth}
         </h4>
       </div>

@@ -183,6 +183,7 @@ export const GenerateRoomModal: FC = () => {
     roomMatrixString += '\n]';
 
     setRoomMatrix(roomMatrixString);
+    lastRoomLengthInput.current = roomLengthInput;
   }, [roomLengthInput]);
 
   const handleGenerateRoom = () => {
