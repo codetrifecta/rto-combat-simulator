@@ -77,6 +77,7 @@ export const Compendium: FC = () => {
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
+          <p>Range: {skill.range}</p>
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>
