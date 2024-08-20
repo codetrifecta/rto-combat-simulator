@@ -124,7 +124,7 @@ function App() {
             roomScrollRef.current.scrollLeft =
               roomContainerX - window.innerWidth / 2;
             roomScrollRef.current.scrollTop =
-              roomContainerY - window.innerHeight / 2 + 70;
+              roomContainerY - window.innerHeight / 2 + 50;
 
             bufferArtRender();
           }
