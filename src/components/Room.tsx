@@ -1364,7 +1364,6 @@ export const Room: FC<{
                       // Leap Slam and Flame Dive handled in the AOE case
                       const range = skill.range;
                       if (
-                        tileType === TILE_TYPE.FLOOR &&
                         rowIndex >= playerRow - range &&
                         rowIndex <= playerRow + range &&
                         columnIndex >= playerCol - range &&
@@ -1453,6 +1452,11 @@ export const Room: FC<{
                       isEffectZone = true;
                     }
                     break;
+                }
+
+                // Not an effect zone if not a floor tile
+                if (tileType !== TILE_TYPE.FLOOR) {
+                  isEffectZone = false;
                 }
 
                 // Compute target zone based on the specific skill requirement

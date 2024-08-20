@@ -2,4 +2,4 @@ export const PLAYER_CONTROL_PANEL_ICON_SIZE = 48;
 
 export const PLAYER_CONTROL_PANEL_HEIGHT = PLAYER_CONTROL_PANEL_ICON_SIZE + 6;
 
-export const ROOM_LENGTH = 11;
+export const ROOM_LENGTH = 15;

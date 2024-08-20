@@ -40,7 +40,7 @@ interface IGameStateStore {
 
 export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   roomLength: ROOM_LENGTH,
-  roomTileMatrix: generateRoomTileMatrix(ROOM_LENGTH),
+  roomTileMatrix: generateRoomTileMatrix(),
   roomEntityPositions: generateRoomEntityPositions(),
   turnCycle: [],
   isRoomOver: false,

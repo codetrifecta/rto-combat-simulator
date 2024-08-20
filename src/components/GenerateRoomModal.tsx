@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import { useGameStateStore } from '../store/game';
 import { Button } from './Button';
 import {
@@ -11,8 +11,11 @@ import { IEnemy } from '../types';
 import { useEnemyStore } from '../store/enemy';
 import { usePlayerStore } from '../store/player';
 import { TILE_TYPE } from '../constants/tile';
+import { ROOM_LENGTH } from '../constants/game';
 
 const MAX_ROOM_LENGTH = 100;
+
+let firstRender = true;
 
 export const GenerateRoomModal: FC = () => {
   const {
@@ -31,22 +34,39 @@ export const GenerateRoomModal: FC = () => {
   const { getPlayer, setPlayer } = usePlayerStore();
   const player = getPlayer();
 
-  const [roomLengthInput, setRoomLengthInput] = useState<string>('11'); // Default room length
-  const [roomMatrix, setRoomMatrix] = useState<string>('[\n[],\n[],\n[]\n]');
+  const lastRoomLengthInput = useRef<string>(ROOM_LENGTH.toString());
+  const [roomLengthInput, setRoomLengthInput] = useState<string>(
+    ROOM_LENGTH.toString()
+  ); // Default room length
+  const [roomMatrix, setRoomMatrix] = useState<string>('');
   const [playerPositionInput, setPlayerPositionInput] = useState<
     [string, string]
-  >(['9', '5']);
+  >(['13', '7']);
   const [enemyPositionsInput, setEnemyPositionsInput] = useState<
     [string, string, ENEMY_PRESET_ID][]
   >([
-    ['7', '4', ENEMY_PRESET_ID.STYGIAN_WRAITH],
-    ['6', '6', ENEMY_PRESET_ID.STYGIAN_WRAITH],
-    ['3', '8', ENEMY_PRESET_ID.SKYWARD_TITAN],
-    ['3', '2', ENEMY_PRESET_ID.INFERNAL_MINOTAUR],
+    ['11', '12', ENEMY_PRESET_ID.CERBERUS_PUP],
+    ['7', '6', ENEMY_PRESET_ID.STYGIAN_WRAITH],
+    ['5', '1', ENEMY_PRESET_ID.ABYSSAL_CYCLOPEAN_WRAITH],
+    ['3', '7', ENEMY_PRESET_ID.INFERNAL_MINOTAUR],
   ]);
 
   // When room length input changes, generate default room matrix
+  // Also when room first renders, set default room matrix
   useEffect(() => {
+    if (firstRender) {
+      setRoomMatrix(
+        '[\n  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],\n  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],\n  [2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2], \n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2], \n  [2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 2, 2, 2],\n  [2, 1, 1, 2, 2, 2, 1, 1, 0, 1, 1, 2, 2, 2, 2],\n  [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2], \n  [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2],\n  [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2], \n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]\n ]'
+      );
+      firstRender = false;
+      return;
+    }
+
+    // Only update room matrix if the input has changed
+    if (roomLengthInput === lastRoomLengthInput.current) {
+      return;
+    }
+
     const roomLength = parseInt(roomLengthInput);
 
     let roomMatrixString = '[\n';
