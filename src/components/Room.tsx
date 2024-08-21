@@ -1448,7 +1448,8 @@ export const Room: FC<{
                 // Compute target zone based on the specific skill requirement
                 switch (skill.id) {
                   case SKILL_ID.WHIRLWIND:
-                  case SKILL_ID.WARCRY: {
+                  case SKILL_ID.WARCRY:
+                  case SKILL_ID.THROWING_KNIVES: {
                     if (isEffectZone && isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
 

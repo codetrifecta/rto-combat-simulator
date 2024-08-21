@@ -146,7 +146,7 @@ export const SKILLS: ISkill[] = [
     id: SKILL_ID.THROWING_KNIVES,
     name: 'Throwing Knives',
     icon: ICON_ID.SKILL_THROWING_KNIVES,
-    skillType: SKILL_TYPE.ST,
+    skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
       'Throw a barrage of knives in all directions, dealing your normal amount of damage. 15% chance of dealing 100% more of base damage (critical hit) for each enemy. And deal bleeding to them for 1 turn.',

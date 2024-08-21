@@ -184,17 +184,19 @@ const handleSkillDamage = (
   const playerTotalDefense = getPlayerTotalDefense(player);
   const playerLifestealMultiplier = getPlayerLifestealMultiplier(player);
 
-  let totalDamage = 0;
-
-  if (intelligenceBasedSkillIDs.includes(skill.id)) {
-    totalDamage += Math.round(skill.damageMultiplier * playerTotalIntelligence);
-  } else {
-    totalDamage += Math.round(skill.damageMultiplier * playerTotalStrength);
-  }
-
   targets.forEach((target) => {
     const entityType = target[0];
     const entityId = target[1];
+
+    let totalDamage = 0;
+
+    if (intelligenceBasedSkillIDs.includes(skill.id)) {
+      totalDamage += Math.round(
+        skill.damageMultiplier * playerTotalIntelligence
+      );
+    } else {
+      totalDamage += Math.round(skill.damageMultiplier * playerTotalStrength);
+    }
 
     if (entityType === ENTITY_TYPE.ENEMY) {
       const enemy = enemiesAfterDamage.find((e) => e.id === entityId);
@@ -222,6 +224,11 @@ const handleSkillDamage = (
             (status) => status.id === STATUS_ID.HIDDEN
           )
         ) {
+          totalDamage *= 2;
+        }
+      } else if ([SKILL_ID.THROWING_KNIVES].includes(skill.id)) {
+        // Throwing Knives: 15% chance to deal double damage
+        if (Math.random() < 0.15) {
           totalDamage *= 2;
         }
       }
@@ -465,6 +472,7 @@ const handleSkillStatus = (
       statusID = STATUS_ID.HIDDEN;
       break;
     case SKILL_ID.HIDDEN_BLADE:
+    case SKILL_ID.THROWING_KNIVES:
       statusID = STATUS_ID.BLEEDING;
       // DoT will scale with player's strength
       statusEffectModifier[0] = true;
