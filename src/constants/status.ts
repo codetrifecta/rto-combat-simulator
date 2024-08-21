@@ -253,8 +253,8 @@ export const STATUSES: IStatus[] = [
     name: 'Bleeding',
     icon: ICON_ID.STATUS_BLEEDING,
     description: 'Takes damage at the start of the turn.',
-    duration: 3,
-    durationCounter: 3,
+    duration: 1,
+    durationCounter: 1,
     effect: {
       ...BASE_STATUS_EFFECTS,
       damageOverTime: 1,

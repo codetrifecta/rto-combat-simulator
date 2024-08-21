@@ -306,13 +306,15 @@ export const Room: FC<{
 
         const affectedEnemy = { ...enemy };
 
-        const burnedDoT = affectedEnemy.statuses.find(
-          (status) => status.id === STATUS_ID.BURNED
+        const dot = affectedEnemy.statuses.filter((status) =>
+          [STATUS_ID.BURNED, STATUS_ID.BLEEDING].includes(status.id)
         );
 
-        if (burnedDoT) {
+        if (dot.length > 0) {
           setTimeout(() => {
-            const totalDamage = burnedDoT.effect.damageOverTime;
+            const totalDamage = dot.reduce((acc, status) => {
+              return acc + status.effect.damageOverTime;
+            }, 0);
 
             affectedEnemy.health = damageEntity(
               affectedEnemy,
@@ -325,7 +327,7 @@ export const Room: FC<{
                 message: (
                   <>
                     <span className="text-red-500">{affectedEnemy.name}</span>{' '}
-                    took 1 damage from burn and has been defeated!
+                    took {totalDamage} damage from burn and has been defeated!
                   </>
                 ),
                 type: 'info',
@@ -345,7 +347,7 @@ export const Room: FC<{
                 message: (
                   <>
                     <span className="text-red-500">{affectedEnemy.name}</span>{' '}
-                    took 1 damage from burn.
+                    took {totalDamage} damage from burn.
                   </>
                 ),
                 type: 'info',

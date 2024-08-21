@@ -133,7 +133,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Deal critical damage to an enemy, for 100% more damage (2x damage). More damage when hidden. Deal bleeding to an enemy for 1 turns.',
+      'Deal critical damage to an enemy. Damage is doubled if used when hidden. Deal bleeding to an enemy for 1 turns.',
     damageMultiplier: 1.2,
     range: 1,
     cooldown: 2,

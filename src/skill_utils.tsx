@@ -209,9 +209,19 @@ const handleSkillDamage = (
 
       const newEnemy = { ...enemy };
 
+      // Peform skill specific actions before applying to targets
       if ([SKILL_ID.EXECUTE].includes(skill.id)) {
         // Execute: Deal double damage if enemy health is below 25%
         if (newEnemy.health < newEnemy.maxHealth * 0.25) {
+          totalDamage *= 2;
+        }
+      } else if ([SKILL_ID.HIDDEN_BLADE].includes(skill.id)) {
+        // Hidden Blade / Shadow Strike: Deal double damage if player is hidden
+        if (
+          playerAfterDamage.statuses.some(
+            (status) => status.id === STATUS_ID.HIDDEN
+          )
+        ) {
           totalDamage *= 2;
         }
       }
@@ -357,6 +367,31 @@ const handleSkillDamage = (
     }
   });
 
+  // Remove hidden status from player if enemy is attacked
+  if (
+    playerAfterDamage.statuses.some((status) => status.id === STATUS_ID.HIDDEN)
+  ) {
+    playerAfterDamage.statuses = playerAfterDamage.statuses.filter(
+      (status) => status.id !== STATUS_ID.HIDDEN
+    );
+
+    const statusToBeRemoved = STATUSES.find(
+      (status) => status.id === STATUS_ID.HIDDEN
+    );
+
+    if (statusToBeRemoved === undefined) {
+      console.error(
+        'handleSkillDamage: No status found for the associated skill ID'
+      );
+    } else {
+      displayStatusEffect(
+        statusToBeRemoved,
+        false,
+        `tile_${playerAfterDamage.entityType}_${playerAfterDamage.id}`
+      );
+    }
+  }
+
   return { playerAfterDamage, enemiesAfterDamage };
 };
 
@@ -389,7 +424,7 @@ const handleSkillStatus = (
     case SKILL_ID.FLAME_DIVE:
       statusID = STATUS_ID.BURNED;
       // DoT will scale with player's intelligence
-      statusEffectModifier.damageOverTime = Math.round(
+      statusEffectModifier.damageOverTime = Math.ceil(
         0.1 * getPlayerTotalIntelligence(playerAfterStatus)
       );
       break;
@@ -421,6 +456,13 @@ const handleSkillStatus = (
       break;
     case SKILL_ID.HIDE:
       statusID = STATUS_ID.HIDDEN;
+      break;
+    case SKILL_ID.HIDDEN_BLADE:
+      statusID = STATUS_ID.BLEEDING;
+      // DoT will scale with player's strength
+      statusEffectModifier.damageOverTime = Math.ceil(
+        0.1 * getPlayerTotalStrength(playerAfterStatus)
+      );
       break;
     default:
       break;
