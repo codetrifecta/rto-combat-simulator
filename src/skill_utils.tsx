@@ -4,8 +4,8 @@ import {
   SKILL_ID,
   SKILL_TAG,
 } from './constants/skill';
-import { STATUS_ID, STATUSES } from './constants/status';
-import { IEnemy, ILog, IPlayer, ISkill, IStatus } from './types';
+import { BASE_STATUS_EFFECTS, STATUS_ID, STATUSES } from './constants/status';
+import { IEnemy, ILog, IPlayer, ISkill, IStatus, IStatusEffect } from './types';
 import {
   damageEntity,
   displayStatusEffect,
@@ -370,6 +370,7 @@ const handleSkillStatus = (
   const playerAfterStatus: IPlayer = { ...player };
   const enemiesAfterStatus: IEnemy[] = [...enemies];
   let statusID: STATUS_ID | -1 = -1;
+  const statusEffectModifier: IStatusEffect = BASE_STATUS_EFFECTS;
 
   switch (skill.id) {
     case SKILL_ID.IRONFLESH:
@@ -387,6 +388,10 @@ const handleSkillStatus = (
     case SKILL_ID.FIREBALL:
     case SKILL_ID.FLAME_DIVE:
       statusID = STATUS_ID.BURNED;
+      // DoT will scale with player's intelligence
+      statusEffectModifier.damageOverTime = Math.round(
+        0.1 * getPlayerTotalIntelligence(playerAfterStatus)
+      );
       break;
     case SKILL_ID.GORGONS_GAZE:
       statusID = STATUS_ID.PETRIFIED;
@@ -414,6 +419,9 @@ const handleSkillStatus = (
             ? STATUS_ID.BATTLE_FURY_2
             : STATUS_ID.BATTLE_FURY_1;
       break;
+    case SKILL_ID.HIDE:
+      statusID = STATUS_ID.HIDDEN;
+      break;
     default:
       break;
   }
@@ -429,6 +437,12 @@ const handleSkillStatus = (
 
     return { playerAfterStatus, enemiesAfterStatus: [] };
   }
+
+  // Apply any status effect modifiers
+  statusToBeApplied.effect = {
+    ...statusToBeApplied.effect,
+    ...statusEffectModifier,
+  };
 
   // Peform skill specific actions before applying to targets
   // Warcry: Apply status to player

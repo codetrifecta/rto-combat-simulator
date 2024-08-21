@@ -1059,7 +1059,11 @@ export const Room: FC<{
       Math.abs(playerRow - enemyRow) <= enemy.range &&
       Math.abs(playerCol - enemyCol) <= enemy.range;
 
-    if (canAttackPlayer) {
+    const isPlayerHidden = player.statuses.some(
+      (status) => status.id === STATUS_ID.HIDDEN
+    );
+
+    if (canAttackPlayer && !isPlayerHidden) {
       // Change sprite animation from idle to attack
       const enemySpriteSheetContainer = document.getElementById(
         `spritesheet_container_${enemy.entityType}_${enemy.id}`

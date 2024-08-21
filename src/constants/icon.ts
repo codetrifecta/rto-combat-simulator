@@ -88,6 +88,10 @@ import status_enlightened from '../assets/icons/statuses/icon_status_enlightened
 import status_weakened from '../assets/icons/statuses/icon_status_weakened.png';
 import status_disabled from '../assets/icons/statuses/icon_status_disabled.png';
 import status_entangled from '../assets/icons/statuses/icon_status_entangled.png';
+import status_hidden from '../assets/icons/statuses/icon_status_hidden.png';
+import status_bleeding from '../assets/icons/statuses/icon_status_bleeding.png';
+import status_swiftness from '../assets/icons/statuses/icon_status_swiftness.png';
+import status_slowed from '../assets/icons/statuses/icon_status_slowed.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -180,6 +184,11 @@ export enum ICON_ID {
   STATUS_WEAKENED = 'status_weakened',
   STATUS_DISABLED = 'status_disabled',
   STATUS_ENTANGLED = 'status_entangled',
+  STATUS_HIDDEN = 'status_hidden',
+  STATUS_SHIELDED = 'status_shielded',
+  STATUS_SWIFTNESS = 'status_swiftness',
+  STATUS_BLEEDING = 'status_bleeding',
+  STATUS_SLOWED = 'status_slowed',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -273,6 +282,11 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_WEAKENED]: status_weakened,
   [ICON_ID.STATUS_DISABLED]: status_disabled,
   [ICON_ID.STATUS_ENTANGLED]: status_entangled,
+  [ICON_ID.STATUS_HIDDEN]: status_hidden,
+  [ICON_ID.STATUS_SHIELDED]: status_defense_up,
+  [ICON_ID.STATUS_SWIFTNESS]: status_swiftness,
+  [ICON_ID.STATUS_BLEEDING]: status_bleeding,
+  [ICON_ID.STATUS_SLOWED]: status_slowed,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

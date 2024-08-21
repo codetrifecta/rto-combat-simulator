@@ -87,6 +87,7 @@ export interface IStatusEffect {
   lifesteal: number;
   canMove: boolean;
   canAttack: boolean;
+  hidden: boolean;
 }
 
 export interface IWeapon {

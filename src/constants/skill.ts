@@ -289,7 +289,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.SELF,
     tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
-      'Become invisible to enemies, stopping them from attacking you for 2 turns.',
+      'Become hidden to enemies, stopping them from seeing and attacking you for 2 turns.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 4,
@@ -303,7 +303,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.SELF,
     tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
-      'Applies siftness for 2 turns. Use 1 AP to move 3 tiles instead of 2. Gain 1 additional AP per turn for the duration',
+      'Applies swiftness for 2 turns. Use 1 AP to move 3 tiles instead of 2. Gain 1 additional AP per turn for the duration',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
