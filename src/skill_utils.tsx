@@ -439,7 +439,7 @@ const handleSkillStatus = (
       // DoT will scale with player's intelligence
       statusEffectModifier[0] = true;
       statusEffectModifier[1].damageOverTime = Math.ceil(
-        0.1 * getPlayerTotalIntelligence(playerAfterStatus)
+        0.2 * getPlayerTotalIntelligence(playerAfterStatus)
       );
       break;
     case SKILL_ID.GORGONS_GAZE:
@@ -477,7 +477,7 @@ const handleSkillStatus = (
       // DoT will scale with player's strength
       statusEffectModifier[0] = true;
       statusEffectModifier[1].damageOverTime = Math.ceil(
-        0.1 * getPlayerTotalStrength(playerAfterStatus)
+        0.2 * getPlayerTotalStrength(playerAfterStatus)
       );
       break;
     case SKILL_ID.SWIFT_MOVEMENT:

@@ -1658,6 +1658,7 @@ export const Room: FC<{
                   ) {
                     handlePlayerMove(rowIndex, columnIndex);
                   } else if (
+                    // isAnimating.current === false &&
                     player.state.isUsingSkill &&
                     player.state.skillId
                   ) {
@@ -1747,23 +1748,37 @@ export const Room: FC<{
                         setEnemies(
                           newEnemies.filter((enemy) => enemy.health > 0)
                         );
+                        setRoomEntityPositions(newRoomEntityPositions);
+                        setPlayer({
+                          ...newPlayer,
+                          state: {
+                            ...newPlayer.state,
+                            isUsingSkill: false,
+                          },
+                          actionPoints: newPlayer.actionPoints - skill.cost,
+                          skills: newPlayer.skills.map((s) =>
+                            s.id === skill.id
+                              ? { ...s, cooldownCounter: s.cooldown }
+                              : s
+                          ),
+                        });
                       }, 1000);
+                    } else {
+                      setRoomEntityPositions(newRoomEntityPositions);
+                      setPlayer({
+                        ...newPlayer,
+                        state: {
+                          ...newPlayer.state,
+                          isUsingSkill: false,
+                        },
+                        actionPoints: newPlayer.actionPoints - skill.cost,
+                        skills: newPlayer.skills.map((s) =>
+                          s.id === skill.id
+                            ? { ...s, cooldownCounter: s.cooldown }
+                            : s
+                        ),
+                      });
                     }
-
-                    setRoomEntityPositions(newRoomEntityPositions);
-                    setPlayer({
-                      ...newPlayer,
-                      state: {
-                        ...newPlayer.state,
-                        isUsingSkill: false,
-                      },
-                      actionPoints: newPlayer.actionPoints - skill.cost,
-                      skills: newPlayer.skills.map((s) =>
-                        s.id === skill.id
-                          ? { ...s, cooldownCounter: s.cooldown }
-                          : s
-                      ),
-                    });
                   }
                 }
               }}
