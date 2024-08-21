@@ -48,7 +48,7 @@ export const Sprite: FC<{
         context.drawImage(image, 0, 0, width, height);
       }
     };
-  }, [sprite, width, height]);
+  }, [sprite, width, height, grayscale]);
 
   return (
     <canvas

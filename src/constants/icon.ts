@@ -70,6 +70,10 @@ import skill_disable from '../assets/icons/skills/icon_skill_disable.png';
 import skill_entangle from '../assets/icons/skills/icon_skill_entangle.png';
 import skill_leap_slam from '../assets/icons/skills/icon_skill_leap_slam.png';
 import skill_flame_dive from '../assets/icons/skills/icon_skill_flame_dive.png';
+import skill_hide from '../assets/icons/skills/icon_skill_hide.png';
+import skill_hidden_blade from '../assets/icons/skills/icon_skill_hidden_blade.png';
+import skill_swift_movement from '../assets/icons/skills/icon_skill_swift_movement.png';
+import skill_throwing_knives from '../assets/icons/skills/icon_skill_throwing_knives.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -84,6 +88,10 @@ import status_enlightened from '../assets/icons/statuses/icon_status_enlightened
 import status_weakened from '../assets/icons/statuses/icon_status_weakened.png';
 import status_disabled from '../assets/icons/statuses/icon_status_disabled.png';
 import status_entangled from '../assets/icons/statuses/icon_status_entangled.png';
+import status_hidden from '../assets/icons/statuses/icon_status_hidden.png';
+import status_bleeding from '../assets/icons/statuses/icon_status_bleeding.png';
+import status_swiftness from '../assets/icons/statuses/icon_status_swiftness.png';
+import status_slowed from '../assets/icons/statuses/icon_status_slowed.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -158,6 +166,10 @@ export enum ICON_ID {
   SKILL_ENTANGLE = 'skill_entangle',
   SKILL_LEAP_SLAM = 'skill_leap_slam',
   SKILL_FLAME_DIVE = 'skill_flame_dive',
+  SKILL_HIDE = 'skill_hide',
+  SKILL_HIDDEN_BLADE = 'skill_hidden_blade',
+  SKILL_SWIFT_MOVEMENT = 'skill_swift_movement',
+  SKILL_THROWING_KNIVES = 'skill_throwing_knives',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -172,6 +184,11 @@ export enum ICON_ID {
   STATUS_WEAKENED = 'status_weakened',
   STATUS_DISABLED = 'status_disabled',
   STATUS_ENTANGLED = 'status_entangled',
+  STATUS_HIDDEN = 'status_hidden',
+  STATUS_SHIELDED = 'status_shielded',
+  STATUS_SWIFTNESS = 'status_swiftness',
+  STATUS_BLEEDING = 'status_bleeding',
+  STATUS_SLOWED = 'status_slowed',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -247,6 +264,10 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_ENTANGLE]: skill_entangle,
   [ICON_ID.SKILL_LEAP_SLAM]: skill_leap_slam,
   [ICON_ID.SKILL_FLAME_DIVE]: skill_flame_dive,
+  [ICON_ID.SKILL_HIDE]: skill_hide,
+  [ICON_ID.SKILL_HIDDEN_BLADE]: skill_hidden_blade,
+  [ICON_ID.SKILL_SWIFT_MOVEMENT]: skill_swift_movement,
+  [ICON_ID.SKILL_THROWING_KNIVES]: skill_throwing_knives,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
@@ -261,6 +282,11 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_WEAKENED]: status_weakened,
   [ICON_ID.STATUS_DISABLED]: status_disabled,
   [ICON_ID.STATUS_ENTANGLED]: status_entangled,
+  [ICON_ID.STATUS_HIDDEN]: status_hidden,
+  [ICON_ID.STATUS_SHIELDED]: status_defense_up,
+  [ICON_ID.STATUS_SWIFTNESS]: status_swiftness,
+  [ICON_ID.STATUS_BLEEDING]: status_bleeding,
+  [ICON_ID.STATUS_SLOWED]: status_slowed,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

@@ -7,6 +7,7 @@ import { IEnemy, IEntity, IPlayer } from '../types';
 import { ENTITY_TYPE } from '../constants/entity';
 import { useEnemyStore } from '../store/enemy';
 import clsx from 'clsx';
+import { STATUS_ID } from '../constants/status';
 
 export const EntitySpritePositions: FC<{
   setCurrentHoveredEntity: (entity: IEntity | null) => void;
@@ -53,6 +54,10 @@ export const EntitySpritePositions: FC<{
   const renderPlayer = (player: IPlayer) => {
     console.log(player);
 
+    const isHidden = player.statuses.some(
+      (status) => status.id === STATUS_ID.HIDDEN
+    );
+
     return (
       <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
         {/* Cap off extra width and height */}
@@ -86,6 +91,7 @@ export const EntitySpritePositions: FC<{
                 height: player.sprite_size * player.spritesheet_rows,
                 top: 0,
                 left: 0,
+                opacity: isHidden ? 0.3 : 1,
               }}
             >
               <Sprite
@@ -93,6 +99,7 @@ export const EntitySpritePositions: FC<{
                 sprite={player.sprite}
                 width={player.sprite_size * player.spritesheet_columns}
                 height={player.sprite_size * player.spritesheet_rows}
+                grayscale={isHidden}
               />
             </div>
           </div>

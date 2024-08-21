@@ -1,24 +1,30 @@
 import { IStatus, IStatusEffect } from '../types';
 import { ICON_ID } from './icon';
 
+let id = 0;
+
 export enum STATUS_ID {
-  FLEXED = 1,
-  PETRIFIED = 2,
-  STONE_SKIN = 3,
-  BURNED = 4,
-  FROZEN = 5,
-  BATTLE_FURY_1 = 6,
-  BATTLE_FURY_2 = 7,
-  BATTLE_FURY_3 = 8,
-  BLOODLUST = 9,
-  FOCUSED = 10,
-  ENLIGHTENED = 11,
-  WEAKENED = 12,
-  DISABLED = 13,
-  ENTANGLED = 14,
+  FLEXED = id++,
+  PETRIFIED = id++,
+  STONE_SKIN = id++,
+  BURNED = id++,
+  FROZEN = id++,
+  BATTLE_FURY_1 = id++,
+  BATTLE_FURY_2 = id++,
+  BATTLE_FURY_3 = id++,
+  BLOODLUST = id++,
+  FOCUSED = id++,
+  ENLIGHTENED = id++,
+  WEAKENED = id++,
+  DISABLED = id++,
+  ENTANGLED = id++,
+  HIDDEN = id++,
+  SHIELDED = id++,
+  SWIFTNESS = id++,
+  BLEEDING = id++,
 }
 
-const BASE_STATUS_EFFECTS: IStatusEffect = {
+export const BASE_STATUS_EFFECTS: IStatusEffect = {
   damageBonus: 0,
   incomingDamageReduction: 0,
   damageMultiplier: 1,
@@ -29,6 +35,8 @@ const BASE_STATUS_EFFECTS: IStatusEffect = {
   lifesteal: 0,
   canMove: true,
   canAttack: true,
+  hidden: false,
+  movementRangeBonus: 0,
 };
 
 export const STATUSES: IStatus[] = [
@@ -73,7 +81,7 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.BURNED,
     name: 'Burned',
     icon: ICON_ID.STATUS_BURNED,
-    description: 'Takes 1 damage at the start of the turn.',
+    description: 'Takes #DAMAGE damage at the start of the turn.',
     duration: 3,
     durationCounter: 3,
     effect: {
@@ -204,6 +212,54 @@ export const STATUSES: IStatus[] = [
     effect: {
       ...BASE_STATUS_EFFECTS,
       canMove: false,
+    },
+  },
+  {
+    id: STATUS_ID.HIDDEN,
+    name: 'Hidden',
+    icon: ICON_ID.STATUS_HIDDEN,
+    description: 'Cannot be seen or targeted by enemies.',
+    duration: 2,
+    durationCounter: 2,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      hidden: true,
+    },
+  },
+  {
+    id: STATUS_ID.SHIELDED,
+    name: 'Shielded',
+    icon: ICON_ID.STATUS_SHIELDED,
+    description: 'Gain additional hitpoints for the duration of the status',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      defenseMultiplier: 1.5,
+    },
+  },
+  {
+    id: STATUS_ID.SWIFTNESS,
+    name: 'Swiftness',
+    icon: ICON_ID.STATUS_SWIFTNESS,
+    description: 'Increased movement range by 1.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      movementRangeBonus: 1,
+    },
+  },
+  {
+    id: STATUS_ID.BLEEDING,
+    name: 'Bleeding',
+    icon: ICON_ID.STATUS_BLEEDING,
+    description: 'Takes #DAMAGE damage at the start of the turn.',
+    duration: 1,
+    durationCounter: 1,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      damageOverTime: 1,
     },
   },
 ];

@@ -33,14 +33,22 @@ Combat simulator for Return to Olympus
   - [x] Entangle
   - [x] Leap Slam
   - [x] Flame Dive
-  - [ ] Elemental Charge
-  - [ ] Teleport
-  - [ ] Swap
+  - [x] Hide
+  - [x] Shadow Strike
+  - [x] Swift Movement
+  - [x] Throwing Knives
+  - [ ] Body Double
+  - [ ] Instinctual Dodge
+  - [ ] Bloodletting
+  - [ ] Poison Strike
+  - [ ] Disorient
+  - [ ] Puncture Wound
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
-- [ ] Sprites for each of the above
-- [ ] Animations for each of the above
+- [x] Sprites for each of the above
+- [x] Animations for each of the above (except player attacks)
 - [ ] Multiple rooms (floor)
+- [ ] Room generator
 
 ## Setup
 

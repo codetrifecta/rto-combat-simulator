@@ -4,8 +4,8 @@ import {
   SKILL_ID,
   SKILL_TAG,
 } from './constants/skill';
-import { STATUS_ID, STATUSES } from './constants/status';
-import { IEnemy, ILog, IPlayer, ISkill, IStatus } from './types';
+import { BASE_STATUS_EFFECTS, STATUS_ID, STATUSES } from './constants/status';
+import { IEnemy, ILog, IPlayer, ISkill, IStatus, IStatusEffect } from './types';
 import {
   damageEntity,
   displayStatusEffect,
@@ -184,17 +184,19 @@ const handleSkillDamage = (
   const playerTotalDefense = getPlayerTotalDefense(player);
   const playerLifestealMultiplier = getPlayerLifestealMultiplier(player);
 
-  let totalDamage = 0;
-
-  if (intelligenceBasedSkillIDs.includes(skill.id)) {
-    totalDamage += Math.round(skill.damageMultiplier * playerTotalIntelligence);
-  } else {
-    totalDamage += Math.round(skill.damageMultiplier * playerTotalStrength);
-  }
-
   targets.forEach((target) => {
     const entityType = target[0];
     const entityId = target[1];
+
+    let totalDamage = 0;
+
+    if (intelligenceBasedSkillIDs.includes(skill.id)) {
+      totalDamage += Math.round(
+        skill.damageMultiplier * playerTotalIntelligence
+      );
+    } else {
+      totalDamage += Math.round(skill.damageMultiplier * playerTotalStrength);
+    }
 
     if (entityType === ENTITY_TYPE.ENEMY) {
       const enemy = enemiesAfterDamage.find((e) => e.id === entityId);
@@ -209,9 +211,24 @@ const handleSkillDamage = (
 
       const newEnemy = { ...enemy };
 
+      // Peform skill specific actions before applying to targets
       if ([SKILL_ID.EXECUTE].includes(skill.id)) {
         // Execute: Deal double damage if enemy health is below 25%
         if (newEnemy.health < newEnemy.maxHealth * 0.25) {
+          totalDamage *= 2;
+        }
+      } else if ([SKILL_ID.HIDDEN_BLADE].includes(skill.id)) {
+        // Hidden Blade / Shadow Strike: Deal double damage if player is hidden
+        if (
+          playerAfterDamage.statuses.some(
+            (status) => status.id === STATUS_ID.HIDDEN
+          )
+        ) {
+          totalDamage *= 2;
+        }
+      } else if ([SKILL_ID.THROWING_KNIVES].includes(skill.id)) {
+        // Throwing Knives: 15% chance to deal double damage
+        if (Math.random() < 0.15) {
           totalDamage *= 2;
         }
       }
@@ -357,6 +374,31 @@ const handleSkillDamage = (
     }
   });
 
+  // Remove hidden status from player if enemy is attacked
+  if (
+    playerAfterDamage.statuses.some((status) => status.id === STATUS_ID.HIDDEN)
+  ) {
+    playerAfterDamage.statuses = playerAfterDamage.statuses.filter(
+      (status) => status.id !== STATUS_ID.HIDDEN
+    );
+
+    const statusToBeRemoved = STATUSES.find(
+      (status) => status.id === STATUS_ID.HIDDEN
+    );
+
+    if (statusToBeRemoved === undefined) {
+      console.error(
+        'handleSkillDamage: No status found for the associated skill ID'
+      );
+    } else {
+      displayStatusEffect(
+        statusToBeRemoved,
+        false,
+        `tile_${playerAfterDamage.entityType}_${playerAfterDamage.id}`
+      );
+    }
+  }
+
   return { playerAfterDamage, enemiesAfterDamage };
 };
 
@@ -370,6 +412,13 @@ const handleSkillStatus = (
   const playerAfterStatus: IPlayer = { ...player };
   const enemiesAfterStatus: IEnemy[] = [...enemies];
   let statusID: STATUS_ID | -1 = -1;
+
+  // First value is a boolean to determine if the status effect modifier should be applied
+  // Second value is the status effect modifier to be applied
+  const statusEffectModifier: [boolean, IStatusEffect] = [
+    false,
+    BASE_STATUS_EFFECTS,
+  ];
 
   switch (skill.id) {
     case SKILL_ID.IRONFLESH:
@@ -387,6 +436,11 @@ const handleSkillStatus = (
     case SKILL_ID.FIREBALL:
     case SKILL_ID.FLAME_DIVE:
       statusID = STATUS_ID.BURNED;
+      // DoT will scale with player's intelligence
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].damageOverTime = Math.ceil(
+        0.2 * getPlayerTotalIntelligence(playerAfterStatus)
+      );
       break;
     case SKILL_ID.GORGONS_GAZE:
       statusID = STATUS_ID.PETRIFIED;
@@ -414,6 +468,21 @@ const handleSkillStatus = (
             ? STATUS_ID.BATTLE_FURY_2
             : STATUS_ID.BATTLE_FURY_1;
       break;
+    case SKILL_ID.HIDE:
+      statusID = STATUS_ID.HIDDEN;
+      break;
+    case SKILL_ID.HIDDEN_BLADE:
+    case SKILL_ID.THROWING_KNIVES:
+      statusID = STATUS_ID.BLEEDING;
+      // DoT will scale with player's strength
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].damageOverTime = Math.ceil(
+        0.2 * getPlayerTotalStrength(playerAfterStatus)
+      );
+      break;
+    case SKILL_ID.SWIFT_MOVEMENT:
+      statusID = STATUS_ID.SWIFTNESS;
+      break;
     default:
       break;
   }
@@ -428,6 +497,21 @@ const handleSkillStatus = (
     );
 
     return { playerAfterStatus, enemiesAfterStatus: [] };
+  }
+
+  // Apply any status effect modifiers
+  if (statusEffectModifier[0]) {
+    statusToBeApplied.effect = {
+      ...statusToBeApplied.effect,
+      ...statusEffectModifier[1],
+    };
+  }
+
+  if ([STATUS_ID.BURNED, STATUS_ID.BLEEDING].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE',
+      statusToBeApplied.effect.damageOverTime + ''
+    );
   }
 
   // Peform skill specific actions before applying to targets

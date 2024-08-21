@@ -1,6 +1,10 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Tile';
-import { ENTITY_TYPE, STARTING_ACTION_POINTS } from '../constants/entity';
+import {
+  DEFAULT_MOVEMENT_RANGE,
+  ENTITY_TYPE,
+  STARTING_ACTION_POINTS,
+} from '../constants/entity';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import {
   aoeSkillIDs,
@@ -306,13 +310,15 @@ export const Room: FC<{
 
         const affectedEnemy = { ...enemy };
 
-        const burnedDoT = affectedEnemy.statuses.find(
-          (status) => status.id === STATUS_ID.BURNED
+        const dot = affectedEnemy.statuses.filter((status) =>
+          [STATUS_ID.BURNED, STATUS_ID.BLEEDING].includes(status.id)
         );
 
-        if (burnedDoT) {
+        if (dot.length > 0) {
           setTimeout(() => {
-            const totalDamage = burnedDoT.effect.damageOverTime;
+            const totalDamage = dot.reduce((acc, status) => {
+              return acc + status.effect.damageOverTime;
+            }, 0);
 
             affectedEnemy.health = damageEntity(
               affectedEnemy,
@@ -325,7 +331,7 @@ export const Room: FC<{
                 message: (
                   <>
                     <span className="text-red-500">{affectedEnemy.name}</span>{' '}
-                    took 1 damage from burn and has been defeated!
+                    took {totalDamage} damage from burn and has been defeated!
                   </>
                 ),
                 type: 'info',
@@ -345,7 +351,7 @@ export const Room: FC<{
                 message: (
                   <>
                     <span className="text-red-500">{affectedEnemy.name}</span>{' '}
-                    took 1 damage from burn.
+                    took {totalDamage} damage from burn.
                   </>
                 ),
                 type: 'info',
@@ -751,19 +757,34 @@ export const Room: FC<{
     Map<string, number>,
   ] = useMemo(() => {
     // console.log('playerMovementPossibilities');
+
+    // Check for player's statuses that affect movement range like swiftness
+    const movementRangeBonus = player.statuses.reduce((acc, status) => {
+      return acc + status.effect.movementRangeBonus;
+    }, 0);
+
+    console.log('movementRangeBonus', movementRangeBonus, player.statuses);
+
     const movementPossibilities = findPathsFromCurrentLocation(
       playerPosition,
       roomTileMatrix,
       player.actionPoints,
-      roomEntityPositions
+      roomEntityPositions,
+      DEFAULT_MOVEMENT_RANGE + movementRangeBonus
     );
 
     const apCostForMovementPossibilities = getApCostForPath(
-      movementPossibilities
+      movementPossibilities,
+      DEFAULT_MOVEMENT_RANGE + movementRangeBonus
     );
 
     return [movementPossibilities, apCostForMovementPossibilities];
-  }, [player.actionPoints, playerPosition, roomTileMatrix.length]);
+  }, [
+    player.actionPoints,
+    playerPosition,
+    roomTileMatrix.length,
+    player.statuses,
+  ]);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (entityId: number | null) => {
@@ -1059,7 +1080,11 @@ export const Room: FC<{
       Math.abs(playerRow - enemyRow) <= enemy.range &&
       Math.abs(playerCol - enemyCol) <= enemy.range;
 
-    if (canAttackPlayer) {
+    const isPlayerHidden = player.statuses.some(
+      (status) => status.id === STATUS_ID.HIDDEN
+    );
+
+    if (canAttackPlayer && !isPlayerHidden) {
       // Change sprite animation from idle to attack
       const enemySpriteSheetContainer = document.getElementById(
         `spritesheet_container_${enemy.entityType}_${enemy.id}`
@@ -1423,7 +1448,8 @@ export const Room: FC<{
                 // Compute target zone based on the specific skill requirement
                 switch (skill.id) {
                   case SKILL_ID.WHIRLWIND:
-                  case SKILL_ID.WARCRY: {
+                  case SKILL_ID.WARCRY:
+                  case SKILL_ID.THROWING_KNIVES: {
                     if (isEffectZone && isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
 
@@ -1632,6 +1658,7 @@ export const Room: FC<{
                   ) {
                     handlePlayerMove(rowIndex, columnIndex);
                   } else if (
+                    // isAnimating.current === false &&
                     player.state.isUsingSkill &&
                     player.state.skillId
                   ) {
@@ -1721,23 +1748,37 @@ export const Room: FC<{
                         setEnemies(
                           newEnemies.filter((enemy) => enemy.health > 0)
                         );
+                        setRoomEntityPositions(newRoomEntityPositions);
+                        setPlayer({
+                          ...newPlayer,
+                          state: {
+                            ...newPlayer.state,
+                            isUsingSkill: false,
+                          },
+                          actionPoints: newPlayer.actionPoints - skill.cost,
+                          skills: newPlayer.skills.map((s) =>
+                            s.id === skill.id
+                              ? { ...s, cooldownCounter: s.cooldown }
+                              : s
+                          ),
+                        });
                       }, 1000);
+                    } else {
+                      setRoomEntityPositions(newRoomEntityPositions);
+                      setPlayer({
+                        ...newPlayer,
+                        state: {
+                          ...newPlayer.state,
+                          isUsingSkill: false,
+                        },
+                        actionPoints: newPlayer.actionPoints - skill.cost,
+                        skills: newPlayer.skills.map((s) =>
+                          s.id === skill.id
+                            ? { ...s, cooldownCounter: s.cooldown }
+                            : s
+                        ),
+                      });
                     }
-
-                    setRoomEntityPositions(newRoomEntityPositions);
-                    setPlayer({
-                      ...newPlayer,
-                      state: {
-                        ...newPlayer.state,
-                        isUsingSkill: false,
-                      },
-                      actionPoints: newPlayer.actionPoints - skill.cost,
-                      skills: newPlayer.skills.map((s) =>
-                        s.id === skill.id
-                          ? { ...s, cooldownCounter: s.cooldown }
-                          : s
-                      ),
-                    });
                   }
                 }
               }}

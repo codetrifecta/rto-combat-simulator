@@ -62,6 +62,7 @@ export const usePlayerStore = create<IPlayerStore>((set, get) => ({
       health: get().health,
       maxHealth: get().maxHealth,
       damageBonus: get().damageBonus,
+      movementRange: get().movementRange,
       actionPoints: get().actionPoints,
       skills: get().skills,
       statuses: get().statuses,

@@ -1,4 +1,4 @@
-import { ENTITY_TYPE } from '../constants/entity';
+import { DEFAULT_MOVEMENT_RANGE, ENTITY_TYPE } from '../constants/entity';
 import { TILE_TYPE } from '../constants/tile';
 
 /**
@@ -111,13 +111,15 @@ export function findPathsFromCurrentLocationDEPRECATED(
  * @param room - 2D matrix of type [TILE_TYPE, number][][]
  * @param AP - The number of AP the player has
  * @param roomEntityPositions - Dictionary of the positions of room entities (players and enemies) of type Map<string, [ENTITY_TYPE, number]>
+ * @param movementRange - The range of movement the player can make
  * @returns A map of coordinates of each tile within reach and the path to get to it, of type Map<string, [number, number][]>
  */
 export function findPathsFromCurrentLocation(
   playerLoc: [number, number],
   room: TILE_TYPE[][],
   AP: number,
-  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>
+  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
+  movementRange: number = DEFAULT_MOVEMENT_RANGE
 ): Map<string, [number, number][]> {
   // player_loc is starting coordinate
   const dir: [number, number][] = [
@@ -214,7 +216,7 @@ export function findPathsFromCurrentLocation(
 
     pathway.reverse(); // Reverse order of path from beginning to goal/end
 
-    if (pathway.length / 2 <= AP) {
+    if (pathway.length <= AP * movementRange) {
       path_dict.set(`${goal[0]},${goal[1]}`, pathway);
     }
   }
@@ -227,14 +229,16 @@ export function findPathsFromCurrentLocation(
  * @returns A map which has the tiles within reach of the player and the number of AP required to reach it.
  */
 export function getApCostForPath(
-  paths: Map<string, [number, number][]>
+  paths: Map<string, [number, number][]>,
+  movementRange: number = DEFAULT_MOVEMENT_RANGE
 ): Map<string, number> {
   const AP = new Map<string, number>();
 
   for (const key of paths.keys()) {
-    const temp = paths.get(key);
-    if (temp !== undefined) {
-      AP.set(key, Math.round(temp.length / 2));
+    const path = paths.get(key);
+    if (path !== undefined) {
+      const cost = Math.ceil(path.length / movementRange);
+      AP.set(key, cost);
     }
   }
 
