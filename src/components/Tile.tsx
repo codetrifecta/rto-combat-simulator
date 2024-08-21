@@ -3,7 +3,6 @@ import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import clsx from 'clsx';
 import { IPlayerState } from '../types';
-import { useGameStateStore } from '../store/game';
 
 export const Tile: FC<{
   rowIndex: number;
@@ -21,8 +20,6 @@ export const Tile: FC<{
   onMouseLeave: () => void;
   classNames?: string;
 }> = ({
-  rowIndex,
-  colIndex,
   tileType,
   entityIfExist,
   // playerState,
@@ -36,8 +33,6 @@ export const Tile: FC<{
   onMouseLeave,
   classNames = '',
 }) => {
-  const { setHoveredTile } = useGameStateStore();
-
   const hasPlayer = useMemo(() => {
     if (entityIfExist) {
       return entityIfExist[0] === ENTITY_TYPE.PLAYER;
@@ -208,7 +203,6 @@ export const Tile: FC<{
       className="relative group"
       onClick={onClick}
       onMouseEnter={() => {
-        setHoveredTile([rowIndex, colIndex]);
         onMouseEnter();
       }}
       onMouseLeave={onMouseLeave}

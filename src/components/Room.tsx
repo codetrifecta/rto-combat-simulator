@@ -38,6 +38,7 @@ import {
   getApCostForPath,
 } from '../utils/pathfinding';
 import { getVisionFromEntityPosition } from '../utils/vision';
+import debounce from 'debounce';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -68,6 +69,7 @@ export const Room: FC<{
     isGameOver,
     setIsGameOver,
     setIsRoomOver,
+    setHoveredTile,
   } = useGameStateStore();
   const {
     playerMovementAPCost,
@@ -785,6 +787,9 @@ export const Room: FC<{
     roomTileMatrix.length,
     player.statuses,
   ]);
+
+  // Debounce hovered tile
+  const debouncedSetHoveredTile = debounce(setHoveredTile, 50);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (entityId: number | null) => {
@@ -1785,6 +1790,7 @@ export const Room: FC<{
                 }
               }}
               onMouseEnter={() => {
+                debouncedSetHoveredTile([rowIndex, columnIndex]);
                 if (
                   isEffectZone &&
                   tileType !== TILE_TYPE.WALL &&
