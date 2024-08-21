@@ -12,6 +12,7 @@ export interface IEntity {
   maxHealth: number;
   statuses: IStatus[];
   damageBonus: number;
+  movementRange: number;
   sprite: SPRITE_ID;
   sprite_size: number;
   spritesheet_rows: number;

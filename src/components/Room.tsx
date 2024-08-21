@@ -1,6 +1,10 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Tile';
-import { ENTITY_TYPE, STARTING_ACTION_POINTS } from '../constants/entity';
+import {
+  DEFAULT_MOVEMENT_RANGE,
+  ENTITY_TYPE,
+  STARTING_ACTION_POINTS,
+} from '../constants/entity';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import {
   aoeSkillIDs,
@@ -753,19 +757,27 @@ export const Room: FC<{
     Map<string, number>,
   ] = useMemo(() => {
     // console.log('playerMovementPossibilities');
+
     const movementPossibilities = findPathsFromCurrentLocation(
       playerPosition,
       roomTileMatrix,
       player.actionPoints,
-      roomEntityPositions
+      roomEntityPositions,
+      DEFAULT_MOVEMENT_RANGE
     );
 
     const apCostForMovementPossibilities = getApCostForPath(
-      movementPossibilities
+      movementPossibilities,
+      DEFAULT_MOVEMENT_RANGE
     );
 
     return [movementPossibilities, apCostForMovementPossibilities];
-  }, [player.actionPoints, playerPosition, roomTileMatrix.length]);
+  }, [
+    player.actionPoints,
+    playerPosition,
+    roomTileMatrix.length,
+    player.statuses,
+  ]);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (entityId: number | null) => {

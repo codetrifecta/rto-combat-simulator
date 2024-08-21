@@ -1,4 +1,4 @@
-import { IEnemy, IPlayer } from '../types';
+import { IEnemy, IEntity, IPlayer } from '../types';
 import { getPlayerMaxHealth } from '../utils';
 import { LEGGINGS } from './armor';
 import { SKILL_ID, SKILLS } from './skill';
@@ -14,9 +14,32 @@ export enum ENTITY_TYPE {
   ENEMY = 'enemy',
 }
 
+export const DEFAULT_MOVEMENT_RANGE = 2;
+
 export const STARTING_MAX_HEALTH = 25;
 
+export const BASE_ENTITY: IEntity = {
+  id: 0,
+  name: '',
+  entityType: ENTITY_TYPE.PLAYER,
+  health: 0,
+  maxHealth: 0,
+  statuses: [],
+  damageBonus: 0,
+  movementRange: DEFAULT_MOVEMENT_RANGE,
+  sprite: SPRITE_ID.PLAYER_01,
+  sprite_size: 64,
+  spritesheet_rows: 12,
+  spritesheet_columns: 6,
+  spritesheet_idle_row: 0,
+  spritesheet_movement_row: 1,
+  spritesheet_attack_row: 2,
+  spritesheet_damaged_row: 8,
+  spritesheet_defeat_row: 9,
+};
+
 export const PLAYER: IPlayer = {
+  ...BASE_ENTITY,
   id: 1,
   name: 'Kratos',
   sprite: SPRITE_ID.PLAYER_01,
@@ -33,6 +56,7 @@ export const PLAYER: IPlayer = {
   maxHealth: 1,
   damageBonus: 0,
   actionPoints: STARTING_ACTION_POINTS,
+  movementRange: 2,
   skills: SKILLS,
   statuses: [],
   state: {
@@ -90,6 +114,7 @@ export enum ENEMY_PRESET_ID {
 
 export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
   [ENEMY_PRESET_ID.ABYSSAL_CYCLOPEAN_WRAITH]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Abyssal Cyclopean Wraith',
     sprite: SPRITE_ID.ENEMY_ABYSSAL_CYCLOPEAN_WRAITH,
@@ -110,6 +135,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.CERBERUS_PUP]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Cerberus Pup',
     sprite: SPRITE_ID.CERBERUS_PUP,
@@ -130,6 +156,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.CORRUPT_MINOTAUR]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Corrupt Minotaur',
     sprite: SPRITE_ID.CORRUPT_MINOTAUR,
@@ -150,6 +177,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.CORRUPT_OLYMPIAN]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Corrupt Olympian',
     sprite: SPRITE_ID.CORRUPT_OLYMPIAN,
@@ -170,6 +198,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.EREBUS_FIEND]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Erebus Fiend',
     sprite: SPRITE_ID.EREBUS_FIEND,
@@ -190,6 +219,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.INFERNAL_MINOTAUR]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Infernal Minotaur',
     sprite: SPRITE_ID.INFERNAL_MINOTAUR,
@@ -210,6 +240,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.MYRMIDON_HOUND]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Myrmidon Hound',
     sprite: SPRITE_ID.MYRMIDON_HOUND,
@@ -230,6 +261,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.SKYWARD_TITAN]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Skyward Titan',
     sprite: SPRITE_ID.ENEMY_SKYWARD_TITAN,
@@ -250,6 +282,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.STYGIAN_WRAITH]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Stygian Wraith',
     sprite: SPRITE_ID.STYGIAN_WRAITH,
@@ -270,6 +303,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.TARTARIAN_HOUND]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Tartarian Hound',
     sprite: SPRITE_ID.TARTARIAN_HOUND,
@@ -290,6 +324,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     statuses: [],
   },
   [ENEMY_PRESET_ID.TARTARIAN_LYCAN]: {
+    ...BASE_ENTITY,
     id: 0,
     name: 'Tartarian Lycan',
     sprite: SPRITE_ID.TARTARIAN_LYCAN,
