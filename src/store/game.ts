@@ -6,6 +6,8 @@ import { generateRoomEntityPositions, generateRoomTileMatrix } from '../utils';
 import { ROOM_LENGTH } from '../constants/game';
 
 interface IGameStateStore {
+  doorPositions: [number, number][];
+  hoveredTile: [number, number] | null;
   roomLength: number;
   roomTileMatrix: TILE_TYPE[][];
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>;
@@ -21,6 +23,8 @@ interface IGameStateStore {
   file: string;
   floorArtFile: string;
   wallArtFile: string;
+  setDoorPositions: (doorPositions: [number, number][]) => void;
+  setHoveredTile: (hoveredTile: [number, number] | null) => void;
   setRoomLength: (roomLength: number) => void;
   setRoomTileMatrix: (roomTileMatrix: TILE_TYPE[][]) => void;
   setRoomEntityPositions: (
@@ -43,6 +47,8 @@ interface IGameStateStore {
 }
 
 export const useGameStateStore = create<IGameStateStore>((set, get) => ({
+  doorPositions: [],
+  hoveredTile: null,
   roomLength: ROOM_LENGTH,
   roomTileMatrix: generateRoomTileMatrix(),
   roomEntityPositions: generateRoomEntityPositions(),
@@ -58,6 +64,12 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   file: '',
   floorArtFile: '',
   wallArtFile: '',
+
+  setDoorPositions: (doorPositions: [number, number][]) =>
+    set({ doorPositions }),
+
+  setHoveredTile: (hoveredTile: [number, number] | null) =>
+    set({ hoveredTile }),
 
   setRoomLength: (roomLength: number) => set({ roomLength }),
 

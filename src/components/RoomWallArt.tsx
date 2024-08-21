@@ -9,8 +9,13 @@ export const RoomWallArt: FC<{
   height: number;
   grayscale?: boolean;
 }> = ({ width, height, grayscale }) => {
-  const { isRoomOver, wallArtFile, roomEntityPositions, roomTileMatrix } =
-    useGameStateStore();
+  const {
+    isRoomOver,
+    wallArtFile,
+    roomEntityPositions,
+    roomTileMatrix,
+    hoveredTile,
+  } = useGameStateStore();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -66,7 +71,12 @@ export const RoomWallArt: FC<{
       // Alpha: The alpha (opacity) component of the pixel (0–255).
       const data = imageData.data;
 
-      // console.log(data);
+      // Change alpha channel for door tiles when room is over
+      // if (isRoomOver) {
+      //   if (){
+
+      //   }
+      // }
 
       Array.from(roomEntityPositions).forEach(([positionString]) => {
         const [row, col] = positionString.split(',').map(Number);
@@ -104,6 +114,46 @@ export const RoomWallArt: FC<{
         }
       });
 
+      // Modify the alpha channel for the hovered tile (if any)
+      const [tileRow, tileCol] = hoveredTile ?? [-1, -1];
+
+      // Skip if no tile is hovered
+      if (tileRow === -1 || tileCol === -1) {
+        return;
+      } else {
+        // Skip if no tile nearby is a wall (in this case, check for the 2 tiles below the entity)
+        // console.log(tileRow, tileCol);
+        if (
+          roomTileMatrix[tileRow][tileCol] === TILE_TYPE.FLOOR &&
+          (roomTileMatrix[tileRow + 1][tileCol] === TILE_TYPE.WALL ||
+            roomTileMatrix[tileRow + 2][tileCol] === TILE_TYPE.WALL)
+        ) {
+          const paddingOffset = 5;
+
+          const rowStart = tileRow * TILE_SIZE - paddingOffset;
+          const colStart = tileCol * TILE_SIZE - paddingOffset;
+
+          const rowEnd = rowStart + TILE_SIZE + paddingOffset * 2;
+          const colEnd = colStart + TILE_SIZE + paddingOffset * 2;
+
+          // Modify the alpha channel for a specific area
+          for (let y = rowStart; y < rowEnd; y++) {
+            for (let x = colStart; x < colEnd; x++) {
+              const index = (y * imageData.width + x) * 4;
+
+              // Only change the alpha channel if the tile is an overlapping wall (aka data[index], data[index + 1], data[index + 2] are all NOT 0)
+              if (
+                data[index] !== 0 &&
+                data[index + 1] !== 0 &&
+                data[index + 2] !== 0
+              ) {
+                data[index + 3] = 128; // Set alpha to 50% (128 out of 255)
+              }
+            }
+          }
+        }
+      }
+
       // Put the modified image data back on the canvas
       context.putImageData(imageData, 0, 0);
     };
@@ -116,6 +166,7 @@ export const RoomWallArt: FC<{
     wallArtFile,
     roomEntityPositions,
     roomTileMatrix,
+    hoveredTile,
   ]);
 
   return (

@@ -763,7 +763,7 @@ export const Room: FC<{
       return acc + status.effect.movementRangeBonus;
     }, 0);
 
-    console.log('movementRangeBonus', movementRangeBonus, player.statuses);
+    // console.log('movementRangeBonus', movementRangeBonus, player.statuses);
 
     const movementPossibilities = findPathsFromCurrentLocation(
       playerPosition,
@@ -1603,6 +1603,8 @@ export const Room: FC<{
 
           return (
             <Tile
+              rowIndex={rowIndex}
+              colIndex={columnIndex}
               tileType={tileType}
               entityIfExist={roomEntityPositions.get(
                 `${rowIndex},${columnIndex}`

@@ -52,7 +52,7 @@ export const EntitySpritePositions: FC<{
   }, [roomEntityPositions]);
 
   const renderPlayer = (player: IPlayer) => {
-    console.log(player);
+    // console.log(player);
 
     const isHidden = player.statuses.some(
       (status) => status.id === STATUS_ID.HIDDEN
