@@ -758,17 +758,24 @@ export const Room: FC<{
   ] = useMemo(() => {
     // console.log('playerMovementPossibilities');
 
+    // Check for player's statuses that affect movement range like swiftness
+    const movementRangeBonus = player.statuses.reduce((acc, status) => {
+      return acc + status.effect.movementRangeBonus;
+    }, 0);
+
+    console.log('movementRangeBonus', movementRangeBonus, player.statuses);
+
     const movementPossibilities = findPathsFromCurrentLocation(
       playerPosition,
       roomTileMatrix,
       player.actionPoints,
       roomEntityPositions,
-      DEFAULT_MOVEMENT_RANGE
+      DEFAULT_MOVEMENT_RANGE + movementRangeBonus
     );
 
     const apCostForMovementPossibilities = getApCostForPath(
       movementPossibilities,
-      DEFAULT_MOVEMENT_RANGE
+      DEFAULT_MOVEMENT_RANGE + movementRangeBonus
     );
 
     return [movementPossibilities, apCostForMovementPossibilities];

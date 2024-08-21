@@ -405,7 +405,13 @@ const handleSkillStatus = (
   const playerAfterStatus: IPlayer = { ...player };
   const enemiesAfterStatus: IEnemy[] = [...enemies];
   let statusID: STATUS_ID | -1 = -1;
-  const statusEffectModifier: IStatusEffect = BASE_STATUS_EFFECTS;
+
+  // First value is a boolean to determine if the status effect modifier should be applied
+  // Second value is the status effect modifier to be applied
+  const statusEffectModifier: [boolean, IStatusEffect] = [
+    false,
+    BASE_STATUS_EFFECTS,
+  ];
 
   switch (skill.id) {
     case SKILL_ID.IRONFLESH:
@@ -424,7 +430,8 @@ const handleSkillStatus = (
     case SKILL_ID.FLAME_DIVE:
       statusID = STATUS_ID.BURNED;
       // DoT will scale with player's intelligence
-      statusEffectModifier.damageOverTime = Math.ceil(
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].damageOverTime = Math.ceil(
         0.1 * getPlayerTotalIntelligence(playerAfterStatus)
       );
       break;
@@ -460,9 +467,13 @@ const handleSkillStatus = (
     case SKILL_ID.HIDDEN_BLADE:
       statusID = STATUS_ID.BLEEDING;
       // DoT will scale with player's strength
-      statusEffectModifier.damageOverTime = Math.ceil(
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].damageOverTime = Math.ceil(
         0.1 * getPlayerTotalStrength(playerAfterStatus)
       );
+      break;
+    case SKILL_ID.SWIFT_MOVEMENT:
+      statusID = STATUS_ID.SWIFTNESS;
       break;
     default:
       break;
@@ -481,10 +492,19 @@ const handleSkillStatus = (
   }
 
   // Apply any status effect modifiers
-  statusToBeApplied.effect = {
-    ...statusToBeApplied.effect,
-    ...statusEffectModifier,
-  };
+  if (statusEffectModifier[0]) {
+    statusToBeApplied.effect = {
+      ...statusToBeApplied.effect,
+      ...statusEffectModifier[1],
+    };
+  }
+
+  if ([STATUS_ID.BURNED, STATUS_ID.BLEEDING].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE',
+      statusToBeApplied.effect.damageOverTime + ''
+    );
+  }
 
   // Peform skill specific actions before applying to targets
   // Warcry: Apply status to player

@@ -58,6 +58,8 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.CLEAVE,
   SKILL_ID.ANNIHILATE,
   SKILL_ID.LEAP_SLAM,
+  SKILL_ID.HIDDEN_BLADE,
+  SKILL_ID.THROWING_KNIVES,
 ];
 
 export const intelligenceBasedSkillIDs: SKILL_ID[] = [

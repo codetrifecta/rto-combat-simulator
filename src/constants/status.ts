@@ -36,6 +36,7 @@ export const BASE_STATUS_EFFECTS: IStatusEffect = {
   canMove: true,
   canAttack: true,
   hidden: false,
+  movementRangeBonus: 0,
 };
 
 export const STATUSES: IStatus[] = [
@@ -80,7 +81,7 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.BURNED,
     name: 'Burned',
     icon: ICON_ID.STATUS_BURNED,
-    description: 'Takes 1 damage at the start of the turn.',
+    description: 'Takes #DAMAGE damage at the start of the turn.',
     duration: 3,
     durationCounter: 3,
     effect: {
@@ -246,13 +247,14 @@ export const STATUSES: IStatus[] = [
     durationCounter: 3,
     effect: {
       ...BASE_STATUS_EFFECTS,
+      movementRangeBonus: 1,
     },
   },
   {
     id: STATUS_ID.BLEEDING,
     name: 'Bleeding',
     icon: ICON_ID.STATUS_BLEEDING,
-    description: 'Takes damage at the start of the turn.',
+    description: 'Takes #DAMAGE damage at the start of the turn.',
     duration: 1,
     durationCounter: 1,
     effect: {
