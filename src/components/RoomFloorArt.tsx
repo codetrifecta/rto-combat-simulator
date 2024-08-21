@@ -9,7 +9,7 @@ export const RoomFloorArt: FC<{
   height: number;
   grayscale?: boolean;
 }> = ({ width, height, grayscale }) => {
-  const { isRoomOver, file } = useGameStateStore();
+  const { isRoomOver, floorArtFile } = useGameStateStore();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -26,7 +26,7 @@ export const RoomFloorArt: FC<{
 
     const image = new Image();
 
-    let imgSrc = file;
+    let imgSrc = floorArtFile;
 
     if (!imgSrc) {
       imgSrc = defaultRoom;
@@ -52,7 +52,7 @@ export const RoomFloorArt: FC<{
 
       context.drawImage(image, 0, 0, width, height);
     };
-  }, [canvasRef.current, width, height, grayscale, isRoomOver, file]);
+  }, [canvasRef.current, width, height, grayscale, isRoomOver, floorArtFile]);
 
   return (
     <canvas

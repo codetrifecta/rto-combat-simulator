@@ -9,7 +9,7 @@ export const RoomWallArt: FC<{
   height: number;
   grayscale?: boolean;
 }> = ({ width, height, grayscale }) => {
-  const { isRoomOver, file, roomEntityPositions, roomTileMatrix } =
+  const { isRoomOver, wallArtFile, roomEntityPositions, roomTileMatrix } =
     useGameStateStore();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,7 +27,7 @@ export const RoomWallArt: FC<{
 
     const image = new Image();
 
-    let imgSrc = file;
+    let imgSrc = wallArtFile;
 
     if (!imgSrc) {
       imgSrc = defaultRoomArt;
@@ -66,21 +66,26 @@ export const RoomWallArt: FC<{
       // Alpha: The alpha (opacity) component of the pixel (0–255).
       const data = imageData.data;
 
-      console.log(data);
+      // console.log(data);
 
       Array.from(roomEntityPositions).forEach(([positionString]) => {
         const [row, col] = positionString.split(',').map(Number);
 
-        // Skip if no tile nearby is a wall (in this case, check for the tile right below the entity)
-        if (roomTileMatrix[row + 1][col] !== TILE_TYPE.WALL) {
+        // Skip if no tile nearby is a wall (in this case, check for the 2 tiles below the entity)
+        if (
+          roomTileMatrix[row + 1][col] !== TILE_TYPE.WALL &&
+          roomTileMatrix[row + 2][col] !== TILE_TYPE.WALL
+        ) {
           return;
         }
 
-        const rowStart = row * TILE_SIZE;
-        const colStart = col * TILE_SIZE;
+        const paddingOffset = 5;
 
-        const rowEnd = rowStart + TILE_SIZE;
-        const colEnd = colStart + TILE_SIZE;
+        const rowStart = row * TILE_SIZE - paddingOffset;
+        const colStart = col * TILE_SIZE - paddingOffset;
+
+        const rowEnd = rowStart + TILE_SIZE + paddingOffset * 2;
+        const colEnd = colStart + TILE_SIZE + paddingOffset * 2;
 
         // Modify the alpha channel for a specific area
         for (let y = rowStart; y < rowEnd; y++) {
@@ -108,7 +113,7 @@ export const RoomWallArt: FC<{
     height,
     grayscale,
     isRoomOver,
-    file,
+    wallArtFile,
     roomEntityPositions,
     roomTileMatrix,
   ]);

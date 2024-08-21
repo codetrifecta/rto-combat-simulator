@@ -19,6 +19,8 @@ interface IGameStateStore {
   isGenerateRoomOpen: boolean;
   isCompendiumOpen: boolean;
   file: string;
+  floorArtFile: string;
+  wallArtFile: string;
   setRoomLength: (roomLength: number) => void;
   setRoomTileMatrix: (roomTileMatrix: TILE_TYPE[][]) => void;
   setRoomEntityPositions: (
@@ -36,6 +38,8 @@ interface IGameStateStore {
   setIsGameOver: (isGameOver: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
   setFile: (file: string) => void;
+  setFloorArtFile: (floorArtFile: string) => void;
+  setWallArtFile: (wallArtFile: string) => void;
 }
 
 export const useGameStateStore = create<IGameStateStore>((set, get) => ({
@@ -52,6 +56,8 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   isGenerateRoomOpen: false,
   isCompendiumOpen: false,
   file: '',
+  floorArtFile: '',
+  wallArtFile: '',
 
   setRoomLength: (roomLength: number) => set({ roomLength }),
 
@@ -111,4 +117,8 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
 
   setFile: (file: string) => set({ file }),
+
+  setFloorArtFile: (floorArtFile: string) => set({ floorArtFile }),
+
+  setWallArtFile: (wallArtFile: string) => set({ wallArtFile }),
 }));
