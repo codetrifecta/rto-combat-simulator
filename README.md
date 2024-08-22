@@ -10,13 +10,13 @@ Combat simulator for Return to Olympus
 - [x] Enemy receive damage & defeat
 - [x] Logging
 - [x] Inventory
-- [x] Player movement (naive)
+- [x] Player movement
 - [x] Player skills
-  - [x] Buff Up
+  - [x] Flex
   - [x] Ironflesh
-  - [x] Petrify (Gorgon's Gaze)
+  - [x] Gorgon's Gaze
   - [x] Lightning
-  - [x] Teleport
+  - [x] Fly
   - [x] Whirlwind
   - [x] Fireball
   - [x] Freeze
@@ -48,7 +48,7 @@ Combat simulator for Return to Olympus
 - [x] Sprites for each of the above
 - [x] Animations for each of the above (except player attacks)
 - [ ] Multiple rooms (floor)
-- [ ] Room generator
+- [x] Room generator
 
 ## Setup
 

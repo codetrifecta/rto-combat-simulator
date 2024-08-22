@@ -5,6 +5,8 @@ import clsx from 'clsx';
 import { IPlayerState } from '../types';
 
 export const Tile: FC<{
+  rowIndex: number;
+  colIndex: number;
   tileType: number;
   entityIfExist?: [ENTITY_TYPE, number] | undefined;
   playerState: IPlayerState;
@@ -197,19 +199,25 @@ export const Tile: FC<{
       style={{
         width: TILE_SIZE,
         height: TILE_SIZE,
+        padding: 5,
       }}
-      className="relative group"
+      className={clsx('relative group', {
+        // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
+        'cursor-pointer ':
+          (tileType !== TILE_TYPE.WALL &&
+            tileType !== TILE_TYPE.DOOR &&
+            tileType !== TILE_TYPE.NULL) ||
+          (tileType === TILE_TYPE.DOOR && isRoomOver),
+      })}
       onClick={onClick}
-      onMouseEnter={onMouseEnter}
+      onMouseEnter={() => {
+        onMouseEnter();
+      }}
       onMouseLeave={onMouseLeave}
       id={entityTileID}
     >
       <div
-        style={{
-          width: TILE_SIZE,
-          height: TILE_SIZE,
-        }}
-        className={clsx('absolute top-0 left-0 ', classNames, {
+        className={clsx(' left-0 w-full h-full', classNames, {
           // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
           'cursor-pointer ':
             (tileType !== TILE_TYPE.WALL &&
@@ -258,7 +266,7 @@ export const Tile: FC<{
             isEffectZone && isSkillEffectTile && !isTargetZone,
 
           // Target zone
-          'bg-black opacity-50': isTargetZone && isSkillEffectTile,
+          'bg-black opacity-60': isTargetZone && isSkillEffectTile,
         })}
       ></div>
       {/* {renderEntity()} */}

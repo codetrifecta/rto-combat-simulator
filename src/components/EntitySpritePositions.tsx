@@ -2,7 +2,7 @@ import { FC, useMemo } from 'react';
 import { usePlayerStore } from '../store/player';
 import { useGameStateStore } from '../store/game';
 import { Sprite } from './Sprite';
-import { TILE_SIZE } from '../constants/tile';
+import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import { IEnemy, IEntity, IPlayer } from '../types';
 import { ENTITY_TYPE } from '../constants/entity';
 import { useEnemyStore } from '../store/enemy';
@@ -16,7 +16,7 @@ export const EntitySpritePositions: FC<{
   const { enemies } = useEnemyStore();
 
   const player = getPlayer();
-  const { roomEntityPositions } = useGameStateStore();
+  const { roomEntityPositions, roomTileMatrix } = useGameStateStore();
 
   const roomEntityPositionsFlipped: [
     [ENTITY_TYPE, number],
@@ -52,14 +52,14 @@ export const EntitySpritePositions: FC<{
   }, [roomEntityPositions]);
 
   const renderPlayer = (player: IPlayer) => {
-    console.log(player);
+    // console.log(player);
 
     const isHidden = player.statuses.some(
       (status) => status.id === STATUS_ID.HIDDEN
     );
 
     return (
-      <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
+      <div className="absolute bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
         {/* Cap off extra width and height */}
         <div
           id={`${player.entityType}_${player.id}`}
@@ -113,7 +113,7 @@ export const EntitySpritePositions: FC<{
     const spriteSheetHeight = enemy.sprite_size * enemy.spritesheet_rows;
 
     return (
-      <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
+      <div className="absolute bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
         {/* Cap off extra width and height */}
         <div
           id={`${enemy.entityType}_${enemy.id}`}
@@ -170,6 +170,8 @@ export const EntitySpritePositions: FC<{
               id={`sprite_player_${player.id}`}
               row={row}
               col={col}
+              entity={player}
+              roomTileMatrix={roomTileMatrix}
               onMouseEnter={() => setCurrentHoveredEntity(player)}
               onMouseLeave={() => setCurrentHoveredEntity(null)}
             >
@@ -189,6 +191,8 @@ export const EntitySpritePositions: FC<{
               id={`sprite_enemy_${enemy.id}`}
               row={row}
               col={col}
+              entity={enemy}
+              roomTileMatrix={roomTileMatrix}
               onMouseEnter={() => setCurrentHoveredEntity(enemy)}
               onMouseLeave={() => setCurrentHoveredEntity(null)}
             >
@@ -206,10 +210,42 @@ const EntitySpritePositionContainer: FC<{
   classNames?: string;
   row: number;
   col: number;
+  entity: IEntity;
+  roomTileMatrix?: number[][];
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   children: JSX.Element;
-}> = ({ id, classNames, row, col, children, onMouseEnter, onMouseLeave }) => {
+}> = ({
+  id,
+  classNames,
+  row,
+  col,
+  // entity,
+  roomTileMatrix,
+  children,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
+  // Check if the tile above the entity is a wall or door
+  // If it is, set the z-index to 35 to ensure the entity is rendered above the wall
+  const isTileAboveWall =
+    roomTileMatrix &&
+    (roomTileMatrix[row - 1][col] === TILE_TYPE.WALL ||
+      roomTileMatrix[row - 1][col] === TILE_TYPE.DOOR);
+
+  // Check if the second tile above the entity is a wall or door if the entity is more than 1 tile tall
+  // If it is, set the z-index to 35 to ensure the tall entity is rendered above the wall
+  // if (entity.sprite_size / 2 > TILE_SIZE) {
+  //   const isSecondTileAboveWall =
+  //     roomTileMatrix &&
+  //     (roomTileMatrix[row - 2][col] === TILE_TYPE.WALL ||
+  //       roomTileMatrix[row - 2][col] === TILE_TYPE.DOOR);
+
+  //   if (isSecondTileAboveWall) {
+  //     isTileAboveWall = true;
+  //   }
+  // }
+
   return (
     <div
       id={id}
@@ -220,6 +256,8 @@ const EntitySpritePositionContainer: FC<{
       style={{
         top: (row + 1) * TILE_SIZE,
         left: col * TILE_SIZE + TILE_SIZE / 2,
+        zIndex: isTileAboveWall ? 35 : 33,
+        // zIndex: 100 + row,
       }}
       onMouseEnter={() => onMouseEnter && onMouseEnter()}
       onMouseLeave={() => onMouseLeave && onMouseLeave()}

@@ -17,8 +17,9 @@ import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
 import { EntitySpritePositions } from './components/EntitySpritePositions';
 import { TILE_SIZE } from './constants/tile';
 import { Compendium } from './components/Compendium';
-import { RoomArt } from './components/RoomArt';
 import { EntityTurnText } from './components/EntityTurnText';
+import { RoomFloorArt } from './components/RoomFloorArt';
+import { RoomWallArt } from './components/RoomWallArt';
 
 // Flag for first room render
 
@@ -406,11 +407,21 @@ function App() {
               >
                 <div
                   id="entity_sprite_positions"
-                  className="absolute top-0 left-0 z-20"
+                  className="absolute top-0 left-0 z-20 "
                 >
                   <EntitySpritePositions
                     setCurrentHoveredEntity={setCurrentHoveredEntity}
                   />
+                  <RoomWallArt
+                    width={roomLength * TILE_SIZE}
+                    height={roomLength * TILE_SIZE}
+                  />
+                  {/* <div className="absolute top-0 left-0 pointer-events-none z-[34]">
+                    <RoomWallArt
+                      width={roomLength * TILE_SIZE}
+                      height={roomLength * TILE_SIZE}
+                    />
+                  </div> */}
                 </div>
                 <div className="absolute z-10">
                   <Room
@@ -419,7 +430,7 @@ function App() {
                   />
                 </div>
                 <div className="absolute z-0">
-                  <RoomArt
+                  <RoomFloorArt
                     width={roomLength * TILE_SIZE}
                     height={roomLength * TILE_SIZE}
                   />

@@ -19,8 +19,10 @@ let firstRender = true;
 
 export const GenerateRoomModal: FC = () => {
   const {
-    file,
-    setFile,
+    floorArtFile,
+    wallArtFile,
+    setFloorArtFile,
+    setWallArtFile,
     setRoomLength,
     setRoomTileMatrix,
     setRoomEntityPositions,
@@ -46,8 +48,8 @@ export const GenerateRoomModal: FC = () => {
     [string, string, ENEMY_PRESET_ID][]
   >([
     ['11', '12', ENEMY_PRESET_ID.CERBERUS_PUP],
-    ['7', '6', ENEMY_PRESET_ID.STYGIAN_WRAITH],
-    ['5', '1', ENEMY_PRESET_ID.ABYSSAL_CYCLOPEAN_WRAITH],
+    ['8', '6', ENEMY_PRESET_ID.STYGIAN_WRAITH],
+    ['5', '2', ENEMY_PRESET_ID.ABYSSAL_CYCLOPEAN_WRAITH],
     ['3', '7', ENEMY_PRESET_ID.INFERNAL_MINOTAUR],
   ]);
 
@@ -56,7 +58,7 @@ export const GenerateRoomModal: FC = () => {
   useEffect(() => {
     if (firstRender) {
       setRoomMatrix(
-        '[\n  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],\n  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],\n  [2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2], \n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2], \n  [2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 2, 2, 2],\n  [2, 1, 1, 2, 2, 2, 1, 1, 0, 1, 1, 2, 2, 2, 2],\n  [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2], \n  [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2],\n  [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2], \n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]\n ]'
+        '[\n[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],\n[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],\n[2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2],\n[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n[2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2],\n[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n[2, 1, 1, 2, 2, 1, 1, 1, 0, 0, 1, 2, 2, 2, 2],\n[2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2, 2, 2, 2],\n[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2],\n[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n[2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2],\n[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],\n[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]\n]'
       );
       firstRender = false;
       return;
@@ -266,15 +268,22 @@ export const GenerateRoomModal: FC = () => {
     setIsGenerateRoomOpen(false);
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files);
-
+  const handleFloorArtFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) {
       console.error('Input files is null');
       return;
     }
 
-    setFile(URL.createObjectURL(e.target.files[0]));
+    setFloorArtFile(URL.createObjectURL(e.target.files[0]));
+  };
+
+  const handleWallArtFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files === null) {
+      console.error('Input files is null');
+      return;
+    }
+
+    setWallArtFile(URL.createObjectURL(e.target.files[0]));
   };
 
   return (
@@ -321,11 +330,11 @@ export const GenerateRoomModal: FC = () => {
             ></input>
           </div>
 
-          <div className="flex items-center">
+          <div className="flex justify-center items-center ">
             <button
               className="hover:border-white mr-3"
               onClick={() => {
-                const fileInput = document.getElementById('file-input');
+                const fileInput = document.getElementById('floorArtFile-input');
 
                 if (fileInput === null) {
                   console.error('File input is null');
@@ -335,15 +344,40 @@ export const GenerateRoomModal: FC = () => {
                 fileInput.click();
               }}
             >
-              Input tile art
+              Input floor art file
             </button>
             <input
-              id="file-input"
+              id="floorArtFile-input"
               className="hidden"
               type="file"
-              onChange={handleFileChange}
+              onChange={handleFloorArtFileChange}
             />
-            <p>File: {file ? file : 'No file chosen'}</p>
+            <p>File: {floorArtFile ? floorArtFile : 'No floor art chosen'}</p>
+          </div>
+
+          <div className="flex items-center">
+            <button
+              className="hover:border-white mr-3"
+              onClick={() => {
+                const fileInput = document.getElementById('wallArtFile-input');
+
+                if (fileInput === null) {
+                  console.error('File input is null');
+                  return;
+                }
+
+                fileInput.click();
+              }}
+            >
+              Input wall art file
+            </button>
+            <input
+              id="wallArtFile-input"
+              className="hidden"
+              type="file"
+              onChange={handleWallArtFileChange}
+            />
+            <p>File: {wallArtFile ? wallArtFile : 'No wall art chosen'}</p>
           </div>
         </div>
 
