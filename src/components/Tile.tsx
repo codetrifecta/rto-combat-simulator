@@ -199,6 +199,7 @@ export const Tile: FC<{
       style={{
         width: TILE_SIZE,
         height: TILE_SIZE,
+        padding: 5,
       }}
       className="relative group"
       onClick={onClick}
@@ -209,11 +210,7 @@ export const Tile: FC<{
       id={entityTileID}
     >
       <div
-        style={{
-          width: TILE_SIZE,
-          height: TILE_SIZE,
-        }}
-        className={clsx('absolute top-0 left-0 ', classNames, {
+        className={clsx(' left-0 w-full h-full', classNames, {
           // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
           'cursor-pointer ':
             (tileType !== TILE_TYPE.WALL &&
