@@ -201,7 +201,14 @@ export const Tile: FC<{
         height: TILE_SIZE,
         padding: 5,
       }}
-      className="relative group"
+      className={clsx('relative group', {
+        // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
+        'cursor-pointer ':
+          (tileType !== TILE_TYPE.WALL &&
+            tileType !== TILE_TYPE.DOOR &&
+            tileType !== TILE_TYPE.NULL) ||
+          (tileType === TILE_TYPE.DOOR && isRoomOver),
+      })}
       onClick={onClick}
       onMouseEnter={() => {
         onMouseEnter();
@@ -259,7 +266,7 @@ export const Tile: FC<{
             isEffectZone && isSkillEffectTile && !isTargetZone,
 
           // Target zone
-          'bg-black opacity-50': isTargetZone && isSkillEffectTile,
+          'bg-black opacity-60': isTargetZone && isSkillEffectTile,
         })}
       ></div>
       {/* {renderEntity()} */}
