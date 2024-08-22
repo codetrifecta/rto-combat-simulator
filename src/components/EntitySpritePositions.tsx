@@ -220,7 +220,7 @@ const EntitySpritePositionContainer: FC<{
   classNames,
   row,
   col,
-  entity,
+  // entity,
   roomTileMatrix,
   children,
   onMouseEnter,
@@ -228,23 +228,23 @@ const EntitySpritePositionContainer: FC<{
 }) => {
   // Check if the tile above the entity is a wall or door
   // If it is, set the z-index to 35 to ensure the entity is rendered above the wall
-  let isTileAboveWall =
+  const isTileAboveWall =
     roomTileMatrix &&
     (roomTileMatrix[row - 1][col] === TILE_TYPE.WALL ||
       roomTileMatrix[row - 1][col] === TILE_TYPE.DOOR);
 
   // Check if the second tile above the entity is a wall or door if the entity is more than 1 tile tall
   // If it is, set the z-index to 35 to ensure the tall entity is rendered above the wall
-  if (entity.sprite_size > TILE_SIZE) {
-    const isSecondTileAboveWall =
-      roomTileMatrix &&
-      (roomTileMatrix[row - 2][col] === TILE_TYPE.WALL ||
-        roomTileMatrix[row - 2][col] === TILE_TYPE.DOOR);
+  // if (entity.sprite_size / 2 > TILE_SIZE) {
+  //   const isSecondTileAboveWall =
+  //     roomTileMatrix &&
+  //     (roomTileMatrix[row - 2][col] === TILE_TYPE.WALL ||
+  //       roomTileMatrix[row - 2][col] === TILE_TYPE.DOOR);
 
-    if (isSecondTileAboveWall) {
-      isTileAboveWall = true;
-    }
-  }
+  //   if (isSecondTileAboveWall) {
+  //     isTileAboveWall = true;
+  //   }
+  // }
 
   return (
     <div
@@ -257,6 +257,7 @@ const EntitySpritePositionContainer: FC<{
         top: (row + 1) * TILE_SIZE,
         left: col * TILE_SIZE + TILE_SIZE / 2,
         zIndex: isTileAboveWall ? 35 : 33,
+        // zIndex: 100 + row,
       }}
       onMouseEnter={() => onMouseEnter && onMouseEnter()}
       onMouseLeave={() => onMouseLeave && onMouseLeave()}

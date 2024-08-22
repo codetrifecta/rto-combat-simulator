@@ -412,12 +412,16 @@ function App() {
                   <EntitySpritePositions
                     setCurrentHoveredEntity={setCurrentHoveredEntity}
                   />
-                  <div className="absolute top-0 left-0 pointer-events-none z-[34]">
+                  <RoomWallArt
+                    width={roomLength * TILE_SIZE}
+                    height={roomLength * TILE_SIZE}
+                  />
+                  {/* <div className="absolute top-0 left-0 pointer-events-none z-[34]">
                     <RoomWallArt
                       width={roomLength * TILE_SIZE}
                       height={roomLength * TILE_SIZE}
                     />
-                  </div>
+                  </div> */}
                 </div>
                 <div className="absolute z-10">
                   <Room
