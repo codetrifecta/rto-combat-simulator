@@ -712,12 +712,12 @@ const displayDamageNumbers = (elementID: string, damage: number) => {
   damageNumbers.style.zIndex = '100';
   damageNumbers.style.color = 'red';
 
-  damageNumbers.classList.add('animate-floatUpAndFadeOut');
+  damageNumbers.classList.add('animate-floatUpAndFadeOut20');
 
   // Remove damage numbers after 1.5 seconds
   setTimeout(() => {
     damageNumbers.remove();
-  }, 1500);
+  }, 2000);
 };
 
 export const healEntity = (
@@ -744,12 +744,12 @@ const displayHealNumbers = (elementID: string, heal: number) => {
   );
 
   if (!tile) {
-    console.error('displayStatusEffect: Tile not found');
+    console.error('displayHealNumbers: Tile not found');
     return;
   }
 
   if (!entitySpritePositions) {
-    console.error('displayStatusEffect: entitySpritePositions not found');
+    console.error('displayHealNumbers: entitySpritePositions not found');
     return;
   }
 
@@ -773,12 +773,12 @@ const displayHealNumbers = (elementID: string, heal: number) => {
   healNumbers.style.zIndex = '100';
   healNumbers.style.color = 'green';
 
-  healNumbers.classList.add('animate-floatUpAndFadeOut');
+  healNumbers.classList.add('animate-floatUpAndFadeOut20');
 
   // Remove heal numbers after 1.5 seconds
   setTimeout(() => {
     healNumbers.remove();
-  }, 1500);
+  }, 2000);
 };
 
 export const displayStatusEffect = (
@@ -833,12 +833,12 @@ export const displayStatusEffect = (
   statusIndicator.style.zIndex = '100';
   statusIndicator.style.color = 'yellow';
 
-  statusIndicator.classList.add('animate-floatUpAndFadeOut');
+  statusIndicator.classList.add('animate-floatUpAndFadeOut20');
 
   // Remove status effect after 1.5 seconds
   setTimeout(() => {
     statusIndicator.remove();
-  }, 1500);
+  }, 2000);
 };
 
 export const getPotionHealAmount = (player: IPlayer) => {

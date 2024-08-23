@@ -8,6 +8,10 @@ import { ENTITY_TYPE } from '../constants/entity';
 import { useEnemyStore } from '../store/enemy';
 import clsx from 'clsx';
 import { STATUS_ID } from '../constants/status';
+import { Icon } from './Icon';
+import { ICON_ID } from '../constants/icon';
+
+const PLAYER_STATE_INDICATOR_SIZE = 35;
 
 export const EntitySpritePositions: FC<{
   setCurrentHoveredEntity: (entity: IEntity | null) => void;
@@ -51,15 +55,86 @@ export const EntitySpritePositions: FC<{
     return flipped;
   }, [roomEntityPositions]);
 
-  const renderPlayer = (player: IPlayer) => {
-    // console.log(player);
+  const renderPlayerStateIndicator = (player: IPlayer) => {
+    if (player.state.isAttacking) {
+      // Ensure player has a weapon equipped
+      if (!player.equipment.weapon) {
+        console.error(
+          'renderPlayerStateIndicator: Player has no weapon equipped'
+        );
+        return;
+      }
 
+      const weaponIcon = player.equipment.weapon.icon;
+
+      return (
+        <Icon
+          width={PLAYER_STATE_INDICATOR_SIZE}
+          height={PLAYER_STATE_INDICATOR_SIZE}
+          icon={weaponIcon}
+          className={'animate-floatUpAndDown'}
+        />
+      );
+    } else if (player.state.isMoving) {
+      return (
+        <Icon
+          width={PLAYER_STATE_INDICATOR_SIZE}
+          height={PLAYER_STATE_INDICATOR_SIZE}
+          icon={ICON_ID.MOVE}
+          className={'animate-floatUpAndDown'}
+        />
+      );
+    } else if (player.state.isUsingSkill) {
+      // Ensure player has a skill selected
+      if (!player.state.skillId) {
+        console.error(
+          'renderPlayerStateIndicator: Player has no skill selected'
+        );
+        return;
+      }
+
+      const skill = player.skills.find(
+        (skill) => skill.id === player.state.skillId
+      );
+
+      // Ensure skill is found
+      if (!skill) {
+        console.error('renderPlayerStateIndicator: Player skill not found');
+        return;
+      }
+
+      const skillIcon = skill.icon;
+
+      return (
+        <Icon
+          width={PLAYER_STATE_INDICATOR_SIZE}
+          height={PLAYER_STATE_INDICATOR_SIZE}
+          icon={skillIcon}
+          className={'animate-floatUpAndDown'}
+        />
+      );
+    }
+
+    return <div></div>;
+  };
+
+  const renderPlayer = (player: IPlayer) => {
     const isHidden = player.statuses.some(
       (status) => status.id === STATUS_ID.HIDDEN
     );
 
     return (
       <div className="absolute bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
+        <div
+          className="absolute left-[50%]"
+          style={{
+            bottom: player.sprite_size + 5,
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+          }}
+        >
+          {renderPlayerStateIndicator(player)}
+        </div>
         {/* Cap off extra width and height */}
         <div
           id={`${player.entityType}_${player.id}`}
