@@ -1,12 +1,14 @@
 import { FC, useEffect, useRef } from 'react';
 import { getIconSrc, ICON_ID } from '../constants/icon';
+import clsx from 'clsx';
 
 export const Icon: FC<{
   icon: ICON_ID;
   width: number;
   height: number;
+  className?: string;
   grayscale?: boolean;
-}> = ({ icon, width, height, grayscale }) => {
+}> = ({ icon, width, height, className, grayscale }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -36,5 +38,12 @@ export const Icon: FC<{
     };
   }, [icon, width, height]);
 
-  return <canvas ref={canvasRef} width={width} height={height}></canvas>;
+  return (
+    <canvas
+      className={clsx(className)}
+      ref={canvasRef}
+      width={width}
+      height={height}
+    ></canvas>
+  );
 };

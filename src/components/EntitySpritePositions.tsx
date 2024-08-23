@@ -8,6 +8,7 @@ import { ENTITY_TYPE } from '../constants/entity';
 import { useEnemyStore } from '../store/enemy';
 import clsx from 'clsx';
 import { STATUS_ID } from '../constants/status';
+import { Icon } from './Icon';
 
 export const EntitySpritePositions: FC<{
   setCurrentHoveredEntity: (entity: IEntity | null) => void;
@@ -51,15 +52,48 @@ export const EntitySpritePositions: FC<{
     return flipped;
   }, [roomEntityPositions]);
 
-  const renderPlayer = (player: IPlayer) => {
-    // console.log(player);
+  const renderPlayerStateIndicator = (player: IPlayer) => {
+    if (player.state.isAttacking) {
+      // Ensure player has a weapon equipped
+      if (!player.equipment.weapon) {
+        console.error(
+          'renderPlayerStateIndicator: Player has no weapon equipped'
+        );
+        return;
+      }
 
+      const weaponIcon = player.equipment.weapon.icon;
+
+      return (
+        <Icon
+          width={30}
+          height={30}
+          icon={weaponIcon}
+          className={'animate-floatUpAndDown'}
+        />
+      );
+    }
+
+    return <div></div>;
+  };
+
+  const renderPlayer = (player: IPlayer) => {
     const isHidden = player.statuses.some(
       (status) => status.id === STATUS_ID.HIDDEN
     );
 
     return (
       <div className="absolute bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
+        <div
+          className="absolute left-[50%]"
+          style={{
+            bottom: player.sprite_size + 5,
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+          }}
+        >
+          {renderPlayerStateIndicator(player)}
+        </div>
         {/* Cap off extra width and height */}
         <div
           id={`${player.entityType}_${player.id}`}
