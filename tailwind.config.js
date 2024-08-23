@@ -49,7 +49,9 @@ export default {
         },
       },
       animation: {
-        floatUpAndFadeOut: 'floatUpAndFadeOut 1.5s linear',
+        floatUpAndFadeOut15: 'floatUpAndFadeOut 1.5s linear',
+        floatUpAndFadeOut20: 'floatUpAndFadeOut 2s linear',
+        floatUpAndFadeOut25: 'floatUpAndFadeOut 2.5s linear',
         entityIdle05: 'entityIdle 0.5s steps(6) infinite',
         entityIdle08: 'entityIdle 0.8s steps(6) infinite',
         entityIdle20: 'entityIdle 2s steps(6) infinite',
