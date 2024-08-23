@@ -4,6 +4,8 @@
 
 Combat simulator for Return to Olympus
 
+![Current state of combat simulator](combat-simulator.png)
+
 - [x] Turn-based system
 - [x] Action Point system
 - [x] Basic attack
