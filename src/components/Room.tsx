@@ -789,7 +789,7 @@ export const Room: FC<{
   ]);
 
   // Debounce hovered tile
-  const debouncedSetHoveredTile = debounce(setHoveredTile, 100);
+  const debouncedSetHoveredTile = debounce(setHoveredTile, 50);
 
   // Handle player attacking an enemy
   const handleEnemyClick = (entityId: number | null) => {
