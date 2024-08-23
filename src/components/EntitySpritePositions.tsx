@@ -9,6 +9,9 @@ import { useEnemyStore } from '../store/enemy';
 import clsx from 'clsx';
 import { STATUS_ID } from '../constants/status';
 import { Icon } from './Icon';
+import { ICON_ID } from '../constants/icon';
+
+const PLAYER_STATE_INDICATOR_SIZE = 35;
 
 export const EntitySpritePositions: FC<{
   setCurrentHoveredEntity: (entity: IEntity | null) => void;
@@ -66,9 +69,47 @@ export const EntitySpritePositions: FC<{
 
       return (
         <Icon
-          width={30}
-          height={30}
+          width={PLAYER_STATE_INDICATOR_SIZE}
+          height={PLAYER_STATE_INDICATOR_SIZE}
           icon={weaponIcon}
+          className={'animate-floatUpAndDown'}
+        />
+      );
+    } else if (player.state.isMoving) {
+      return (
+        <Icon
+          width={PLAYER_STATE_INDICATOR_SIZE}
+          height={PLAYER_STATE_INDICATOR_SIZE}
+          icon={ICON_ID.MOVE}
+          className={'animate-floatUpAndDown'}
+        />
+      );
+    } else if (player.state.isUsingSkill) {
+      // Ensure player has a skill selected
+      if (!player.state.skillId) {
+        console.error(
+          'renderPlayerStateIndicator: Player has no skill selected'
+        );
+        return;
+      }
+
+      const skill = player.skills.find(
+        (skill) => skill.id === player.state.skillId
+      );
+
+      // Ensure skill is found
+      if (!skill) {
+        console.error('renderPlayerStateIndicator: Player skill not found');
+        return;
+      }
+
+      const skillIcon = skill.icon;
+
+      return (
+        <Icon
+          width={PLAYER_STATE_INDICATOR_SIZE}
+          height={PLAYER_STATE_INDICATOR_SIZE}
+          icon={skillIcon}
           className={'animate-floatUpAndDown'}
         />
       );
