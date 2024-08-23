@@ -62,7 +62,7 @@ export const EntitySpritePositions: FC<{
         console.error(
           'renderPlayerStateIndicator: Player has no weapon equipped'
         );
-        return;
+        return null;
       }
 
       const weaponIcon = player.equipment.weapon.icon;
@@ -90,7 +90,7 @@ export const EntitySpritePositions: FC<{
         console.error(
           'renderPlayerStateIndicator: Player has no skill selected'
         );
-        return;
+        return null;
       }
 
       const skill = player.skills.find(
@@ -100,7 +100,7 @@ export const EntitySpritePositions: FC<{
       // Ensure skill is found
       if (!skill) {
         console.error('renderPlayerStateIndicator: Player skill not found');
-        return;
+        return null;
       }
 
       const skillIcon = skill.icon;
@@ -115,8 +115,38 @@ export const EntitySpritePositions: FC<{
       );
     }
 
-    return <div></div>;
+    return null;
   };
+
+  const renderPlayerStateIndicatorContainer = useMemo(() => {
+    // Get the player's current position
+
+    const roomEntity = roomEntityPositionsFlipped.find(
+      ([entityType]) => entityType[0] === ENTITY_TYPE.PLAYER
+    );
+
+    if (!roomEntity) {
+      return null;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, [row, col]] = roomEntity;
+
+    return (
+      <div
+        id={`player_state_indicator`}
+        className="absolute pointer-events-none"
+        style={{
+          top: row * TILE_SIZE - TILE_SIZE * 0.8,
+          left: col * TILE_SIZE + TILE_SIZE / 2,
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1000,
+        }}
+      >
+        {renderPlayerStateIndicator(player)}
+      </div>
+    );
+  }, [roomEntityPositionsFlipped, player]);
 
   const renderPlayer = (player: IPlayer) => {
     const isHidden = player.statuses.some(
@@ -132,9 +162,7 @@ export const EntitySpritePositions: FC<{
             transform: 'translateX(-50%)',
             zIndex: 1000,
           }}
-        >
-          {renderPlayerStateIndicator(player)}
-        </div>
+        ></div>
         {/* Cap off extra width and height */}
         <div
           id={`${player.entityType}_${player.id}`}
@@ -233,6 +261,7 @@ export const EntitySpritePositions: FC<{
 
   return (
     <>
+      {renderPlayerStateIndicatorContainer}
       {roomEntityPositionsFlipped.map((entityPosition) => {
         // console.log(positionString, entityType, entityID);
 
