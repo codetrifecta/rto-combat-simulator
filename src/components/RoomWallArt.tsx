@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 
 import defaultRoomArt from '../assets/sprites/tiles/room_wall_cavern_2.png';
-import { TILE_SIZE } from '../constants/tile';
+import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import { useGameStateStore } from '../store/game';
 // import { ENTITY_TYPE } from '../constants/entity';
 import { ROOM_LENGTH } from '../constants/game';
@@ -15,12 +15,15 @@ export const RoomWallArt: FC<{
     isRoomOver,
     wallArtFile,
     roomEntityPositions,
-    // roomTileMatrix,
-    // hoveredTile,
+    roomTileMatrix,
+    hoveredTile,
   } = useGameStateStore();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  // Create a canvas element and draw the wall art on it
+  // Modify the alpha channel of the wall art based on the entities that are covered by the wall art
+  // Modify the alpha channel of the wall art based on the hovered tile
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) {
@@ -129,6 +132,46 @@ export const RoomWallArt: FC<{
         }
       });
 
+      // Logic for hovered tiles
+      // Modify the alpha channel for the hovered tile (if any)
+      const [hoveredTileRow, tileCol] = hoveredTile ?? [-1, -1];
+
+      // Skip if no tile is hovered
+      if (hoveredTileRow === -1 || tileCol === -1) {
+        // Do nothing if no tile is hovered
+      } else {
+        // Skip if no tile nearby is a wall (in this case, check for the 2 tiles below the entity)
+        // console.log(hoveredTileRow, tileCol);
+        if (
+          roomTileMatrix[hoveredTileRow][tileCol] === TILE_TYPE.FLOOR &&
+          (roomTileMatrix[hoveredTileRow + 1][tileCol] === TILE_TYPE.WALL ||
+            roomTileMatrix[hoveredTileRow + 2][tileCol] === TILE_TYPE.WALL)
+        ) {
+          // Modify the alpha channel for a specific area
+          for (
+            let y = hoveredTileRow * TILE_SIZE;
+            y < hoveredTileRow * TILE_SIZE + TILE_SIZE;
+            y++
+          ) {
+            for (
+              let x = tileCol * TILE_SIZE;
+              x < tileCol * TILE_SIZE + TILE_SIZE;
+              x++
+            ) {
+              const index = (y * imageData.width + x) * 4;
+              // Only change the alpha channel if the tile is an overlapping wall (aka data[index], data[index + 1], data[index + 2] are all NOT 0)
+              if (
+                data[index] !== 0 &&
+                data[index + 1] !== 0 &&
+                data[index + 2] !== 0
+              ) {
+                data[index + 3] = 128; // Set alpha to 50% (128 out of 255)
+              }
+            }
+          }
+        }
+      }
+
       // Put the modified image data back on the canvas
       context.putImageData(imageData, 0, 0);
     };
@@ -138,6 +181,7 @@ export const RoomWallArt: FC<{
     isRoomOver,
     wallArtFile,
     roomEntityPositions,
+    hoveredTile,
   ]);
 
   return (
