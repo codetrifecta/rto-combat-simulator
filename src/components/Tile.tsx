@@ -4,6 +4,8 @@ import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import clsx from 'clsx';
 import { IPlayerState } from '../types';
 
+const TILE_HIGHLIGHT_PADDING = 12;
+
 export const Tile: FC<{
   rowIndex: number;
   colIndex: number;
@@ -217,7 +219,13 @@ export const Tile: FC<{
       id={entityTileID}
     >
       <div
-        className={clsx(' left-0 w-full h-full', classNames, {
+        style={{
+          width: TILE_SIZE - TILE_HIGHLIGHT_PADDING,
+          height: TILE_SIZE - TILE_HIGHLIGHT_PADDING,
+          left: TILE_HIGHLIGHT_PADDING / 2,
+          top: TILE_HIGHLIGHT_PADDING / 2,
+        }}
+        className={clsx('absolute w-full h-full', classNames, {
           // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
           'cursor-pointer ':
             (tileType !== TILE_TYPE.WALL &&
@@ -260,7 +268,7 @@ export const Tile: FC<{
       ></div>
       <div
         style={{ width: TILE_SIZE, height: TILE_SIZE }}
-        className={clsx('absolute top-0 left-0 ', {
+        className={clsx('absolute top-0 left-0 z-0', {
           // Effect zone
           'bg-black group-hover:opacity-50 opacity-30':
             isEffectZone && isSkillEffectTile && !isTargetZone,
