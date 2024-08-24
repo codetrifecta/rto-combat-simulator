@@ -83,10 +83,10 @@ export const getDefaultPlayer = (): IPlayer => {
       [
         SKILL_ID.BODY_DOUBLE,
         SKILL_ID.BLOODLETTING,
-        SKILL_ID.DISORIENT_BLOW,
+        SKILL_ID.DISABLING_BLOW,
         SKILL_ID.PUNCTURE_STRIKE,
-        SKILL_ID.POISON_STRIKE,
         SKILL_ID.INSTINCTUAL_DODGE,
+        SKILL_ID.FLY,
       ].includes(skill.id)
     ),
   };

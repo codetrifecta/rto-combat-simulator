@@ -78,7 +78,7 @@ import skill_body_double from '../assets/icons/skills/icon_skill_body_double.png
 import skill_instinctual_dodge from '../assets/icons/skills/icon_skill_instinctual_dodge.png';
 import skill_bloodletting from '../assets/icons/skills/icon_skill_bloodletting.png';
 import skill_poison_strike from '../assets/icons/skills/icon_skill_poison_strike.png';
-import skill_disorient from '../assets/icons/skills/icon_skill_disorient.png';
+import skill_disabling_blow from '../assets/icons/skills/icon_skill_disorient.png';
 import skill_puncture_strike from '../assets/icons/skills/icon_skill_puncture_strike.png';
 
 // STATUSES
@@ -180,7 +180,7 @@ export enum ICON_ID {
   SKILL_INSTINCTUAL_DODGE = 'skill_instinctual_dodge',
   SKILL_BLOODLETTING = 'skill_bloodletting',
   SKILL_POISON_STRIKE = 'skill_poison_strike',
-  SKILL_DISORIENTING_BLOW = 'skill_disorient',
+  SKILL_DISABLING_BLOW = 'skill_disabling_blow',
   SKILL_PUNCTURE_STRIKE = 'skill_puncture_strike',
 
   // STATUSES
@@ -284,7 +284,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_INSTINCTUAL_DODGE]: skill_instinctual_dodge,
   [ICON_ID.SKILL_BLOODLETTING]: skill_bloodletting,
   [ICON_ID.SKILL_POISON_STRIKE]: skill_poison_strike,
-  [ICON_ID.SKILL_DISORIENTING_BLOW]: skill_disorient,
+  [ICON_ID.SKILL_DISABLING_BLOW]: skill_disabling_blow,
   [ICON_ID.SKILL_PUNCTURE_STRIKE]: skill_puncture_strike,
 
   // STATUSES

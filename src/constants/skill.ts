@@ -48,7 +48,7 @@ export enum SKILL_ID {
   INSTINCTUAL_DODGE = id++,
   BLOODLETTING = id++,
   POISON_STRIKE = id++,
-  DISORIENT_BLOW = id++,
+  DISABLING_BLOW = id++,
   PUNCTURE_STRIKE = id++,
 }
 
@@ -59,7 +59,7 @@ export const weaponBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.ANNIHILATE,
   SKILL_ID.SHADOW_STRIKE,
   SKILL_ID.POISON_STRIKE,
-  SKILL_ID.DISORIENT_BLOW,
+  SKILL_ID.DISABLING_BLOW,
   SKILL_ID.PUNCTURE_STRIKE,
 ];
 
@@ -182,9 +182,9 @@ export const SKILLS: ISkill[] = [
     cost: 2,
   },
   {
-    id: SKILL_ID.DISORIENT_BLOW,
-    name: 'Disorienting Blow',
-    icon: ICON_ID.SKILL_DISORIENTING_BLOW,
+    id: SKILL_ID.DISABLING_BLOW,
+    name: 'Disabling Blow',
+    icon: ICON_ID.SKILL_DISABLING_BLOW,
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.STATUS],
     description: 'Strike a target, applying disabled on them for 1 turns.',

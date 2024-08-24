@@ -224,7 +224,7 @@ const handleSkillDamage = (
         if (newEnemy.health < newEnemy.maxHealth * 0.25) {
           totalDamage *= 2;
         }
-      } else if ([SKILL_ID.HIDDEN_BLADE].includes(skill.id)) {
+      } else if ([SKILL_ID.SHADOW_STRIKE].includes(skill.id)) {
         // Hidden Blade / Shadow Strike: Deal double damage if player is hidden
         if (
           playerAfterDamage.statuses.some(
@@ -478,7 +478,7 @@ const handleSkillStatus = (
     case SKILL_ID.HIDE:
       statusID = STATUS_ID.HIDDEN;
       break;
-    case SKILL_ID.HIDDEN_BLADE:
+    case SKILL_ID.SHADOW_STRIKE:
     case SKILL_ID.THROWING_KNIVES:
       statusID = STATUS_ID.BLEEDING;
       // DoT will scale with player's strength

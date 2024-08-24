@@ -719,6 +719,7 @@ export const Room: FC<{
       );
 
       if (!skill) {
+        console.error('Skill not found!');
         return;
       }
 
@@ -729,13 +730,9 @@ export const Room: FC<{
       if (weaponBasedSkillIDs.includes(skill.id)) {
         if (player.equipment.weapon) {
           if (player.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
-            if (player.equipment.weapon.type !== WEAPON_TYPE.BOW) {
-              range = player.equipment.weapon.range;
-            } else {
-              range = 2;
-            }
+            range = player.equipment.weapon.range;
           } else {
-            if (player.equipment.weapon.type === WEAPON_TYPE.WAND) {
+            if (player.equipment.weapon.type !== WEAPON_TYPE.STAFF) {
               range = 1;
             } else {
               range = 2;
@@ -761,6 +758,7 @@ export const Room: FC<{
     player.state.isAttacking,
     player.state.isUsingSkill,
     player.state.skillId,
+    player.equipment.weapon,
   ]);
 
   // Get player's available movement possibilities (based on player's action points)
@@ -1405,14 +1403,13 @@ export const Room: FC<{
                 //   }
                 // }
 
-                const skillRange = skill.range;
-
                 // Check for the specific skill's effect zone
                 // Depending on the skill, the effect zone could be different.
                 // By default, single target will depend on the player's vision range.
                 switch (skill.id) {
                   case SKILL_ID.FLY:
                     {
+                      const skillRange = skill.range;
                       // For movement skills like fly, leap slam, and flame dive,
                       // player can target any empty tile that does not have an entity (exlcuding themselves).
                       // Leap Slam and Flame Dive handled in the AOE case
