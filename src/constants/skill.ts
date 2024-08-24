@@ -174,12 +174,12 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Strike an enemy with a poisoned weapon. Deal damage and apply poisoned to the enemy for 3 turns.',
-    damageMultiplier: 1,
+      'Coat your weapon with poison. Deal increased damage and inflict poisoned for 3 turns.',
+    damageMultiplier: 1.2,
     range: 1,
-    cooldown: 2,
+    cooldown: 3,
     cooldownCounter: 0,
-    cost: 2,
+    cost: 3,
   },
   {
     id: SKILL_ID.DISABLING_BLOW,

@@ -23,6 +23,7 @@ export enum STATUS_ID {
   SWIFTNESS = id++,
   BLEEDING = id++,
   DODGING = id++,
+  POISONED = id++,
 }
 
 export const BASE_STATUS_EFFECTS: IStatusEffect = {
@@ -275,6 +276,18 @@ export const STATUSES: IStatus[] = [
     effect: {
       ...BASE_STATUS_EFFECTS,
       dodgeChance: 0.5,
+    },
+  },
+  {
+    id: STATUS_ID.POISONED,
+    name: 'Poisoned',
+    icon: ICON_ID.STATUS_POISONED,
+    description: 'Takes #DAMAGE damage at the start of the turn.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      damageOverTime: 1,
     },
   },
 ];

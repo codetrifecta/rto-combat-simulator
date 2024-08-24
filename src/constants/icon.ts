@@ -99,6 +99,7 @@ import status_bleeding from '../assets/icons/statuses/icon_status_bleeding.png';
 import status_swiftness from '../assets/icons/statuses/icon_status_swiftness.png';
 import status_slowed from '../assets/icons/statuses/icon_status_slowed.png';
 import status_dodging from '../assets/icons/statuses/icon_status_dodging.png';
+import status_poisoned from '../assets/icons/statuses/icon_status_poisoned.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -203,6 +204,7 @@ export enum ICON_ID {
   STATUS_BLEEDING = 'status_bleeding',
   STATUS_SLOWED = 'status_slowed',
   STATUS_DODGING = 'status_dodging',
+  STATUS_POISONED = 'status_poisoned',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -308,6 +310,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_BLEEDING]: status_bleeding,
   [ICON_ID.STATUS_SLOWED]: status_slowed,
   [ICON_ID.STATUS_DODGING]: status_dodging,
+  [ICON_ID.STATUS_POISONED]: status_poisoned,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

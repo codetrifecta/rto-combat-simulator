@@ -523,6 +523,14 @@ const handleSkillStatus = (
     case SKILL_ID.INSTINCTUAL_DODGE:
       statusID = STATUS_ID.DODGING;
       break;
+    case SKILL_ID.POISON_STRIKE:
+      statusID = STATUS_ID.POISONED;
+      // DoT will scale with player's intelligence
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].damageOverTime = Math.ceil(
+        0.2 * getPlayerTotalIntelligence(playerAfterStatus)
+      );
+      break;
     default:
       break;
   }
@@ -547,7 +555,11 @@ const handleSkillStatus = (
     };
   }
 
-  if ([STATUS_ID.BURNED, STATUS_ID.BLEEDING].includes(statusToBeApplied.id)) {
+  if (
+    [STATUS_ID.BURNED, STATUS_ID.BLEEDING, STATUS_ID.POISONED].includes(
+      statusToBeApplied.id
+    )
+  ) {
     statusToBeApplied.description = statusToBeApplied.description.replace(
       '#DAMAGE',
       statusToBeApplied.effect.damageOverTime + ''
