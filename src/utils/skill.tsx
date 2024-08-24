@@ -1,11 +1,18 @@
-import { ENTITY_TYPE } from './constants/entity';
+import { ENTITY_TYPE } from '../constants/entity';
 import {
   intelligenceBasedSkillIDs,
   SKILL_ID,
   SKILL_TAG,
-} from './constants/skill';
-import { BASE_STATUS_EFFECTS, STATUS_ID, STATUSES } from './constants/status';
-import { IEnemy, ILog, IPlayer, ISkill, IStatus, IStatusEffect } from './types';
+} from '../constants/skill';
+import { BASE_STATUS_EFFECTS, STATUS_ID, STATUSES } from '../constants/status';
+import {
+  IEnemy,
+  ILog,
+  IPlayer,
+  ISkill,
+  IStatus,
+  IStatusEffect,
+} from '../types';
 import {
   damageEntity,
   displayStatusEffect,
@@ -15,7 +22,7 @@ import {
   getPlayerTotalIntelligence,
   getPlayerTotalStrength,
   healEntity,
-} from './utils';
+} from './entity';
 
 export const handleSkill = (
   skill: ISkill,

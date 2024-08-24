@@ -29,10 +29,10 @@ import {
   healEntity,
   isEnemy,
   isPlayer,
-  updateRoomEntityPositions,
-} from '../utils';
+} from '../utils/entity';
+import { updateRoomEntityPositions } from '../utils/room';
 import { useLogStore } from '../store/log';
-import { handleSkill } from '../skill_utils';
+import { handleSkill } from '../utils/skill';
 import {
   findPathsFromCurrentLocation,
   getApCostForPath,

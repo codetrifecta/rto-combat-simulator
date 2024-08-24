@@ -113,3 +113,86 @@ export const printRoomString = (
     console.log(row);
   }
 };
+
+/**
+ * Generate initial room matrix based on the room length
+ * @returns a 2D array of type TILE_TYPE. Here represented by numbers
+ */
+export const generateInitialRoomTileMatrix = () => {
+  return [
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    [2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2],
+    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+    [2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2],
+    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+    [2, 1, 1, 2, 2, 1, 1, 1, 0, 0, 1, 2, 2, 2, 2],
+    [2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2, 2, 2, 2],
+    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2],
+    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+    [2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2],
+    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  ];
+};
+
+/**
+ * Generate initial room entity positions
+ * @returns a map of entity type and id to position
+ */
+export const generateInitialRoomEntityPositions: () => Map<
+  string,
+  [ENTITY_TYPE, number]
+> = () => {
+  const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(); // Map of entity type and id to position
+
+  // Place entities in the room
+  // Place player
+  roomEntityPositions.set(`13,7`, [ENTITY_TYPE.PLAYER, 1]);
+
+  // Place enemies (that match the number of enemies specified in enemy store)
+  roomEntityPositions.set(`11,12`, [ENTITY_TYPE.ENEMY, 1]);
+  roomEntityPositions.set(`8,6`, [ENTITY_TYPE.ENEMY, 2]);
+  roomEntityPositions.set(`5,2`, [ENTITY_TYPE.ENEMY, 3]);
+  roomEntityPositions.set(`3,7`, [ENTITY_TYPE.ENEMY, 4]);
+
+  return roomEntityPositions;
+};
+
+/**
+ * Update room entity positions
+ * @param newPos new position
+ * @param currentPos current position
+ * @param prevEntityPositions previous entity positions
+ * @returns an updated map of entity type and id to position
+ */
+export const updateRoomEntityPositions: (
+  newPos: [number, number],
+  currentPos: [number, number],
+  prevEntityPositions: Map<string, [ENTITY_TYPE, number]>
+) => Map<string, [ENTITY_TYPE, number]> = (
+  newPos,
+  currentPos,
+  prevEntityPositions
+) => {
+  const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
+    prevEntityPositions
+  );
+
+  // Get entity at current position
+  const entity = newRoomEntityPositions.get(
+    `${currentPos[0]},${currentPos[1]}`
+  );
+
+  if (!entity) {
+    return newRoomEntityPositions;
+  }
+
+  // Update entity position
+  newRoomEntityPositions.delete(`${currentPos[0]},${currentPos[1]}`);
+  newRoomEntityPositions.set(`${newPos[0]},${newPos[1]}`, entity);
+
+  return newRoomEntityPositions;
+};

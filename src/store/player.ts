@@ -12,7 +12,7 @@ import {
   IStatus,
   IWeapon,
 } from '../types';
-import { getPlayerMaxHealth } from '../utils';
+import { getPlayerMaxHealth } from '../utils/entity';
 
 interface IPlayerStore extends IPlayer {
   playerMovementAPCost: number;

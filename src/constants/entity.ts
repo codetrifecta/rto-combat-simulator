@@ -1,5 +1,5 @@
 import { IEnemy, IEntity, IPlayer } from '../types';
-import { getPlayerMaxHealth } from '../utils';
+import { getPlayerMaxHealth } from '../utils/entity';
 import { LEGGINGS } from './armor';
 import { SKILL_ID, SKILLS } from './skill';
 import { SPRITE_ID } from './sprite';

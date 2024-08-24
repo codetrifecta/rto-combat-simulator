@@ -2,7 +2,10 @@ import { create } from 'zustand';
 import { IEntity } from '../types';
 import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_TYPE } from '../constants/tile';
-import { generateRoomEntityPositions, generateRoomTileMatrix } from '../utils';
+import {
+  generateInitialRoomEntityPositions,
+  generateInitialRoomTileMatrix,
+} from '../utils/room';
 import { ROOM_LENGTH } from '../constants/game';
 
 interface IGameStateStore {
@@ -50,8 +53,8 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   doorPositions: [],
   hoveredTile: null,
   roomLength: ROOM_LENGTH,
-  roomTileMatrix: generateRoomTileMatrix(),
-  roomEntityPositions: generateRoomEntityPositions(),
+  roomTileMatrix: generateInitialRoomTileMatrix(),
+  roomEntityPositions: generateInitialRoomEntityPositions(),
   turnCycle: [],
   isRoomOver: false,
   isGameOver: false,

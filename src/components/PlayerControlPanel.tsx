@@ -2,7 +2,11 @@ import { useMemo, useState, type FC } from 'react';
 import clsx from 'clsx';
 import { usePlayerStore } from '../store/player';
 import { useGameStateStore } from '../store/game';
-import { getPotionHealAmount, handlePlayerEndTurn, healEntity } from '../utils';
+import {
+  getPotionHealAmount,
+  handlePlayerEndTurn,
+  healEntity,
+} from '../utils/entity';
 import { useLogStore } from '../store/log';
 import { Tooltip } from './Tooltip';
 import { ISkill } from '../types';
