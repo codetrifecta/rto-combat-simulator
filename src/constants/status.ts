@@ -22,6 +22,9 @@ export enum STATUS_ID {
   SHIELDED = id++,
   SWIFTNESS = id++,
   BLEEDING = id++,
+  DODGING = id++,
+  POISONED = id++,
+  WOUNDED = id++,
 }
 
 export const BASE_STATUS_EFFECTS: IStatusEffect = {
@@ -37,6 +40,8 @@ export const BASE_STATUS_EFFECTS: IStatusEffect = {
   canAttack: true,
   hidden: false,
   movementRangeBonus: 0,
+  dodgeChance: 0,
+  damagePerAP: 0,
 };
 
 export const STATUSES: IStatus[] = [
@@ -194,12 +199,13 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.DISABLED,
     name: 'Disabled',
     icon: ICON_ID.STATUS_DISABLED,
-    description: 'Unable to attack.',
+    description: 'Unable to attack and move.',
     duration: 3,
     durationCounter: 3,
     effect: {
       ...BASE_STATUS_EFFECTS,
       canAttack: false,
+      canMove: false,
     },
   },
   {
@@ -260,6 +266,43 @@ export const STATUSES: IStatus[] = [
     effect: {
       ...BASE_STATUS_EFFECTS,
       damageOverTime: 1,
+    },
+  },
+  {
+    id: STATUS_ID.DODGING,
+    name: 'Dodging',
+    icon: ICON_ID.STATUS_DODGING,
+    description: 'Increased dodge chance by 50%.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      dodgeChance: 0.5,
+    },
+  },
+  {
+    id: STATUS_ID.POISONED,
+    name: 'Poisoned',
+    icon: ICON_ID.STATUS_POISONED,
+    description: 'Takes #DAMAGE damage at the start of the turn.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      damageOverTime: 1,
+      damagePerAP: 1,
+    },
+  },
+  {
+    id: STATUS_ID.WOUNDED,
+    name: 'Wounded',
+    icon: ICON_ID.STATUS_WOUNDED,
+    description:
+      'Damage taken increased by 20%. If health is below 30%, damage taken increased by 40%.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
     },
   },
 ];

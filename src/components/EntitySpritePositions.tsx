@@ -2,12 +2,16 @@ import { FC, useMemo } from 'react';
 import { usePlayerStore } from '../store/player';
 import { useGameStateStore } from '../store/game';
 import { Sprite } from './Sprite';
-import { TILE_SIZE } from '../constants/tile';
+import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import { IEnemy, IEntity, IPlayer } from '../types';
 import { ENTITY_TYPE } from '../constants/entity';
 import { useEnemyStore } from '../store/enemy';
 import clsx from 'clsx';
 import { STATUS_ID } from '../constants/status';
+import { Icon } from './Icon';
+import { ICON_ID } from '../constants/icon';
+
+const PLAYER_STATE_INDICATOR_SIZE = 35;
 
 export const EntitySpritePositions: FC<{
   setCurrentHoveredEntity: (entity: IEntity | null) => void;
@@ -16,7 +20,7 @@ export const EntitySpritePositions: FC<{
   const { enemies } = useEnemyStore();
 
   const player = getPlayer();
-  const { roomEntityPositions } = useGameStateStore();
+  const { roomEntityPositions, roomTileMatrix } = useGameStateStore();
 
   const roomEntityPositionsFlipped: [
     [ENTITY_TYPE, number],
@@ -51,35 +55,134 @@ export const EntitySpritePositions: FC<{
     return flipped;
   }, [roomEntityPositions]);
 
-  const renderPlayer = (player: IPlayer) => {
-    console.log(player);
+  const renderPlayerStateIndicator = (player: IPlayer) => {
+    if (player.state.isAttacking) {
+      // Ensure player has a weapon equipped
+      if (!player.equipment.weapon) {
+        console.error(
+          'renderPlayerStateIndicator: Player has no weapon equipped'
+        );
+        return null;
+      }
 
+      const weaponIcon = player.equipment.weapon.icon;
+
+      return (
+        <Icon
+          width={PLAYER_STATE_INDICATOR_SIZE}
+          height={PLAYER_STATE_INDICATOR_SIZE}
+          icon={weaponIcon}
+          className={'animate-floatUpAndDown'}
+        />
+      );
+    } else if (player.state.isMoving) {
+      return (
+        <Icon
+          width={PLAYER_STATE_INDICATOR_SIZE}
+          height={PLAYER_STATE_INDICATOR_SIZE}
+          icon={ICON_ID.MOVE}
+          className={'animate-floatUpAndDown'}
+        />
+      );
+    } else if (player.state.isUsingSkill) {
+      // Ensure player has a skill selected
+      if (!player.state.skillId) {
+        console.error(
+          'renderPlayerStateIndicator: Player has no skill selected'
+        );
+        return null;
+      }
+
+      const skill = player.skills.find(
+        (skill) => skill.id === player.state.skillId
+      );
+
+      // Ensure skill is found
+      if (!skill) {
+        console.error('renderPlayerStateIndicator: Player skill not found');
+        return null;
+      }
+
+      const skillIcon = skill.icon;
+
+      return (
+        <Icon
+          width={PLAYER_STATE_INDICATOR_SIZE}
+          height={PLAYER_STATE_INDICATOR_SIZE}
+          icon={skillIcon}
+          className={'animate-floatUpAndDown'}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  const renderPlayerStateIndicatorContainer = useMemo(() => {
+    // Get the player's current position
+
+    const roomEntity = roomEntityPositionsFlipped.find(
+      ([entityType]) => entityType[0] === ENTITY_TYPE.PLAYER
+    );
+
+    if (!roomEntity) {
+      return null;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, [row, col]] = roomEntity;
+
+    return (
+      <div
+        id={`player_state_indicator`}
+        className="absolute pointer-events-none"
+        style={{
+          top: row * TILE_SIZE - TILE_SIZE * 0.8,
+          left: col * TILE_SIZE + TILE_SIZE / 2,
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1000,
+        }}
+      >
+        {renderPlayerStateIndicator(player)}
+      </div>
+    );
+  }, [roomEntityPositionsFlipped, player]);
+
+  const renderPlayer = (player: IPlayer) => {
     const isHidden = player.statuses.some(
       (status) => status.id === STATUS_ID.HIDDEN
     );
 
     return (
-      <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
+      <div className="absolute bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
+        <div
+          className="absolute left-[50%]"
+          style={{
+            bottom: player.spriteSize + 5,
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+          }}
+        ></div>
         {/* Cap off extra width and height */}
         <div
           id={`${player.entityType}_${player.id}`}
           className="absolute flex justify-center items-center overflow-hidden"
           style={{
             width:
-              player.sprite_size < TILE_SIZE
-                ? player.sprite_size
+              player.spriteSize < TILE_SIZE
+                ? player.spriteSize
                 : TILE_SIZE * 1.5,
             height:
-              player.sprite_size < TILE_SIZE
-                ? player.sprite_size
+              player.spriteSize < TILE_SIZE
+                ? player.spriteSize
                 : TILE_SIZE * 1.5,
           }}
         >
           <div
             className="absolute bottom-[10px] overflow-hidden"
             style={{
-              width: player.sprite_size,
-              height: player.sprite_size,
+              width: player.spriteSize,
+              height: player.spriteSize,
             }}
           >
             <div
@@ -87,8 +190,8 @@ export const EntitySpritePositions: FC<{
               className="animate-entityAnimate20"
               style={{
                 position: 'absolute',
-                width: player.sprite_size * player.spritesheet_columns,
-                height: player.sprite_size * player.spritesheet_rows,
+                width: player.spriteSize * player.spritesheetColumns,
+                height: player.spriteSize * player.spritesheetRows,
                 top: 0,
                 left: 0,
                 opacity: isHidden ? 0.3 : 1,
@@ -97,8 +200,8 @@ export const EntitySpritePositions: FC<{
               <Sprite
                 id={`sprite_${player.entityType}_${player.id}`}
                 sprite={player.sprite}
-                width={player.sprite_size * player.spritesheet_columns}
-                height={player.sprite_size * player.spritesheet_rows}
+                width={player.spriteSize * player.spritesheetColumns}
+                height={player.spriteSize * player.spritesheetRows}
                 grayscale={isHidden}
               />
             </div>
@@ -109,27 +212,27 @@ export const EntitySpritePositions: FC<{
   };
 
   const renderEnemy = (enemy: IEnemy) => {
-    const spriteSheetWidth = enemy.sprite_size * enemy.spritesheet_columns;
-    const spriteSheetHeight = enemy.sprite_size * enemy.spritesheet_rows;
+    const spriteSheetWidth = enemy.spriteSize * enemy.spritesheetColumns;
+    const spriteSheetHeight = enemy.spriteSize * enemy.spritesheetRows;
 
     return (
-      <div className="absolute z-[35] bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
+      <div className="absolute bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
         {/* Cap off extra width and height */}
         <div
           id={`${enemy.entityType}_${enemy.id}`}
           className="absolute flex justify-center items-center overflow-hidden"
           style={{
             width:
-              enemy.sprite_size < TILE_SIZE ? enemy.sprite_size : TILE_SIZE * 3,
+              enemy.spriteSize < TILE_SIZE ? enemy.spriteSize : TILE_SIZE * 3,
             height:
-              enemy.sprite_size < TILE_SIZE ? enemy.sprite_size : TILE_SIZE * 4,
+              enemy.spriteSize < TILE_SIZE ? enemy.spriteSize : TILE_SIZE * 4,
           }}
         >
           <div
             className="absolute bottom-[10px] overflow-hidden"
             style={{
-              width: enemy.sprite_size,
-              height: enemy.sprite_size,
+              width: enemy.spriteSize,
+              height: enemy.spriteSize,
             }}
           >
             <div
@@ -158,6 +261,7 @@ export const EntitySpritePositions: FC<{
 
   return (
     <>
+      {renderPlayerStateIndicatorContainer}
       {roomEntityPositionsFlipped.map((entityPosition) => {
         // console.log(positionString, entityType, entityID);
 
@@ -170,6 +274,8 @@ export const EntitySpritePositions: FC<{
               id={`sprite_player_${player.id}`}
               row={row}
               col={col}
+              entity={player}
+              roomTileMatrix={roomTileMatrix}
               onMouseEnter={() => setCurrentHoveredEntity(player)}
               onMouseLeave={() => setCurrentHoveredEntity(null)}
             >
@@ -189,6 +295,8 @@ export const EntitySpritePositions: FC<{
               id={`sprite_enemy_${enemy.id}`}
               row={row}
               col={col}
+              entity={enemy}
+              roomTileMatrix={roomTileMatrix}
               onMouseEnter={() => setCurrentHoveredEntity(enemy)}
               onMouseLeave={() => setCurrentHoveredEntity(null)}
             >
@@ -206,10 +314,42 @@ const EntitySpritePositionContainer: FC<{
   classNames?: string;
   row: number;
   col: number;
+  entity: IEntity;
+  roomTileMatrix?: number[][];
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   children: JSX.Element;
-}> = ({ id, classNames, row, col, children, onMouseEnter, onMouseLeave }) => {
+}> = ({
+  id,
+  classNames,
+  row,
+  col,
+  // entity,
+  roomTileMatrix,
+  children,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
+  // Check if the tile above the entity is a wall or door
+  // If it is, set the z-index to 35 to ensure the entity is rendered above the wall
+  const isTileAboveWall =
+    roomTileMatrix &&
+    (roomTileMatrix[row - 1][col] === TILE_TYPE.WALL ||
+      roomTileMatrix[row - 1][col] === TILE_TYPE.DOOR);
+
+  // Check if the second tile above the entity is a wall or door if the entity is more than 1 tile tall
+  // If it is, set the z-index to 35 to ensure the tall entity is rendered above the wall
+  // if (entity.spriteSize / 2 > TILE_SIZE) {
+  //   const isSecondTileAboveWall =
+  //     roomTileMatrix &&
+  //     (roomTileMatrix[row - 2][col] === TILE_TYPE.WALL ||
+  //       roomTileMatrix[row - 2][col] === TILE_TYPE.DOOR);
+
+  //   if (isSecondTileAboveWall) {
+  //     isTileAboveWall = true;
+  //   }
+  // }
+
   return (
     <div
       id={id}
@@ -220,6 +360,8 @@ const EntitySpritePositionContainer: FC<{
       style={{
         top: (row + 1) * TILE_SIZE,
         left: col * TILE_SIZE + TILE_SIZE / 2,
+        zIndex: isTileAboveWall ? 35 : 33,
+        // zIndex: 100 + row,
       }}
       onMouseEnter={() => onMouseEnter && onMouseEnter()}
       onMouseLeave={() => onMouseLeave && onMouseLeave()}

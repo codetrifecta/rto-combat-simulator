@@ -4,7 +4,11 @@ import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import clsx from 'clsx';
 import { IPlayerState } from '../types';
 
+const TILE_HIGHLIGHT_PADDING = 12;
+
 export const Tile: FC<{
+  rowIndex: number;
+  colIndex: number;
   tileType: number;
   entityIfExist?: [ENTITY_TYPE, number] | undefined;
   playerState: IPlayerState;
@@ -97,12 +101,12 @@ export const Tile: FC<{
   //           className="absolute flex justify-center items-center overflow-hidden"
   //           style={{
   //             width:
-  //               player.sprite_size < TILE_SIZE
-  //                 ? player.sprite_size
+  //               player.spriteSize < TILE_SIZE
+  //                 ? player.spriteSize
   //                 : TILE_SIZE * 1.5,
   //             height:
-  //               player.sprite_size < TILE_SIZE
-  //                 ? player.sprite_size
+  //               player.spriteSize < TILE_SIZE
+  //                 ? player.spriteSize
   //                 : TILE_SIZE * 1.7,
   //           }}
   //         >
@@ -110,22 +114,22 @@ export const Tile: FC<{
   //           <div
   //             className="overflow-hidden"
   //             style={{
-  //               width: player.sprite_size,
-  //               height: player.sprite_size,
+  //               width: player.spriteSize,
+  //               height: player.spriteSize,
   //             }}
   //           >
   //             <div
   //               className="animate-entityIdle20"
   //               style={{
-  //                 width: player.sprite_size * 6,
-  //                 height: player.sprite_size * 12,
+  //                 width: player.spriteSize * 6,
+  //                 height: player.spriteSize * 12,
   //               }}
   //             >
   //               <Sprite
   //                 id={`sprite_${player.entityType}_${player.id}`}
   //                 sprite={player.sprite}
-  //                 width={player.sprite_size * 6}
-  //                 height={player.sprite_size * 12}
+  //                 width={player.spriteSize * 6}
+  //                 height={player.spriteSize * 12}
   //               />
   //             </div>
   //           </div>
@@ -139,11 +143,11 @@ export const Tile: FC<{
 
   //     if (!enemy) return null;
 
-  //     const spriteSheetWidth = enemy.sprite_size * 6;
-  //     let spriteSheetHeight = enemy.sprite_size * 5;
+  //     const spriteSheetWidth = enemy.spriteSize * 6;
+  //     let spriteSheetHeight = enemy.spriteSize * 5;
 
   //     if (enemy.name === 'Minotaur') {
-  //       spriteSheetHeight = enemy.sprite_size * 7;
+  //       spriteSheetHeight = enemy.spriteSize * 7;
   //     }
 
   //     return (
@@ -154,20 +158,20 @@ export const Tile: FC<{
   //           className="absolute flex justify-center items-center overflow-hidden"
   //           style={{
   //             width:
-  //               enemy.sprite_size < TILE_SIZE
-  //                 ? enemy.sprite_size
+  //               enemy.spriteSize < TILE_SIZE
+  //                 ? enemy.spriteSize
   //                 : TILE_SIZE * 1.5,
   //             height:
-  //               enemy.sprite_size < TILE_SIZE
-  //                 ? enemy.sprite_size
+  //               enemy.spriteSize < TILE_SIZE
+  //                 ? enemy.spriteSize
   //                 : TILE_SIZE * 1.7,
   //           }}
   //         >
   //           <div
   //             className="absolute bottom-[10px] overflow-hidden"
   //             style={{
-  //               width: enemy.sprite_size,
-  //               height: enemy.sprite_size,
+  //               width: enemy.spriteSize,
+  //               height: enemy.spriteSize,
   //             }}
   //           >
   //             <div
@@ -197,19 +201,31 @@ export const Tile: FC<{
       style={{
         width: TILE_SIZE,
         height: TILE_SIZE,
+        padding: 5,
       }}
-      className="relative group"
+      className={clsx('relative group', {
+        // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
+        'cursor-pointer ':
+          (tileType !== TILE_TYPE.WALL &&
+            tileType !== TILE_TYPE.DOOR &&
+            tileType !== TILE_TYPE.NULL) ||
+          (tileType === TILE_TYPE.DOOR && isRoomOver),
+      })}
       onClick={onClick}
-      onMouseEnter={onMouseEnter}
+      onMouseEnter={() => {
+        onMouseEnter();
+      }}
       onMouseLeave={onMouseLeave}
       id={entityTileID}
     >
       <div
         style={{
-          width: TILE_SIZE,
-          height: TILE_SIZE,
+          width: TILE_SIZE - TILE_HIGHLIGHT_PADDING,
+          height: TILE_SIZE - TILE_HIGHLIGHT_PADDING,
+          left: TILE_HIGHLIGHT_PADDING / 2,
+          top: TILE_HIGHLIGHT_PADDING / 2,
         }}
-        className={clsx('absolute top-0 left-0 ', classNames, {
+        className={clsx('absolute w-full h-full', classNames, {
           // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
           'cursor-pointer ':
             (tileType !== TILE_TYPE.WALL &&
@@ -252,13 +268,13 @@ export const Tile: FC<{
       ></div>
       <div
         style={{ width: TILE_SIZE, height: TILE_SIZE }}
-        className={clsx('absolute top-0 left-0 ', {
+        className={clsx('absolute top-0 left-0 z-0', {
           // Effect zone
           'bg-black group-hover:opacity-50 opacity-30':
             isEffectZone && isSkillEffectTile && !isTargetZone,
 
           // Target zone
-          'bg-black opacity-50': isTargetZone && isSkillEffectTile,
+          'bg-black opacity-60': isTargetZone && isSkillEffectTile,
         })}
       ></div>
       {/* {renderEntity()} */}

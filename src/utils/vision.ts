@@ -34,7 +34,7 @@ function castRayAtAngle(
   let rayCol = startCol + 0.5;
 
   // Iterate through each tile in one direction (based on angleRad) over the skill distance
-  for (let tile = 0; tile <= skillRadius + 1; tile++) {
+  for (let tile = 0; tile <= skillRadius + 3; tile++) {
     // Get current location row and colum and revert from float to integer, rounded down
     const currentRow = Math.floor(rayRow);
     const currentCol = Math.floor(rayCol);
@@ -97,7 +97,7 @@ export function getVisionFromEntityPosition(
   startLoc: [number, number],
   skillRadius: number,
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
-  numRays: number = 360
+  numRays: number = 40
 ): boolean[][] {
   // Initialize a boolean array of size room and fill with false.
   const validTiles: boolean[][] = Array.from({ length: room.length }, () =>

@@ -1,206 +1,6 @@
-import { ENTITY_TYPE, STARTING_MAX_HEALTH } from './constants/entity';
-import { TILE_SIZE } from './constants/tile';
-import { IEnemy, IEntity, IPlayer, IStatus } from './types';
-
-/**
- * Generate initial room matrix based on the room length
- * @param roomLength number (integer) representing the length of the room matrix
- * @returns a 2D array of tuples (TILE_TYPE, number) representing the type of tile and the id of whatever the tile is in the  room matrix
- *          ex - 2d array of 5x5 room matrix:
- *         [
- *          [TILE_TYPE.WALL, TILE_TYPE.WALL, TILE_TYPE.DOOR, TILE_TYPE.WALL, TILE_TYPE.WALL],
- *          [TILE_TYPE.WALL, TILE_TYPE.FLOOR, TILE_TYPE.FLOOR, [TILE_TYPE.FLOOR,1 ], TILE_TYPE.WALL],
- *          [TILE_TYPE.WALL, TILE_TYPE.FLOOR, TILE_TYPE.FLOOR, TILE_TYPE.FLOOR, TILE_TYPE.WALL],
- *          [TILE_TYPE.WALL, TILE_TYPE.FLOOR, [TILE_TYPE.PLAYER, 1], TILE_TYPE.FLOOR, TILE_TYPE.WALL],
- *          [TILE_TYPE.WALL, TILE_TYPE.WALL, TILE_TYPE.DOOR, TILE_TYPE.WALL, TILE_TYPE.WALL]
- *          ]
- */
-export const generateRoomTileMatrix = (/*roomLength: number*/) => {
-  // Initialize room matrix
-  // const roomTileMatrix: TILE_TYPE[][] = Array.from({ length: roomLength }, () =>
-  //   Array.from({ length: roomLength }, () => TILE_TYPE.FLOOR)
-  // );
-
-  return [
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    [2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2],
-    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2],
-    [2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 2, 2, 2],
-    [2, 1, 1, 2, 2, 2, 1, 1, 0, 1, 1, 2, 2, 2, 2],
-    [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2],
-    [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2],
-    [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-    [2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-    [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-  ];
-
-  // Generate room layout
-  // for (let row = 0; row < roomLength; row++) {
-  //   for (let col = 0; col < roomLength; col++) {
-  //     // Surround room with walls and place door in the middle of the top wall and bottom wall
-  //     if (
-  //       row === 0 ||
-  //       row === 1 ||
-  //       row === roomLength - 1 ||
-  //       col === 0 ||
-  //       col === roomLength - 1
-  //     ) {
-  //       if (
-  //         (row === 0 || row === 1) &&
-  //         [
-  //           Math.floor(roomLength / 2),
-  //           Math.floor(roomLength / 2) - 1,
-  //           Math.floor(roomLength / 2) + 1,
-  //         ].includes(col)
-  //       ) {
-  //         // roomTileMatrix[row][col] = [TILE_TYPE.DOOR, 366];
-
-  //         if (row === 0) {
-  //           // First row
-  //           if (col === Math.floor(roomLength / 2)) {
-  //             // Middle
-  //             roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //           } else if (col === Math.floor(roomLength / 2) - 1) {
-  //             // Left of middle
-  //             roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //           } else {
-  //             // Right of middle
-  //             roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //           }
-  //         } else {
-  //           // Second row
-  //           if (col === Math.floor(roomLength / 2)) {
-  //             // Middle
-  //             roomTileMatrix[row][col] = TILE_TYPE.DOOR;
-  //           } else if (col === Math.floor(roomLength / 2) - 1) {
-  //             // Left of middle
-  //             roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //           } else {
-  //             // Right of middle
-  //             roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //           }
-  //         }
-  //       } else {
-  //         // Place corners
-  //         if (row === 0 && col === 0) {
-  //           // Top left corner
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else if (row === 0 && col === roomLength - 1) {
-  //           // Top right corner
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else if (row === roomLength - 1 && col === 0) {
-  //           // Bottom left corner
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else if (row === roomLength - 1 && col === roomLength - 1) {
-  //           // Bottom right corner
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         }
-
-  //         // Place non-corner walls
-  //         else if (row === 0 && col !== 0 && col !== roomLength - 1) {
-  //           // Top wall
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else if (row === 1 && col > 0 && col < roomLength - 1) {
-  //           // Top wall - 1
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else if (row === 1 && col === 0) {
-  //           // Top wall - 1 left wall
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else if (row === 1 && col === roomLength - 1) {
-  //           // Top wall - 1 right wall
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else if (
-  //           row === roomLength - 1 &&
-  //           col !== 0 &&
-  //           col !== roomLength - 1
-  //         ) {
-  //           // Bottom wall
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else if (col === 0 && row !== 0 && row !== roomLength - 1) {
-  //           // Left wall
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else if (
-  //           col === roomLength - 1 &&
-  //           row !== 0 &&
-  //           row !== roomLength - 1
-  //         ) {
-  //           // Right wall
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         } else {
-  //           roomTileMatrix[row][col] = TILE_TYPE.WALL;
-  //         }
-  //       }
-  //     } else {
-  //       // Place floors everywhere else
-  //       roomTileMatrix[row][col] = TILE_TYPE.FLOOR;
-  //     }
-  //   }
-  // }
-};
-
-/**
- * Generate initial room entity positions
- * @returns a map of entity type and id to position
- */
-export const generateRoomEntityPositions: () => Map<
-  string,
-  [ENTITY_TYPE, number]
-> = () => {
-  const roomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(); // Map of entity type and id to position
-
-  // Place entities in the room
-  // Place player
-  roomEntityPositions.set(`13,7`, [ENTITY_TYPE.PLAYER, 1]);
-
-  // Place enemies (that match the number of enemies specified in enemy store)
-  roomEntityPositions.set(`11,12`, [ENTITY_TYPE.ENEMY, 1]);
-  roomEntityPositions.set(`8,6`, [ENTITY_TYPE.ENEMY, 2]);
-  roomEntityPositions.set(`5,2`, [ENTITY_TYPE.ENEMY, 3]);
-  roomEntityPositions.set(`3,7`, [ENTITY_TYPE.ENEMY, 4]);
-
-  return roomEntityPositions;
-};
-
-/**
- * Update room entity positions
- * @param newPos new position
- * @param currentPos current position
- * @param prevEntityPositions previous entity positions
- * @returns an updated map of entity type and id to position
- */
-export const updateRoomEntityPositions: (
-  newPos: [number, number],
-  currentPos: [number, number],
-  prevEntityPositions: Map<string, [ENTITY_TYPE, number]>
-) => Map<string, [ENTITY_TYPE, number]> = (
-  newPos,
-  currentPos,
-  prevEntityPositions
-) => {
-  const newRoomEntityPositions = new Map<string, [ENTITY_TYPE, number]>(
-    prevEntityPositions
-  );
-
-  // Get entity at current position
-  const entity = newRoomEntityPositions.get(
-    `${currentPos[0]},${currentPos[1]}`
-  );
-
-  if (!entity) {
-    return newRoomEntityPositions;
-  }
-
-  // Update entity position
-  newRoomEntityPositions.delete(`${currentPos[0]},${currentPos[1]}`);
-  newRoomEntityPositions.set(`${newPos[0]},${newPos[1]}`, entity);
-
-  return newRoomEntityPositions;
-};
+import { ENTITY_TYPE, STARTING_MAX_HEALTH } from '../constants/entity';
+import { TILE_SIZE } from '../constants/tile';
+import { IEnemy, IEntity, IPlayer, IStatus } from '../types';
 
 /**
  * Handle player end turn
@@ -422,6 +222,15 @@ export const getPlayerMaxHealth = (player: IPlayer) => {
   return totalMaxConstitution;
 };
 
+export const getEntityDodgeChance = (entity: IEntity) => {
+  const dodgeChance = entity.statuses.reduce(
+    (acc, status) => acc + status.effect.dodgeChance,
+    0
+  );
+
+  return dodgeChance;
+};
+
 export const damageEntity = (
   entity: IPlayer | IEnemy,
   damage: number,
@@ -445,7 +254,7 @@ export const damageEntity = (
     // Set entity animation to damaged by changing animation speed,
     // and shifting position downwards on the spritesheet
     const topPosition =
-      -entity.sprite_size * entity.spritesheet_damaged_row + 'px';
+      -entity.spriteSize * entity.spritesheetDamagedRow + 'px';
     if (
       playerSpriteSheetContainer.classList.contains(
         'animate-entityAnimateLeft20'
@@ -455,7 +264,7 @@ export const damageEntity = (
         'animate-entityAnimateLeft20'
       );
       playerSpriteSheetContainer.style.top = topPosition;
-      playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
+      playerSpriteSheetContainer.style.left = entity.spriteSize + 'px';
 
       setTimeout(() => {
         playerSpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
@@ -484,7 +293,7 @@ export const damageEntity = (
     // Depending on enemy health, play either damaged or defeat animation
     if (newHealth > 0) {
       const topPosition =
-        -entity.sprite_size * entity.spritesheet_damaged_row + 'px';
+        -entity.spriteSize * entity.spritesheetDamagedRow + 'px';
       if (
         enemySpriteSheetContainer.classList.contains(
           'animate-entityAnimateLeft08'
@@ -493,7 +302,7 @@ export const damageEntity = (
         enemySpriteSheetContainer.classList.remove(
           'animate-entityAnimateLeft08'
         );
-        enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
+        enemySpriteSheetContainer.style.left = entity.spriteSize + 'px';
         enemySpriteSheetContainer.style.top = topPosition;
 
         setTimeout(() => {
@@ -512,7 +321,7 @@ export const damageEntity = (
       }
     } else {
       const topPosition =
-        -entity.sprite_size * entity.spritesheet_defeat_row + 'px';
+        -entity.spriteSize * entity.spritesheetDefeatRow + 'px';
       if (
         enemySpriteSheetContainer.classList.contains(
           'animate-entityAnimateLeft08'
@@ -522,7 +331,7 @@ export const damageEntity = (
           'animate-entityAnimateLeft08'
         );
         enemySpriteSheetContainer.style.top = topPosition;
-        enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
+        enemySpriteSheetContainer.style.left = entity.spriteSize + 'px';
 
         setTimeout(() => {
           enemySpriteSheetContainer.classList.add(
@@ -560,7 +369,7 @@ export const damageEntity = (
       // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
       if (newHealth > 0) {
         const topPosition =
-          -entity.sprite_size * entity.spritesheet_idle_row + 'px';
+          -entity.spriteSize * entity.spritesheetIdleRow + 'px';
         if (
           playerSpriteSheetContainer.classList.contains(
             'animate-entityAnimateLeft08'
@@ -570,7 +379,7 @@ export const damageEntity = (
             'animate-entityAnimateLeft08'
           );
           playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
+          playerSpriteSheetContainer.style.left = entity.spriteSize + 'px';
 
           setTimeout(() => {
             playerSpriteSheetContainer.classList.add(
@@ -591,7 +400,7 @@ export const damageEntity = (
       } else {
         // Set entity animation to defeated by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
         const topPosition =
-          -entity.sprite_size * entity.spritesheet_defeat_row + 'px';
+          -entity.spriteSize * entity.spritesheetDefeatRow + 'px';
         if (
           playerSpriteSheetContainer.classList.contains(
             'animate-entityAnimateLeft08'
@@ -601,7 +410,7 @@ export const damageEntity = (
             'animate-entityAnimateLeft08'
           );
           playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = entity.sprite_size + 'px';
+          playerSpriteSheetContainer.style.left = entity.spriteSize + 'px';
 
           setTimeout(() => {
             playerSpriteSheetContainer.classList.add(
@@ -635,7 +444,7 @@ export const damageEntity = (
       if (newHealth > 0) {
         // Set entity animation to idle
         const topPosition =
-          -entity.sprite_size * entity.spritesheet_idle_row + 'px';
+          -entity.spriteSize * entity.spritesheetIdleRow + 'px';
         if (
           enemySpriteSheetContainer.classList.contains(
             'animate-entityAnimateLeft08'
@@ -645,7 +454,7 @@ export const damageEntity = (
             'animate-entityAnimateLeft08'
           );
           enemySpriteSheetContainer.style.top = topPosition;
-          enemySpriteSheetContainer.style.left = entity.sprite_size + 'px';
+          enemySpriteSheetContainer.style.left = entity.spriteSize + 'px';
 
           setTimeout(() => {
             enemySpriteSheetContainer.classList.add(
@@ -671,6 +480,53 @@ export const damageEntity = (
   displayDamageNumbers(elementID, damage);
 
   return newHealth;
+};
+
+export const displayGeneralMessage = (elementID: string, message: string) => {
+  // Find tile position of sprite
+  const tile = document.getElementById(`${elementID}`);
+
+  // Find room element
+  const entitySpritePositions = document.getElementById(
+    'entity_sprite_positions'
+  );
+
+  if (!tile) {
+    console.error('displayStatusEffect: Tile not found');
+    return;
+  }
+
+  if (!entitySpritePositions) {
+    console.error('displayStatusEffect: entitySpritePositions not found');
+    return;
+  }
+
+  // Get position of tile relative to the parent element
+  const tileLeftPosition = tile.offsetLeft;
+  const tileTopPosition = tile.offsetTop;
+
+  // Display message numbers
+  const messageDisplay = document.createElement('h1');
+  messageDisplay.textContent = message;
+
+  // Construct message numbers and add it to the document body
+  messageDisplay.style.fontWeight = 'bold';
+  messageDisplay.style.fontSize = '1.5rem';
+  messageDisplay.style.whiteSpace = 'nowrap';
+  entitySpritePositions.appendChild(messageDisplay);
+
+  messageDisplay.style.position = 'absolute';
+  messageDisplay.style.top = `${tileTopPosition - TILE_SIZE}px`;
+  messageDisplay.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - messageDisplay.offsetWidth / 2)}px`;
+  messageDisplay.style.zIndex = '100';
+  messageDisplay.style.color = 'white';
+
+  messageDisplay.classList.add('animate-floatUpAndFadeOut20');
+
+  // Remove message numbers after 1.5 seconds
+  setTimeout(() => {
+    messageDisplay.remove();
+  }, 2000);
 };
 
 const displayDamageNumbers = (elementID: string, damage: number) => {
@@ -712,12 +568,12 @@ const displayDamageNumbers = (elementID: string, damage: number) => {
   damageNumbers.style.zIndex = '100';
   damageNumbers.style.color = 'red';
 
-  damageNumbers.classList.add('animate-floatUpAndFadeOut');
+  damageNumbers.classList.add('animate-floatUpAndFadeOut20');
 
   // Remove damage numbers after 1.5 seconds
   setTimeout(() => {
     damageNumbers.remove();
-  }, 1500);
+  }, 2000);
 };
 
 export const healEntity = (
@@ -744,12 +600,12 @@ const displayHealNumbers = (elementID: string, heal: number) => {
   );
 
   if (!tile) {
-    console.error('displayStatusEffect: Tile not found');
+    console.error('displayHealNumbers: Tile not found');
     return;
   }
 
   if (!entitySpritePositions) {
-    console.error('displayStatusEffect: entitySpritePositions not found');
+    console.error('displayHealNumbers: entitySpritePositions not found');
     return;
   }
 
@@ -773,12 +629,12 @@ const displayHealNumbers = (elementID: string, heal: number) => {
   healNumbers.style.zIndex = '100';
   healNumbers.style.color = 'green';
 
-  healNumbers.classList.add('animate-floatUpAndFadeOut');
+  healNumbers.classList.add('animate-floatUpAndFadeOut20');
 
   // Remove heal numbers after 1.5 seconds
   setTimeout(() => {
     healNumbers.remove();
-  }, 1500);
+  }, 2000);
 };
 
 export const displayStatusEffect = (
@@ -833,12 +689,12 @@ export const displayStatusEffect = (
   statusIndicator.style.zIndex = '100';
   statusIndicator.style.color = 'yellow';
 
-  statusIndicator.classList.add('animate-floatUpAndFadeOut');
+  statusIndicator.classList.add('animate-floatUpAndFadeOut20');
 
   // Remove status effect after 1.5 seconds
   setTimeout(() => {
     statusIndicator.remove();
-  }, 1500);
+  }, 2000);
 };
 
 export const getPotionHealAmount = (player: IPlayer) => {

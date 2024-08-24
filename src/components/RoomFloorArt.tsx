@@ -1,14 +1,16 @@
 import { FC, useEffect, useRef } from 'react';
-import { getIconSrc, ICON_ID } from '../constants/icon';
-import clsx from 'clsx';
 
-export const Icon: FC<{
-  icon: ICON_ID;
+import defaultRoom from '../assets/sprites/tiles/room_floor_cavern_2.png';
+import { TILE_SIZE } from '../constants/tile';
+import { useGameStateStore } from '../store/game';
+
+export const RoomFloorArt: FC<{
   width: number;
   height: number;
-  className?: string;
   grayscale?: boolean;
-}> = ({ icon, width, height, className, grayscale }) => {
+}> = ({ width, height, grayscale }) => {
+  const { isRoomOver, floorArtFile } = useGameStateStore();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -23,7 +25,18 @@ export const Icon: FC<{
     }
 
     const image = new Image();
-    image.src = getIconSrc(icon);
+
+    let imgSrc = floorArtFile;
+
+    if (!imgSrc) {
+      imgSrc = defaultRoom;
+    }
+
+    if (isRoomOver && imgSrc === defaultRoom) {
+      imgSrc = defaultRoom;
+    }
+
+    image.src = imgSrc;
 
     image.onload = function () {
       if (!context) return;
@@ -34,13 +47,16 @@ export const Icon: FC<{
         context.filter = 'grayscale(1)';
       }
 
+      const width = (image.naturalWidth / 16) * TILE_SIZE;
+      const height = (image.naturalHeight / 16) * TILE_SIZE;
+
       context.drawImage(image, 0, 0, width, height);
     };
-  }, [icon, width, height]);
+  }, [canvasRef.current, width, height, grayscale, isRoomOver, floorArtFile]);
 
   return (
     <canvas
-      className={clsx(className)}
+      className="relative"
       ref={canvasRef}
       width={width}
       height={height}

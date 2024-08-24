@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 import { getSpriteSrc, SPRITE_ID } from '../constants/sprite';
+import clsx from 'clsx';
 
 export const Sprite: FC<{
   id: string;
@@ -7,9 +8,19 @@ export const Sprite: FC<{
   backgroundSprite?: SPRITE_ID;
   width: number;
   height: number;
+  className?: string;
   grayscale?: boolean;
   children?: React.ReactNode;
-}> = ({ id, sprite, backgroundSprite, width, height, grayscale, children }) => {
+}> = ({
+  id,
+  sprite,
+  backgroundSprite,
+  width,
+  height,
+  className,
+  grayscale,
+  children,
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -52,7 +63,7 @@ export const Sprite: FC<{
 
   return (
     <canvas
-      className="relative"
+      className={clsx('relative', className)}
       id={id}
       ref={canvasRef}
       width={width}

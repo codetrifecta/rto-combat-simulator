@@ -13,6 +13,7 @@ export enum SKILL_TAG {
   DAMAGE = 'damage',
   STATUS = 'status',
   MOVEMENT = 'movement',
+  SUMMON = 'summon',
 }
 
 let id = 1;
@@ -40,9 +41,15 @@ export enum SKILL_ID {
   LEAP_SLAM = id++,
   FLAME_DIVE = id++,
   HIDE = id++,
-  HIDDEN_BLADE = id++,
+  SHADOW_STRIKE = id++,
   SWIFT_MOVEMENT = id++,
   THROWING_KNIVES = id++,
+  BODY_DOUBLE = id++,
+  INSTINCTUAL_DODGE = id++,
+  BLOODLETTING = id++,
+  POISON_STRIKE = id++,
+  DISABLING_BLOW = id++,
+  PUNCTURE_STRIKE = id++,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -50,6 +57,10 @@ export const weaponBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.EXECUTE,
   SKILL_ID.CLEAVE,
   SKILL_ID.ANNIHILATE,
+  SKILL_ID.SHADOW_STRIKE,
+  SKILL_ID.POISON_STRIKE,
+  SKILL_ID.DISABLING_BLOW,
+  SKILL_ID.PUNCTURE_STRIKE,
 ];
 
 export const strengthBasedSkillIDs: SKILL_ID[] = [
@@ -58,8 +69,11 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.CLEAVE,
   SKILL_ID.ANNIHILATE,
   SKILL_ID.LEAP_SLAM,
-  SKILL_ID.HIDDEN_BLADE,
+  SKILL_ID.SHADOW_STRIKE,
   SKILL_ID.THROWING_KNIVES,
+  SKILL_ID.POISON_STRIKE,
+  SKILL_ID.DISABLING_BLOW,
+  SKILL_ID.PUNCTURE_STRIKE,
 ];
 
 export const intelligenceBasedSkillIDs: SKILL_ID[] = [
@@ -129,14 +143,14 @@ export const SKILLS: ISkill[] = [
     cost: 5,
   },
   {
-    id: SKILL_ID.HIDDEN_BLADE,
+    id: SKILL_ID.SHADOW_STRIKE,
     name: 'Shadow Strike',
-    icon: ICON_ID.SKILL_HIDDEN_BLADE,
+    icon: ICON_ID.SKILL_SHADOW_STRIKE,
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
       'Deal critical damage to an enemy. Damage is doubled if used when hidden. Deal bleeding to an enemy for 1 turns.',
-    damageMultiplier: 1.2,
+    damageMultiplier: 1.5,
     range: 1,
     cooldown: 2,
     cooldownCounter: 0,
@@ -144,7 +158,7 @@ export const SKILLS: ISkill[] = [
   },
   {
     id: SKILL_ID.THROWING_KNIVES,
-    name: 'Throwing Knives',
+    name: 'Knife Barrage',
     icon: ICON_ID.SKILL_THROWING_KNIVES,
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
@@ -156,15 +170,57 @@ export const SKILLS: ISkill[] = [
     cooldownCounter: 0,
     cost: 3,
   },
+  {
+    id: SKILL_ID.POISON_STRIKE,
+    name: 'Poison Strike',
+    icon: ICON_ID.SKILL_POISON_STRIKE,
+    skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
+    description:
+      'Coat your weapon with poison. Deal increased damage and inflict poisoned for 3 turns.',
+    damageMultiplier: 1.2,
+    range: 1,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 3,
+  },
+  {
+    id: SKILL_ID.DISABLING_BLOW,
+    name: 'Disabling Blow',
+    icon: ICON_ID.SKILL_DISABLING_BLOW,
+    skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
+    description: 'Strike a target, applying disabled on them for 1 turns.',
+    damageMultiplier: 1.2,
+    range: 1,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.PUNCTURE_STRIKE,
+    name: 'Puncture Strike',
+    icon: ICON_ID.SKILL_PUNCTURE_STRIKE,
+    skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
+    description:
+      'Puncture a target with a strike that wounds them. Applies wounded to a target for 2 turns.',
+    damageMultiplier: 1.2,
+    range: 1,
+    cooldown: 4,
+    cooldownCounter: 0,
+    cost: 3,
+  },
 
   // Intelligence-based skills
   {
     id: SKILL_ID.LIGHTNING,
-    name: 'Lightning',
+    name: 'Spark',
     icon: ICON_ID.SKILL_LIGHTNING,
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
-    description: 'Strike enemies with lighning from the skies.',
+    description:
+      'Strike a target with lighning sparks. Has a 40% chance to shock target for 2 turn.',
     damageMultiplier: 2,
     range: 4,
     cooldown: 1,
@@ -178,7 +234,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Launch a fireball at a target area. Additionally applied Burned to enemies hit for 3 turns.',
+      'Launch a fireball at a target area. Has a 50% chance to burn targets hit for 3 turns.',
     damageMultiplier: 1.5,
     range: 4,
     cooldown: 2,
@@ -305,12 +361,25 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.SELF,
     tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
-      'Applies swiftness for 2 turns. Use 1 AP to move 3 tiles instead of 2. Gain 1 additional AP per turn for the duration',
+      'Gain swiftness for 2 turns. Use 1 AP to move 3 tiles instead of 2. Gain 1 additional AP per turn for the duration',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 1,
+  },
+  {
+    id: SKILL_ID.INSTINCTUAL_DODGE,
+    name: 'Instinctual Dodge',
+    icon: ICON_ID.SKILL_INSTINCTUAL_DODGE,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description: 'Gain dodging for 3 turns, increasing dodge chance by 50%.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 4,
+    cooldownCounter: 0,
+    cost: 2,
   },
 
   // Debuff skills
@@ -384,6 +453,19 @@ export const SKILLS: ISkill[] = [
     cooldownCounter: 0,
     cost: 2,
   },
+  // {
+  //   id: SKILL_ID.BLOODLETTING,
+  //   name: 'Bloodletting',
+  //   icon: ICON_ID.SKILL_BLOODLETTING,
+  //   skillType: SKILL_TYPE.ST,
+  //   tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.STATUS],
+  //   description: 'Apply bloodletting to an enemy for 2 turns.',
+  //   damageMultiplier: 0,
+  //   range: 1,
+  //   cooldown: 4,
+  //   cooldownCounter: 0,
+  //   cost: 3,
+  // },
 
   // Movement skills
   {
@@ -432,6 +514,23 @@ export const SKILLS: ISkill[] = [
     cooldownCounter: 0,
     cost: 2,
   },
+
+  // Summon skills
+  // Post MVP
+  // {
+  //   id: SKILL_ID.BODY_DOUBLE,
+  //   name: 'Body Double',
+  //   icon: ICON_ID.SKILL_BODY_DOUBLE,
+  //   skillType: SKILL_TYPE.ST,
+  //   tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.SUMMON],
+  //   description:
+  //     'Create a body double of yourself that enemies can target for 3 turns. The double has 50% of your health and does no action.',
+  //   damageMultiplier: 0,
+  //   range: 5,
+  //   cooldown: 4,
+  //   cooldownCounter: 0,
+  //   cost: 3,
+  // },
 ];
 
 export const selfTargetedSkillIDs: SKILL_ID[] = SKILLS.filter((skill) =>

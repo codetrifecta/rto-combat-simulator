@@ -42,9 +42,16 @@ export default {
           '0%': { transform: 'translate3d(0,0,0) scaleX(-1)' },
           '100%': { transform: 'translate3d(-100%,0,0) scaleX(-1)' },
         },
+        floatUpAndDown: {
+          '0%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-3px)' },
+          '100%': { transform: 'translateY(0)' },
+        },
       },
       animation: {
-        floatUpAndFadeOut: 'floatUpAndFadeOut 1.5s linear',
+        floatUpAndFadeOut15: 'floatUpAndFadeOut 1.5s linear',
+        floatUpAndFadeOut20: 'floatUpAndFadeOut 2s linear',
+        floatUpAndFadeOut25: 'floatUpAndFadeOut 2.5s linear',
         entityIdle05: 'entityIdle 0.5s steps(6) infinite',
         entityIdle08: 'entityIdle 0.8s steps(6) infinite',
         entityIdle20: 'entityIdle 2s steps(6) infinite',
@@ -60,6 +67,8 @@ export default {
         entityAnimateLeft08: 'entityAnimateLeft 0.8s steps(6) infinite',
         entityAnimateLeftOnce08: 'entityAnimateLeft 0.8s steps(6) forwards',
         entityAnimateLeft20: 'entityAnimateLeft 2s steps(6) infinite',
+
+        floatUpAndDown: 'floatUpAndDown 1s linear infinite',
       },
     },
   },
