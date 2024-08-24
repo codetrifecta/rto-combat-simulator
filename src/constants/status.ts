@@ -24,6 +24,7 @@ export enum STATUS_ID {
   BLEEDING = id++,
   DODGING = id++,
   POISONED = id++,
+  WOUNDED = id++,
 }
 
 export const BASE_STATUS_EFFECTS: IStatusEffect = {
@@ -290,6 +291,18 @@ export const STATUSES: IStatus[] = [
       ...BASE_STATUS_EFFECTS,
       damageOverTime: 1,
       damagePerAP: 1,
+    },
+  },
+  {
+    id: STATUS_ID.WOUNDED,
+    name: 'Wounded',
+    icon: ICON_ID.STATUS_WOUNDED,
+    description:
+      'Damage taken increased by 20%. If health is below 30%, damage taken increased by 40%.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
     },
   },
 ];

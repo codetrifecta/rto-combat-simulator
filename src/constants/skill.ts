@@ -71,6 +71,9 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.LEAP_SLAM,
   SKILL_ID.SHADOW_STRIKE,
   SKILL_ID.THROWING_KNIVES,
+  SKILL_ID.POISON_STRIKE,
+  SKILL_ID.DISABLING_BLOW,
+  SKILL_ID.PUNCTURE_STRIKE,
 ];
 
 export const intelligenceBasedSkillIDs: SKILL_ID[] = [
@@ -201,7 +204,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Applies wounded to a target for 2 turns. Targets with 50% or less health take more damage from wounded.',
+      'Puncture a target with a strike that wounds them. Applies wounded to a target for 2 turns.',
     damageMultiplier: 1.2,
     range: 1,
     cooldown: 4,

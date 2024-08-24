@@ -878,7 +878,23 @@ export const Room: FC<{
       }
 
       // Compute base attack damage based on the higher of player's strength or intelligence
-      const totalDamage = playerBaseAttackDamage + statusDamageBonus;
+      let totalDamage = playerBaseAttackDamage + statusDamageBonus;
+
+      // Check if enemy has any statuses that affect damage taken
+      // Check for wounded status
+      const woundedStatus = enemy.statuses.find(
+        (status) => status.id === STATUS_ID.WOUNDED
+      );
+
+      if (woundedStatus) {
+        // Wounded: Increase damage taken by 20%. If enemy is below 30% health, increase damage taken by 40%
+        if (enemy.health < enemy.maxHealth * 0.3) {
+          totalDamage += Math.round(totalDamage * 0.4);
+        } else {
+          totalDamage += Math.round(totalDamage * 0.2);
+        }
+      }
+
       const newEnemy = { ...enemy };
       newEnemy.health = damageEntity(
         newEnemy,

@@ -270,6 +270,22 @@ const handleSkillDamage = (
         }
       }
 
+      // Check if enemy has any statuses that affect damage taken
+      // Check for wounded status
+      const woundedStatus = newEnemy.statuses.find(
+        (status) => status.id === STATUS_ID.WOUNDED
+      );
+
+      if (woundedStatus) {
+        console.log('Wounded status found');
+        // Wounded: Increase damage taken by 20%. If enemy is below 30% health, increase damage taken by 40%
+        if (newEnemy.health < newEnemy.maxHealth * 0.3) {
+          totalDamage += Math.round(totalDamage * 0.4);
+        } else {
+          totalDamage += Math.round(totalDamage * 0.2);
+        }
+      }
+
       // Calculate damage
       newEnemy.health = damageEntity(
         newEnemy,
@@ -531,6 +547,9 @@ const handleSkillStatus = (
       statusEffectModifier[1].damageOverTime = Math.ceil(
         0.1 * getPlayerTotalIntelligence(playerAfterStatus)
       );
+      break;
+    case SKILL_ID.PUNCTURE_STRIKE:
+      statusID = STATUS_ID.WOUNDED;
       break;
     default:
       break;
