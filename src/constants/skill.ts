@@ -186,7 +186,7 @@ export const SKILLS: ISkill[] = [
     name: 'Disabling Blow',
     icon: ICON_ID.SKILL_DISABLING_BLOW,
     skillType: SKILL_TYPE.ST,
-    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.STATUS],
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description: 'Strike a target, applying disabled on them for 1 turns.',
     damageMultiplier: 1.2,
     range: 1,

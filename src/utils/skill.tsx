@@ -489,6 +489,7 @@ const handleSkillStatus = (
       statusID = STATUS_ID.BLOODLUST;
       break;
     case SKILL_ID.DISABLE:
+    case SKILL_ID.DISABLING_BLOW:
       statusID = STATUS_ID.DISABLED;
       break;
     case SKILL_ID.ENTANGLE:
@@ -528,7 +529,7 @@ const handleSkillStatus = (
       // DoT will scale with player's intelligence
       statusEffectModifier[0] = true;
       statusEffectModifier[1].damageOverTime = Math.ceil(
-        0.2 * getPlayerTotalIntelligence(playerAfterStatus)
+        0.1 * getPlayerTotalIntelligence(playerAfterStatus)
       );
       break;
     default:

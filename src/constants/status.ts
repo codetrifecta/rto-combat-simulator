@@ -40,6 +40,7 @@ export const BASE_STATUS_EFFECTS: IStatusEffect = {
   hidden: false,
   movementRangeBonus: 0,
   dodgeChance: 0,
+  damagePerAP: 0,
 };
 
 export const STATUSES: IStatus[] = [
@@ -288,6 +289,7 @@ export const STATUSES: IStatus[] = [
     effect: {
       ...BASE_STATUS_EFFECTS,
       damageOverTime: 1,
+      damagePerAP: 1,
     },
   },
 ];
