@@ -42,8 +42,8 @@ Combat simulator for Return to Olympus
   - [x] Instinctual Dodge
   - [ ] Bloodletting
   - [x] Poison Strike
-  - [ ] Disabling Blow
-  - [ ] Puncture Strike
+  - [x] Disabling Blow
+  - [x] Puncture Strike
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
 - [x] Sprites for each of the above

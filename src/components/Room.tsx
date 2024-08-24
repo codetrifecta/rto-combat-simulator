@@ -14,7 +14,7 @@ import {
   SKILL_TYPE,
   weaponBasedSkillIDs,
 } from '../constants/skill';
-import { STATUS_ID } from '../constants/status';
+import { STATUS_ID, STATUSES } from '../constants/status';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from '../constants/weapon';
 import { IEnemy, IEntity } from '../types';
 import { useGameStateStore } from '../store/game';
@@ -892,6 +892,29 @@ export const Room: FC<{
           totalDamage += Math.round(totalDamage * 0.4);
         } else {
           totalDamage += Math.round(totalDamage * 0.2);
+        }
+      }
+
+      // Remove hidden status from player if enemy is attacked
+      if (newPlayer.statuses.some((status) => status.id === STATUS_ID.HIDDEN)) {
+        newPlayer.statuses = newPlayer.statuses.filter(
+          (status) => status.id !== STATUS_ID.HIDDEN
+        );
+
+        const statusToBeRemoved = STATUSES.find(
+          (status) => status.id === STATUS_ID.HIDDEN
+        );
+
+        if (statusToBeRemoved === undefined) {
+          console.error(
+            'handleSkillDamage: No status found for the associated skill ID'
+          );
+        } else {
+          displayStatusEffect(
+            statusToBeRemoved,
+            false,
+            `tile_${newPlayer.entityType}_${newPlayer.id}`
+          );
         }
       }
 

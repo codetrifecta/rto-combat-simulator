@@ -150,7 +150,7 @@ export const SKILLS: ISkill[] = [
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
       'Deal critical damage to an enemy. Damage is doubled if used when hidden. Deal bleeding to an enemy for 1 turns.',
-    damageMultiplier: 1.2,
+    damageMultiplier: 1.5,
     range: 1,
     cooldown: 2,
     cooldownCounter: 0,
@@ -453,19 +453,19 @@ export const SKILLS: ISkill[] = [
     cooldownCounter: 0,
     cost: 2,
   },
-  {
-    id: SKILL_ID.BLOODLETTING,
-    name: 'Bloodletting',
-    icon: ICON_ID.SKILL_BLOODLETTING,
-    skillType: SKILL_TYPE.ST,
-    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.STATUS],
-    description: 'Apply bloodletting to an enemy for 2 turns.',
-    damageMultiplier: 0,
-    range: 1,
-    cooldown: 4,
-    cooldownCounter: 0,
-    cost: 3,
-  },
+  // {
+  //   id: SKILL_ID.BLOODLETTING,
+  //   name: 'Bloodletting',
+  //   icon: ICON_ID.SKILL_BLOODLETTING,
+  //   skillType: SKILL_TYPE.ST,
+  //   tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.STATUS],
+  //   description: 'Apply bloodletting to an enemy for 2 turns.',
+  //   damageMultiplier: 0,
+  //   range: 1,
+  //   cooldown: 4,
+  //   cooldownCounter: 0,
+  //   cost: 3,
+  // },
 
   // Movement skills
   {
