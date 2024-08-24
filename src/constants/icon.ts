@@ -74,6 +74,12 @@ import skill_hide from '../assets/icons/skills/icon_skill_hide.png';
 import skill_hidden_blade from '../assets/icons/skills/icon_skill_hidden_blade.png';
 import skill_swift_movement from '../assets/icons/skills/icon_skill_swift_movement.png';
 import skill_throwing_knives from '../assets/icons/skills/icon_skill_throwing_knives.png';
+import skill_body_double from '../assets/icons/skills/icon_skill_body_double.png';
+import skill_instinctual_dodge from '../assets/icons/skills/icon_skill_instinctual_dodge.png';
+import skill_bloodletting from '../assets/icons/skills/icon_skill_bloodletting.png';
+import skill_poison_strike from '../assets/icons/skills/icon_skill_poison_strike.png';
+import skill_disorient from '../assets/icons/skills/icon_skill_disorient.png';
+import skill_puncture_strike from '../assets/icons/skills/icon_skill_puncture_strike.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -170,6 +176,12 @@ export enum ICON_ID {
   SKILL_HIDDEN_BLADE = 'skill_hidden_blade',
   SKILL_SWIFT_MOVEMENT = 'skill_swift_movement',
   SKILL_THROWING_KNIVES = 'skill_throwing_knives',
+  SKILL_BODY_DOUBLE = 'skill_body_double',
+  SKILL_INSTINCTUAL_DODGE = 'skill_instinctual_dodge',
+  SKILL_BLOODLETTING = 'skill_bloodletting',
+  SKILL_POISON_STRIKE = 'skill_poison_strike',
+  SKILL_DISORIENT = 'skill_disorient',
+  SKILL_PUNCTURE_STRIKE = 'skill_puncture_strike',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -268,6 +280,12 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_HIDDEN_BLADE]: skill_hidden_blade,
   [ICON_ID.SKILL_SWIFT_MOVEMENT]: skill_swift_movement,
   [ICON_ID.SKILL_THROWING_KNIVES]: skill_throwing_knives,
+  [ICON_ID.SKILL_BODY_DOUBLE]: skill_body_double,
+  [ICON_ID.SKILL_INSTINCTUAL_DODGE]: skill_instinctual_dodge,
+  [ICON_ID.SKILL_BLOODLETTING]: skill_bloodletting,
+  [ICON_ID.SKILL_POISON_STRIKE]: skill_poison_strike,
+  [ICON_ID.SKILL_DISORIENT]: skill_disorient,
+  [ICON_ID.SKILL_PUNCTURE_STRIKE]: skill_puncture_strike,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
