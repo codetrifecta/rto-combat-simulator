@@ -95,6 +95,7 @@ export interface IStatusEffect {
   canAttack: boolean;
   hidden: boolean;
   movementRangeBonus: number;
+  dodgeChance: number;
 }
 
 export interface IWeapon {

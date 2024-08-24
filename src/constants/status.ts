@@ -22,6 +22,7 @@ export enum STATUS_ID {
   SHIELDED = id++,
   SWIFTNESS = id++,
   BLEEDING = id++,
+  DODGING = id++,
 }
 
 export const BASE_STATUS_EFFECTS: IStatusEffect = {
@@ -37,6 +38,7 @@ export const BASE_STATUS_EFFECTS: IStatusEffect = {
   canAttack: true,
   hidden: false,
   movementRangeBonus: 0,
+  dodgeChance: 0,
 };
 
 export const STATUSES: IStatus[] = [
@@ -261,6 +263,18 @@ export const STATUSES: IStatus[] = [
     effect: {
       ...BASE_STATUS_EFFECTS,
       damageOverTime: 1,
+    },
+  },
+  {
+    id: STATUS_ID.DODGING,
+    name: 'Dodging',
+    icon: ICON_ID.STATUS_DODGING,
+    description: 'Increased dodge chance by 50%.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      dodgeChance: 0.5,
     },
   },
 ];

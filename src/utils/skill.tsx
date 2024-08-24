@@ -520,6 +520,9 @@ const handleSkillStatus = (
     case SKILL_ID.SWIFT_MOVEMENT:
       statusID = STATUS_ID.SWIFTNESS;
       break;
+    case SKILL_ID.INSTINCTUAL_DODGE:
+      statusID = STATUS_ID.DODGING;
+      break;
     default:
       break;
   }

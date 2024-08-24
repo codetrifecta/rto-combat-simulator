@@ -371,7 +371,7 @@ export const SKILLS: ISkill[] = [
     icon: ICON_ID.SKILL_INSTINCTUAL_DODGE,
     skillType: SKILL_TYPE.SELF,
     tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
-    description: 'Gain dodging for 3 turns.',
+    description: 'Gain dodging for 3 turns, increasing dodge chance by 50%.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 4,

@@ -222,6 +222,15 @@ export const getPlayerMaxHealth = (player: IPlayer) => {
   return totalMaxConstitution;
 };
 
+export const getEntityDodgeChance = (entity: IEntity) => {
+  const dodgeChance = entity.statuses.reduce(
+    (acc, status) => acc + status.effect.dodgeChance,
+    0
+  );
+
+  return dodgeChance;
+};
+
 export const damageEntity = (
   entity: IPlayer | IEnemy,
   damage: number,
@@ -471,6 +480,53 @@ export const damageEntity = (
   displayDamageNumbers(elementID, damage);
 
   return newHealth;
+};
+
+export const displayGeneralMessage = (elementID: string, message: string) => {
+  // Find tile position of sprite
+  const tile = document.getElementById(`${elementID}`);
+
+  // Find room element
+  const entitySpritePositions = document.getElementById(
+    'entity_sprite_positions'
+  );
+
+  if (!tile) {
+    console.error('displayStatusEffect: Tile not found');
+    return;
+  }
+
+  if (!entitySpritePositions) {
+    console.error('displayStatusEffect: entitySpritePositions not found');
+    return;
+  }
+
+  // Get position of tile relative to the parent element
+  const tileLeftPosition = tile.offsetLeft;
+  const tileTopPosition = tile.offsetTop;
+
+  // Display message numbers
+  const messageDisplay = document.createElement('h1');
+  messageDisplay.textContent = message;
+
+  // Construct message numbers and add it to the document body
+  messageDisplay.style.fontWeight = 'bold';
+  messageDisplay.style.fontSize = '1.5rem';
+  messageDisplay.style.whiteSpace = 'nowrap';
+  entitySpritePositions.appendChild(messageDisplay);
+
+  messageDisplay.style.position = 'absolute';
+  messageDisplay.style.top = `${tileTopPosition - TILE_SIZE}px`;
+  messageDisplay.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - messageDisplay.offsetWidth / 2)}px`;
+  messageDisplay.style.zIndex = '100';
+  messageDisplay.style.color = 'white';
+
+  messageDisplay.classList.add('animate-floatUpAndFadeOut20');
+
+  // Remove message numbers after 1.5 seconds
+  setTimeout(() => {
+    messageDisplay.remove();
+  }, 2000);
 };
 
 const displayDamageNumbers = (elementID: string, damage: number) => {

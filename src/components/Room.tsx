@@ -22,7 +22,9 @@ import { usePlayerStore } from '../store/player';
 import { useEnemyStore } from '../store/enemy';
 import {
   damageEntity,
+  displayGeneralMessage,
   displayStatusEffect,
+  getEntityDodgeChance,
   getEntityPosition,
   getPlayerTotalDefense,
   handlePlayerEndTurn,
@@ -1214,74 +1216,96 @@ export const Room: FC<{
         }
       }, 500);
 
-      // Calculate damage
-      const baseDamage = enemy.damage;
+      // Check player dodge chance
+      const playerDodgeChance = getEntityDodgeChance(player);
 
-      const statusDamageBonus = enemy.statuses.reduce((acc, status) => {
-        return acc + status.effect.damageBonus;
-      }, 0);
+      // Check if player dodges attack
+      const playerDodges = Math.random() < playerDodgeChance;
 
-      const damageMultiplier = enemy.statuses.reduce((acc, status) => {
-        if (status.effect.damageMultiplier === 0) return acc;
-
-        if (status.effect.damageMultiplier > 1) {
-          return acc + (status.effect.damageMultiplier - 1);
-        } else {
-          return acc - (1 - status.effect.damageMultiplier);
-        }
-      }, 1);
-
-      const playerTotalDefense = getPlayerTotalDefense(player);
-
-      // If player has 10 DEF, then player takes 10% less damage
-      const playerDamageTakenMultiplier = 1 - playerTotalDefense / 100;
-
-      let totalDamage = Math.round(
-        (baseDamage + statusDamageBonus) *
-          damageMultiplier *
-          playerDamageTakenMultiplier
-      );
-
-      if (totalDamage <= 0) totalDamage = 0;
-
-      const playerHealth = damageEntity(
-        player,
-        totalDamage,
-        `tile_${player.entityType}_${player.id}`
-      );
-
-      if (playerHealth <= 0) {
+      if (playerDodges) {
+        displayGeneralMessage(
+          `tile_${player.entityType}_${player.id}`,
+          'Dodged!'
+        );
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> attacked{' '}
-              <span className="text-green-500">{player.name}</span> for{' '}
-              {totalDamage} damage and defeated them!
+              <span className="text-green-500">{player.name}</span> dodged{' '}
+              <span className="text-red-500">{enemy.name}&apos;s attack!</span>
             </>
           ),
           type: 'info',
         });
-        setPlayer({
-          ...player,
-          health: 0,
-        });
-        setIsGameOver(true);
       } else {
-        setPlayer({
-          ...player,
-          health: player.health - totalDamage,
-        });
+        // Calculate damage
+        const baseDamage = enemy.damage;
 
-        addLog({
-          message: (
-            <>
-              <span className="text-red-500">{enemy.name}</span> attacked{' '}
-              <span className="text-green-500">{player.name}</span> for{' '}
-              {totalDamage} damage.
-            </>
-          ),
-          type: 'info',
-        });
+        const statusDamageBonus = enemy.statuses.reduce((acc, status) => {
+          return acc + status.effect.damageBonus;
+        }, 0);
+
+        const damageMultiplier = enemy.statuses.reduce((acc, status) => {
+          if (status.effect.damageMultiplier === 0) return acc;
+
+          if (status.effect.damageMultiplier > 1) {
+            return acc + (status.effect.damageMultiplier - 1);
+          } else {
+            return acc - (1 - status.effect.damageMultiplier);
+          }
+        }, 1);
+
+        const playerTotalDefense = getPlayerTotalDefense(player);
+
+        // If player has 10 DEF, then player takes 10% less damage
+        const playerDamageTakenMultiplier = 1 - playerTotalDefense / 100;
+
+        let totalDamage = Math.round(
+          (baseDamage + statusDamageBonus) *
+            damageMultiplier *
+            playerDamageTakenMultiplier
+        );
+
+        if (totalDamage <= 0) totalDamage = 0;
+
+        const playerHealth = damageEntity(
+          player,
+          totalDamage,
+          `tile_${player.entityType}_${player.id}`
+        );
+
+        if (playerHealth <= 0) {
+          addLog({
+            message: (
+              <>
+                <span className="text-red-500">{enemy.name}</span> attacked{' '}
+                <span className="text-green-500">{player.name}</span> for{' '}
+                {totalDamage} damage and defeated them!
+              </>
+            ),
+            type: 'info',
+          });
+          setPlayer({
+            ...player,
+            health: 0,
+          });
+          setIsGameOver(true);
+        } else {
+          setPlayer({
+            ...player,
+            health: player.health - totalDamage,
+          });
+
+          addLog({
+            message: (
+              <>
+                <span className="text-red-500">{enemy.name}</span> attacked{' '}
+                <span className="text-green-500">{player.name}</span> for{' '}
+                {totalDamage} damage.
+              </>
+            ),
+            type: 'info',
+          });
+        }
       }
     }
   };
