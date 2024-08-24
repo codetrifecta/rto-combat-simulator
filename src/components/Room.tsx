@@ -39,6 +39,7 @@ import {
 } from '../utils/pathfinding';
 import { getVisionFromEntityPosition } from '../utils/vision';
 import debounce from 'debounce';
+import { useSummonStore } from '../store/summon';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -86,6 +87,7 @@ export const Room: FC<{
   const playerLifestealMultiplier = getPlayerLifestealMultiplier();
 
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
+  const { summons } = useSummonStore();
 
   const { addLog } = useLogStore();
 
@@ -1809,6 +1811,7 @@ export const Room: FC<{
                         [rowIndex, columnIndex],
                         player,
                         enemies,
+                        summons,
                         targetZones.current,
                         roomEntityPositions,
                         addLog

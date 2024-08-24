@@ -1,4 +1,4 @@
-import { IEnemy, IEntity, IPlayer } from '../types';
+import { IEnemy, IEntity, IPlayer, ISummon } from '../types';
 import { getPlayerMaxHealth } from '../utils/entity';
 import { LEGGINGS } from './armor';
 import { SKILL_ID, SKILLS } from './skill';
@@ -93,6 +93,34 @@ export const getDefaultPlayer = (): IPlayer => {
 };
 
 let id = 1;
+
+export enum SUMMON_PRESET_ID {
+  CLONE = id++,
+}
+
+export const SUMMON_PRESETS: Record<SUMMON_PRESET_ID, ISummon> = {
+  [SUMMON_PRESET_ID.CLONE]: {
+    ...BASE_ENTITY,
+    id: 0,
+    name: 'Clone',
+    sprite: SPRITE_ID.PLAYER_01,
+    spriteSize: 64,
+    spritesheetRows: 12,
+    spritesheetColumns: 6,
+    spritesheetIdleRow: 0,
+    spritesheetMovementRow: 1,
+    spritesheetAttackRow: 2,
+    spritesheetDamagedRow: 8,
+    spritesheetDefeatRow: 9,
+    entityType: ENTITY_TYPE.SUMMON,
+    health: 1,
+    maxHealth: 1,
+    damageBonus: 0,
+    statuses: [],
+    owner: getDefaultPlayer(),
+    ownerId: 1,
+  },
+};
 
 export enum ENEMY_PRESET_ID {
   ABYSSAL_CYCLOPEAN_WRAITH = id++,

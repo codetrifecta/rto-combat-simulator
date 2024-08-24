@@ -513,20 +513,21 @@ export const SKILLS: ISkill[] = [
   },
 
   // Summon skills
-  {
-    id: SKILL_ID.BODY_DOUBLE,
-    name: 'Body Double',
-    icon: ICON_ID.SKILL_BODY_DOUBLE,
-    skillType: SKILL_TYPE.ST,
-    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.SUMMON],
-    description:
-      'Create a body double of yourself that enemies can target for 3 turns. The double has 50% of your health and does no action.',
-    damageMultiplier: 0,
-    range: 5,
-    cooldown: 4,
-    cooldownCounter: 0,
-    cost: 3,
-  },
+  // Post MVP
+  // {
+  //   id: SKILL_ID.BODY_DOUBLE,
+  //   name: 'Body Double',
+  //   icon: ICON_ID.SKILL_BODY_DOUBLE,
+  //   skillType: SKILL_TYPE.ST,
+  //   tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.SUMMON],
+  //   description:
+  //     'Create a body double of yourself that enemies can target for 3 turns. The double has 50% of your health and does no action.',
+  //   damageMultiplier: 0,
+  //   range: 5,
+  //   cooldown: 4,
+  //   cooldownCounter: 0,
+  //   cost: 3,
+  // },
 ];
 
 export const selfTargetedSkillIDs: SKILL_ID[] = SKILLS.filter((skill) =>

@@ -1,10 +1,15 @@
-import { ENTITY_TYPE } from '../constants/entity';
+import {
+  ENTITY_TYPE,
+  SUMMON_PRESET_ID,
+  SUMMON_PRESETS,
+} from '../constants/entity';
 import {
   intelligenceBasedSkillIDs,
   SKILL_ID,
   SKILL_TAG,
 } from '../constants/skill';
 import { BASE_STATUS_EFFECTS, STATUS_ID, STATUSES } from '../constants/status';
+import { useSummonStore } from '../store/summon';
 import {
   IEnemy,
   ILog,
@@ -12,6 +17,7 @@ import {
   ISkill,
   IStatus,
   IStatusEffect,
+  ISummon,
 } from '../types';
 import {
   damageEntity,
@@ -29,13 +35,15 @@ export const handleSkill = (
   clickedTilePosition: [number, number],
   player: IPlayer,
   enemies: IEnemy[],
+  summons: ISummon[],
   targetZones: [number, number][],
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
   addLog: (log: ILog) => void
 ) => {
   let newPlayer = { ...player };
   let newEnemies = [...enemies];
-  const newRoomEntityPositions = new Map(roomEntityPositions);
+  let newSummons = [...summons];
+  let newRoomEntityPositions = new Map(roomEntityPositions);
 
   let targets: [ENTITY_TYPE, number][] = [];
 
@@ -89,6 +97,28 @@ export const handleSkill = (
     newEnemies = [...enemiesAfterStatus];
   }
 
+  if (skill.tags.includes(SKILL_TAG.SUMMON)) {
+    const {
+      playerAfterSummon,
+      enemiesAfterSummon,
+      summonsAfterSummon,
+      roomEntityPositionsAfterSummon,
+    } = handleSkillSummon(
+      skill,
+      newPlayer,
+      newEnemies,
+      [],
+      clickedTilePosition,
+      newRoomEntityPositions,
+      addLog
+    );
+
+    newPlayer = playerAfterSummon;
+    newEnemies = [...enemiesAfterSummon];
+    newSummons = [...summonsAfterSummon];
+    newRoomEntityPositions = new Map(roomEntityPositionsAfterSummon);
+  }
+
   if (skill.tags.includes(SKILL_TAG.MOVEMENT)) {
     // Move player to clicked tile position
 
@@ -127,7 +157,7 @@ export const handleSkill = (
     });
   }
 
-  return { newPlayer, newEnemies, newRoomEntityPositions };
+  return { newPlayer, newEnemies, newSummons, newRoomEntityPositions };
 };
 
 const getSingleTargetSkillTarget = (
@@ -634,4 +664,80 @@ const handleSkillStatus = (
   });
 
   return { playerAfterStatus, enemiesAfterStatus };
+};
+
+const handleSkillSummon = (
+  skill: ISkill,
+  player: IPlayer,
+  enemies: IEnemy[],
+  summons: ISummon[],
+  clickedTilePosition: [number, number],
+  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
+  addLog: (log: ILog) => void
+) => {
+  const playerAfterSummon = { ...player };
+  const enemiesAfterSummon = [...enemies];
+  let summonsAfterSummon = [...summons];
+  const roomEntityPositionsAfterSummon = new Map(roomEntityPositions);
+  const { getSummonId } = useSummonStore();
+
+  let summon: ISummon | undefined = undefined;
+
+  // Summon skill specific actions
+  switch (skill.id) {
+    case SKILL_ID.BODY_DOUBLE:
+      {
+        // Summon a body double that has the same stats as the player but with half health
+        summon = {
+          ...SUMMON_PRESETS[SUMMON_PRESET_ID.CLONE],
+          id: getSummonId(),
+          owner: player,
+          ownerId: player.id,
+          maxHealth: Math.round(playerAfterSummon.maxHealth / 2),
+          health: Math.round(playerAfterSummon.maxHealth / 2),
+        };
+      }
+      break;
+    default:
+      break;
+  }
+
+  if (!summon) {
+    console.error(
+      'handleSkillSummon: Summon not found for the associated skill'
+    );
+    return {
+      playerAfterSummon,
+      enemiesAfterSummon,
+      summonsAfterSummon,
+      roomEntityPositionsAfterSummon,
+    };
+  }
+
+  // Place summon in the room
+  roomEntityPositionsAfterSummon.set(
+    `${clickedTilePosition[0]},${clickedTilePosition[1]}`,
+    [ENTITY_TYPE.SUMMON, summon.id]
+  );
+
+  // Add summon to summon store
+  summonsAfterSummon = [...summonsAfterSummon, summon];
+
+  // Log summon
+  addLog({
+    message: (
+      <>
+        <span className="text-green-500">{player.name}</span> summoned{' '}
+        <span className="text-blue-500">{summon.name}</span>
+      </>
+    ),
+    type: 'info',
+  });
+
+  return {
+    playerAfterSummon,
+    enemiesAfterSummon,
+    summonsAfterSummon,
+    roomEntityPositionsAfterSummon,
+  };
 };
