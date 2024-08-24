@@ -194,12 +194,13 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.DISABLED,
     name: 'Disabled',
     icon: ICON_ID.STATUS_DISABLED,
-    description: 'Unable to attack.',
+    description: 'Unable to attack and move.',
     duration: 3,
     durationCounter: 3,
     effect: {
       ...BASE_STATUS_EFFECTS,
       canAttack: false,
+      canMove: false,
     },
   },
   {

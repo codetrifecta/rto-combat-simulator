@@ -41,14 +41,14 @@ export enum SKILL_ID {
   LEAP_SLAM = id++,
   FLAME_DIVE = id++,
   HIDE = id++,
-  HIDDEN_BLADE = id++,
+  SHADOW_STRIKE = id++,
   SWIFT_MOVEMENT = id++,
   THROWING_KNIVES = id++,
   BODY_DOUBLE = id++,
   INSTINCTUAL_DODGE = id++,
   BLOODLETTING = id++,
   POISON_STRIKE = id++,
-  DISORIENT = id++,
+  DISORIENT_BLOW = id++,
   PUNCTURE_STRIKE = id++,
 }
 
@@ -57,6 +57,10 @@ export const weaponBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.EXECUTE,
   SKILL_ID.CLEAVE,
   SKILL_ID.ANNIHILATE,
+  SKILL_ID.SHADOW_STRIKE,
+  SKILL_ID.POISON_STRIKE,
+  SKILL_ID.DISORIENT_BLOW,
+  SKILL_ID.PUNCTURE_STRIKE,
 ];
 
 export const strengthBasedSkillIDs: SKILL_ID[] = [
@@ -65,7 +69,7 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.CLEAVE,
   SKILL_ID.ANNIHILATE,
   SKILL_ID.LEAP_SLAM,
-  SKILL_ID.HIDDEN_BLADE,
+  SKILL_ID.SHADOW_STRIKE,
   SKILL_ID.THROWING_KNIVES,
 ];
 
@@ -136,9 +140,9 @@ export const SKILLS: ISkill[] = [
     cost: 5,
   },
   {
-    id: SKILL_ID.HIDDEN_BLADE,
+    id: SKILL_ID.SHADOW_STRIKE,
     name: 'Shadow Strike',
-    icon: ICON_ID.SKILL_HIDDEN_BLADE,
+    icon: ICON_ID.SKILL_SHADOW_STRIKE,
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
@@ -178,6 +182,19 @@ export const SKILLS: ISkill[] = [
     cost: 2,
   },
   {
+    id: SKILL_ID.DISORIENT_BLOW,
+    name: 'Disorienting Blow',
+    icon: ICON_ID.SKILL_DISORIENTING_BLOW,
+    skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.STATUS],
+    description: 'Strike a target, applying disabled on them for 1 turns.',
+    damageMultiplier: 1.2,
+    range: 1,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
     id: SKILL_ID.PUNCTURE_STRIKE,
     name: 'Puncture Strike',
     icon: ICON_ID.SKILL_PUNCTURE_STRIKE,
@@ -185,7 +202,7 @@ export const SKILLS: ISkill[] = [
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
       'Applies wounded to a target for 2 turns. Targets with 50% or less health take more damage from wounded.',
-    damageMultiplier: 0,
+    damageMultiplier: 1.2,
     range: 1,
     cooldown: 4,
     cooldownCounter: 0,
@@ -195,11 +212,12 @@ export const SKILLS: ISkill[] = [
   // Intelligence-based skills
   {
     id: SKILL_ID.LIGHTNING,
-    name: 'Lightning',
+    name: 'Spark',
     icon: ICON_ID.SKILL_LIGHTNING,
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
-    description: 'Strike enemies with lighning from the skies.',
+    description:
+      'Strike a target with lighning sparks. Has a 40% chance to shock target for 2 turn.',
     damageMultiplier: 2,
     range: 4,
     cooldown: 1,
@@ -213,7 +231,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Launch a fireball at a target area. Additionally applied Burned to enemies hit for 3 turns.',
+      'Launch a fireball at a target area. Has a 50% chance to burn targets hit for 3 turns.',
     damageMultiplier: 1.5,
     range: 4,
     cooldown: 2,
@@ -445,20 +463,6 @@ export const SKILLS: ISkill[] = [
     cooldownCounter: 0,
     cost: 3,
   },
-  {
-    id: SKILL_ID.DISORIENT,
-    name: 'Disorient',
-    icon: ICON_ID.SKILL_DISORIENT,
-    skillType: SKILL_TYPE.ST,
-    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.STATUS],
-    description:
-      'Disorient a target for 1 turns. Applies disable and slowed to the target.',
-    damageMultiplier: 0,
-    range: 2,
-    cooldown: 3,
-    cooldownCounter: 0,
-    cost: 3,
-  },
 
   // Movement skills
   {
@@ -516,7 +520,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.SUMMON],
     description:
-      'Create a body double of yourself that enemies can target for 3 turns. The double has 50% of your health and stays in place.',
+      'Create a body double of yourself that enemies can target for 3 turns. The double has 50% of your health and does no action.',
     damageMultiplier: 0,
     range: 5,
     cooldown: 4,

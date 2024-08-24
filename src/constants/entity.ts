@@ -81,12 +81,12 @@ export const getDefaultPlayer = (): IPlayer => {
     maxHealth: getPlayerMaxHealth(PLAYER),
     skills: SKILLS.filter((skill) =>
       [
-        SKILL_ID.HIDE,
-        SKILL_ID.HIDDEN_BLADE,
-        SKILL_ID.SWIFT_MOVEMENT,
-        SKILL_ID.THROWING_KNIVES,
         SKILL_ID.BODY_DOUBLE,
-        SKILL_ID.FLY,
+        SKILL_ID.BLOODLETTING,
+        SKILL_ID.DISORIENT_BLOW,
+        SKILL_ID.PUNCTURE_STRIKE,
+        SKILL_ID.POISON_STRIKE,
+        SKILL_ID.INSTINCTUAL_DODGE,
       ].includes(skill.id)
     ),
   };

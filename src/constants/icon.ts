@@ -173,14 +173,14 @@ export enum ICON_ID {
   SKILL_LEAP_SLAM = 'skill_leap_slam',
   SKILL_FLAME_DIVE = 'skill_flame_dive',
   SKILL_HIDE = 'skill_hide',
-  SKILL_HIDDEN_BLADE = 'skill_hidden_blade',
+  SKILL_SHADOW_STRIKE = 'skill_hidden_blade',
   SKILL_SWIFT_MOVEMENT = 'skill_swift_movement',
   SKILL_THROWING_KNIVES = 'skill_throwing_knives',
   SKILL_BODY_DOUBLE = 'skill_body_double',
   SKILL_INSTINCTUAL_DODGE = 'skill_instinctual_dodge',
   SKILL_BLOODLETTING = 'skill_bloodletting',
   SKILL_POISON_STRIKE = 'skill_poison_strike',
-  SKILL_DISORIENT = 'skill_disorient',
+  SKILL_DISORIENTING_BLOW = 'skill_disorient',
   SKILL_PUNCTURE_STRIKE = 'skill_puncture_strike',
 
   // STATUSES
@@ -277,14 +277,14 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_LEAP_SLAM]: skill_leap_slam,
   [ICON_ID.SKILL_FLAME_DIVE]: skill_flame_dive,
   [ICON_ID.SKILL_HIDE]: skill_hide,
-  [ICON_ID.SKILL_HIDDEN_BLADE]: skill_hidden_blade,
+  [ICON_ID.SKILL_SHADOW_STRIKE]: skill_hidden_blade,
   [ICON_ID.SKILL_SWIFT_MOVEMENT]: skill_swift_movement,
   [ICON_ID.SKILL_THROWING_KNIVES]: skill_throwing_knives,
   [ICON_ID.SKILL_BODY_DOUBLE]: skill_body_double,
   [ICON_ID.SKILL_INSTINCTUAL_DODGE]: skill_instinctual_dodge,
   [ICON_ID.SKILL_BLOODLETTING]: skill_bloodletting,
   [ICON_ID.SKILL_POISON_STRIKE]: skill_poison_strike,
-  [ICON_ID.SKILL_DISORIENT]: skill_disorient,
+  [ICON_ID.SKILL_DISORIENTING_BLOW]: skill_disorient,
   [ICON_ID.SKILL_PUNCTURE_STRIKE]: skill_puncture_strike,
 
   // STATUSES

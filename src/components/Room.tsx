@@ -15,7 +15,7 @@ import {
   weaponBasedSkillIDs,
 } from '../constants/skill';
 import { STATUS_ID } from '../constants/status';
-import { WEAPON_ATTACK_TYPE } from '../constants/weapon';
+import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from '../constants/weapon';
 import { IEnemy, IEntity } from '../types';
 import { useGameStateStore } from '../store/game';
 import { usePlayerStore } from '../store/player';
@@ -729,7 +729,17 @@ export const Room: FC<{
       if (weaponBasedSkillIDs.includes(skill.id)) {
         if (player.equipment.weapon) {
           if (player.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
-            range = player.equipment.weapon.range;
+            if (player.equipment.weapon.type !== WEAPON_TYPE.BOW) {
+              range = player.equipment.weapon.range;
+            } else {
+              range = 2;
+            }
+          } else {
+            if (player.equipment.weapon.type === WEAPON_TYPE.WAND) {
+              range = 1;
+            } else {
+              range = 2;
+            }
           }
         }
       }
@@ -1395,20 +1405,22 @@ export const Room: FC<{
                 //   }
                 // }
 
+                const skillRange = skill.range;
+
                 // Check for the specific skill's effect zone
                 // Depending on the skill, the effect zone could be different.
                 // By default, single target will depend on the player's vision range.
                 switch (skill.id) {
                   case SKILL_ID.FLY:
                     {
-                      // For movement skills like fly, leap slam, and flame dive, player can target any empty tile that does not have an entity
+                      // For movement skills like fly, leap slam, and flame dive,
+                      // player can target any empty tile that does not have an entity (exlcuding themselves).
                       // Leap Slam and Flame Dive handled in the AOE case
-                      const range = skill.range;
                       if (
-                        rowIndex >= playerRow - range &&
-                        rowIndex <= playerRow + range &&
-                        columnIndex >= playerCol - range &&
-                        columnIndex <= playerCol + range
+                        rowIndex >= playerRow - skillRange &&
+                        rowIndex <= playerRow + skillRange &&
+                        columnIndex >= playerCol - skillRange &&
+                        columnIndex <= playerCol + skillRange
                       ) {
                         if (entityIfExists) {
                           if (entityIfExists[0] === ENTITY_TYPE.PLAYER) {
@@ -1416,6 +1428,22 @@ export const Room: FC<{
                           } else {
                             isEffectZone = false;
                           }
+                        } else {
+                          isEffectZone = true;
+                        }
+                      }
+                    }
+                    break;
+                  case SKILL_ID.BODY_DOUBLE:
+                    {
+                      // For body double, player can target any empty tile they can see that does not have an entity.
+                      if (
+                        playerVisionRange &&
+                        playerVisionRange[rowIndex][columnIndex] === true &&
+                        !(rowIndex === playerRow && columnIndex === playerCol)
+                      ) {
+                        if (entityIfExists) {
+                          isEffectZone = false;
                         } else {
                           isEffectZone = true;
                         }
