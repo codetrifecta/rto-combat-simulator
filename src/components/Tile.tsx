@@ -101,12 +101,12 @@ export const Tile: FC<{
   //           className="absolute flex justify-center items-center overflow-hidden"
   //           style={{
   //             width:
-  //               player.sprite_size < TILE_SIZE
-  //                 ? player.sprite_size
+  //               player.spriteSize < TILE_SIZE
+  //                 ? player.spriteSize
   //                 : TILE_SIZE * 1.5,
   //             height:
-  //               player.sprite_size < TILE_SIZE
-  //                 ? player.sprite_size
+  //               player.spriteSize < TILE_SIZE
+  //                 ? player.spriteSize
   //                 : TILE_SIZE * 1.7,
   //           }}
   //         >
@@ -114,22 +114,22 @@ export const Tile: FC<{
   //           <div
   //             className="overflow-hidden"
   //             style={{
-  //               width: player.sprite_size,
-  //               height: player.sprite_size,
+  //               width: player.spriteSize,
+  //               height: player.spriteSize,
   //             }}
   //           >
   //             <div
   //               className="animate-entityIdle20"
   //               style={{
-  //                 width: player.sprite_size * 6,
-  //                 height: player.sprite_size * 12,
+  //                 width: player.spriteSize * 6,
+  //                 height: player.spriteSize * 12,
   //               }}
   //             >
   //               <Sprite
   //                 id={`sprite_${player.entityType}_${player.id}`}
   //                 sprite={player.sprite}
-  //                 width={player.sprite_size * 6}
-  //                 height={player.sprite_size * 12}
+  //                 width={player.spriteSize * 6}
+  //                 height={player.spriteSize * 12}
   //               />
   //             </div>
   //           </div>
@@ -143,11 +143,11 @@ export const Tile: FC<{
 
   //     if (!enemy) return null;
 
-  //     const spriteSheetWidth = enemy.sprite_size * 6;
-  //     let spriteSheetHeight = enemy.sprite_size * 5;
+  //     const spriteSheetWidth = enemy.spriteSize * 6;
+  //     let spriteSheetHeight = enemy.spriteSize * 5;
 
   //     if (enemy.name === 'Minotaur') {
-  //       spriteSheetHeight = enemy.sprite_size * 7;
+  //       spriteSheetHeight = enemy.spriteSize * 7;
   //     }
 
   //     return (
@@ -158,20 +158,20 @@ export const Tile: FC<{
   //           className="absolute flex justify-center items-center overflow-hidden"
   //           style={{
   //             width:
-  //               enemy.sprite_size < TILE_SIZE
-  //                 ? enemy.sprite_size
+  //               enemy.spriteSize < TILE_SIZE
+  //                 ? enemy.spriteSize
   //                 : TILE_SIZE * 1.5,
   //             height:
-  //               enemy.sprite_size < TILE_SIZE
-  //                 ? enemy.sprite_size
+  //               enemy.spriteSize < TILE_SIZE
+  //                 ? enemy.spriteSize
   //                 : TILE_SIZE * 1.7,
   //           }}
   //         >
   //           <div
   //             className="absolute bottom-[10px] overflow-hidden"
   //             style={{
-  //               width: enemy.sprite_size,
-  //               height: enemy.sprite_size,
+  //               width: enemy.spriteSize,
+  //               height: enemy.spriteSize,
   //             }}
   //           >
   //             <div

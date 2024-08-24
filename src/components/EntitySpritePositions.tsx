@@ -158,7 +158,7 @@ export const EntitySpritePositions: FC<{
         <div
           className="absolute left-[50%]"
           style={{
-            bottom: player.sprite_size + 5,
+            bottom: player.spriteSize + 5,
             transform: 'translateX(-50%)',
             zIndex: 1000,
           }}
@@ -169,20 +169,20 @@ export const EntitySpritePositions: FC<{
           className="absolute flex justify-center items-center overflow-hidden"
           style={{
             width:
-              player.sprite_size < TILE_SIZE
-                ? player.sprite_size
+              player.spriteSize < TILE_SIZE
+                ? player.spriteSize
                 : TILE_SIZE * 1.5,
             height:
-              player.sprite_size < TILE_SIZE
-                ? player.sprite_size
+              player.spriteSize < TILE_SIZE
+                ? player.spriteSize
                 : TILE_SIZE * 1.5,
           }}
         >
           <div
             className="absolute bottom-[10px] overflow-hidden"
             style={{
-              width: player.sprite_size,
-              height: player.sprite_size,
+              width: player.spriteSize,
+              height: player.spriteSize,
             }}
           >
             <div
@@ -190,8 +190,8 @@ export const EntitySpritePositions: FC<{
               className="animate-entityAnimate20"
               style={{
                 position: 'absolute',
-                width: player.sprite_size * player.spritesheet_columns,
-                height: player.sprite_size * player.spritesheet_rows,
+                width: player.spriteSize * player.spritesheetColumns,
+                height: player.spriteSize * player.spritesheetRows,
                 top: 0,
                 left: 0,
                 opacity: isHidden ? 0.3 : 1,
@@ -200,8 +200,8 @@ export const EntitySpritePositions: FC<{
               <Sprite
                 id={`sprite_${player.entityType}_${player.id}`}
                 sprite={player.sprite}
-                width={player.sprite_size * player.spritesheet_columns}
-                height={player.sprite_size * player.spritesheet_rows}
+                width={player.spriteSize * player.spritesheetColumns}
+                height={player.spriteSize * player.spritesheetRows}
                 grayscale={isHidden}
               />
             </div>
@@ -212,8 +212,8 @@ export const EntitySpritePositions: FC<{
   };
 
   const renderEnemy = (enemy: IEnemy) => {
-    const spriteSheetWidth = enemy.sprite_size * enemy.spritesheet_columns;
-    const spriteSheetHeight = enemy.sprite_size * enemy.spritesheet_rows;
+    const spriteSheetWidth = enemy.spriteSize * enemy.spritesheetColumns;
+    const spriteSheetHeight = enemy.spriteSize * enemy.spritesheetRows;
 
     return (
       <div className="absolute bottom-0 left-0 w-full flex justify-center items-end cursor-pointer">
@@ -223,16 +223,16 @@ export const EntitySpritePositions: FC<{
           className="absolute flex justify-center items-center overflow-hidden"
           style={{
             width:
-              enemy.sprite_size < TILE_SIZE ? enemy.sprite_size : TILE_SIZE * 3,
+              enemy.spriteSize < TILE_SIZE ? enemy.spriteSize : TILE_SIZE * 3,
             height:
-              enemy.sprite_size < TILE_SIZE ? enemy.sprite_size : TILE_SIZE * 4,
+              enemy.spriteSize < TILE_SIZE ? enemy.spriteSize : TILE_SIZE * 4,
           }}
         >
           <div
             className="absolute bottom-[10px] overflow-hidden"
             style={{
-              width: enemy.sprite_size,
-              height: enemy.sprite_size,
+              width: enemy.spriteSize,
+              height: enemy.spriteSize,
             }}
           >
             <div
@@ -339,7 +339,7 @@ const EntitySpritePositionContainer: FC<{
 
   // Check if the second tile above the entity is a wall or door if the entity is more than 1 tile tall
   // If it is, set the z-index to 35 to ensure the tall entity is rendered above the wall
-  // if (entity.sprite_size / 2 > TILE_SIZE) {
+  // if (entity.spriteSize / 2 > TILE_SIZE) {
   //   const isSecondTileAboveWall =
   //     roomTileMatrix &&
   //     (roomTileMatrix[row - 2][col] === TILE_TYPE.WALL ||

@@ -14,14 +14,14 @@ export interface IEntity {
   damageBonus: number;
   movementRange: number;
   sprite: SPRITE_ID;
-  sprite_size: number;
-  spritesheet_rows: number;
-  spritesheet_columns: number;
-  spritesheet_idle_row: number;
-  spritesheet_movement_row: number;
-  spritesheet_attack_row: number;
-  spritesheet_damaged_row: number;
-  spritesheet_defeat_row: number;
+  spriteSize: number;
+  spritesheetRows: number;
+  spritesheetColumns: number;
+  spritesheetIdleRow: number;
+  spritesheetMovementRow: number;
+  spritesheetAttackRow: number;
+  spritesheetDamagedRow: number;
+  spritesheetDefeatRow: number;
 }
 
 export type IAllEntity = IEntity | IPlayer | IEnemy;
@@ -48,9 +48,14 @@ export interface IPlayerState {
 
 export interface IEnemy extends IEntity {
   sprite: SPRITE_ID;
-  sprite_size: number;
+  spriteSize: number;
   range: number;
   damage: number;
+}
+
+export interface ISummon extends IEntity {
+  owner: IEntity;
+  ownerId: number;
 }
 
 export interface ISkill {

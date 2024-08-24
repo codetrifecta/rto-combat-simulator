@@ -115,7 +115,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
-          playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
+          playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
           playerSpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft08'
           );
@@ -164,7 +164,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
-          playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
+          playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
           playerSpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft20'
           );
@@ -483,7 +483,7 @@ export const Room: FC<{
                 }
 
                 enemySpriteSheetContainer.style.top =
-                  enemy.sprite_size * enemy.spritesheet_idle_row + 'px';
+                  enemy.spriteSize * enemy.spritesheetIdleRow + 'px';
 
                 // Update enemy walking animation direction based on movement path
                 if (
@@ -496,7 +496,7 @@ export const Room: FC<{
                     'animate-entityAnimateLeft08'
                   );
                   enemySpriteSheetContainer.style.left =
-                    enemy.sprite_size + 'px';
+                    enemy.spriteSize + 'px';
                   enemySpriteSheetContainer.classList.add(
                     'animate-entityAnimateLeft08'
                   );
@@ -836,7 +836,7 @@ export const Room: FC<{
           'animate-entityAnimateLeft20'
         );
 
-        playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
+        playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
 
         setTimeout(() => {
           playerSpriteSheetContainer.classList.add(
@@ -1006,7 +1006,7 @@ export const Room: FC<{
     playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
     playerSpriteSheetContainer.classList.remove('animate-entityAnimateLeft20');
 
-    playerSpriteSheetContainer.style.top = '-' + player.sprite_size + 'px';
+    playerSpriteSheetContainer.style.top = '-' + player.spriteSize + 'px';
 
     setPlayerMovementPath(path);
     setPlayerState({
@@ -1064,12 +1064,11 @@ export const Room: FC<{
 
     // Update enemy walking animation direction based on movement path
     // Change spritesheet position to animate movement
-    const topPosition =
-      -enemy.sprite_size * enemy.spritesheet_movement_row + 'px';
+    const topPosition = -enemy.spriteSize * enemy.spritesheetMovementRow + 'px';
     if (randomMove[1] < enemyCol) {
       enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
       enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
-      enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
+      enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
       enemySpriteSheetContainer.style.top = topPosition;
 
       setTimeout(() => {
@@ -1147,15 +1146,14 @@ export const Room: FC<{
         return;
       }
 
-      const topPosition =
-        -enemy.sprite_size * enemy.spritesheet_attack_row + 'px';
+      const topPosition = -enemy.spriteSize * enemy.spritesheetAttackRow + 'px';
 
       if (playerCol < enemyCol) {
         enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
         enemySpriteSheetContainer.classList.remove(
           'animate-entityAnimateLeft08'
         );
-        enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
+        enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
         enemySpriteSheetContainer.style.top = topPosition;
 
         setTimeout(() => {
@@ -1180,8 +1178,7 @@ export const Room: FC<{
 
       // After attack animation ends, change back to idle animation
       setTimeout(() => {
-        const topPosition =
-          -enemy.sprite_size * enemy.spritesheet_idle_row + 'px';
+        const topPosition = -enemy.spriteSize * enemy.spritesheetIdleRow + 'px';
         if (
           enemySpriteSheetContainer.classList.contains(
             'animate-entityAnimateLeftOnce05'
@@ -1192,7 +1189,7 @@ export const Room: FC<{
             'animate-entityAnimateLeftOnce05'
           );
           enemySpriteSheetContainer.style.top = topPosition;
-          enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
+          enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
           enemySpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft08'
           );
@@ -1814,7 +1811,7 @@ export const Room: FC<{
                       );
 
                       playerSpriteSheetContainer.style.left =
-                        player.sprite_size + 'px';
+                        player.spriteSize + 'px';
 
                       setTimeout(() => {
                         playerSpriteSheetContainer.classList.add(
