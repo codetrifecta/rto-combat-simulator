@@ -1,11 +1,24 @@
-import { ENTITY_TYPE } from './constants/entity';
+import {
+  ENTITY_TYPE,
+  SUMMON_PRESET_ID,
+  SUMMON_PRESETS,
+} from '../constants/entity';
 import {
   intelligenceBasedSkillIDs,
   SKILL_ID,
   SKILL_TAG,
-} from './constants/skill';
-import { BASE_STATUS_EFFECTS, STATUS_ID, STATUSES } from './constants/status';
-import { IEnemy, ILog, IPlayer, ISkill, IStatus, IStatusEffect } from './types';
+} from '../constants/skill';
+import { BASE_STATUS_EFFECTS, STATUS_ID, STATUSES } from '../constants/status';
+import { useSummonStore } from '../store/summon';
+import {
+  IEnemy,
+  ILog,
+  IPlayer,
+  ISkill,
+  IStatus,
+  IStatusEffect,
+  ISummon,
+} from '../types';
 import {
   damageEntity,
   displayStatusEffect,
@@ -15,20 +28,22 @@ import {
   getPlayerTotalIntelligence,
   getPlayerTotalStrength,
   healEntity,
-} from './utils';
+} from './entity';
 
 export const handleSkill = (
   skill: ISkill,
   clickedTilePosition: [number, number],
   player: IPlayer,
   enemies: IEnemy[],
+  summons: ISummon[],
   targetZones: [number, number][],
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
   addLog: (log: ILog) => void
 ) => {
   let newPlayer = { ...player };
   let newEnemies = [...enemies];
-  const newRoomEntityPositions = new Map(roomEntityPositions);
+  let newSummons = [...summons];
+  let newRoomEntityPositions = new Map(roomEntityPositions);
 
   let targets: [ENTITY_TYPE, number][] = [];
 
@@ -82,6 +97,28 @@ export const handleSkill = (
     newEnemies = [...enemiesAfterStatus];
   }
 
+  if (skill.tags.includes(SKILL_TAG.SUMMON)) {
+    const {
+      playerAfterSummon,
+      enemiesAfterSummon,
+      summonsAfterSummon,
+      roomEntityPositionsAfterSummon,
+    } = handleSkillSummon(
+      skill,
+      newPlayer,
+      newEnemies,
+      [],
+      clickedTilePosition,
+      newRoomEntityPositions,
+      addLog
+    );
+
+    newPlayer = playerAfterSummon;
+    newEnemies = [...enemiesAfterSummon];
+    newSummons = [...summonsAfterSummon];
+    newRoomEntityPositions = new Map(roomEntityPositionsAfterSummon);
+  }
+
   if (skill.tags.includes(SKILL_TAG.MOVEMENT)) {
     // Move player to clicked tile position
 
@@ -120,7 +157,7 @@ export const handleSkill = (
     });
   }
 
-  return { newPlayer, newEnemies, newRoomEntityPositions };
+  return { newPlayer, newEnemies, newSummons, newRoomEntityPositions };
 };
 
 const getSingleTargetSkillTarget = (
@@ -217,7 +254,7 @@ const handleSkillDamage = (
         if (newEnemy.health < newEnemy.maxHealth * 0.25) {
           totalDamage *= 2;
         }
-      } else if ([SKILL_ID.HIDDEN_BLADE].includes(skill.id)) {
+      } else if ([SKILL_ID.SHADOW_STRIKE].includes(skill.id)) {
         // Hidden Blade / Shadow Strike: Deal double damage if player is hidden
         if (
           playerAfterDamage.statuses.some(
@@ -230,6 +267,22 @@ const handleSkillDamage = (
         // Throwing Knives: 15% chance to deal double damage
         if (Math.random() < 0.15) {
           totalDamage *= 2;
+        }
+      }
+
+      // Check if enemy has any statuses that affect damage taken
+      // Check for wounded status
+      const woundedStatus = newEnemy.statuses.find(
+        (status) => status.id === STATUS_ID.WOUNDED
+      );
+
+      if (woundedStatus) {
+        console.log('Wounded status found');
+        // Wounded: Increase damage taken by 20%. If enemy is below 30% health, increase damage taken by 40%
+        if (newEnemy.health < newEnemy.maxHealth * 0.3) {
+          totalDamage += Math.round(totalDamage * 0.4);
+        } else {
+          totalDamage += Math.round(totalDamage * 0.2);
         }
       }
 
@@ -452,6 +505,7 @@ const handleSkillStatus = (
       statusID = STATUS_ID.BLOODLUST;
       break;
     case SKILL_ID.DISABLE:
+    case SKILL_ID.DISABLING_BLOW:
       statusID = STATUS_ID.DISABLED;
       break;
     case SKILL_ID.ENTANGLE:
@@ -471,7 +525,7 @@ const handleSkillStatus = (
     case SKILL_ID.HIDE:
       statusID = STATUS_ID.HIDDEN;
       break;
-    case SKILL_ID.HIDDEN_BLADE:
+    case SKILL_ID.SHADOW_STRIKE:
     case SKILL_ID.THROWING_KNIVES:
       statusID = STATUS_ID.BLEEDING;
       // DoT will scale with player's strength
@@ -482,6 +536,20 @@ const handleSkillStatus = (
       break;
     case SKILL_ID.SWIFT_MOVEMENT:
       statusID = STATUS_ID.SWIFTNESS;
+      break;
+    case SKILL_ID.INSTINCTUAL_DODGE:
+      statusID = STATUS_ID.DODGING;
+      break;
+    case SKILL_ID.POISON_STRIKE:
+      statusID = STATUS_ID.POISONED;
+      // DoT will scale with player's intelligence
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].damageOverTime = Math.ceil(
+        0.1 * getPlayerTotalIntelligence(playerAfterStatus)
+      );
+      break;
+    case SKILL_ID.PUNCTURE_STRIKE:
+      statusID = STATUS_ID.WOUNDED;
       break;
     default:
       break;
@@ -507,7 +575,11 @@ const handleSkillStatus = (
     };
   }
 
-  if ([STATUS_ID.BURNED, STATUS_ID.BLEEDING].includes(statusToBeApplied.id)) {
+  if (
+    [STATUS_ID.BURNED, STATUS_ID.BLEEDING, STATUS_ID.POISONED].includes(
+      statusToBeApplied.id
+    )
+  ) {
     statusToBeApplied.description = statusToBeApplied.description.replace(
       '#DAMAGE',
       statusToBeApplied.effect.damageOverTime + ''
@@ -627,4 +699,80 @@ const handleSkillStatus = (
   });
 
   return { playerAfterStatus, enemiesAfterStatus };
+};
+
+const handleSkillSummon = (
+  skill: ISkill,
+  player: IPlayer,
+  enemies: IEnemy[],
+  summons: ISummon[],
+  clickedTilePosition: [number, number],
+  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
+  addLog: (log: ILog) => void
+) => {
+  const playerAfterSummon = { ...player };
+  const enemiesAfterSummon = [...enemies];
+  let summonsAfterSummon = [...summons];
+  const roomEntityPositionsAfterSummon = new Map(roomEntityPositions);
+  const { getSummonId } = useSummonStore();
+
+  let summon: ISummon | undefined = undefined;
+
+  // Summon skill specific actions
+  switch (skill.id) {
+    case SKILL_ID.BODY_DOUBLE:
+      {
+        // Summon a body double that has the same stats as the player but with half health
+        summon = {
+          ...SUMMON_PRESETS[SUMMON_PRESET_ID.CLONE],
+          id: getSummonId(),
+          owner: player,
+          ownerId: player.id,
+          maxHealth: Math.round(playerAfterSummon.maxHealth / 2),
+          health: Math.round(playerAfterSummon.maxHealth / 2),
+        };
+      }
+      break;
+    default:
+      break;
+  }
+
+  if (!summon) {
+    console.error(
+      'handleSkillSummon: Summon not found for the associated skill'
+    );
+    return {
+      playerAfterSummon,
+      enemiesAfterSummon,
+      summonsAfterSummon,
+      roomEntityPositionsAfterSummon,
+    };
+  }
+
+  // Place summon in the room
+  roomEntityPositionsAfterSummon.set(
+    `${clickedTilePosition[0]},${clickedTilePosition[1]}`,
+    [ENTITY_TYPE.SUMMON, summon.id]
+  );
+
+  // Add summon to summon store
+  summonsAfterSummon = [...summonsAfterSummon, summon];
+
+  // Log summon
+  addLog({
+    message: (
+      <>
+        <span className="text-green-500">{player.name}</span> summoned{' '}
+        <span className="text-blue-500">{summon.name}</span>
+      </>
+    ),
+    type: 'info',
+  });
+
+  return {
+    playerAfterSummon,
+    enemiesAfterSummon,
+    summonsAfterSummon,
+    roomEntityPositionsAfterSummon,
+  };
 };

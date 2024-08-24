@@ -39,12 +39,11 @@ Combat simulator for Return to Olympus
   - [x] Shadow Strike
   - [x] Swift Movement
   - [x] Throwing Knives
-  - [ ] Body Double
-  - [ ] Instinctual Dodge
+  - [x] Instinctual Dodge
   - [ ] Bloodletting
-  - [ ] Poison Strike
-  - [ ] Disorient
-  - [ ] Puncture Wound
+  - [x] Poison Strike
+  - [x] Disabling Blow
+  - [x] Puncture Strike
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
 - [x] Sprites for each of the above

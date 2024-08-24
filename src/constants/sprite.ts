@@ -58,7 +58,7 @@ import tile_cellar_253 from '../assets/sprites/tiles/cellar/door/sprite_tile_cel
 import tile_cellar_397 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_397.png';
 import tile_cellar_282 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_282.png';
 
-export const SPRITE_SIZE = 64;
+export const spriteSize = 64;
 export const FLOOR_SIZE = 32;
 
 export enum SPRITE_ID {

@@ -14,31 +14,34 @@ import {
   SKILL_TYPE,
   weaponBasedSkillIDs,
 } from '../constants/skill';
-import { STATUS_ID } from '../constants/status';
-import { WEAPON_ATTACK_TYPE } from '../constants/weapon';
+import { STATUS_ID, STATUSES } from '../constants/status';
+import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from '../constants/weapon';
 import { IEnemy, IEntity } from '../types';
 import { useGameStateStore } from '../store/game';
 import { usePlayerStore } from '../store/player';
 import { useEnemyStore } from '../store/enemy';
 import {
   damageEntity,
+  displayGeneralMessage,
   displayStatusEffect,
+  getEntityDodgeChance,
   getEntityPosition,
   getPlayerTotalDefense,
   handlePlayerEndTurn,
   healEntity,
   isEnemy,
   isPlayer,
-  updateRoomEntityPositions,
-} from '../utils';
+} from '../utils/entity';
+import { updateRoomEntityPositions } from '../utils/room';
 import { useLogStore } from '../store/log';
-import { handleSkill } from '../skill_utils';
+import { handleSkill } from '../utils/skill';
 import {
   findPathsFromCurrentLocation,
   getApCostForPath,
 } from '../utils/pathfinding';
 import { getVisionFromEntityPosition } from '../utils/vision';
 import debounce from 'debounce';
+import { useSummonStore } from '../store/summon';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -86,6 +89,7 @@ export const Room: FC<{
   const playerLifestealMultiplier = getPlayerLifestealMultiplier();
 
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
+  const { summons } = useSummonStore();
 
   const { addLog } = useLogStore();
 
@@ -115,7 +119,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
-          playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
+          playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
           playerSpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft08'
           );
@@ -164,7 +168,7 @@ export const Room: FC<{
           playerSpriteSheetContainer.classList.remove(
             'animate-entityAnimateLeft08'
           );
-          playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
+          playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
           playerSpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft20'
           );
@@ -483,7 +487,7 @@ export const Room: FC<{
                 }
 
                 enemySpriteSheetContainer.style.top =
-                  enemy.sprite_size * enemy.spritesheet_idle_row + 'px';
+                  enemy.spriteSize * enemy.spritesheetIdleRow + 'px';
 
                 // Update enemy walking animation direction based on movement path
                 if (
@@ -496,7 +500,7 @@ export const Room: FC<{
                     'animate-entityAnimateLeft08'
                   );
                   enemySpriteSheetContainer.style.left =
-                    enemy.sprite_size + 'px';
+                    enemy.spriteSize + 'px';
                   enemySpriteSheetContainer.classList.add(
                     'animate-entityAnimateLeft08'
                   );
@@ -719,6 +723,7 @@ export const Room: FC<{
       );
 
       if (!skill) {
+        console.error('Skill not found!');
         return;
       }
 
@@ -730,6 +735,12 @@ export const Room: FC<{
         if (player.equipment.weapon) {
           if (player.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
             range = player.equipment.weapon.range;
+          } else {
+            if (player.equipment.weapon.type !== WEAPON_TYPE.STAFF) {
+              range = 1;
+            } else {
+              range = 2;
+            }
           }
         }
       }
@@ -751,6 +762,7 @@ export const Room: FC<{
     player.state.isAttacking,
     player.state.isUsingSkill,
     player.state.skillId,
+    player.equipment.weapon,
   ]);
 
   // Get player's available movement possibilities (based on player's action points)
@@ -836,7 +848,7 @@ export const Room: FC<{
           'animate-entityAnimateLeft20'
         );
 
-        playerSpriteSheetContainer.style.left = player.sprite_size + 'px';
+        playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
 
         setTimeout(() => {
           playerSpriteSheetContainer.classList.add(
@@ -866,7 +878,46 @@ export const Room: FC<{
       }
 
       // Compute base attack damage based on the higher of player's strength or intelligence
-      const totalDamage = playerBaseAttackDamage + statusDamageBonus;
+      let totalDamage = playerBaseAttackDamage + statusDamageBonus;
+
+      // Check if enemy has any statuses that affect damage taken
+      // Check for wounded status
+      const woundedStatus = enemy.statuses.find(
+        (status) => status.id === STATUS_ID.WOUNDED
+      );
+
+      if (woundedStatus) {
+        // Wounded: Increase damage taken by 20%. If enemy is below 30% health, increase damage taken by 40%
+        if (enemy.health < enemy.maxHealth * 0.3) {
+          totalDamage += Math.round(totalDamage * 0.4);
+        } else {
+          totalDamage += Math.round(totalDamage * 0.2);
+        }
+      }
+
+      // Remove hidden status from player if enemy is attacked
+      if (newPlayer.statuses.some((status) => status.id === STATUS_ID.HIDDEN)) {
+        newPlayer.statuses = newPlayer.statuses.filter(
+          (status) => status.id !== STATUS_ID.HIDDEN
+        );
+
+        const statusToBeRemoved = STATUSES.find(
+          (status) => status.id === STATUS_ID.HIDDEN
+        );
+
+        if (statusToBeRemoved === undefined) {
+          console.error(
+            'handleSkillDamage: No status found for the associated skill ID'
+          );
+        } else {
+          displayStatusEffect(
+            statusToBeRemoved,
+            false,
+            `tile_${newPlayer.entityType}_${newPlayer.id}`
+          );
+        }
+      }
+
       const newEnemy = { ...enemy };
       newEnemy.health = damageEntity(
         newEnemy,
@@ -1006,7 +1057,7 @@ export const Room: FC<{
     playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
     playerSpriteSheetContainer.classList.remove('animate-entityAnimateLeft20');
 
-    playerSpriteSheetContainer.style.top = '-' + player.sprite_size + 'px';
+    playerSpriteSheetContainer.style.top = '-' + player.spriteSize + 'px';
 
     setPlayerMovementPath(path);
     setPlayerState({
@@ -1064,12 +1115,11 @@ export const Room: FC<{
 
     // Update enemy walking animation direction based on movement path
     // Change spritesheet position to animate movement
-    const topPosition =
-      -enemy.sprite_size * enemy.spritesheet_movement_row + 'px';
+    const topPosition = -enemy.spriteSize * enemy.spritesheetMovementRow + 'px';
     if (randomMove[1] < enemyCol) {
       enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
       enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
-      enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
+      enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
       enemySpriteSheetContainer.style.top = topPosition;
 
       setTimeout(() => {
@@ -1147,15 +1197,14 @@ export const Room: FC<{
         return;
       }
 
-      const topPosition =
-        -enemy.sprite_size * enemy.spritesheet_attack_row + 'px';
+      const topPosition = -enemy.spriteSize * enemy.spritesheetAttackRow + 'px';
 
       if (playerCol < enemyCol) {
         enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
         enemySpriteSheetContainer.classList.remove(
           'animate-entityAnimateLeft08'
         );
-        enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
+        enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
         enemySpriteSheetContainer.style.top = topPosition;
 
         setTimeout(() => {
@@ -1180,8 +1229,7 @@ export const Room: FC<{
 
       // After attack animation ends, change back to idle animation
       setTimeout(() => {
-        const topPosition =
-          -enemy.sprite_size * enemy.spritesheet_idle_row + 'px';
+        const topPosition = -enemy.spriteSize * enemy.spritesheetIdleRow + 'px';
         if (
           enemySpriteSheetContainer.classList.contains(
             'animate-entityAnimateLeftOnce05'
@@ -1192,7 +1240,7 @@ export const Room: FC<{
             'animate-entityAnimateLeftOnce05'
           );
           enemySpriteSheetContainer.style.top = topPosition;
-          enemySpriteSheetContainer.style.left = enemy.sprite_size + 'px';
+          enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
           enemySpriteSheetContainer.classList.add(
             'animate-entityAnimateLeft08'
           );
@@ -1207,74 +1255,96 @@ export const Room: FC<{
         }
       }, 500);
 
-      // Calculate damage
-      const baseDamage = enemy.damage;
+      // Check player dodge chance
+      const playerDodgeChance = getEntityDodgeChance(player);
 
-      const statusDamageBonus = enemy.statuses.reduce((acc, status) => {
-        return acc + status.effect.damageBonus;
-      }, 0);
+      // Check if player dodges attack
+      const playerDodges = Math.random() < playerDodgeChance;
 
-      const damageMultiplier = enemy.statuses.reduce((acc, status) => {
-        if (status.effect.damageMultiplier === 0) return acc;
-
-        if (status.effect.damageMultiplier > 1) {
-          return acc + (status.effect.damageMultiplier - 1);
-        } else {
-          return acc - (1 - status.effect.damageMultiplier);
-        }
-      }, 1);
-
-      const playerTotalDefense = getPlayerTotalDefense(player);
-
-      // If player has 10 DEF, then player takes 10% less damage
-      const playerDamageTakenMultiplier = 1 - playerTotalDefense / 100;
-
-      let totalDamage = Math.round(
-        (baseDamage + statusDamageBonus) *
-          damageMultiplier *
-          playerDamageTakenMultiplier
-      );
-
-      if (totalDamage <= 0) totalDamage = 0;
-
-      const playerHealth = damageEntity(
-        player,
-        totalDamage,
-        `tile_${player.entityType}_${player.id}`
-      );
-
-      if (playerHealth <= 0) {
+      if (playerDodges) {
+        displayGeneralMessage(
+          `tile_${player.entityType}_${player.id}`,
+          'Dodged!'
+        );
         addLog({
           message: (
             <>
-              <span className="text-red-500">{enemy.name}</span> attacked{' '}
-              <span className="text-green-500">{player.name}</span> for{' '}
-              {totalDamage} damage and defeated them!
+              <span className="text-green-500">{player.name}</span> dodged{' '}
+              <span className="text-red-500">{enemy.name}&apos;s attack!</span>
             </>
           ),
           type: 'info',
         });
-        setPlayer({
-          ...player,
-          health: 0,
-        });
-        setIsGameOver(true);
       } else {
-        setPlayer({
-          ...player,
-          health: player.health - totalDamage,
-        });
+        // Calculate damage
+        const baseDamage = enemy.damage;
 
-        addLog({
-          message: (
-            <>
-              <span className="text-red-500">{enemy.name}</span> attacked{' '}
-              <span className="text-green-500">{player.name}</span> for{' '}
-              {totalDamage} damage.
-            </>
-          ),
-          type: 'info',
-        });
+        const statusDamageBonus = enemy.statuses.reduce((acc, status) => {
+          return acc + status.effect.damageBonus;
+        }, 0);
+
+        const damageMultiplier = enemy.statuses.reduce((acc, status) => {
+          if (status.effect.damageMultiplier === 0) return acc;
+
+          if (status.effect.damageMultiplier > 1) {
+            return acc + (status.effect.damageMultiplier - 1);
+          } else {
+            return acc - (1 - status.effect.damageMultiplier);
+          }
+        }, 1);
+
+        const playerTotalDefense = getPlayerTotalDefense(player);
+
+        // If player has 10 DEF, then player takes 10% less damage
+        const playerDamageTakenMultiplier = 1 - playerTotalDefense / 100;
+
+        let totalDamage = Math.round(
+          (baseDamage + statusDamageBonus) *
+            damageMultiplier *
+            playerDamageTakenMultiplier
+        );
+
+        if (totalDamage <= 0) totalDamage = 0;
+
+        const playerHealth = damageEntity(
+          player,
+          totalDamage,
+          `tile_${player.entityType}_${player.id}`
+        );
+
+        if (playerHealth <= 0) {
+          addLog({
+            message: (
+              <>
+                <span className="text-red-500">{enemy.name}</span> attacked{' '}
+                <span className="text-green-500">{player.name}</span> for{' '}
+                {totalDamage} damage and defeated them!
+              </>
+            ),
+            type: 'info',
+          });
+          setPlayer({
+            ...player,
+            health: 0,
+          });
+          setIsGameOver(true);
+        } else {
+          setPlayer({
+            ...player,
+            health: player.health - totalDamage,
+          });
+
+          addLog({
+            message: (
+              <>
+                <span className="text-red-500">{enemy.name}</span> attacked{' '}
+                <span className="text-green-500">{player.name}</span> for{' '}
+                {totalDamage} damage.
+              </>
+            ),
+            type: 'info',
+          });
+        }
       }
     }
   };
@@ -1404,14 +1474,15 @@ export const Room: FC<{
                 switch (skill.id) {
                   case SKILL_ID.FLY:
                     {
-                      // For movement skills like fly, leap slam, and flame dive, player can target any empty tile that does not have an entity
+                      const skillRange = skill.range;
+                      // For movement skills like fly, leap slam, and flame dive,
+                      // player can target any empty tile that does not have an entity (exlcuding themselves).
                       // Leap Slam and Flame Dive handled in the AOE case
-                      const range = skill.range;
                       if (
-                        rowIndex >= playerRow - range &&
-                        rowIndex <= playerRow + range &&
-                        columnIndex >= playerCol - range &&
-                        columnIndex <= playerCol + range
+                        rowIndex >= playerRow - skillRange &&
+                        rowIndex <= playerRow + skillRange &&
+                        columnIndex >= playerCol - skillRange &&
+                        columnIndex <= playerCol + skillRange
                       ) {
                         if (entityIfExists) {
                           if (entityIfExists[0] === ENTITY_TYPE.PLAYER) {
@@ -1419,6 +1490,22 @@ export const Room: FC<{
                           } else {
                             isEffectZone = false;
                           }
+                        } else {
+                          isEffectZone = true;
+                        }
+                      }
+                    }
+                    break;
+                  case SKILL_ID.BODY_DOUBLE:
+                    {
+                      // For body double, player can target any empty tile they can see that does not have an entity.
+                      if (
+                        playerVisionRange &&
+                        playerVisionRange[rowIndex][columnIndex] === true &&
+                        !(rowIndex === playerRow && columnIndex === playerCol)
+                      ) {
+                        if (entityIfExists) {
+                          isEffectZone = false;
                         } else {
                           isEffectZone = true;
                         }
@@ -1787,6 +1874,7 @@ export const Room: FC<{
                         [rowIndex, columnIndex],
                         player,
                         enemies,
+                        summons,
                         targetZones.current,
                         roomEntityPositions,
                         addLog
@@ -1814,7 +1902,7 @@ export const Room: FC<{
                       );
 
                       playerSpriteSheetContainer.style.left =
-                        player.sprite_size + 'px';
+                        player.spriteSize + 'px';
 
                       setTimeout(() => {
                         playerSpriteSheetContainer.classList.add(
