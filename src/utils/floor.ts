@@ -1,10 +1,10 @@
 export enum ROOM_TYPE {
-  NULL = -1,
-  COMMON = 0,
-  START = 1,
-  BOSS = 2,
-  MINIBOSS = 3,
-  SHOP = 4,
+  NULL = 0,
+  COMMON = 1,
+  START = 2,
+  BOSS = 3,
+  MINIBOSS = 4,
+  SHOP = 5,
 }
 
 /**
@@ -203,7 +203,7 @@ export function generateFloorPlan(start: boolean): ROOM_TYPE[][] {
         floor[current[0]][current[1]] == ROOM_TYPE.MINIBOSS ||
         floor[current[0]][current[1]] == ROOM_TYPE.SHOP
       ) {
-        continue;
+        break;
       } else {
         floor[current[0]][current[1]] = ROOM_TYPE.COMMON; // Assign this room as Common room (intermediate between Start, Boss, Mini Boss and Shop rooms)
       }
