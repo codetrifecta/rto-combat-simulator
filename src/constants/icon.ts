@@ -80,6 +80,11 @@ import skill_bloodletting from '../assets/icons/skills/icon_skill_bloodletting.p
 import skill_poison_strike from '../assets/icons/skills/icon_skill_poison_strike.png';
 import skill_disabling_blow from '../assets/icons/skills/icon_skill_disorient.png';
 import skill_puncture_strike from '../assets/icons/skills/icon_skill_puncture_strike.png';
+import skill_berserk from '../assets/icons/skills/icon_skill_berserk.png';
+import skill_frenzy from '../assets/icons/skills/icon_skill_frenzy.png';
+import skill_deflect from '../assets/icons/skills/icon_skill_deflect.png';
+import skill_air_slash from '../assets/icons/skills/icon_skill_air_slash.png';
+import skill_flying_kick from '../assets/icons/skills/icon_skill_flying_kick.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -101,6 +106,9 @@ import status_slowed from '../assets/icons/statuses/icon_status_slowed.png';
 import status_dodging from '../assets/icons/statuses/icon_status_dodging.png';
 import status_poisoned from '../assets/icons/statuses/icon_status_poisoned.png';
 import status_wounded from '../assets/icons/statuses/icon_status_wounded.png';
+import status_berserk from '../assets/icons/statuses/icon_status_berserk.png';
+import status_frenzy from '../assets/icons/statuses/icon_status_frenzy.png';
+import status_deflecting from '../assets/icons/statuses/icon_status_deflecting.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -185,6 +193,11 @@ export enum ICON_ID {
   SKILL_POISON_STRIKE = 'skill_poison_strike',
   SKILL_DISABLING_BLOW = 'skill_disabling_blow',
   SKILL_PUNCTURE_STRIKE = 'skill_puncture_strike',
+  SKILL_BERSERK = 'skill_berserk',
+  SKILL_FRENZY = 'skill_frenzy',
+  SKILL_DEFLECT = 'skill_deflect',
+  SKILL_AIR_SLASH = 'skill_air_slash',
+  SKILL_FLYING_KICK = 'skill_flying_kick',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -207,6 +220,9 @@ export enum ICON_ID {
   STATUS_DODGING = 'status_dodging',
   STATUS_POISONED = 'status_poisoned',
   STATUS_WOUNDED = 'status_wounded',
+  STATUS_BERSERK = 'status_berserk',
+  STATUS_FRENZY = 'status_frenzy',
+  STATUS_DEFLECTING = 'status_deflecting',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -292,6 +308,11 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_POISON_STRIKE]: skill_poison_strike,
   [ICON_ID.SKILL_DISABLING_BLOW]: skill_disabling_blow,
   [ICON_ID.SKILL_PUNCTURE_STRIKE]: skill_puncture_strike,
+  [ICON_ID.SKILL_BERSERK]: skill_berserk,
+  [ICON_ID.SKILL_FRENZY]: skill_frenzy,
+  [ICON_ID.SKILL_DEFLECT]: skill_deflect,
+  [ICON_ID.SKILL_AIR_SLASH]: skill_air_slash,
+  [ICON_ID.SKILL_FLYING_KICK]: skill_flying_kick,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
@@ -314,6 +335,9 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_DODGING]: status_dodging,
   [ICON_ID.STATUS_POISONED]: status_poisoned,
   [ICON_ID.STATUS_WOUNDED]: status_wounded,
+  [ICON_ID.STATUS_BERSERK]: status_berserk,
+  [ICON_ID.STATUS_FRENZY]: status_frenzy,
+  [ICON_ID.STATUS_DEFLECTING]: status_deflecting,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';
