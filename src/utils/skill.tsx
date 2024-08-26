@@ -557,7 +557,9 @@ const handleSkillStatus = (
       statusEffectModifier[0] = true;
       statusEffectModifier[1].strengthMultiplier =
         1 + (1 - playerAfterStatus.health / playerAfterStatus.maxHealth);
-
+      break;
+    case SKILL_ID.FRENZY:
+      statusID = STATUS_ID.FRENZY;
       break;
     default:
       break;
