@@ -97,6 +97,7 @@ export interface IStatusEffect {
   movementRangeBonus: number;
   dodgeChance: number;
   damagePerAP: number;
+  incomingDamageMultiplier: number;
 }
 
 export interface IWeapon {

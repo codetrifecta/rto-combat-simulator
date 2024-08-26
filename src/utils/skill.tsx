@@ -551,6 +551,14 @@ const handleSkillStatus = (
     case SKILL_ID.PUNCTURE_STRIKE:
       statusID = STATUS_ID.WOUNDED;
       break;
+    case SKILL_ID.BERSERK:
+      statusID = STATUS_ID.BERSERK;
+      // Strength increase will scale with player's missing health
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].strengthMultiplier =
+        1 + (1 - playerAfterStatus.health / playerAfterStatus.maxHealth);
+
+      break;
     default:
       break;
   }
@@ -575,6 +583,7 @@ const handleSkillStatus = (
     };
   }
 
+  // Replace placeholder values in status description
   if (
     [STATUS_ID.BURNED, STATUS_ID.BLEEDING, STATUS_ID.POISONED].includes(
       statusToBeApplied.id
@@ -583,6 +592,11 @@ const handleSkillStatus = (
     statusToBeApplied.description = statusToBeApplied.description.replace(
       '#DAMAGE',
       statusToBeApplied.effect.damageOverTime + ''
+    );
+  } else if ([STATUS_ID.BERSERK].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#STRENGTH_MULTIPLIER',
+      Math.round((statusToBeApplied.effect.strengthMultiplier - 1) * 100) + ''
     );
   }
 

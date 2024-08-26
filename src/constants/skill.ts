@@ -427,7 +427,7 @@ export const SKILLS: ISkill[] = [
     range: 0,
     cooldown: 4,
     cooldownCounter: 0,
-    cost: 3,
+    cost: 1,
   },
   {
     id: SKILL_ID.FRENZY,
@@ -441,7 +441,7 @@ export const SKILLS: ISkill[] = [
     range: 0,
     cooldown: 4,
     cooldownCounter: 0,
-    cost: 3,
+    cost: 1,
   },
   {
     id: SKILL_ID.DEFLECT,

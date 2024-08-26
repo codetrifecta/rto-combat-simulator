@@ -43,7 +43,7 @@ Combat simulator for Return to Olympus
   - [x] Poison Strike
   - [x] Disabling Blow
   - [x] Puncture Strike
-  - [ ] Berserk
+  - [x] Berserk
   - [ ] Frenzy
   - [ ] Deflect
   - [ ] Air Slash

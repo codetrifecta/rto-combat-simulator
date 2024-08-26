@@ -25,6 +25,9 @@ export enum STATUS_ID {
   DODGING = id++,
   POISONED = id++,
   WOUNDED = id++,
+  BERSERK = id++,
+  FRENZY = id++,
+  DEFLECTING = id++,
 }
 
 export const BASE_STATUS_EFFECTS: IStatusEffect = {
@@ -42,6 +45,7 @@ export const BASE_STATUS_EFFECTS: IStatusEffect = {
   movementRangeBonus: 0,
   dodgeChance: 0,
   damagePerAP: 0,
+  incomingDamageMultiplier: 1,
 };
 
 export const STATUSES: IStatus[] = [
@@ -303,6 +307,43 @@ export const STATUSES: IStatus[] = [
     durationCounter: 3,
     effect: {
       ...BASE_STATUS_EFFECTS,
+    },
+  },
+  {
+    id: STATUS_ID.BERSERK,
+    name: 'Berserk',
+    icon: ICON_ID.STATUS_BERSERK,
+    description: 'Increased strength by #STRENGTH_MULTIPLIER%.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      strengthMultiplier: 1.5,
+    },
+  },
+  {
+    id: STATUS_ID.FRENZY,
+    name: 'Frenzy',
+    icon: ICON_ID.STATUS_FRENZY,
+    description: 'Increased strength by 60%. Decreased defense by 30%.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      strengthMultiplier: 1.6,
+      defenseMultiplier: 0.7,
+    },
+  },
+  {
+    id: STATUS_ID.DEFLECTING,
+    name: 'Deflecting',
+    icon: ICON_ID.STATUS_DEFLECTING,
+    description: 'Reflects #DAMAGE% of incoming damage back to the attacker.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      incomingDamageMultiplier: 0.5,
     },
   },
 ];

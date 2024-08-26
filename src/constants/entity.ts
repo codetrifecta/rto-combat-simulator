@@ -78,6 +78,7 @@ export const getDefaultPlayer = (): IPlayer => {
   return {
     ...PLAYER,
     health: getPlayerMaxHealth(PLAYER),
+    // health: 5,
     maxHealth: getPlayerMaxHealth(PLAYER),
     skills: SKILLS.filter((skill) =>
       [
