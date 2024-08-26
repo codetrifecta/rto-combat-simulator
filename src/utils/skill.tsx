@@ -557,9 +557,18 @@ const handleSkillStatus = (
       statusEffectModifier[0] = true;
       statusEffectModifier[1].strengthMultiplier =
         1 + (1 - playerAfterStatus.health / playerAfterStatus.maxHealth);
+      // console.log(playerAfterStatus);
       break;
     case SKILL_ID.FRENZY:
       statusID = STATUS_ID.FRENZY;
+      break;
+    case SKILL_ID.DEFLECT:
+      statusID = STATUS_ID.DEFLECTING;
+      // Damage reduction will scale with player's strength
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].incomingDamageMultiplier =
+        0.1 + getPlayerTotalStrength(playerAfterStatus) / 100;
+      // console.log(statusEffectModifier[1].incomingDamageMultiplier);
       break;
     default:
       break;
@@ -600,6 +609,19 @@ const handleSkillStatus = (
       '#STRENGTH_MULTIPLIER',
       Math.round((statusToBeApplied.effect.strengthMultiplier - 1) * 100) + ''
     );
+  } else if ([STATUS_ID.DEFLECTING].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE_REDUCTION',
+      Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100) + ''
+    );
+    // console.log(
+    //   statusToBeApplied,
+    //   statusToBeApplied.description.replace(
+    //     '#DAMAGE_REDUCTION',
+    //     Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100) + ''
+    //   ),
+    //   Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100)
+    // );
   }
 
   // Peform skill specific actions before applying to targets

@@ -338,7 +338,8 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.DEFLECTING,
     name: 'Deflecting',
     icon: ICON_ID.STATUS_DEFLECTING,
-    description: 'Reflects #DAMAGE% of incoming damage back to the attacker.',
+    description:
+      'Reflect #DAMAGE_REDUCTION% of incoming damage back to the attacker.',
     duration: 3,
     durationCounter: 3,
     effect: {

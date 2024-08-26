@@ -450,7 +450,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.SELF,
     tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
-      'Gain Deflect for 3 turns. Deflect reduces incoming damage by 50% and deals 50% of the damage back.',
+      'Gain Deflect for 3 turns. Deflect reduces and reflects incoming damage back to the attacker.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
