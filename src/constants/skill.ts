@@ -227,7 +227,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Slash the air in front of you, dealing damage to enemies at further range.',
     damageMultiplier: 1.3,
-    range: 3,
+    range: 4,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,

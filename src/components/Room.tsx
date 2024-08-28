@@ -1788,6 +1788,106 @@ export const Room: FC<{
                     }
                     break;
                   }
+                  case SKILL_ID.AIR_SLASH:
+                    {
+                      // For fireball, the target zone is a 3x1 area around the hovered effect zone tile
+                      if (isEffectZoneHovered) {
+                        // Add tiles to target zone to use to compute the effect of the skill
+                        const currentTargetZones = targetZones.current;
+
+                        // Check if tile is in target zone
+                        const isTileInTargetZone = currentTargetZones.some(
+                          ([row, col]) => {
+                            return row === rowIndex && col === columnIndex;
+                          }
+                        );
+
+                        if (!isTileInTargetZone) {
+                          currentTargetZones.push([rowIndex, columnIndex]);
+                          targetZones.current = currentTargetZones;
+                        }
+
+                        // For air slash, the target zone is a 3x1 line perpendicular to the direction of hovered effect zone from the player.
+                        if (!effectZoneHovered) {
+                          console.error('Effect zone hovered not found!');
+                          return;
+                        }
+
+                        const rowDiff =
+                          playerRow > effectZoneHovered[0]
+                            ? playerRow - effectZoneHovered[0]
+                            : effectZoneHovered[0] - playerRow;
+                        const colDiff =
+                          playerCol > effectZoneHovered[1]
+                            ? playerCol - effectZoneHovered[1]
+                            : effectZoneHovered[1] - playerCol;
+                        const isTopLeft =
+                          playerRow > effectZoneHovered[0] &&
+                          playerCol > effectZoneHovered[1];
+                        const isTopRight =
+                          playerRow > effectZoneHovered[0] &&
+                          playerCol < effectZoneHovered[1];
+                        const isBottomLeft =
+                          playerRow < effectZoneHovered[0] &&
+                          playerCol > effectZoneHovered[1];
+                        const isBottomRight =
+                          playerRow < effectZoneHovered[0] &&
+                          playerCol < effectZoneHovered[1];
+
+                        if (rowDiff > colDiff) {
+                          // Is row difference greater than column difference
+                          // Target zone is a 3x1 line perpendicular to the row direction
+                          if (
+                            [rowIndex].includes(effectZoneHovered[0]) &&
+                            [
+                              columnIndex,
+                              columnIndex + 1,
+                              columnIndex - 1,
+                            ].includes(effectZoneHovered[1])
+                          ) {
+                            isTargetZone = true;
+                          }
+                        } else if (colDiff > rowDiff) {
+                          // Is column difference greater than row difference
+                          // Target zone is a 3x1 line perpendicular to the column direction
+                          if (
+                            [columnIndex].includes(effectZoneHovered[1]) &&
+                            [rowIndex, rowIndex + 1, rowIndex - 1].includes(
+                              effectZoneHovered[0]
+                            )
+                          ) {
+                            isTargetZone = true;
+                          }
+                        } else {
+                          if (isTopLeft) {
+                            if (
+                              [
+                                effectZoneHovered[0],
+                                effectZoneHovered[0] + 1,
+                              ].includes(rowIndex) &&
+                              [
+                                effectZoneHovered[1],
+                                effectZoneHovered[1] + 1,
+                              ].includes(columnIndex) &&
+                              (rowIndex !== effectZoneHovered[0] + 1 ||
+                                columnIndex !== effectZoneHovered[1] + 1)
+                            ) {
+                              console.log(
+                                rowIndex,
+                                columnIndex,
+                                effectZoneHovered[0],
+                                effectZoneHovered[1]
+                              );
+                              isTargetZone = true;
+                            }
+                          } else if (isTopRight) {
+                          } else if (isBottomLeft) {
+                          } else if (isBottomRight) {
+                          }
+                        }
+                      }
+                    }
+                    break;
                   case SKILL_ID.LEAP_SLAM:
                   case SKILL_ID.FLAME_DIVE: {
                     // For leap slam and flame dive, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
