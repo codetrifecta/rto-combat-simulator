@@ -40,10 +40,14 @@ Combat simulator for Return to Olympus
   - [x] Swift Movement
   - [x] Throwing Knives
   - [x] Instinctual Dodge
-  - [ ] Bloodletting
   - [x] Poison Strike
   - [x] Disabling Blow
   - [x] Puncture Strike
+  - [x] Berserk
+  - [x] Frenzy
+  - [x] Deflect
+  - [x] Air Slash
+  - [x] Flying Kick
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
 - [x] Sprites for each of the above

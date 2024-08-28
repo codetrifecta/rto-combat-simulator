@@ -50,6 +50,11 @@ export enum SKILL_ID {
   POISON_STRIKE = id++,
   DISABLING_BLOW = id++,
   PUNCTURE_STRIKE = id++,
+  BERSERK = id++,
+  FRENZY = id++,
+  DEFLECT = id++,
+  AIR_SLASH = id++,
+  FLYING_KICK = id++,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -74,6 +79,8 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.POISON_STRIKE,
   SKILL_ID.DISABLING_BLOW,
   SKILL_ID.PUNCTURE_STRIKE,
+  SKILL_ID.AIR_SLASH,
+  SKILL_ID.FLYING_KICK,
 ];
 
 export const intelligenceBasedSkillIDs: SKILL_ID[] = [
@@ -210,6 +217,33 @@ export const SKILLS: ISkill[] = [
     cooldown: 4,
     cooldownCounter: 0,
     cost: 3,
+  },
+  {
+    id: SKILL_ID.AIR_SLASH,
+    name: 'Air Slash',
+    icon: ICON_ID.SKILL_AIR_SLASH,
+    skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
+    description:
+      'Slash the air in front of you, dealing damage to enemies at further range.',
+    damageMultiplier: 1.3,
+    range: 4,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.FLYING_KICK,
+    name: 'Flying Kick',
+    icon: ICON_ID.SKILL_FLYING_KICK,
+    skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.MOVEMENT],
+    description: 'Leap to a target and deal damage.',
+    damageMultiplier: 1,
+    range: 3,
+    cooldown: 2,
+    cooldownCounter: 0,
+    cost: 2,
   },
 
   // Intelligence-based skills
@@ -381,6 +415,48 @@ export const SKILLS: ISkill[] = [
     cooldownCounter: 0,
     cost: 2,
   },
+  {
+    id: SKILL_ID.BERSERK,
+    name: 'Berserk',
+    icon: ICON_ID.SKILL_BERSERK,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Enter a state of Berserk for 3 turns. Berserk increases strength based off missing health.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 4,
+    cooldownCounter: 0,
+    cost: 1,
+  },
+  {
+    id: SKILL_ID.FRENZY,
+    name: 'Frenzy',
+    icon: ICON_ID.SKILL_FRENZY,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Enter a state of Frenzy for 3 turns. Frenzy sharply increases strength for reduced defense.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 4,
+    cooldownCounter: 0,
+    cost: 1,
+  },
+  {
+    id: SKILL_ID.DEFLECT,
+    name: 'Deflect',
+    icon: ICON_ID.SKILL_DEFLECT,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Gain Deflect for 3 turns. Deflect reduces and reflects incoming damage back to the attacker.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
 
   // Debuff skills
   {
@@ -489,7 +565,7 @@ export const SKILLS: ISkill[] = [
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.MOVEMENT],
     description:
       'Leap slam to a location and deal damage around your landing position.',
-    damageMultiplier: 0.8,
+    damageMultiplier: 1,
     range: 4,
     cooldown: 3,
     cooldownCounter: 0,

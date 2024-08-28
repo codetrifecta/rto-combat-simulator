@@ -379,7 +379,13 @@ const handleSkillDamage = (
     } else if (entityType === ENTITY_TYPE.PLAYER) {
       // Peform skill specific actions when applying to targets
       // Leap Slam, Flame Dive: Player never gets damaged (because they are supposed to be diving into the new position)
-      if ([SKILL_ID.LEAP_SLAM, SKILL_ID.FLAME_DIVE].includes(skill.id)) {
+      if (
+        [
+          SKILL_ID.LEAP_SLAM,
+          SKILL_ID.FLAME_DIVE,
+          SKILL_ID.FLYING_KICK,
+        ].includes(skill.id)
+      ) {
         return; // Skip applying status to player
       }
 
@@ -551,6 +557,25 @@ const handleSkillStatus = (
     case SKILL_ID.PUNCTURE_STRIKE:
       statusID = STATUS_ID.WOUNDED;
       break;
+    case SKILL_ID.BERSERK:
+      statusID = STATUS_ID.BERSERK;
+      // Strength increase will scale with player's missing health
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].strengthMultiplier =
+        1 + (1 - playerAfterStatus.health / playerAfterStatus.maxHealth);
+      // console.log(playerAfterStatus);
+      break;
+    case SKILL_ID.FRENZY:
+      statusID = STATUS_ID.FRENZY;
+      break;
+    case SKILL_ID.DEFLECT:
+      statusID = STATUS_ID.DEFLECTING;
+      // Damage reduction will scale with player's strength
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].incomingDamageMultiplier =
+        0.1 + getPlayerTotalStrength(playerAfterStatus) / 100;
+      // console.log(statusEffectModifier[1].incomingDamageMultiplier);
+      break;
     default:
       break;
   }
@@ -575,6 +600,7 @@ const handleSkillStatus = (
     };
   }
 
+  // Replace placeholder values in status description
   if (
     [STATUS_ID.BURNED, STATUS_ID.BLEEDING, STATUS_ID.POISONED].includes(
       statusToBeApplied.id
@@ -584,6 +610,24 @@ const handleSkillStatus = (
       '#DAMAGE',
       statusToBeApplied.effect.damageOverTime + ''
     );
+  } else if ([STATUS_ID.BERSERK].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#STRENGTH_MULTIPLIER',
+      Math.round((statusToBeApplied.effect.strengthMultiplier - 1) * 100) + ''
+    );
+  } else if ([STATUS_ID.DEFLECTING].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE_REDUCTION',
+      Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100) + ''
+    );
+    // console.log(
+    //   statusToBeApplied,
+    //   statusToBeApplied.description.replace(
+    //     '#DAMAGE_REDUCTION',
+    //     Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100) + ''
+    //   ),
+    //   Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100)
+    // );
   }
 
   // Peform skill specific actions before applying to targets

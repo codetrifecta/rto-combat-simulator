@@ -459,6 +459,11 @@ export const Room: FC<{
         // Move enemy if they can move
         totalTime += moveTime;
 
+        // Update enemy
+        let newEnemy = {
+          ...affectedEnemy,
+        };
+
         if (cannotMove && cannotAttack) {
           setTimeout(() => {
             addLog({
@@ -474,18 +479,18 @@ export const Room: FC<{
         } else {
           if (!cannotMove) {
             setTimeout(() => {
-              enemyPosition = handleEnemyMovement(affectedEnemy);
+              enemyPosition = handleEnemyMovement(newEnemy);
 
+              const enemySpriteSheetContainer = document.getElementById(
+                `spritesheet_container_${enemy.entityType}_${enemy.id}`
+              );
+              if (!enemySpriteSheetContainer) {
+                console.error('Enemy spritesheet container not found!');
+                return;
+              }
               // Remove walking animation and set enemy back to idle depending on direction (left or right)
               setTimeout(() => {
-                const enemySpriteSheetContainer = document.getElementById(
-                  `spritesheet_container_${enemy.entityType}_${enemy.id}`
-                );
-                if (!enemySpriteSheetContainer) {
-                  console.error('Enemy spritesheet container not found!');
-                  return;
-                }
-
+                console.log('is this happening?');
                 enemySpriteSheetContainer.style.top =
                   enemy.spriteSize * enemy.spritesheetIdleRow + 'px';
 
@@ -531,18 +536,27 @@ export const Room: FC<{
                       console.error('Old enemy position not found!');
                       return;
                     }
-                    handleEnemyAttack(
-                      affectedEnemy,
-                      oldEnemyPos,
-                      playerPosition
-                    );
-                    return;
+                    newEnemy = {
+                      ...newEnemy,
+                      ...handleEnemyAttack(
+                        newEnemy,
+                        oldEnemyPos,
+                        playerPosition
+                      ),
+                    };
+                    // setEnemy(newEnemy);
+                  } else {
+                    newEnemy = {
+                      ...newEnemy,
+                      ...handleEnemyAttack(
+                        newEnemy,
+                        enemyPosition,
+                        playerPosition
+                      ),
+                    };
+
+                    // setEnemy(newEnemy);
                   }
-                  handleEnemyAttack(
-                    affectedEnemy,
-                    enemyPosition,
-                    playerPosition
-                  );
                 }, attackTime);
               } else {
                 setTimeout(() => {
@@ -579,11 +593,15 @@ export const Room: FC<{
                     console.error('Enemy position not found!');
                     return;
                   }
-                  handleEnemyAttack(
-                    affectedEnemy,
-                    enemyPosition,
-                    playerPosition
-                  );
+                  newEnemy = {
+                    ...newEnemy,
+                    ...handleEnemyAttack(
+                      newEnemy,
+                      enemyPosition,
+                      playerPosition
+                    ),
+                  };
+                  // setEnemy(newEnemy);
                 }, attackTime);
               } else {
                 setTimeout(() => {
@@ -630,30 +648,38 @@ export const Room: FC<{
           });
 
           // Update enemy with new statuses
-          const newEnemy = {
-            ...affectedEnemy,
+          newEnemy = {
+            ...newEnemy,
             statuses: filteredStatuses,
           };
 
-          setEnemies(
-            enemies.map((e) => {
-              if (e.id === enemy.id) {
-                return newEnemy;
-              }
-              return e;
-            })
-          );
-
-          addLog({
-            message: (
-              <>
-                <span className="text-red-500">{enemy.name}</span> ended their
-                turn.
-              </>
-            ),
-            type: 'info',
-          });
-          endTurn();
+          // Check for enemy defeat and log message
+          if (newEnemy.health <= 0) {
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{newEnemy.name}</span> has been
+                  defeated!
+                </>
+              ),
+              type: 'info',
+            });
+            // endTurn();
+            return;
+          } else {
+            // Update enemy with new health
+            setEnemy(newEnemy);
+            addLog({
+              message: (
+                <>
+                  <span className="text-red-500">{enemy.name}</span> ended their
+                  turn.
+                </>
+              ),
+              type: 'info',
+            });
+            endTurn();
+          }
         }, totalTime + endTurnTime);
       }
     };
@@ -1229,6 +1255,7 @@ export const Room: FC<{
 
       // After attack animation ends, change back to idle animation
       setTimeout(() => {
+        console.log('is this happening? 2');
         const topPosition = -enemy.spriteSize * enemy.spritesheetIdleRow + 'px';
         if (
           enemySpriteSheetContainer.classList.contains(
@@ -1279,12 +1306,14 @@ export const Room: FC<{
         // Calculate damage
         const baseDamage = enemy.damage;
 
+        // Check for statuses that affect damage
         const statusDamageBonus = enemy.statuses.reduce((acc, status) => {
           return acc + status.effect.damageBonus;
         }, 0);
 
+        // Check for statuses that increases or decrease damage
         const damageMultiplier = enemy.statuses.reduce((acc, status) => {
-          if (status.effect.damageMultiplier === 0) return acc;
+          if (status.effect.damageMultiplier === 1) return acc;
 
           if (status.effect.damageMultiplier > 1) {
             return acc + (status.effect.damageMultiplier - 1);
@@ -1292,6 +1321,20 @@ export const Room: FC<{
             return acc - (1 - status.effect.damageMultiplier);
           }
         }, 1);
+
+        // Check for statuses that increase or reduce damage taken
+        const incomingDamageMultiplier = player.statuses.reduce(
+          (acc, status) => {
+            if (status.effect.incomingDamageMultiplier === 1) return acc;
+
+            if (status.effect.incomingDamageMultiplier > 1) {
+              return acc + (status.effect.incomingDamageMultiplier - 1);
+            } else {
+              return acc - (1 - status.effect.incomingDamageMultiplier);
+            }
+          },
+          1
+        );
 
         const playerTotalDefense = getPlayerTotalDefense(player);
 
@@ -1301,7 +1344,8 @@ export const Room: FC<{
         let totalDamage = Math.round(
           (baseDamage + statusDamageBonus) *
             damageMultiplier *
-            playerDamageTakenMultiplier
+            playerDamageTakenMultiplier *
+            incomingDamageMultiplier
         );
 
         if (totalDamage <= 0) totalDamage = 0;
@@ -1344,6 +1388,58 @@ export const Room: FC<{
             ),
             type: 'info',
           });
+        }
+
+        // Check for statuses that deal damage to enemy when they attack
+        // Check if player has a deflecting status effect
+        const deflectingStatus = player.statuses.find(
+          (status) => status.id === STATUS_ID.DEFLECTING
+        );
+
+        if (deflectingStatus) {
+          const incomingDamageMultiplierFromDeflecting =
+            deflectingStatus.effect.incomingDamageMultiplier;
+
+          const damageToEnemy = Math.ceil(
+            totalDamage * incomingDamageMultiplierFromDeflecting
+          );
+
+          console.log(
+            damageToEnemy,
+            totalDamage,
+            incomingDamageMultiplierFromDeflecting
+          );
+
+          const newEnemy = { ...enemy };
+          newEnemy.health = damageEntity(
+            newEnemy,
+            damageToEnemy,
+            `tile_${enemy.entityType}_${enemy.id}`
+          );
+
+          if (newEnemy.health <= 0) {
+            // Wait for defeat animation to end before removing enemy from room
+            // Also set enemy health to their new health (<= 0) if defeated
+
+            // setEnemy(newEnemy);
+
+            setTimeout(() => {
+              setEnemies(enemies.filter((e) => e.id !== enemy.id));
+            }, 500);
+          }
+
+          addLog({
+            message: (
+              <>
+                <span className="text-green-500">{player.name}</span> deflected{' '}
+                <span className="text-red-500">{enemy.name}</span>
+                &apos;s attack and dealt {damageToEnemy} damage.
+              </>
+            ),
+            type: 'info',
+          });
+
+          return newEnemy;
         }
       }
     }
@@ -1572,13 +1668,24 @@ export const Room: FC<{
                       }
                     }
                     break;
+                  case SKILL_ID.FLYING_KICK:
+                    if (
+                      playerVisionRange &&
+                      playerVisionRange[rowIndex][columnIndex] === true &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      if (!entityIfExists) {
+                        isEffectZone = true;
+                      }
+                    }
+                    break;
                   default:
                     if (
                       rowIndex >= playerRow - range &&
                       rowIndex <= playerRow + range &&
                       columnIndex >= playerCol - range &&
                       columnIndex <= playerCol + range &&
-                      !(rowIndex === playerRow && columnIndex === playerCol) // For fireball, player can target themselves
+                      !(rowIndex === playerRow && columnIndex === playerCol) // By default, players cannot target themselves
                     ) {
                       isEffectZone = true;
                     }
@@ -1692,8 +1799,151 @@ export const Room: FC<{
                     }
                     break;
                   }
+                  case SKILL_ID.AIR_SLASH:
+                    {
+                      // For fireball, the target zone is a 3x1 area around the hovered effect zone tile
+                      if (isEffectZoneHovered) {
+                        // For air slash, the target zone is a 3x1 line perpendicular to the direction of hovered effect zone from the player.
+                        if (!effectZoneHovered) {
+                          console.error('Effect zone hovered not found!');
+                          return;
+                        }
+
+                        let isValidTargetZone = false;
+
+                        const rowDiff =
+                          playerRow > effectZoneHovered[0]
+                            ? playerRow - effectZoneHovered[0]
+                            : effectZoneHovered[0] - playerRow;
+                        const colDiff =
+                          playerCol > effectZoneHovered[1]
+                            ? playerCol - effectZoneHovered[1]
+                            : effectZoneHovered[1] - playerCol;
+                        const isTopLeft =
+                          playerRow > effectZoneHovered[0] &&
+                          playerCol > effectZoneHovered[1];
+                        const isTopRight =
+                          playerRow > effectZoneHovered[0] &&
+                          playerCol < effectZoneHovered[1];
+                        const isBottomLeft =
+                          playerRow < effectZoneHovered[0] &&
+                          playerCol > effectZoneHovered[1];
+                        const isBottomRight =
+                          playerRow < effectZoneHovered[0] &&
+                          playerCol < effectZoneHovered[1];
+
+                        if (rowDiff > colDiff) {
+                          // Is row difference greater than column difference
+                          // Target zone is a 3x1 line perpendicular to the row direction
+                          if (
+                            [rowIndex].includes(effectZoneHovered[0]) &&
+                            [
+                              columnIndex,
+                              columnIndex + 1,
+                              columnIndex - 1,
+                            ].includes(effectZoneHovered[1])
+                          ) {
+                            isValidTargetZone = true;
+                          }
+                        } else if (colDiff > rowDiff) {
+                          // Is column difference greater than row difference
+                          // Target zone is a 3x1 line perpendicular to the column direction
+                          if (
+                            [columnIndex].includes(effectZoneHovered[1]) &&
+                            [rowIndex, rowIndex + 1, rowIndex - 1].includes(
+                              effectZoneHovered[0]
+                            )
+                          ) {
+                            isValidTargetZone = true;
+                          }
+                        } else {
+                          if (isTopLeft) {
+                            if (
+                              [
+                                effectZoneHovered[0],
+                                effectZoneHovered[0] + 1,
+                              ].includes(rowIndex) &&
+                              [
+                                effectZoneHovered[1],
+                                effectZoneHovered[1] + 1,
+                              ].includes(columnIndex) &&
+                              (rowIndex !== effectZoneHovered[0] + 1 ||
+                                columnIndex !== effectZoneHovered[1] + 1)
+                            ) {
+                              isValidTargetZone = true;
+                            }
+                          } else if (isTopRight) {
+                            if (
+                              [
+                                effectZoneHovered[0],
+                                effectZoneHovered[0] + 1,
+                              ].includes(rowIndex) &&
+                              [
+                                effectZoneHovered[1],
+                                effectZoneHovered[1] - 1,
+                              ].includes(columnIndex) &&
+                              (rowIndex !== effectZoneHovered[0] + 1 ||
+                                columnIndex !== effectZoneHovered[1] - 1)
+                            ) {
+                              isValidTargetZone = true;
+                            }
+                          } else if (isBottomLeft) {
+                            if (
+                              [
+                                effectZoneHovered[0],
+                                effectZoneHovered[0] - 1,
+                              ].includes(rowIndex) &&
+                              [
+                                effectZoneHovered[1],
+                                effectZoneHovered[1] + 1,
+                              ].includes(columnIndex) &&
+                              (rowIndex !== effectZoneHovered[0] - 1 ||
+                                columnIndex !== effectZoneHovered[1] + 1)
+                            ) {
+                              isValidTargetZone = true;
+                            }
+                          } else if (isBottomRight) {
+                            if (
+                              [
+                                effectZoneHovered[0],
+                                effectZoneHovered[0] - 1,
+                              ].includes(rowIndex) &&
+                              [
+                                effectZoneHovered[1],
+                                effectZoneHovered[1] - 1,
+                              ].includes(columnIndex) &&
+                              (rowIndex !== effectZoneHovered[0] - 1 ||
+                                columnIndex !== effectZoneHovered[1] - 1)
+                            ) {
+                              isValidTargetZone = true;
+                            }
+                          }
+                        }
+
+                        if (isValidTargetZone) {
+                          // Add tiles to target zone to use to compute the effect of the skill
+                          const currentTargetZones = targetZones.current;
+
+                          // Check if tile is in target zone
+                          const isTileInTargetZone = currentTargetZones.some(
+                            ([row, col]) => {
+                              return row === rowIndex && col === columnIndex;
+                            }
+                          );
+
+                          if (!isTileInTargetZone) {
+                            currentTargetZones.push([rowIndex, columnIndex]);
+                            targetZones.current = currentTargetZones;
+                          }
+
+                          isTargetZone = true;
+                        }
+                      }
+                    }
+                    break;
                   case SKILL_ID.LEAP_SLAM:
-                  case SKILL_ID.FLAME_DIVE: {
+                  case SKILL_ID.FLAME_DIVE:
+                  case SKILL_ID.FLYING_KICK: {
                     // For leap slam and flame dive, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
                     if (isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
@@ -1763,7 +2013,8 @@ export const Room: FC<{
                   entityIfExists,
                   tileType,
                   player.state.isUsingSkill,
-                  player.state.skillId
+                  player.state.skillId,
+                  targetZones.current
                 );
 
                 // If room is over, player can move to any valid tile (floor, door)
