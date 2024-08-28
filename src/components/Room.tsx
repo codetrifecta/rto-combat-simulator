@@ -1792,26 +1792,13 @@ export const Room: FC<{
                     {
                       // For fireball, the target zone is a 3x1 area around the hovered effect zone tile
                       if (isEffectZoneHovered) {
-                        // Add tiles to target zone to use to compute the effect of the skill
-                        const currentTargetZones = targetZones.current;
-
-                        // Check if tile is in target zone
-                        const isTileInTargetZone = currentTargetZones.some(
-                          ([row, col]) => {
-                            return row === rowIndex && col === columnIndex;
-                          }
-                        );
-
-                        if (!isTileInTargetZone) {
-                          currentTargetZones.push([rowIndex, columnIndex]);
-                          targetZones.current = currentTargetZones;
-                        }
-
                         // For air slash, the target zone is a 3x1 line perpendicular to the direction of hovered effect zone from the player.
                         if (!effectZoneHovered) {
                           console.error('Effect zone hovered not found!');
                           return;
                         }
+
+                        let isValidTargetZone = false;
 
                         const rowDiff =
                           playerRow > effectZoneHovered[0]
@@ -1845,7 +1832,7 @@ export const Room: FC<{
                               columnIndex - 1,
                             ].includes(effectZoneHovered[1])
                           ) {
-                            isTargetZone = true;
+                            isValidTargetZone = true;
                           }
                         } else if (colDiff > rowDiff) {
                           // Is column difference greater than row difference
@@ -1856,7 +1843,7 @@ export const Room: FC<{
                               effectZoneHovered[0]
                             )
                           ) {
-                            isTargetZone = true;
+                            isValidTargetZone = true;
                           }
                         } else {
                           if (isTopLeft) {
@@ -1872,18 +1859,73 @@ export const Room: FC<{
                               (rowIndex !== effectZoneHovered[0] + 1 ||
                                 columnIndex !== effectZoneHovered[1] + 1)
                             ) {
-                              console.log(
-                                rowIndex,
-                                columnIndex,
-                                effectZoneHovered[0],
-                                effectZoneHovered[1]
-                              );
-                              isTargetZone = true;
+                              isValidTargetZone = true;
                             }
                           } else if (isTopRight) {
+                            if (
+                              [
+                                effectZoneHovered[0],
+                                effectZoneHovered[0] + 1,
+                              ].includes(rowIndex) &&
+                              [
+                                effectZoneHovered[1],
+                                effectZoneHovered[1] - 1,
+                              ].includes(columnIndex) &&
+                              (rowIndex !== effectZoneHovered[0] + 1 ||
+                                columnIndex !== effectZoneHovered[1] - 1)
+                            ) {
+                              isValidTargetZone = true;
+                            }
                           } else if (isBottomLeft) {
+                            if (
+                              [
+                                effectZoneHovered[0],
+                                effectZoneHovered[0] - 1,
+                              ].includes(rowIndex) &&
+                              [
+                                effectZoneHovered[1],
+                                effectZoneHovered[1] + 1,
+                              ].includes(columnIndex) &&
+                              (rowIndex !== effectZoneHovered[0] - 1 ||
+                                columnIndex !== effectZoneHovered[1] + 1)
+                            ) {
+                              isValidTargetZone = true;
+                            }
                           } else if (isBottomRight) {
+                            if (
+                              [
+                                effectZoneHovered[0],
+                                effectZoneHovered[0] - 1,
+                              ].includes(rowIndex) &&
+                              [
+                                effectZoneHovered[1],
+                                effectZoneHovered[1] - 1,
+                              ].includes(columnIndex) &&
+                              (rowIndex !== effectZoneHovered[0] - 1 ||
+                                columnIndex !== effectZoneHovered[1] - 1)
+                            ) {
+                              isValidTargetZone = true;
+                            }
                           }
+                        }
+
+                        if (isValidTargetZone) {
+                          // Add tiles to target zone to use to compute the effect of the skill
+                          const currentTargetZones = targetZones.current;
+
+                          // Check if tile is in target zone
+                          const isTileInTargetZone = currentTargetZones.some(
+                            ([row, col]) => {
+                              return row === rowIndex && col === columnIndex;
+                            }
+                          );
+
+                          if (!isTileInTargetZone) {
+                            currentTargetZones.push([rowIndex, columnIndex]);
+                            targetZones.current = currentTargetZones;
+                          }
+
+                          isTargetZone = true;
                         }
                       }
                     }
@@ -1959,7 +2001,8 @@ export const Room: FC<{
                   entityIfExists,
                   tileType,
                   player.state.isUsingSkill,
-                  player.state.skillId
+                  player.state.skillId,
+                  targetZones.current
                 );
 
                 // If room is over, player can move to any valid tile (floor, door)
