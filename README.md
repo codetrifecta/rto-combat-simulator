@@ -45,10 +45,9 @@ Combat simulator for Return to Olympus
   - [x] Puncture Strike
   - [x] Berserk
   - [x] Frenzy
-  - [ ] Deflect
-  - [ ] Air Slash
-  - [ ] Flying Kick
-  - [ ] Swift Retreat
+  - [x] Deflect
+  - [x] Air Slash
+  - [x] Flying Kick
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
 - [x] Sprites for each of the above

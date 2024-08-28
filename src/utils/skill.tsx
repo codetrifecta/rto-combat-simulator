@@ -379,7 +379,13 @@ const handleSkillDamage = (
     } else if (entityType === ENTITY_TYPE.PLAYER) {
       // Peform skill specific actions when applying to targets
       // Leap Slam, Flame Dive: Player never gets damaged (because they are supposed to be diving into the new position)
-      if ([SKILL_ID.LEAP_SLAM, SKILL_ID.FLAME_DIVE].includes(skill.id)) {
+      if (
+        [
+          SKILL_ID.LEAP_SLAM,
+          SKILL_ID.FLAME_DIVE,
+          SKILL_ID.FLYING_KICK,
+        ].includes(skill.id)
+      ) {
         return; // Skip applying status to player
       }
 

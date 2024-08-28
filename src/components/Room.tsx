@@ -1668,13 +1668,24 @@ export const Room: FC<{
                       }
                     }
                     break;
+                  case SKILL_ID.FLYING_KICK:
+                    if (
+                      playerVisionRange &&
+                      playerVisionRange[rowIndex][columnIndex] === true &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      if (!entityIfExists) {
+                        isEffectZone = true;
+                      }
+                    }
+                    break;
                   default:
                     if (
                       rowIndex >= playerRow - range &&
                       rowIndex <= playerRow + range &&
                       columnIndex >= playerCol - range &&
                       columnIndex <= playerCol + range &&
-                      !(rowIndex === playerRow && columnIndex === playerCol) // For fireball, player can target themselves
+                      !(rowIndex === playerRow && columnIndex === playerCol) // By default, players cannot target themselves
                     ) {
                       isEffectZone = true;
                     }
@@ -1931,7 +1942,8 @@ export const Room: FC<{
                     }
                     break;
                   case SKILL_ID.LEAP_SLAM:
-                  case SKILL_ID.FLAME_DIVE: {
+                  case SKILL_ID.FLAME_DIVE:
+                  case SKILL_ID.FLYING_KICK: {
                     // For leap slam and flame dive, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
                     if (isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
