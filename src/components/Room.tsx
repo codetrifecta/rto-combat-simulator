@@ -1679,6 +1679,15 @@ export const Room: FC<{
                       }
                     }
                     break;
+                  case SKILL_ID.THROWING_KNIVES:
+                    if (
+                      playerVisionRange &&
+                      playerVisionRange[rowIndex][columnIndex] === true &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
                   default:
                     if (
                       rowIndex >= playerRow - range &&
