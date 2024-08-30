@@ -2,6 +2,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Tile';
 import {
   DEFAULT_MOVEMENT_RANGE,
+  ENTITY_SPRITE_DIRECTION,
   ENTITY_TYPE,
   STARTING_ACTION_POINTS,
 } from '../constants/entity';
@@ -31,6 +32,7 @@ import {
   healEntity,
   isEnemy,
   isPlayer,
+  setEntityAnimationWalk,
 } from '../utils/entity';
 import { updateRoomEntityPositions } from '../utils/room';
 import { useLogStore } from '../store/log';
@@ -97,15 +99,6 @@ export const Room: FC<{
   // Handle player movement
   useEffect(() => {
     // When player finishes moving, set player's animation back to idle
-    const playerSpriteSheetContainer = document.getElementById(
-      `spritesheet_container_${player.entityType}_${player.id}`
-    );
-
-    if (!playerSpriteSheetContainer) {
-      console.error('Player spritesheet container not found!');
-      return;
-    }
-
     const handlePlayerPathMovement = () => {
       console.log('handlePlayerMovement');
       if (playerMovementPath.length > 0) {
@@ -113,25 +106,9 @@ export const Room: FC<{
 
         // Update player walking animation direction based on movement path
         if (col < playerPosition[1]) {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
-          playerSpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft08'
-          );
+          setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.LEFT);
         } else {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.left = '0px';
-          playerSpriteSheetContainer.classList.add('animate-entityAnimate08');
+          setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
 
         // Update player's position in the entity positions map
@@ -159,26 +136,26 @@ export const Room: FC<{
         }, 500);
       } else {
         // Remove walking animation and set player back to idle depending on direction (left or right)
-        playerSpriteSheetContainer.style.top = '0px';
-        if (
-          playerSpriteSheetContainer.classList.contains(
-            'animate-entityAnimateLeft08'
-          )
-        ) {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
-          playerSpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft20'
-          );
-        } else {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.style.left = '0px';
-          playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
-        }
+        // playerSpriteSheetContainer.style.top = '0px';
+        // if (
+        //   playerSpriteSheetContainer.classList.contains(
+        //     'animate-entityAnimateLeft08'
+        //   )
+        // ) {
+        //   playerSpriteSheetContainer.classList.remove(
+        //     'animate-entityAnimateLeft08'
+        //   );
+        //   playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
+        //   playerSpriteSheetContainer.classList.add(
+        //     'animate-entityAnimateLeft20'
+        //   );
+        // } else {
+        //   playerSpriteSheetContainer.classList.remove(
+        //     'animate-entityAnimate08'
+        //   );
+        //   playerSpriteSheetContainer.style.left = '0px';
+        //   playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
+        // }
       }
     };
 
@@ -1129,37 +1106,11 @@ export const Room: FC<{
       return;
     }
 
-    // Change class of enemy sprite to animate movement
-    const enemySpriteSheetContainer = document.getElementById(
-      `spritesheet_container_${enemy.entityType}_${enemy.id}`
-    );
-
-    if (!enemySpriteSheetContainer) {
-      console.error('Enemy spritesheet container not found!');
-      return;
-    }
-
-    // Update enemy walking animation direction based on movement path
-    // Change spritesheet position to animate movement
-    const topPosition = -enemy.spriteSize * enemy.spritesheetMovementRow + 'px';
+    // // Change class of enemy sprite to animate movement
     if (randomMove[1] < enemyCol) {
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
-      enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
-      enemySpriteSheetContainer.style.top = topPosition;
-
-      setTimeout(() => {
-        enemySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
-      }, 1);
+      setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
     } else {
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
-      enemySpriteSheetContainer.style.left = '0px';
-      enemySpriteSheetContainer.style.top = topPosition;
-
-      setTimeout(() => {
-        enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
-      }, 1);
+      setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
     }
 
     // Update room matrix to move enemy to random adjacent tile

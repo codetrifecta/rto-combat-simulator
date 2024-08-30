@@ -1,4 +1,8 @@
-import { ENTITY_TYPE, STARTING_MAX_HEALTH } from '../constants/entity';
+import {
+  ENTITY_SPRITE_DIRECTION,
+  ENTITY_TYPE,
+  STARTING_MAX_HEALTH,
+} from '../constants/entity';
 import { TILE_SIZE } from '../constants/tile';
 import { IEnemy, IEntity, IPlayer, IStatus } from '../types';
 
@@ -705,4 +709,66 @@ export const getPotionHealAmount = (player: IPlayer) => {
   const healAmount = Math.round(newPlayer.maxHealth * healPercentage);
 
   return healAmount;
+};
+
+export const setEntityAnimationWalk = (
+  entity: IEntity,
+  spriteDirection: ENTITY_SPRITE_DIRECTION = ENTITY_SPRITE_DIRECTION.RIGHT
+) => {
+  const entitySpriteSheetContainer = document.getElementById(
+    `spritesheet_container_${entity.entityType}_${entity.id}`
+  );
+
+  if (!entitySpriteSheetContainer) {
+    console.error('Entity spritesheet container not found!');
+    return;
+  }
+
+  const topPosition = -entity.spriteSize * entity.spritesheetMovementRow + 'px';
+
+  if (entity.entityType === ENTITY_TYPE.PLAYER) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      // Face right
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft08'
+      );
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+    } else {
+      // Face left
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft08'
+      );
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+    }
+  } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      // Face right
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft08'
+      );
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    } else {
+      // Face left
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft08'
+      );
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
+    }
+  }
 };
