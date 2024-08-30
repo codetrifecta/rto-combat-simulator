@@ -27,11 +27,13 @@ import {
   displayStatusEffect,
   getEntityDodgeChance,
   getEntityPosition,
+  getEntitySpriteDirection,
   getPlayerTotalDefense,
   handlePlayerEndTurn,
   healEntity,
   isEnemy,
   isPlayer,
+  setEntityAnimationIdle,
   setEntityAnimationWalk,
 } from '../utils/entity';
 import { updateRoomEntityPositions } from '../utils/room';
@@ -136,26 +138,11 @@ export const Room: FC<{
         }, 500);
       } else {
         // Remove walking animation and set player back to idle depending on direction (left or right)
-        // playerSpriteSheetContainer.style.top = '0px';
-        // if (
-        //   playerSpriteSheetContainer.classList.contains(
-        //     'animate-entityAnimateLeft08'
-        //   )
-        // ) {
-        //   playerSpriteSheetContainer.classList.remove(
-        //     'animate-entityAnimateLeft08'
-        //   );
-        //   playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
-        //   playerSpriteSheetContainer.classList.add(
-        //     'animate-entityAnimateLeft20'
-        //   );
-        // } else {
-        //   playerSpriteSheetContainer.classList.remove(
-        //     'animate-entityAnimate08'
-        //   );
-        //   playerSpriteSheetContainer.style.left = '0px';
-        //   playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
-        // }
+        if (getEntitySpriteDirection(player) === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else {
+          setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.RIGHT);
+        }
       }
     };
 
@@ -467,34 +454,13 @@ export const Room: FC<{
               }
               // Remove walking animation and set enemy back to idle depending on direction (left or right)
               setTimeout(() => {
-                console.log('is this happening?');
-                enemySpriteSheetContainer.style.top =
-                  enemy.spriteSize * enemy.spritesheetIdleRow + 'px';
-
-                // Update enemy walking animation direction based on movement path
                 if (
-                  enemySpriteSheetContainer.classList.contains(
-                    'animate-entityAnimateLeft08'
-                  )
+                  getEntitySpriteDirection(enemy) ===
+                  ENTITY_SPRITE_DIRECTION.LEFT
                 ) {
-                  // If enemy is facing left, face left
-                  enemySpriteSheetContainer.classList.remove(
-                    'animate-entityAnimateLeft08'
-                  );
-                  enemySpriteSheetContainer.style.left =
-                    enemy.spriteSize + 'px';
-                  enemySpriteSheetContainer.classList.add(
-                    'animate-entityAnimateLeft08'
-                  );
+                  setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
                 } else {
-                  // If enemy is not facing left, face right
-                  enemySpriteSheetContainer.classList.remove(
-                    'animate-entityAnimate08'
-                  );
-                  enemySpriteSheetContainer.style.left = '0px';
-                  enemySpriteSheetContainer.classList.add(
-                    'animate-entityAnimate08'
-                  );
+                  setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
                 }
               }, 500);
 
