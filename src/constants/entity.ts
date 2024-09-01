@@ -15,6 +15,11 @@ export enum ENTITY_TYPE {
   SUMMON = 'summon',
 }
 
+export enum ENTITY_SPRITE_DIRECTION {
+  LEFT = 'left',
+  RIGHT = 'right',
+}
+
 export const DEFAULT_MOVEMENT_RANGE = 2;
 
 export const STARTING_MAX_HEALTH = 25;
@@ -82,11 +87,11 @@ export const getDefaultPlayer = (): IPlayer => {
     maxHealth: getPlayerMaxHealth(PLAYER),
     skills: SKILLS.filter((skill) =>
       [
-        SKILL_ID.BERSERK,
-        SKILL_ID.FRENZY,
-        SKILL_ID.DEFLECT,
-        SKILL_ID.AIR_SLASH,
+        SKILL_ID.THROWING_KNIVES,
         SKILL_ID.FLYING_KICK,
+        SKILL_ID.SWIFT_MOVEMENT,
+        SKILL_ID.INSTINCTUAL_DODGE,
+        SKILL_ID.DISABLING_BLOW,
         SKILL_ID.FLY,
       ].includes(skill.id)
     ),

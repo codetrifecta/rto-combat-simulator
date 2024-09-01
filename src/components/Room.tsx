@@ -2,6 +2,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Tile';
 import {
   DEFAULT_MOVEMENT_RANGE,
+  ENTITY_SPRITE_DIRECTION,
   ENTITY_TYPE,
   STARTING_ACTION_POINTS,
 } from '../constants/entity';
@@ -26,11 +27,15 @@ import {
   displayStatusEffect,
   getEntityDodgeChance,
   getEntityPosition,
+  getEntitySpriteDirection,
   getPlayerTotalDefense,
   handlePlayerEndTurn,
   healEntity,
   isEnemy,
   isPlayer,
+  setEntityAnimationAttack,
+  setEntityAnimationIdle,
+  setEntityAnimationWalk,
 } from '../utils/entity';
 import { updateRoomEntityPositions } from '../utils/room';
 import { useLogStore } from '../store/log';
@@ -97,41 +102,19 @@ export const Room: FC<{
   // Handle player movement
   useEffect(() => {
     // When player finishes moving, set player's animation back to idle
-    const playerSpriteSheetContainer = document.getElementById(
-      `spritesheet_container_${player.entityType}_${player.id}`
-    );
-
-    if (!playerSpriteSheetContainer) {
-      console.error('Player spritesheet container not found!');
-      return;
-    }
-
     const handlePlayerPathMovement = () => {
       console.log('handlePlayerMovement');
       if (playerMovementPath.length > 0) {
         const [row, col] = playerMovementPath[0];
 
         // Update player walking animation direction based on movement path
+        const spriteDirection = getEntitySpriteDirection(player);
         if (col < playerPosition[1]) {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
-          playerSpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft08'
-          );
+          setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (col > playerPosition[1]) {
+          setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.RIGHT);
         } else {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.left = '0px';
-          playerSpriteSheetContainer.classList.add('animate-entityAnimate08');
+          setEntityAnimationWalk(player, spriteDirection);
         }
 
         // Update player's position in the entity positions map
@@ -159,25 +142,11 @@ export const Room: FC<{
         }, 500);
       } else {
         // Remove walking animation and set player back to idle depending on direction (left or right)
-        playerSpriteSheetContainer.style.top = '0px';
-        if (
-          playerSpriteSheetContainer.classList.contains(
-            'animate-entityAnimateLeft08'
-          )
-        ) {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
-          playerSpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft20'
-          );
-        } else {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.style.left = '0px';
-          playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
+        const entitySpriteDirection = getEntitySpriteDirection(player);
+        if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+          setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
       }
     };
@@ -481,43 +450,15 @@ export const Room: FC<{
             setTimeout(() => {
               enemyPosition = handleEnemyMovement(newEnemy);
 
-              const enemySpriteSheetContainer = document.getElementById(
-                `spritesheet_container_${enemy.entityType}_${enemy.id}`
-              );
-              if (!enemySpriteSheetContainer) {
-                console.error('Enemy spritesheet container not found!');
-                return;
-              }
               // Remove walking animation and set enemy back to idle depending on direction (left or right)
               setTimeout(() => {
-                console.log('is this happening?');
-                enemySpriteSheetContainer.style.top =
-                  enemy.spriteSize * enemy.spritesheetIdleRow + 'px';
-
-                // Update enemy walking animation direction based on movement path
-                if (
-                  enemySpriteSheetContainer.classList.contains(
-                    'animate-entityAnimateLeft08'
-                  )
+                const enemySpriteDirection = getEntitySpriteDirection(enemy);
+                if (enemySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+                  setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
+                } else if (
+                  enemySpriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT
                 ) {
-                  // If enemy is facing left, face left
-                  enemySpriteSheetContainer.classList.remove(
-                    'animate-entityAnimateLeft08'
-                  );
-                  enemySpriteSheetContainer.style.left =
-                    enemy.spriteSize + 'px';
-                  enemySpriteSheetContainer.classList.add(
-                    'animate-entityAnimateLeft08'
-                  );
-                } else {
-                  // If enemy is not facing left, face right
-                  enemySpriteSheetContainer.classList.remove(
-                    'animate-entityAnimate08'
-                  );
-                  enemySpriteSheetContainer.style.left = '0px';
-                  enemySpriteSheetContainer.classList.add(
-                    'animate-entityAnimate08'
-                  );
+                  setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
                 }
               }, 500);
 
@@ -831,8 +772,8 @@ export const Room: FC<{
 
   // Handle player attacking an enemy
   const handleEnemyClick = (
-    entityId: number | null,
-    enemyPosition: [number, number]
+    entityId: number | null
+    // enemyPosition: [number, number]
   ) => {
     console.log('handleEnemyClick');
 
@@ -856,51 +797,6 @@ export const Room: FC<{
       if (!newPlayer.equipment.weapon) {
         addLog({ message: 'Player has no weapon equipped!', type: 'error' });
         return;
-      }
-
-      // Change player's sprite direction if enemy is to the left side of the player
-      if (enemyPosition[1] < playerPosition[1]) {
-        const playerSpriteSheetContainer = document.getElementById(
-          `spritesheet_container_${player.entityType}_${player.id}`
-        );
-
-        if (!playerSpriteSheetContainer) {
-          console.error('Player spritesheet container not found!');
-          return;
-        }
-
-        playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
-        playerSpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft20'
-        );
-
-        playerSpriteSheetContainer.style.left = player.spriteSize + 'px';
-
-        setTimeout(() => {
-          playerSpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft20'
-          );
-        }, 1);
-      } else {
-        const playerSpriteSheetContainer = document.getElementById(
-          `spritesheet_container_${player.entityType}_${player.id}`
-        );
-
-        if (!playerSpriteSheetContainer) {
-          console.error('Player spritesheet container not found!');
-          return;
-        }
-
-        playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
-        playerSpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft20'
-        );
-
-        playerSpriteSheetContainer.style.left = '0px';
-
-        setTimeout(() => {
-          playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
-        }, 1);
       }
 
       // Compute base attack damage based on the higher of player's strength or intelligence
@@ -1065,26 +961,6 @@ export const Room: FC<{
       return;
     }
 
-    // Set player animation to walking animation
-
-    // Get spritesheet container
-    const playerSpriteSheetContainer = document.getElementById(
-      `spritesheet_container_${player.entityType}_${player.id}`
-    );
-
-    if (!playerSpriteSheetContainer) {
-      console.error('Player spritesheet container not found!');
-      return;
-    }
-
-    // console.log('playerSpriteSheetContainer', playerSpriteSheetContainer);
-
-    // Set player animation to walking by increasing animtions sprite x axis change speed and shifting position downwards on the spritesheet
-    playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
-    playerSpriteSheetContainer.classList.remove('animate-entityAnimateLeft20');
-
-    playerSpriteSheetContainer.style.top = '-' + player.spriteSize + 'px';
-
     setPlayerMovementPath(path);
     setPlayerState({
       ...player.state,
@@ -1129,37 +1005,14 @@ export const Room: FC<{
       return;
     }
 
-    // Change class of enemy sprite to animate movement
-    const enemySpriteSheetContainer = document.getElementById(
-      `spritesheet_container_${enemy.entityType}_${enemy.id}`
-    );
-
-    if (!enemySpriteSheetContainer) {
-      console.error('Enemy spritesheet container not found!');
-      return;
-    }
-
-    // Update enemy walking animation direction based on movement path
-    // Change spritesheet position to animate movement
-    const topPosition = -enemy.spriteSize * enemy.spritesheetMovementRow + 'px';
+    // // Change class of enemy sprite to animate movement
+    const spriteDirection = getEntitySpriteDirection(enemy);
     if (randomMove[1] < enemyCol) {
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
-      enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
-      enemySpriteSheetContainer.style.top = topPosition;
-
-      setTimeout(() => {
-        enemySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
-      }, 1);
+      setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
+    } else if (randomMove[1] > enemyCol) {
+      setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
     } else {
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-      enemySpriteSheetContainer.classList.remove('animate-entityAnimateLeft08');
-      enemySpriteSheetContainer.style.left = '0px';
-      enemySpriteSheetContainer.style.top = topPosition;
-
-      setTimeout(() => {
-        enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
-      }, 1);
+      setEntityAnimationWalk(enemy, spriteDirection);
     }
 
     // Update room matrix to move enemy to random adjacent tile
@@ -1215,70 +1068,24 @@ export const Room: FC<{
 
     if (canAttackPlayer && !isPlayerHidden) {
       // Change sprite animation from idle to attack
-      const enemySpriteSheetContainer = document.getElementById(
-        `spritesheet_container_${enemy.entityType}_${enemy.id}`
-      );
-      if (!enemySpriteSheetContainer) {
-        console.error('Enemy spritesheet container not found!');
-        return;
-      }
-
-      const topPosition = -enemy.spriteSize * enemy.spritesheetAttackRow + 'px';
-
+      const spriteDirection = getEntitySpriteDirection(enemy);
       if (playerCol < enemyCol) {
-        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        enemySpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft08'
-        );
-        enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
-        enemySpriteSheetContainer.style.top = topPosition;
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeftOnce05'
-          );
-        }, 1);
+        setEntityAnimationAttack(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
+      } else if (playerCol > enemyCol) {
+        setEntityAnimationAttack(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
       } else {
-        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        enemySpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft08'
-        );
-        enemySpriteSheetContainer.style.left = '0px';
-        enemySpriteSheetContainer.style.top = topPosition;
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateOnce05'
-          );
-        }, 1);
+        setEntityAnimationAttack(enemy, spriteDirection);
       }
 
       // After attack animation ends, change back to idle animation
       setTimeout(() => {
         console.log('is this happening? 2');
-        const topPosition = -enemy.spriteSize * enemy.spritesheetIdleRow + 'px';
-        if (
-          enemySpriteSheetContainer.classList.contains(
-            'animate-entityAnimateLeftOnce05'
-          )
-        ) {
-          // If enemy is facing left, face left
-          enemySpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeftOnce05'
-          );
-          enemySpriteSheetContainer.style.top = topPosition;
-          enemySpriteSheetContainer.style.left = enemy.spriteSize + 'px';
-          enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft08'
-          );
+        if (playerCol < enemyCol) {
+          setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (playerCol > enemyCol) {
+          setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
         } else {
-          // If enemy is not facing left, face right
-          enemySpriteSheetContainer.classList.remove(
-            'animate-entityAnimateOnce05'
-          );
-          enemySpriteSheetContainer.style.top = topPosition;
-          enemySpriteSheetContainer.style.left = '0px';
-          enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
+          setEntityAnimationIdle(enemy, spriteDirection);
         }
       }, 500);
 
@@ -1679,6 +1486,15 @@ export const Room: FC<{
                       }
                     }
                     break;
+                  case SKILL_ID.THROWING_KNIVES:
+                    if (
+                      playerVisionRange &&
+                      playerVisionRange[rowIndex][columnIndex] === true &&
+                      !(rowIndex === playerRow && columnIndex === playerCol)
+                    ) {
+                      isEffectZone = true;
+                    }
+                    break;
                   default:
                     if (
                       rowIndex >= playerRow - range &&
@@ -2042,7 +1858,7 @@ export const Room: FC<{
                     entityIfExists &&
                     entityIfExists[0] === ENTITY_TYPE.ENEMY
                   ) {
-                    handleEnemyClick(entityId, [rowIndex, columnIndex]);
+                    handleEnemyClick(entityId);
                   } else if (
                     player.state.isMoving &&
                     !entityIfExists &&
@@ -2133,60 +1949,15 @@ export const Room: FC<{
 
                     // Change player's sprite direction if enemy is to the left side of the player
                     if (columnIndex < playerPosition[1]) {
-                      const playerSpriteSheetContainer =
-                        document.getElementById(
-                          `spritesheet_container_${player.entityType}_${player.id}`
-                        );
-
-                      if (!playerSpriteSheetContainer) {
-                        console.error(
-                          'Player spritesheet container not found!'
-                        );
-                        return;
-                      }
-
-                      playerSpriteSheetContainer.classList.remove(
-                        'animate-entityAnimate20'
+                      setEntityAnimationIdle(
+                        player,
+                        ENTITY_SPRITE_DIRECTION.LEFT
                       );
-                      playerSpriteSheetContainer.classList.remove(
-                        'animate-entityAnimateLeft20'
+                    } else if (columnIndex > playerPosition[1]) {
+                      setEntityAnimationIdle(
+                        player,
+                        ENTITY_SPRITE_DIRECTION.RIGHT
                       );
-
-                      playerSpriteSheetContainer.style.left =
-                        player.spriteSize + 'px';
-
-                      setTimeout(() => {
-                        playerSpriteSheetContainer.classList.add(
-                          'animate-entityAnimateLeft20'
-                        );
-                      }, 1);
-                    } else {
-                      const playerSpriteSheetContainer =
-                        document.getElementById(
-                          `spritesheet_container_${player.entityType}_${player.id}`
-                        );
-
-                      if (!playerSpriteSheetContainer) {
-                        console.error(
-                          'Player spritesheet container not found!'
-                        );
-                        return;
-                      }
-
-                      playerSpriteSheetContainer.classList.remove(
-                        'animate-entityAnimate20'
-                      );
-                      playerSpriteSheetContainer.classList.remove(
-                        'animate-entityAnimateLeft20'
-                      );
-
-                      playerSpriteSheetContainer.style.left = '0px';
-
-                      setTimeout(() => {
-                        playerSpriteSheetContainer.classList.add(
-                          'animate-entityAnimate20'
-                        );
-                      }, 1);
                     }
 
                     const isEnemyDead = newEnemies.some((enemy) => {
