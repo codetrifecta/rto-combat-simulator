@@ -110,7 +110,7 @@ export const Room: FC<{
         // Update player walking animation direction based on movement path
         if (col < playerPosition[1]) {
           setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.LEFT);
-        } else {
+        } else if (col > playerPosition[1]) {
           setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
 
@@ -139,9 +139,11 @@ export const Room: FC<{
         }, 500);
       } else {
         // Remove walking animation and set player back to idle depending on direction (left or right)
-        if (getEntitySpriteDirection(player) === ENTITY_SPRITE_DIRECTION.LEFT) {
+        const entitySpriteDirection = getEntitySpriteDirection(player);
+
+        if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
           setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.LEFT);
-        } else {
+        } else if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
           setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
       }
@@ -445,15 +447,15 @@ export const Room: FC<{
           if (!cannotMove) {
             setTimeout(() => {
               enemyPosition = handleEnemyMovement(newEnemy);
+              const enemySpriteDirection = getEntitySpriteDirection(enemy);
 
               // Remove walking animation and set enemy back to idle depending on direction (left or right)
               setTimeout(() => {
-                if (
-                  getEntitySpriteDirection(enemy) ===
-                  ENTITY_SPRITE_DIRECTION.LEFT
-                ) {
+                if (enemySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
                   setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
-                } else {
+                } else if (
+                  enemySpriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT
+                ) {
                   setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
                 }
               }, 500);
@@ -1004,7 +1006,7 @@ export const Room: FC<{
     // // Change class of enemy sprite to animate movement
     if (randomMove[1] < enemyCol) {
       setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
-    } else {
+    } else if (randomMove[1] > enemyCol) {
       setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
     }
 
@@ -1063,7 +1065,7 @@ export const Room: FC<{
       // Change sprite animation from idle to attack
       if (playerCol < enemyCol) {
         setEntityAnimationAttack(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
-      } else {
+      } else if (playerCol > enemyCol) {
         setEntityAnimationAttack(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
       }
 
@@ -1072,7 +1074,7 @@ export const Room: FC<{
         console.log('is this happening? 2');
         if (playerCol < enemyCol) {
           setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
-        } else {
+        } else if (playerCol > enemyCol) {
           setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
       }, 500);
