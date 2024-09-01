@@ -242,85 +242,30 @@ export const damageEntity = (
 ): number => {
   // console.log('damageEntity', entity, damage, elementID);
   const newHealth = entity.health - damage;
+  const spriteDirection = getEntitySpriteDirection(entity);
 
   // Change entity sprite to damaged sprite animation
   if (entity.entityType === ENTITY_TYPE.PLAYER) {
-    const spriteDirection = getEntitySpriteDirection(entity);
     if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
       setEntityAnimationDamaged(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
-    } else {
+    } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
       setEntityAnimationDamaged(entity, ENTITY_SPRITE_DIRECTION.LEFT);
     }
   } else {
     console.log('Change entity to damaged sprite animation');
 
-    const enemySpriteSheetContainer = document.getElementById(
-      `spritesheet_container_${entity.entityType}_${entity.id}`
-    );
-
-    if (!enemySpriteSheetContainer) {
-      console.error('Enemy spritesheet container not found!');
-      return newHealth;
-    }
-
     // Depending on enemy health, play either damaged or defeat animation
     if (newHealth > 0) {
-      const topPosition =
-        -entity.spriteSize * entity.spritesheetDamagedRow + 'px';
-      if (
-        enemySpriteSheetContainer.classList.contains(
-          'animate-entityAnimateLeft08'
-        )
-      ) {
-        enemySpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft08'
-        );
-        enemySpriteSheetContainer.style.left = entity.spriteSize + 'px';
-        enemySpriteSheetContainer.style.top = topPosition;
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft08'
-          );
-        }, 1);
-      } else {
-        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        enemySpriteSheetContainer.style.left = 0 + 'px';
-        enemySpriteSheetContainer.style.top = topPosition;
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
-        }, 1);
+      if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+        setEntityAnimationDamaged(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
+      } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+        setEntityAnimationDamaged(entity, ENTITY_SPRITE_DIRECTION.LEFT);
       }
     } else {
-      const topPosition =
-        -entity.spriteSize * entity.spritesheetDefeatRow + 'px';
-      if (
-        enemySpriteSheetContainer.classList.contains(
-          'animate-entityAnimateLeft08'
-        )
-      ) {
-        enemySpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft08'
-        );
-        enemySpriteSheetContainer.style.top = topPosition;
-        enemySpriteSheetContainer.style.left = entity.spriteSize + 'px';
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeftOnce08'
-          );
-        }, 1);
-      } else {
-        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        enemySpriteSheetContainer.style.top = topPosition;
-        enemySpriteSheetContainer.style.left = 0 + 'px';
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateOnce08'
-          );
-        }, 1);
+      if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+        setEntityAnimationDefeat(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
+      } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+        setEntityAnimationDefeat(entity, ENTITY_SPRITE_DIRECTION.LEFT);
       }
     }
   }
@@ -341,107 +286,28 @@ export const damageEntity = (
 
       // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
       if (newHealth > 0) {
-        const topPosition =
-          -entity.spriteSize * entity.spritesheetIdleRow + 'px';
-        if (
-          playerSpriteSheetContainer.classList.contains(
-            'animate-entityAnimateLeft08'
-          )
-        ) {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = entity.spriteSize + 'px';
-
-          setTimeout(() => {
-            playerSpriteSheetContainer.classList.add(
-              'animate-entityAnimateLeft20'
-            );
-          }, 1);
-        } else {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = 0 + 'px';
-
-          setTimeout(() => {
-            playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
-          }, 1);
+        if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationIdle(entity, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+          setEntityAnimationIdle(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
       } else {
-        // Set entity animation to defeated by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
-        const topPosition =
-          -entity.spriteSize * entity.spritesheetDefeatRow + 'px';
-        if (
-          playerSpriteSheetContainer.classList.contains(
-            'animate-entityAnimateLeft08'
-          )
-        ) {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = entity.spriteSize + 'px';
-
-          setTimeout(() => {
-            playerSpriteSheetContainer.classList.add(
-              'animate-entityAnimateLeft20'
-            );
-          }, 1);
-        } else {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = 0 + 'px';
-
-          setTimeout(() => {
-            playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
-          }, 1);
+        if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationDefeat(entity, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+          setEntityAnimationDefeat(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
       }
     } else {
       // ENEMY
       console.log('Set enemy animation to defeated sprite animation');
-      const enemySpriteSheetContainer = document.getElementById(
-        `spritesheet_container_${entity.entityType}_${entity.id}`
-      );
-
-      if (!enemySpriteSheetContainer) {
-        console.error('Enemy spritesheet container not found!');
-        return newHealth;
-      }
 
       if (newHealth > 0) {
         // Set entity animation to idle
-        const topPosition =
-          -entity.spriteSize * entity.spritesheetIdleRow + 'px';
-        if (
-          enemySpriteSheetContainer.classList.contains(
-            'animate-entityAnimateLeft08'
-          )
-        ) {
-          enemySpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          enemySpriteSheetContainer.style.top = topPosition;
-          enemySpriteSheetContainer.style.left = entity.spriteSize + 'px';
-
-          setTimeout(() => {
-            enemySpriteSheetContainer.classList.add(
-              'animate-entityAnimateLeft08'
-            );
-          }, 1);
-        } else {
-          enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-          enemySpriteSheetContainer.style.top = topPosition;
-          enemySpriteSheetContainer.style.left = 0 + 'px';
-
-          setTimeout(() => {
-            enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
-          }, 1);
+        if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationIdle(entity, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+          setEntityAnimationIdle(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
       } else {
         console.log('SET ENTITY SPRITE TO DEFEATED');
@@ -966,7 +832,10 @@ export const setEntityAnimationDamaged = (
       );
       entitySpriteSheetContainer.style.left = '0px';
       entitySpriteSheetContainer.style.top = topPosition;
-      entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      });
     } else {
       // Face left
       entitySpriteSheetContainer.classList.remove('animate-entityAnimate08');
@@ -979,7 +848,10 @@ export const setEntityAnimationDamaged = (
       );
       entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
       entitySpriteSheetContainer.style.top = topPosition;
-      entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      });
     }
   } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
     if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
@@ -1005,6 +877,84 @@ export const setEntityAnimationDamaged = (
 
       setTimeout(() => {
         entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
+    }
+  }
+};
+
+export const setEntityAnimationDefeat = (
+  entity: IEntity,
+  spriteDirection: ENTITY_SPRITE_DIRECTION = ENTITY_SPRITE_DIRECTION.RIGHT
+) => {
+  const entitySpriteSheetContainer = document.getElementById(
+    `spritesheet_container_${entity.entityType}_${entity.id}`
+  );
+
+  if (!entitySpriteSheetContainer) {
+    console.error('Entity spritesheet container not found!');
+    return;
+  }
+
+  const topPosition = -entity.spriteSize * entity.spritesheetDefeatRow + 'px';
+
+  if (entity.entityType === ENTITY_TYPE.PLAYER) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      // Face right
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft08'
+      );
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate20');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft20'
+      );
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    } else {
+      // Face left
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft08'
+      );
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate20');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft20'
+      );
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    }
+  } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      // Face right
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft08'
+      );
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateOnce08');
+      }, 1);
+    } else {
+      // Face left
+      entitySpriteSheetContainer.classList.remove('animate-entityAnimate08');
+      entitySpriteSheetContainer.classList.remove(
+        'animate-entityAnimateLeft08'
+      );
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add(
+          'animate-entityAnimateLeftOnce08'
+        );
       }, 1);
     }
   }
