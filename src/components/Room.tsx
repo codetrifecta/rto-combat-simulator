@@ -108,10 +108,13 @@ export const Room: FC<{
         const [row, col] = playerMovementPath[0];
 
         // Update player walking animation direction based on movement path
+        const spriteDirection = getEntitySpriteDirection(player);
         if (col < playerPosition[1]) {
           setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.LEFT);
         } else if (col > playerPosition[1]) {
           setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.RIGHT);
+        } else {
+          setEntityAnimationWalk(player, spriteDirection);
         }
 
         // Update player's position in the entity positions map
@@ -140,7 +143,6 @@ export const Room: FC<{
       } else {
         // Remove walking animation and set player back to idle depending on direction (left or right)
         const entitySpriteDirection = getEntitySpriteDirection(player);
-
         if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
           setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.LEFT);
         } else if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
@@ -447,10 +449,10 @@ export const Room: FC<{
           if (!cannotMove) {
             setTimeout(() => {
               enemyPosition = handleEnemyMovement(newEnemy);
-              const enemySpriteDirection = getEntitySpriteDirection(enemy);
 
               // Remove walking animation and set enemy back to idle depending on direction (left or right)
               setTimeout(() => {
+                const enemySpriteDirection = getEntitySpriteDirection(enemy);
                 if (enemySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
                   setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
                 } else if (
@@ -1004,10 +1006,13 @@ export const Room: FC<{
     }
 
     // // Change class of enemy sprite to animate movement
+    const spriteDirection = getEntitySpriteDirection(enemy);
     if (randomMove[1] < enemyCol) {
       setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
     } else if (randomMove[1] > enemyCol) {
       setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
+    } else {
+      setEntityAnimationWalk(enemy, spriteDirection);
     }
 
     // Update room matrix to move enemy to random adjacent tile
@@ -1063,10 +1068,13 @@ export const Room: FC<{
 
     if (canAttackPlayer && !isPlayerHidden) {
       // Change sprite animation from idle to attack
+      const spriteDirection = getEntitySpriteDirection(enemy);
       if (playerCol < enemyCol) {
         setEntityAnimationAttack(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
       } else if (playerCol > enemyCol) {
         setEntityAnimationAttack(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
+      } else {
+        setEntityAnimationAttack(enemy, spriteDirection);
       }
 
       // After attack animation ends, change back to idle animation
@@ -1076,6 +1084,8 @@ export const Room: FC<{
           setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
         } else if (playerCol > enemyCol) {
           setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
+        } else {
+          setEntityAnimationIdle(enemy, spriteDirection);
         }
       }, 500);
 
