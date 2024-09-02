@@ -55,6 +55,11 @@ export enum SKILL_ID {
   DEFLECT = id++,
   AIR_SLASH = id++,
   FLYING_KICK = id++,
+  FIREBRAND = id++,
+  ICEBRAND = id++,
+  STORMBRAND = id++,
+  WRATH_OF_THE_ANCIENTS = id++,
+  SHIELD_OF_THE_ANCIENTS = id++,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -81,6 +86,7 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.PUNCTURE_STRIKE,
   SKILL_ID.AIR_SLASH,
   SKILL_ID.FLYING_KICK,
+  SKILL_ID.WRATH_OF_THE_ANCIENTS,
 ];
 
 export const intelligenceBasedSkillIDs: SKILL_ID[] = [
@@ -143,7 +149,7 @@ export const SKILLS: ISkill[] = [
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
     description:
       'As you brace yourself, swing with all your might to deal a devastating blow to an enemy. Range is dependent on the player’s current weapon.',
-    damageMultiplier: 3,
+    damageMultiplier: 3.5,
     range: 1,
     cooldown: 4,
     cooldownCounter: 0,
@@ -231,6 +237,36 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
+  },
+  {
+    id: SKILL_ID.WRATH_OF_THE_ANCIENTS,
+    name: 'Wrath of the Ancients',
+    icon: ICON_ID.SKILL_WRATH_OF_THE_ANCIENTS,
+    skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
+    description:
+      'Channel the wrath of the ancients, dealing damage to all enemies in an area around you. Has a 50% chance to apply weakened to enemies hit for 3 turns.',
+    damageMultiplier: 3,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 6,
+  },
+
+  // Defense-based skills
+  {
+    id: SKILL_ID.SHIELD_OF_THE_ANCIENTS,
+    name: 'Shield of the Ancients',
+    icon: ICON_ID.SKILL_SHIELD_OF_THE_ANCIENTS,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Channel the shield of the ancients, gaining a shield that absorbs all of incoming damage for 5 turns.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 5,
+    cooldownCounter: 0,
+    cost: 6,
   },
 
   // Intelligence-based skills
@@ -441,6 +477,48 @@ export const SKILLS: ISkill[] = [
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.FIREBRAND,
+    name: 'Firebrand',
+    icon: ICON_ID.SKILL_FIREBRAND,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Ignite your weapon with fire for 5 turns and gain firebranded. Damaging skills and attacks has a chance to ignite targets. You deal more damage to burning targets.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 5,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.ICEBRAND,
+    name: 'Icebrand',
+    icon: ICON_ID.SKILL_ICEBRAND,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Frost your weapon with ice for 5 turns and gain icebranded. Damaging skills and attacks has a chance to freeze targets. You deal more damage to frozen targets.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 5,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.STORMBRAND,
+    name: 'Stormbrand',
+    icon: ICON_ID.SKILL_STORMBRAND,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Charge your weapon with lightning for 5 turns and gain stormbranded. Damaging skills and attacks has a chance to shock targets. You deal more damage to shocked targets.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 5,
     cooldownCounter: 0,
     cost: 2,
   },
