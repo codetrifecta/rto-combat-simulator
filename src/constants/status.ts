@@ -9,6 +9,7 @@ export enum STATUS_ID {
   STONE_SKIN = id++,
   BURNED = id++,
   FROZEN = id++,
+  SHOCKED = id++,
   BATTLE_FURY_1 = id++,
   BATTLE_FURY_2 = id++,
   BATTLE_FURY_3 = id++,
@@ -118,6 +119,17 @@ export const STATUSES: IStatus[] = [
       ...BASE_STATUS_EFFECTS,
       canMove: false,
       canAttack: false,
+    },
+  },
+  {
+    id: STATUS_ID.SHOCKED,
+    name: 'Shocked',
+    icon: ICON_ID.STATUS_SHOCKED,
+    description: 'Reduce 1 AP for 3 turns.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
     },
   },
   {

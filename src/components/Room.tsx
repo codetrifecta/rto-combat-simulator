@@ -827,32 +827,32 @@ export const Room: FC<{
         firebrandedStatus &&
         newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
       ) {
-        const playerTotalIntelligence = getPlayerTotalIntelligence(newPlayer);
         console.log('Firebranded status found');
         // Firebranded: Damaging skills and attacks has a chance to burn. Increased damage on burning targets depending on player's intelligence
-        const burnChance = 50 + 0.5 * playerTotalIntelligence;
-        if (Math.random() < burnChance / 100) {
+        const burnChance = firebrandedStatus.effect.burnChance;
+        if (Math.random() < burnChance) {
           // Add burning status to enemy
-          const burningStatus = STATUSES.find(
+          const burnedStatus = STATUSES.find(
             (status) => status.id === STATUS_ID.BURNED
           );
 
-          if (burningStatus === undefined) {
+          if (burnedStatus === undefined) {
             console.error(
               'handleSkillDamage: No status found for the associated skill ID'
             );
           } else {
-            burningStatus.description = burningStatus.description.replace(
+            burnedStatus.description = burnedStatus.description.replace(
               '#DAMAGE',
               Math.ceil(0.2 * getPlayerTotalIntelligence(newPlayer)).toString()
             );
-            burningStatus.effect.damageOverTime = Math.ceil(
+            burnedStatus.effect.damageOverTime = Math.ceil(
               0.2 * getPlayerTotalIntelligence(newPlayer)
             );
+            burnedStatus.id += Math.random();
 
-            enemy.statuses = [...enemy.statuses, burningStatus];
+            enemy.statuses = [...enemy.statuses, burnedStatus];
             displayStatusEffect(
-              burningStatus,
+              burnedStatus,
               true,
               `tile_${enemy.entityType}_${enemy.id}`
             );
@@ -861,12 +861,12 @@ export const Room: FC<{
 
         if (enemy.statuses.some((status) => status.id === STATUS_ID.BURNED)) {
           totalDamage = Math.round(
-            totalDamage * (1 + (10 + 0.5 * playerTotalIntelligence) / 100)
+            totalDamage * firebrandedStatus.effect.damageMultiplierForBurn
           );
         }
       }
 
-      // Check for player firebreaded status
+      // Check for player icebranded status
       const icebrandedStatus = newPlayer.statuses.find(
         (status) => status.id === STATUS_ID.ICEBRANDED
       );
@@ -875,11 +875,10 @@ export const Room: FC<{
         icebrandedStatus &&
         newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
       ) {
-        const playerTotalIntelligence = getPlayerTotalIntelligence(newPlayer);
         console.log('Icebranded status found');
         // Icebranded: Damaging skills and attacks has a chance to freeze. Increased damage on frozen targets depending on player's intelligence
-        const freezeChance = 50 + 0.5 * playerTotalIntelligence;
-        if (Math.random() < freezeChance / 100) {
+        const freezeChance = icebrandedStatus.effect.freezeChance;
+        if (Math.random() < freezeChance) {
           // Add burning status to enemy
           const frozenStatus = STATUSES.find(
             (status) => status.id === STATUS_ID.FROZEN
@@ -890,14 +889,7 @@ export const Room: FC<{
               'handleSkillDamage: No status found for the associated skill ID'
             );
           } else {
-            frozenStatus.description = frozenStatus.description.replace(
-              '#DAMAGE',
-              Math.ceil(0.2 * getPlayerTotalIntelligence(newPlayer)).toString()
-            );
-            frozenStatus.effect.damageOverTime = Math.ceil(
-              0.2 * getPlayerTotalIntelligence(newPlayer)
-            );
-
+            frozenStatus.id += Math.random();
             enemy.statuses = [...enemy.statuses, frozenStatus];
             displayStatusEffect(
               frozenStatus,
@@ -909,7 +901,48 @@ export const Room: FC<{
 
         if (enemy.statuses.some((status) => status.id === STATUS_ID.FROZEN)) {
           totalDamage = Math.round(
-            totalDamage * (1 + (10 + 0.5 * playerTotalIntelligence) / 100)
+            totalDamage * icebrandedStatus.effect.damageMultiplierForFreeze
+          );
+        }
+      }
+
+      // Check for player stormbranded status
+      const stormbrandedStatus = newPlayer.statuses.find(
+        (status) => status.id === STATUS_ID.STORMBRANDED
+      );
+
+      if (
+        stormbrandedStatus &&
+        newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
+      ) {
+        console.log('Stormbrand status found');
+        // Icebranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
+        const shockChance = stormbrandedStatus.effect.shockChance;
+        console.log('shockChance', shockChance);
+        if (Math.random() < shockChance) {
+          // Add burning status to enemy
+          const shockedStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.SHOCKED
+          );
+
+          if (shockedStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            shockedStatus.id += Math.random();
+            enemy.statuses = [...enemy.statuses, shockedStatus];
+            displayStatusEffect(
+              shockedStatus,
+              true,
+              `tile_${enemy.entityType}_${enemy.id}`
+            );
+          }
+        }
+
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.SHOCKED)) {
+          totalDamage = Math.round(
+            totalDamage * stormbrandedStatus.effect.damageMultiplierForShock
           );
         }
       }

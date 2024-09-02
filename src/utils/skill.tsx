@@ -316,7 +316,7 @@ const handleSkillDamage = (
             burnedStatus.effect.damageOverTime = Math.ceil(
               0.2 * getPlayerTotalIntelligence(playerAfterDamage)
             );
-
+            burnedStatus.id += Math.random();
             newEnemy.statuses = [...newEnemy.statuses, burnedStatus];
             displayStatusEffect(
               burnedStatus,
@@ -355,6 +355,7 @@ const handleSkillDamage = (
               'handleSkillDamage: No status found for the associated skill ID'
             );
           } else {
+            frozenStatus.id += Math.random();
             enemy.statuses = [...enemy.statuses, frozenStatus];
             displayStatusEffect(
               frozenStatus,
@@ -367,6 +368,43 @@ const handleSkillDamage = (
         if (enemy.statuses.some((status) => status.id === STATUS_ID.FROZEN)) {
           totalDamage = Math.round(
             totalDamage * icebrandedStatus.effect.damageMultiplierForFreeze
+          );
+        }
+      }
+
+      // Check for player stormbranded status
+      const stormbrandedStatus = playerAfterDamage.statuses.find(
+        (status) => status.id === STATUS_ID.STORMBRANDED
+      );
+
+      if (stormbrandedStatus && weaponBasedSkillIDs.includes(skill.id)) {
+        console.log('Stormbranded status found');
+        // Stormbranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
+        const shockChance = stormbrandedStatus.effect.shockChance;
+        if (Math.random() < shockChance) {
+          // Add frozen status to enemy
+          const shockedStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.SHOCKED
+          );
+
+          if (shockedStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            shockedStatus.id += Math.random();
+            enemy.statuses = [...enemy.statuses, shockedStatus];
+            displayStatusEffect(
+              shockedStatus,
+              true,
+              `tile_${enemy.entityType}_${enemy.id}`
+            );
+          }
+        }
+
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.FROZEN)) {
+          totalDamage = Math.round(
+            totalDamage * stormbrandedStatus.effect.damageMultiplierForShock
           );
         }
       }
@@ -687,7 +725,17 @@ const handleSkillStatus = (
       }
       break;
     case SKILL_ID.STORMBRAND:
-      statusID = STATUS_ID.STORMBRANDED;
+      {
+        statusID = STATUS_ID.STORMBRANDED;
+        // Freeze chance and damage multiplier will scale with player's intelligence
+        const playerTotalIntelligence =
+          getPlayerTotalIntelligence(playerAfterStatus);
+        statusEffectModifier[0] = true;
+        statusEffectModifier[1].shockChance =
+          0.4 + (0.8 * playerTotalIntelligence) / 100;
+        statusEffectModifier[1].damageMultiplierForShock =
+          1 + (20 + 0.8 * playerTotalIntelligence) / 100;
+      }
       break;
     default:
       break;
@@ -752,6 +800,17 @@ const handleSkillStatus = (
       '#DAMAGE_MULTIPLIER',
       Math.round(
         (statusToBeApplied.effect.damageMultiplierForFreeze - 1) * 100
+      ) + ''
+    );
+  } else if ([STATUS_ID.STORMBRANDED].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#SHOCK_CHANCE',
+      Math.round(statusToBeApplied.effect.shockChance * 100) + ''
+    );
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE_MULTIPLIER',
+      Math.round(
+        (statusToBeApplied.effect.damageMultiplierForShock - 1) * 100
       ) + ''
     );
   }

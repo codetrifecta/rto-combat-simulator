@@ -97,6 +97,7 @@ import status_petrified from '../assets/icons/statuses/icon_status_petrified.png
 import status_attack_up from '../assets/icons/statuses/icon_status_attack_up.png';
 import status_burned from '../assets/icons/statuses/icon_status_burned.png';
 import status_frozen from '../assets/icons/statuses/icon_status_frozen.png';
+import status_shocked from '../assets/icons/statuses/icon_status_shocked.png';
 import status_battle_fury from '../assets/icons/statuses/icon_status_battle_fury.png';
 import status_bloodlust from '../assets/icons/statuses/icon_status_bloodlust.png';
 import status_focused from '../assets/icons/statuses/icon_status_focused.png';
@@ -218,6 +219,7 @@ export enum ICON_ID {
   STATUS_ATTACK_UP = 'status_attack_up',
   STATUS_BURNED = 'status_burned',
   STATUS_FROZEN = 'status_frozen',
+  STATUS_SHOCKED = 'status_shocked',
   STATUS_BATTLE_FURY = 'status_battle_fury',
   STATUS_BLOODLUST = 'status_bloodlust',
   STATUS_FOCUSED = 'status_focused',
@@ -341,6 +343,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_ATTACK_UP]: status_attack_up,
   [ICON_ID.STATUS_BURNED]: status_burned,
   [ICON_ID.STATUS_FROZEN]: status_frozen,
+  [ICON_ID.STATUS_SHOCKED]: status_shocked,
   [ICON_ID.STATUS_BATTLE_FURY]: status_battle_fury,
   [ICON_ID.STATUS_BLOODLUST]: status_bloodlust,
   [ICON_ID.STATUS_FOCUSED]: status_focused,
