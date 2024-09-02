@@ -7,6 +7,7 @@ import {
   intelligenceBasedSkillIDs,
   SKILL_ID,
   SKILL_TAG,
+  weaponRangeBasedSkillIDs,
 } from '../constants/skill';
 import { BASE_STATUS_EFFECTS, STATUS_ID, STATUSES } from '../constants/status';
 import { useSummonStore } from '../store/summon';
@@ -283,6 +284,44 @@ const handleSkillDamage = (
           totalDamage += Math.round(totalDamage * 0.4);
         } else {
           totalDamage += Math.round(totalDamage * 0.2);
+        }
+      }
+
+      // Check for firebranded status
+      const firebrandedStatus = playerAfterDamage.statuses.find(
+        (status) => status.id === STATUS_ID.FIREBRANDED
+      );
+
+      if (firebrandedStatus && weaponRangeBasedSkillIDs.includes(skill.id)) {
+        console.log('Firebranded status found');
+        // Firebranded: Damaging skills and attacks has a chance to burn. Increased damage on burning targets depending on player's intelligence
+        const burnChance = 50 + 0.5 * playerTotalIntelligence;
+        if (Math.random() < burnChance / 100) {
+          // Add burning status to enemy
+          const burningStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.BURNED
+          );
+
+          if (burningStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            newEnemy.statuses = [...newEnemy.statuses, burningStatus];
+            displayStatusEffect(
+              burningStatus,
+              true,
+              `tile_${newEnemy.entityType}_${newEnemy.id}`
+            );
+          }
+        }
+
+        if (
+          newEnemy.statuses.some((status) => status.id === STATUS_ID.BURNED)
+        ) {
+          totalDamage = Math.round(
+            totalDamage * (1 + (10 + 0.5 * playerTotalIntelligence) / 100)
+          );
         }
       }
 
@@ -576,6 +615,15 @@ const handleSkillStatus = (
         0.1 + getPlayerTotalStrength(playerAfterStatus) / 100;
       // console.log(statusEffectModifier[1].incomingDamageMultiplier);
       break;
+    case SKILL_ID.FIREBRAND:
+      statusID = STATUS_ID.FIREBRANDED;
+      break;
+    case SKILL_ID.ICEBRAND:
+      statusID = STATUS_ID.ICEBRANDED;
+      break;
+    case SKILL_ID.STORMBRAND:
+      statusID = STATUS_ID.STORMBRANDED;
+      break;
     default:
       break;
   }
@@ -620,14 +668,17 @@ const handleSkillStatus = (
       '#DAMAGE_REDUCTION',
       Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100) + ''
     );
-    // console.log(
-    //   statusToBeApplied,
-    //   statusToBeApplied.description.replace(
-    //     '#DAMAGE_REDUCTION',
-    //     Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100) + ''
-    //   ),
-    //   Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100)
-    // );
+  } else if ([STATUS_ID.FIREBRANDED].includes(statusToBeApplied.id)) {
+    const playerTotalIntelligence =
+      getPlayerTotalIntelligence(playerAfterStatus);
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#BURN_CHANCE',
+      Math.round(50 + 0.5 * playerTotalIntelligence) + ''
+    );
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE_MULTIPLIER',
+      Math.round(10 + 0.5 * playerTotalIntelligence) + ''
+    );
   }
 
   // Peform skill specific actions before applying to targets

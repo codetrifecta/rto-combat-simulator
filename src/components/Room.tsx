@@ -13,7 +13,7 @@ import {
   singleTargetSkillIDs,
   SKILL_ID,
   SKILL_TYPE,
-  weaponBasedSkillIDs,
+  weaponRangeBasedSkillIDs,
 } from '../constants/skill';
 import { STATUS_ID, STATUSES } from '../constants/status';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from '../constants/weapon';
@@ -29,6 +29,7 @@ import {
   getEntityPosition,
   getEntitySpriteDirection,
   getPlayerTotalDefense,
+  getPlayerTotalIntelligence,
   handlePlayerEndTurn,
   healEntity,
   isEnemy,
@@ -698,7 +699,7 @@ export const Room: FC<{
       let range = skillRange;
 
       // Check if skill is a weapon-based skill and if player has a weapon equipped
-      if (weaponBasedSkillIDs.includes(skill.id)) {
+      if (weaponRangeBasedSkillIDs.includes(skill.id)) {
         if (player.equipment.weapon) {
           if (player.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
             range = player.equipment.weapon.range;
@@ -814,6 +815,54 @@ export const Room: FC<{
           totalDamage += Math.round(totalDamage * 0.4);
         } else {
           totalDamage += Math.round(totalDamage * 0.2);
+        }
+      }
+
+      // Check for player firebreanded status
+      const firebrandedStatus = newPlayer.statuses.find(
+        (status) => status.id === STATUS_ID.FIREBRANDED
+      );
+
+      if (
+        firebrandedStatus &&
+        newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
+      ) {
+        const playerTotalIntelligence = getPlayerTotalIntelligence(newPlayer);
+        console.log('Firebranded status found');
+        // Firebranded: Damaging skills and attacks has a chance to burn. Increased damage on burning targets depending on player's intelligence
+        const burnChance = 50 + 0.5 * playerTotalIntelligence;
+        if (Math.random() < burnChance / 100) {
+          // Add burning status to enemy
+          const burningStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.BURNED
+          );
+
+          if (burningStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            burningStatus.description = burningStatus.description.replace(
+              '#DAMAGE',
+              Math.ceil(0.2 * getPlayerTotalIntelligence(newPlayer)).toString()
+            );
+            burningStatus.effect.damageOverTime = Math.ceil(
+              0.2 * getPlayerTotalIntelligence(newPlayer)
+            );
+
+            enemy.statuses = [...enemy.statuses, burningStatus];
+            displayStatusEffect(
+              burningStatus,
+              true,
+              `tile_${enemy.entityType}_${enemy.id}`
+            );
+          }
+        }
+
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.BURNED)) {
+          totalDamage = Math.round(
+            totalDamage * (1 + (10 + 0.5 * playerTotalIntelligence) / 100)
+          );
         }
       }
 
@@ -1360,7 +1409,7 @@ export const Room: FC<{
                 // let range = skill.range;
 
                 // // Check for weapon (range) dependent skills
-                // if (weaponBasedSkillIDs.includes(skill.id)) {
+                // if (weaponRangeBasedSkillIDs.includes(skill.id)) {
                 //   if (player.equipment.weapon) {
                 //     if (
                 //       player.equipment.weapon.attackType ===
@@ -1436,7 +1485,7 @@ export const Room: FC<{
 
                 // Range for weapon dependent skills
                 if (weapon) {
-                  if (weaponBasedSkillIDs.includes(skill.id)) {
+                  if (weaponRangeBasedSkillIDs.includes(skill.id)) {
                     range = weapon.range;
                   }
                 }
