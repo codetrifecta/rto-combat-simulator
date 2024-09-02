@@ -48,11 +48,11 @@ Combat simulator for Return to Olympus
   - [x] Deflect
   - [x] Air Slash
   - [x] Flying Kick
-  - [ ] Firebrand
-  - [ ] Icebrand
-  - [ ] Stormbrand
+  - [x] Firebrand
+  - [x] Icebrand
+  - [x] Stormbrand
+  - [x] Wrath of the Ancients
   - [ ] Shield of the Ancients
-  - [ ] Wrath of the Ancients
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
 - [x] Sprites for each of the above

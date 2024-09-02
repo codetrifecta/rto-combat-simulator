@@ -641,6 +641,7 @@ const handleSkillStatus = (
       statusID = STATUS_ID.ENTANGLED;
       break;
     case SKILL_ID.WEAKEN:
+    case SKILL_ID.WRATH_OF_THE_ANCIENTS:
       statusID = STATUS_ID.WEAKENED;
       break;
     case SKILL_ID.WARCRY:
@@ -848,6 +849,14 @@ const handleSkillStatus = (
     const entityId = target[1];
 
     if (entityType === ENTITY_TYPE.ENEMY) {
+      // Check for skills that have a chance to apply status effects
+      if ([SKILL_ID.WRATH_OF_THE_ANCIENTS].includes(skill.id)) {
+        // Wrath of the Ancients: 50% chance to apply Weakened status
+        if (Math.random() > 0.5) {
+          return;
+        }
+      }
+
       const enemy = enemiesAfterStatus.find((e) => e.id === entityId);
 
       if (!enemy) {

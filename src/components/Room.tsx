@@ -1642,7 +1642,8 @@ export const Room: FC<{
                 switch (skill.id) {
                   case SKILL_ID.WHIRLWIND:
                   case SKILL_ID.WARCRY:
-                  case SKILL_ID.THROWING_KNIVES: {
+                  case SKILL_ID.THROWING_KNIVES:
+                  case SKILL_ID.WRATH_OF_THE_ANCIENTS: {
                     if (isEffectZone && isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
 
@@ -1933,6 +1934,7 @@ export const Room: FC<{
               // Can only target floor tiles
               if (tileType !== TILE_TYPE.FLOOR) {
                 isEffectZone = false;
+                isTargetZone = false;
               }
             }
           }

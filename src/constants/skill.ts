@@ -256,7 +256,7 @@ export const SKILLS: ISkill[] = [
     name: 'Wrath of the Ancients',
     icon: ICON_ID.SKILL_WRATH_OF_THE_ANCIENTS,
     skillType: SKILL_TYPE.AOE,
-    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
       'Channel the wrath of the ancients, dealing damage to all enemies in an area around you. Has a 50% chance to apply weakened to enemies hit for 3 turns.',
     damageMultiplier: 3,
