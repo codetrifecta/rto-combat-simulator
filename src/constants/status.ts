@@ -49,6 +49,12 @@ export const BASE_STATUS_EFFECTS: IStatusEffect = {
   dodgeChance: 0,
   damagePerAP: 0,
   incomingDamageMultiplier: 1,
+  burnChance: 0,
+  damageMultiplierForBurn: 1,
+  freezeChance: 0,
+  damageMultiplierForFreeze: 1,
+  shockChance: 0,
+  damageMultiplierForShock: 1,
 };
 
 export const STATUSES: IStatus[] = [
@@ -360,6 +366,8 @@ export const STATUSES: IStatus[] = [
     durationCounter: 5,
     effect: {
       ...BASE_STATUS_EFFECTS,
+      burnChance: 0.5,
+      damageMultiplierForBurn: 1.2,
     },
   },
   {
@@ -372,6 +380,8 @@ export const STATUSES: IStatus[] = [
     durationCounter: 5,
     effect: {
       ...BASE_STATUS_EFFECTS,
+      freezeChance: 0.5,
+      damageMultiplierForFreeze: 1.2,
     },
   },
   {
@@ -384,6 +394,8 @@ export const STATUSES: IStatus[] = [
     durationCounter: 5,
     effect: {
       ...BASE_STATUS_EFFECTS,
+      shockChance: 0.5,
+      damageMultiplierForShock: 1.2,
     },
   },
 ];

@@ -98,6 +98,12 @@ export interface IStatusEffect {
   dodgeChance: number;
   damagePerAP: number;
   incomingDamageMultiplier: number;
+  burnChance: number;
+  damageMultiplierForBurn: number;
+  freezeChance: number;
+  damageMultiplierForFreeze: number;
+  shockChance: number;
+  damageMultiplierForShock: number;
 }
 
 export interface IWeapon {

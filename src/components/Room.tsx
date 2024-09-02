@@ -818,7 +818,7 @@ export const Room: FC<{
         }
       }
 
-      // Check for player firebreanded status
+      // Check for player firebreaded status
       const firebrandedStatus = newPlayer.statuses.find(
         (status) => status.id === STATUS_ID.FIREBRANDED
       );
@@ -860,6 +860,54 @@ export const Room: FC<{
         }
 
         if (enemy.statuses.some((status) => status.id === STATUS_ID.BURNED)) {
+          totalDamage = Math.round(
+            totalDamage * (1 + (10 + 0.5 * playerTotalIntelligence) / 100)
+          );
+        }
+      }
+
+      // Check for player firebreaded status
+      const icebrandedStatus = newPlayer.statuses.find(
+        (status) => status.id === STATUS_ID.ICEBRANDED
+      );
+
+      if (
+        icebrandedStatus &&
+        newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
+      ) {
+        const playerTotalIntelligence = getPlayerTotalIntelligence(newPlayer);
+        console.log('Icebranded status found');
+        // Icebranded: Damaging skills and attacks has a chance to freeze. Increased damage on frozen targets depending on player's intelligence
+        const freezeChance = 50 + 0.5 * playerTotalIntelligence;
+        if (Math.random() < freezeChance / 100) {
+          // Add burning status to enemy
+          const frozenStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.FROZEN
+          );
+
+          if (frozenStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            frozenStatus.description = frozenStatus.description.replace(
+              '#DAMAGE',
+              Math.ceil(0.2 * getPlayerTotalIntelligence(newPlayer)).toString()
+            );
+            frozenStatus.effect.damageOverTime = Math.ceil(
+              0.2 * getPlayerTotalIntelligence(newPlayer)
+            );
+
+            enemy.statuses = [...enemy.statuses, frozenStatus];
+            displayStatusEffect(
+              frozenStatus,
+              true,
+              `tile_${enemy.entityType}_${enemy.id}`
+            );
+          }
+        }
+
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.FROZEN)) {
           totalDamage = Math.round(
             totalDamage * (1 + (10 + 0.5 * playerTotalIntelligence) / 100)
           );

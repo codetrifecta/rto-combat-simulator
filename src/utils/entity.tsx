@@ -855,10 +855,10 @@ const removeEntityAnimationClasses = (
     'animate-entityAnimateLeft20'
   );
   entitySpriteSheetContainerElement.classList.remove(
-    'animate-entityAnimateLeftOnce20'
+    'animate-entityAnimateLeftOnce05'
   );
   entitySpriteSheetContainerElement.classList.remove(
-    'animate-entityAnimateLeftOnce20'
+    'animate-entityAnimateLeftOnce08'
   );
   entitySpriteSheetContainerElement.classList.remove(
     'animate-entityAnimateLeftOnce20'
