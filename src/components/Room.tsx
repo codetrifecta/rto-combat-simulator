@@ -13,7 +13,7 @@ import {
   singleTargetSkillIDs,
   SKILL_ID,
   SKILL_TYPE,
-  weaponBasedSkillIDs,
+  weaponRangeBasedSkillIDs,
 } from '../constants/skill';
 import { STATUS_ID, STATUSES } from '../constants/status';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from '../constants/weapon';
@@ -29,6 +29,7 @@ import {
   getEntityPosition,
   getEntitySpriteDirection,
   getPlayerTotalDefense,
+  getPlayerTotalIntelligence,
   handlePlayerEndTurn,
   healEntity,
   isEnemy,
@@ -698,7 +699,7 @@ export const Room: FC<{
       let range = skillRange;
 
       // Check if skill is a weapon-based skill and if player has a weapon equipped
-      if (weaponBasedSkillIDs.includes(skill.id)) {
+      if (weaponRangeBasedSkillIDs.includes(skill.id)) {
         if (player.equipment.weapon) {
           if (player.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
             range = player.equipment.weapon.range;
@@ -814,6 +815,135 @@ export const Room: FC<{
           totalDamage += Math.round(totalDamage * 0.4);
         } else {
           totalDamage += Math.round(totalDamage * 0.2);
+        }
+      }
+
+      // Check for player firebreaded status
+      const firebrandedStatus = newPlayer.statuses.find(
+        (status) => status.id === STATUS_ID.FIREBRANDED
+      );
+
+      if (
+        firebrandedStatus &&
+        newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
+      ) {
+        console.log('Firebranded status found');
+        // Firebranded: Damaging skills and attacks has a chance to burn. Increased damage on burning targets depending on player's intelligence
+        const burnChance = firebrandedStatus.effect.burnChance;
+        if (Math.random() < burnChance) {
+          // Add burning status to enemy
+          const burnedStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.BURNED
+          );
+
+          if (burnedStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            burnedStatus.description = burnedStatus.description.replace(
+              '#DAMAGE',
+              Math.ceil(0.2 * getPlayerTotalIntelligence(newPlayer)).toString()
+            );
+            burnedStatus.effect.damageOverTime = Math.ceil(
+              0.2 * getPlayerTotalIntelligence(newPlayer)
+            );
+            burnedStatus.id += Math.random();
+
+            enemy.statuses = [...enemy.statuses, burnedStatus];
+            displayStatusEffect(
+              burnedStatus,
+              true,
+              `tile_${enemy.entityType}_${enemy.id}`
+            );
+          }
+        }
+
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.BURNED)) {
+          totalDamage = Math.round(
+            totalDamage * firebrandedStatus.effect.damageMultiplierForBurn
+          );
+        }
+      }
+
+      // Check for player icebranded status
+      const icebrandedStatus = newPlayer.statuses.find(
+        (status) => status.id === STATUS_ID.ICEBRANDED
+      );
+
+      if (
+        icebrandedStatus &&
+        newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
+      ) {
+        console.log('Icebranded status found');
+        // Icebranded: Damaging skills and attacks has a chance to freeze. Increased damage on frozen targets depending on player's intelligence
+        const freezeChance = icebrandedStatus.effect.freezeChance;
+        if (Math.random() < freezeChance) {
+          // Add burning status to enemy
+          const frozenStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.FROZEN
+          );
+
+          if (frozenStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            frozenStatus.id += Math.random();
+            enemy.statuses = [...enemy.statuses, frozenStatus];
+            displayStatusEffect(
+              frozenStatus,
+              true,
+              `tile_${enemy.entityType}_${enemy.id}`
+            );
+          }
+        }
+
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.FROZEN)) {
+          totalDamage = Math.round(
+            totalDamage * icebrandedStatus.effect.damageMultiplierForFreeze
+          );
+        }
+      }
+
+      // Check for player stormbranded status
+      const stormbrandedStatus = newPlayer.statuses.find(
+        (status) => status.id === STATUS_ID.STORMBRANDED
+      );
+
+      if (
+        stormbrandedStatus &&
+        newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
+      ) {
+        console.log('Stormbrand status found');
+        // Icebranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
+        const shockChance = stormbrandedStatus.effect.shockChance;
+        console.log('shockChance', shockChance);
+        if (Math.random() < shockChance) {
+          // Add burning status to enemy
+          const shockedStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.SHOCKED
+          );
+
+          if (shockedStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            shockedStatus.id += Math.random();
+            enemy.statuses = [...enemy.statuses, shockedStatus];
+            displayStatusEffect(
+              shockedStatus,
+              true,
+              `tile_${enemy.entityType}_${enemy.id}`
+            );
+          }
+        }
+
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.SHOCKED)) {
+          totalDamage = Math.round(
+            totalDamage * stormbrandedStatus.effect.damageMultiplierForShock
+          );
         }
       }
 
@@ -1360,7 +1490,7 @@ export const Room: FC<{
                 // let range = skill.range;
 
                 // // Check for weapon (range) dependent skills
-                // if (weaponBasedSkillIDs.includes(skill.id)) {
+                // if (weaponRangeBasedSkillIDs.includes(skill.id)) {
                 //   if (player.equipment.weapon) {
                 //     if (
                 //       player.equipment.weapon.attackType ===
@@ -1436,7 +1566,7 @@ export const Room: FC<{
 
                 // Range for weapon dependent skills
                 if (weapon) {
-                  if (weaponBasedSkillIDs.includes(skill.id)) {
+                  if (weaponRangeBasedSkillIDs.includes(skill.id)) {
                     range = weapon.range;
                   }
                 }
@@ -1512,7 +1642,8 @@ export const Room: FC<{
                 switch (skill.id) {
                   case SKILL_ID.WHIRLWIND:
                   case SKILL_ID.WARCRY:
-                  case SKILL_ID.THROWING_KNIVES: {
+                  case SKILL_ID.THROWING_KNIVES:
+                  case SKILL_ID.WRATH_OF_THE_ANCIENTS: {
                     if (isEffectZone && isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
 
@@ -1803,6 +1934,7 @@ export const Room: FC<{
               // Can only target floor tiles
               if (tileType !== TILE_TYPE.FLOOR) {
                 isEffectZone = false;
+                isTargetZone = false;
               }
             }
           }

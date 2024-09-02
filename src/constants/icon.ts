@@ -85,6 +85,11 @@ import skill_frenzy from '../assets/icons/skills/icon_skill_frenzy.png';
 import skill_deflect from '../assets/icons/skills/icon_skill_deflect.png';
 import skill_air_slash from '../assets/icons/skills/icon_skill_air_slash.png';
 import skill_flying_kick from '../assets/icons/skills/icon_skill_flying_kick.png';
+import skill_firebrand from '../assets/icons/skills/icon_skill_firebrand.png';
+import skill_icebrand from '../assets/icons/skills/icon_skill_icebrand.png';
+import skill_stormbrand from '../assets/icons/skills/icon_skill_stormbrand.png';
+import skill_wrath_of_the_ancients from '../assets/icons/skills/icon_skill_wrath_of_the_ancients.png';
+import skill_shield_of_the_ancients from '../assets/icons/skills/icon_skill_shield_of_the_ancients.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -92,6 +97,7 @@ import status_petrified from '../assets/icons/statuses/icon_status_petrified.png
 import status_attack_up from '../assets/icons/statuses/icon_status_attack_up.png';
 import status_burned from '../assets/icons/statuses/icon_status_burned.png';
 import status_frozen from '../assets/icons/statuses/icon_status_frozen.png';
+import status_shocked from '../assets/icons/statuses/icon_status_shocked.png';
 import status_battle_fury from '../assets/icons/statuses/icon_status_battle_fury.png';
 import status_bloodlust from '../assets/icons/statuses/icon_status_bloodlust.png';
 import status_focused from '../assets/icons/statuses/icon_status_focused.png';
@@ -109,6 +115,9 @@ import status_wounded from '../assets/icons/statuses/icon_status_wounded.png';
 import status_berserk from '../assets/icons/statuses/icon_status_berserk.png';
 import status_frenzy from '../assets/icons/statuses/icon_status_frenzy.png';
 import status_deflecting from '../assets/icons/statuses/icon_status_deflecting.png';
+import status_firebranded from '../assets/icons/statuses/icon_status_firebranded.png';
+import status_icebranded from '../assets/icons/statuses/icon_status_icebranded.png';
+import status_stormbranded from '../assets/icons/statuses/icon_status_stormbranded.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -198,6 +207,11 @@ export enum ICON_ID {
   SKILL_DEFLECT = 'skill_deflect',
   SKILL_AIR_SLASH = 'skill_air_slash',
   SKILL_FLYING_KICK = 'skill_flying_kick',
+  SKILL_FIREBRAND = 'skill_firebrand',
+  SKILL_ICEBRAND = 'skill_icebrand',
+  SKILL_STORMBRAND = 'skill_stormbrand',
+  SKILL_WRATH_OF_THE_ANCIENTS = 'skill_wrath_of_the_ancients',
+  SKILL_SHIELD_OF_THE_ANCIENTS = 'skill_shield_of_the_ancients',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -205,6 +219,7 @@ export enum ICON_ID {
   STATUS_ATTACK_UP = 'status_attack_up',
   STATUS_BURNED = 'status_burned',
   STATUS_FROZEN = 'status_frozen',
+  STATUS_SHOCKED = 'status_shocked',
   STATUS_BATTLE_FURY = 'status_battle_fury',
   STATUS_BLOODLUST = 'status_bloodlust',
   STATUS_FOCUSED = 'status_focused',
@@ -223,6 +238,9 @@ export enum ICON_ID {
   STATUS_BERSERK = 'status_berserk',
   STATUS_FRENZY = 'status_frenzy',
   STATUS_DEFLECTING = 'status_deflecting',
+  STATUS_FIREBRANDED = 'status_firebrand',
+  STATUS_ICEBRANDED = 'status_icebranded',
+  STATUS_STORMBRANDED = 'status_stormbranded',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -313,6 +331,11 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_DEFLECT]: skill_deflect,
   [ICON_ID.SKILL_AIR_SLASH]: skill_air_slash,
   [ICON_ID.SKILL_FLYING_KICK]: skill_flying_kick,
+  [ICON_ID.SKILL_FIREBRAND]: skill_firebrand,
+  [ICON_ID.SKILL_ICEBRAND]: skill_icebrand,
+  [ICON_ID.SKILL_STORMBRAND]: skill_stormbrand,
+  [ICON_ID.SKILL_WRATH_OF_THE_ANCIENTS]: skill_wrath_of_the_ancients,
+  [ICON_ID.SKILL_SHIELD_OF_THE_ANCIENTS]: skill_shield_of_the_ancients,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
@@ -320,6 +343,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_ATTACK_UP]: status_attack_up,
   [ICON_ID.STATUS_BURNED]: status_burned,
   [ICON_ID.STATUS_FROZEN]: status_frozen,
+  [ICON_ID.STATUS_SHOCKED]: status_shocked,
   [ICON_ID.STATUS_BATTLE_FURY]: status_battle_fury,
   [ICON_ID.STATUS_BLOODLUST]: status_bloodlust,
   [ICON_ID.STATUS_FOCUSED]: status_focused,
@@ -338,6 +362,9 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_BERSERK]: status_berserk,
   [ICON_ID.STATUS_FRENZY]: status_frenzy,
   [ICON_ID.STATUS_DEFLECTING]: status_deflecting,
+  [ICON_ID.STATUS_FIREBRANDED]: status_firebranded,
+  [ICON_ID.STATUS_ICEBRANDED]: status_icebranded,
+  [ICON_ID.STATUS_STORMBRANDED]: status_stormbranded,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

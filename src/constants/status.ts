@@ -9,6 +9,7 @@ export enum STATUS_ID {
   STONE_SKIN = id++,
   BURNED = id++,
   FROZEN = id++,
+  SHOCKED = id++,
   BATTLE_FURY_1 = id++,
   BATTLE_FURY_2 = id++,
   BATTLE_FURY_3 = id++,
@@ -28,6 +29,9 @@ export enum STATUS_ID {
   BERSERK = id++,
   FRENZY = id++,
   DEFLECTING = id++,
+  FIREBRANDED = id++,
+  ICEBRANDED = id++,
+  STORMBRANDED = id++,
 }
 
 export const BASE_STATUS_EFFECTS: IStatusEffect = {
@@ -46,6 +50,12 @@ export const BASE_STATUS_EFFECTS: IStatusEffect = {
   dodgeChance: 0,
   damagePerAP: 0,
   incomingDamageMultiplier: 1,
+  burnChance: 0,
+  damageMultiplierForBurn: 1,
+  freezeChance: 0,
+  damageMultiplierForFreeze: 1,
+  shockChance: 0,
+  damageMultiplierForShock: 1,
 };
 
 export const STATUSES: IStatus[] = [
@@ -109,6 +119,17 @@ export const STATUSES: IStatus[] = [
       ...BASE_STATUS_EFFECTS,
       canMove: false,
       canAttack: false,
+    },
+  },
+  {
+    id: STATUS_ID.SHOCKED,
+    name: 'Shocked',
+    icon: ICON_ID.STATUS_SHOCKED,
+    description: 'Reduce 1 AP for 3 turns.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
     },
   },
   {
@@ -345,6 +366,48 @@ export const STATUSES: IStatus[] = [
     effect: {
       ...BASE_STATUS_EFFECTS,
       incomingDamageMultiplier: 0.5,
+    },
+  },
+  {
+    id: STATUS_ID.FIREBRANDED,
+    name: 'Firebranded',
+    icon: ICON_ID.STATUS_FIREBRANDED,
+    description:
+      'Damaging skills and attacks has #BURN_CHANCE% chance to burn. Increased damage by #DAMAGE_MULTIPLIER% on burning targets.',
+    duration: 5,
+    durationCounter: 5,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      burnChance: 0.5,
+      damageMultiplierForBurn: 1.2,
+    },
+  },
+  {
+    id: STATUS_ID.ICEBRANDED,
+    name: 'Icebranded',
+    icon: ICON_ID.STATUS_ICEBRANDED,
+    description:
+      'Damaging skills and attacks has #FREEZE_CHANCE% chance to freeze. Increased damage by #DAMAGE_MULTIPLIER% on frozen targets.',
+    duration: 5,
+    durationCounter: 5,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      freezeChance: 0.5,
+      damageMultiplierForFreeze: 1.2,
+    },
+  },
+  {
+    id: STATUS_ID.STORMBRANDED,
+    name: 'Stormbranded',
+    icon: ICON_ID.STATUS_STORMBRANDED,
+    description:
+      'Damaging skills and attacks has #SHOCK_CHANCE% chance to shock. Increased damage by #DAMAGE_MULTIPLIER% on shocked targets.',
+    duration: 5,
+    durationCounter: 5,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      shockChance: 0.5,
+      damageMultiplierForShock: 1.2,
     },
   },
 ];
