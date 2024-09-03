@@ -112,6 +112,9 @@ export const intelligenceBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.FREEZE,
   SKILL_ID.ABSORB,
   SKILL_ID.FLAME_DIVE,
+  SKILL_ID.MANA_BURST,
+  SKILL_ID.FLAME_TOUCH,
+  SKILL_ID.SUPERNOVA,
 ];
 
 export const SKILLS: ISkill[] = [

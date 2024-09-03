@@ -617,6 +617,7 @@ const handleSkillStatus = (
       break;
     case SKILL_ID.FIREBALL:
     case SKILL_ID.FLAME_DIVE:
+    case SKILL_ID.FLAME_TOUCH:
       statusID = STATUS_ID.BURNED;
       // DoT will scale with player's intelligence
       statusEffectModifier[0] = true;
@@ -845,6 +846,12 @@ const handleSkillStatus = (
     );
 
     return { playerAfterStatus, enemiesAfterStatus };
+  }
+
+  // Apply modifiers to status duration
+  if ([SKILL_ID.FLAME_TOUCH].includes(skill.id)) {
+    statusToBeApplied.duration = 4;
+    statusToBeApplied.durationCounter = 4;
   }
 
   targets.forEach((target) => {
