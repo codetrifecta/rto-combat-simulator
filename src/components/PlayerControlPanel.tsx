@@ -75,15 +75,15 @@ export const PlayerControlPanel: FC = () => {
         <Tooltip>
           <h2>{skill.name}</h2>
           <p>{skill.description}</p>
-          {player.equipment.weapon ? (
+          {/* {player.equipment.weapon ? (
             <p>
               Base DMG: {Math.round(totalStrength * skill.damageMultiplier)}
             </p>
           ) : null}
-          {player.equipment.weapon ? <p>Bonus DMG: {bonusDamage}</p> : null}
+          {player.equipment.weapon ? <p>Bonus DMG: {bonusDamage}</p> : null} */}
           {player.equipment.weapon ? (
             <p>
-              Total DMG:{' '}
+              Damage:{' '}
               {Math.round(totalStrength * skill.damageMultiplier) + bonusDamage}
             </p>
           ) : null}
@@ -99,15 +99,15 @@ export const PlayerControlPanel: FC = () => {
         <Tooltip>
           <h2>{skill.name}</h2>
           <p>{skill.description}</p>
-          {skill.damageMultiplier ? (
+          {/* {skill.damageMultiplier ? (
             <p>
               Base DMG: {Math.round(totalIntelligence * skill.damageMultiplier)}
             </p>
           ) : null}
-          {skill.damageMultiplier ? <p>Bonus DMG: {bonusDamage}</p> : null}
+          {skill.damageMultiplier ? <p>Bonus DMG: {bonusDamage}</p> : null} */}
           {skill.damageMultiplier ? (
             <p>
-              Total DMG:{' '}
+              Damage:{' '}
               {Math.round(totalIntelligence * skill.damageMultiplier) +
                 bonusDamage}
             </p>

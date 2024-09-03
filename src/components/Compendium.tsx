@@ -53,8 +53,10 @@ export const Compendium: FC = () => {
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
-          <p>Damage Multiplier: STR * {skill.damageMultiplier}</p>
-          <p>Range: {skill.range}</p>
+          {skill.damageMultiplier > 0 ? (
+            <p>Damage Multiplier: STR * {skill.damageMultiplier}</p>
+          ) : null}
+          {skill.range > 0 ? <p>Range: {skill.range}</p> : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>
@@ -65,8 +67,10 @@ export const Compendium: FC = () => {
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
-          <p>Damage Multiplier: INT * {skill.damageMultiplier}</p>
-          <p>Range: {skill.range}</p>
+          {skill.damageMultiplier > 0 ? (
+            <p>Damage Multiplier: INT * {skill.damageMultiplier}</p>
+          ) : null}
+          {skill.range > 0 ? <p>Range: {skill.range}</p> : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>
@@ -77,7 +81,7 @@ export const Compendium: FC = () => {
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
-          <p>Range: {skill.range}</p>
+          {skill.range > 0 ? <p>Range: {skill.range}</p> : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>
@@ -144,8 +148,8 @@ export const Compendium: FC = () => {
                   >
                     <Icon
                       icon={skill.icon}
-                      width={ICON_SIZE}
-                      height={ICON_SIZE}
+                      width={ICON_SIZE - 4}
+                      height={ICON_SIZE - 4}
                     />
                   </IconButton>
                   {renderSkillButtonTooltip(skill)}
@@ -171,8 +175,8 @@ export const Compendium: FC = () => {
                   <IconButton onClick={() => removeFromEquippedSkills(skill)}>
                     <Icon
                       icon={skill.icon}
-                      width={ICON_SIZE}
-                      height={ICON_SIZE}
+                      width={ICON_SIZE - 4}
+                      height={ICON_SIZE - 4}
                     />
                   </IconButton>
                   {renderSkillButtonTooltip(skill)}
