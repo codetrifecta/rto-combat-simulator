@@ -94,6 +94,11 @@ import skill_mana_burst from '../assets/icons/skills/icon_skill_mana_burst.png';
 import skill_arcane_intellect from '../assets/icons/skills/icon_skill_arcane_intellect.png';
 import skill_flame_touch from '../assets/icons/skills/icon_skill_flame_touch.png';
 import skill_supernova from '../assets/icons/skills/icon_skill_supernova.png';
+import skill_frost_touch from '../assets/icons/skills/icon_skill_frost_touch.png';
+import skill_blizzard from '../assets/icons/skills/icon_skill_blizzard.png';
+import skill_shock_touch from '../assets/icons/skills/icon_skill_shock_touch.png';
+import skill_spark from '../assets/icons/skills/icon_skill_spark.png';
+import skill_storm_pulse from '../assets/icons/skills/icon_skill_storm_pulse.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -221,6 +226,11 @@ export enum ICON_ID {
   SKILL_ARCANE_INTELLECT = 'skill_arcane_intellect',
   SKILL_FLAME_TOUCH = 'skill_flame_touch',
   SKILL_SUPERNOVA = 'skill_supernova',
+  SKILL_FROST_TOUCH = 'skill_frost_touch',
+  SKILL_BLIZZARD = 'skill_blizzard',
+  SKILL_SHOCK_TOUCH = 'skill_shock_touch',
+  SKILL_SPARK = 'skill_spark',
+  SKILL_STORM_PULSE = 'skill_storm_pulse',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -350,6 +360,11 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_ARCANE_INTELLECT]: skill_arcane_intellect,
   [ICON_ID.SKILL_FLAME_TOUCH]: skill_flame_touch,
   [ICON_ID.SKILL_SUPERNOVA]: skill_supernova,
+  [ICON_ID.SKILL_FROST_TOUCH]: skill_frost_touch,
+  [ICON_ID.SKILL_BLIZZARD]: skill_blizzard,
+  [ICON_ID.SKILL_SHOCK_TOUCH]: skill_shock_touch,
+  [ICON_ID.SKILL_SPARK]: skill_spark,
+  [ICON_ID.SKILL_STORM_PULSE]: skill_storm_pulse,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
