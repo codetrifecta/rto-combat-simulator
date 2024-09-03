@@ -193,7 +193,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Throw a barrage of knives in all directions, dealing your normal amount of damage. 15% chance of dealing 100% more of base damage (critical hit) for each enemy. And deal bleeding to them for 1 turn.',
+      'Throw a barrage of knives in all directions. 15% chance of dealing 100% more damage for each enemy. Apply bleeding to targets hit for 1 turn.',
     damageMultiplier: 1,
     range: 4,
     cooldown: 3,
@@ -378,7 +378,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Explode immediate surroundings,dealing fire damage and has a high chance to inflict burn status to enemies.',
+      'Explode immediate surroundings, dealing fire damage and has a high chance to inflict burn status to enemies.',
     damageMultiplier: 2.5,
     range: 2,
     cooldown: 3,

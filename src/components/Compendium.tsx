@@ -117,9 +117,9 @@ export const Compendium: FC = () => {
       <div className="mb-5">
         <h3 className="mb-3">Available skills</h3>
         <div
-          className={`grid gap-1 grid-cols-10`}
+          className={`grid gap-1 grid-cols-12`}
           style={{
-            gridTemplateRows: `repeat(${Math.ceil(SKILLS.length / 10)}, ${ICON_SIZE}px)`,
+            gridTemplateRows: `repeat(${Math.ceil(SKILLS.length / 12)}, ${ICON_SIZE}px)`,
           }}
         >
           {SKILLS.map((skill, index) => (
