@@ -617,6 +617,8 @@ const handleSkillStatus = (
       break;
     case SKILL_ID.FIREBALL:
     case SKILL_ID.FLAME_DIVE:
+    case SKILL_ID.FLAME_TOUCH:
+    case SKILL_ID.SUPERNOVA:
       statusID = STATUS_ID.BURNED;
       // DoT will scale with player's intelligence
       statusEffectModifier[0] = true;
@@ -628,6 +630,8 @@ const handleSkillStatus = (
       statusID = STATUS_ID.PETRIFIED;
       break;
     case SKILL_ID.FREEZE:
+    case SKILL_ID.FROST_TOUCH:
+    case SKILL_ID.BLIZZARD:
       statusID = STATUS_ID.FROZEN;
       break;
     case SKILL_ID.BLOODLUST:
@@ -738,6 +742,15 @@ const handleSkillStatus = (
           1 + (20 + 0.8 * playerTotalIntelligence) / 100;
       }
       break;
+    case SKILL_ID.ARCANE_INTELLECT:
+      statusID = STATUS_ID.ARCANE_INTELLECT;
+      break;
+    case SKILL_ID.SHOCK_TOUCH:
+    case SKILL_ID.SPARK:
+    case SKILL_ID.STORM_PULSE:
+    case SKILL_ID.LIGHTNING:
+      statusID = STATUS_ID.SHOCKED;
+      break;
     default:
       break;
   }
@@ -844,17 +857,54 @@ const handleSkillStatus = (
     return { playerAfterStatus, enemiesAfterStatus };
   }
 
+  // Apply modifiers to status duration
+  if ([SKILL_ID.FLAME_TOUCH].includes(skill.id)) {
+    statusToBeApplied.duration = 4;
+    statusToBeApplied.durationCounter = 4;
+  } else if ([SKILL_ID.FROST_TOUCH].includes(skill.id)) {
+    statusToBeApplied.duration = 3;
+    statusToBeApplied.durationCounter = 3;
+  }
+
   targets.forEach((target) => {
     const entityType = target[0];
     const entityId = target[1];
 
     if (entityType === ENTITY_TYPE.ENEMY) {
       // Check for skills that have a chance to apply status effects
-      if ([SKILL_ID.WRATH_OF_THE_ANCIENTS].includes(skill.id)) {
-        // Wrath of the Ancients: 50% chance to apply Weakened status
-        if (Math.random() > 0.5) {
-          return;
-        }
+      switch (skill.id) {
+        case SKILL_ID.SUPERNOVA:
+          // Supernova: 80% chance to apply Burned status
+          if (Math.random() > 0.8) {
+            return;
+          }
+          break;
+        case SKILL_ID.STORM_PULSE:
+          // Storm Pulse: 70% chance to apply Shocked status
+          if (Math.random() > 0.7) {
+            return;
+          }
+          break;
+        case SKILL_ID.FIREBALL:
+        case SKILL_ID.SPARK:
+          // Fireball: 60% chance to apply Burned status
+          // Spark: 60% chance to apply Shocked status
+          if (Math.random() > 0.6) {
+            return;
+          }
+          break;
+        case SKILL_ID.BLIZZARD:
+        case SKILL_ID.WRATH_OF_THE_ANCIENTS:
+        case SKILL_ID.LIGHTNING:
+          // Blizzard: 50% chance to apply Frozen status
+          // Wrath of the Ancients: 50% chance to apply Weakened status
+          // Lightning: 50% chance to apply Shocked status
+          if (Math.random() > 0.5) {
+            return;
+          }
+          break;
+        default:
+          break;
       }
 
       const enemy = enemiesAfterStatus.find((e) => e.id === entityId);

@@ -69,6 +69,7 @@ function App() {
     setIsInventoryOpen,
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
+    setIsCompendiumOpen,
     setTurnCycle,
     setIsLoading,
   } = useGameStateStore();
@@ -289,6 +290,10 @@ function App() {
         if (e.key === 'c') {
           setIsCharacterSheetOpen(!isCharacterSheetOpen);
         }
+
+        if (e.key === 'k') {
+          setIsCompendiumOpen(!isCompendiumOpen);
+        }
       }
     };
 
@@ -303,9 +308,11 @@ function App() {
     isGameLogOpen,
     isInventoryOpen,
     isCharacterSheetOpen,
+    isCompendiumOpen,
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
     setIsInventoryOpen,
+    setIsCompendiumOpen,
     isGenerateRoomOpen,
   ]);
 

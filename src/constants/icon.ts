@@ -90,6 +90,15 @@ import skill_icebrand from '../assets/icons/skills/icon_skill_icebrand.png';
 import skill_stormbrand from '../assets/icons/skills/icon_skill_stormbrand.png';
 import skill_wrath_of_the_ancients from '../assets/icons/skills/icon_skill_wrath_of_the_ancients.png';
 import skill_shield_of_the_ancients from '../assets/icons/skills/icon_skill_shield_of_the_ancients.png';
+import skill_mana_burst from '../assets/icons/skills/icon_skill_mana_burst.png';
+import skill_arcane_intellect from '../assets/icons/skills/icon_skill_arcane_intellect.png';
+import skill_flame_touch from '../assets/icons/skills/icon_skill_flame_touch.png';
+import skill_supernova from '../assets/icons/skills/icon_skill_supernova.png';
+import skill_frost_touch from '../assets/icons/skills/icon_skill_frost_touch.png';
+import skill_blizzard from '../assets/icons/skills/icon_skill_blizzard.png';
+import skill_shock_touch from '../assets/icons/skills/icon_skill_shock_touch.png';
+import skill_spark from '../assets/icons/skills/icon_skill_spark.png';
+import skill_storm_pulse from '../assets/icons/skills/icon_skill_storm_pulse.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -118,6 +127,7 @@ import status_deflecting from '../assets/icons/statuses/icon_status_deflecting.p
 import status_firebranded from '../assets/icons/statuses/icon_status_firebranded.png';
 import status_icebranded from '../assets/icons/statuses/icon_status_icebranded.png';
 import status_stormbranded from '../assets/icons/statuses/icon_status_stormbranded.png';
+import status_arcane_intellect from '../assets/icons/statuses/icon_status_arcane_intellect.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -212,6 +222,15 @@ export enum ICON_ID {
   SKILL_STORMBRAND = 'skill_stormbrand',
   SKILL_WRATH_OF_THE_ANCIENTS = 'skill_wrath_of_the_ancients',
   SKILL_SHIELD_OF_THE_ANCIENTS = 'skill_shield_of_the_ancients',
+  SKILL_MANA_BURST = 'skill_mana_burst',
+  SKILL_ARCANE_INTELLECT = 'skill_arcane_intellect',
+  SKILL_FLAME_TOUCH = 'skill_flame_touch',
+  SKILL_SUPERNOVA = 'skill_supernova',
+  SKILL_FROST_TOUCH = 'skill_frost_touch',
+  SKILL_BLIZZARD = 'skill_blizzard',
+  SKILL_SHOCK_TOUCH = 'skill_shock_touch',
+  SKILL_SPARK = 'skill_spark',
+  SKILL_STORM_PULSE = 'skill_storm_pulse',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -241,6 +260,7 @@ export enum ICON_ID {
   STATUS_FIREBRANDED = 'status_firebrand',
   STATUS_ICEBRANDED = 'status_icebranded',
   STATUS_STORMBRANDED = 'status_stormbranded',
+  STATUS_ARCANE_INTELLECT = 'status_arcane_intellect',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -336,6 +356,15 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_STORMBRAND]: skill_stormbrand,
   [ICON_ID.SKILL_WRATH_OF_THE_ANCIENTS]: skill_wrath_of_the_ancients,
   [ICON_ID.SKILL_SHIELD_OF_THE_ANCIENTS]: skill_shield_of_the_ancients,
+  [ICON_ID.SKILL_MANA_BURST]: skill_mana_burst,
+  [ICON_ID.SKILL_ARCANE_INTELLECT]: skill_arcane_intellect,
+  [ICON_ID.SKILL_FLAME_TOUCH]: skill_flame_touch,
+  [ICON_ID.SKILL_SUPERNOVA]: skill_supernova,
+  [ICON_ID.SKILL_FROST_TOUCH]: skill_frost_touch,
+  [ICON_ID.SKILL_BLIZZARD]: skill_blizzard,
+  [ICON_ID.SKILL_SHOCK_TOUCH]: skill_shock_touch,
+  [ICON_ID.SKILL_SPARK]: skill_spark,
+  [ICON_ID.SKILL_STORM_PULSE]: skill_storm_pulse,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
@@ -365,6 +394,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_FIREBRANDED]: status_firebranded,
   [ICON_ID.STATUS_ICEBRANDED]: status_icebranded,
   [ICON_ID.STATUS_STORMBRANDED]: status_stormbranded,
+  [ICON_ID.STATUS_ARCANE_INTELLECT]: status_arcane_intellect,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

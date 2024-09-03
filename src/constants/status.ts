@@ -32,6 +32,7 @@ export enum STATUS_ID {
   FIREBRANDED = id++,
   ICEBRANDED = id++,
   STORMBRANDED = id++,
+  ARCANE_INTELLECT = id++,
 }
 
 export const BASE_STATUS_EFFECTS: IStatusEffect = {
@@ -56,6 +57,7 @@ export const BASE_STATUS_EFFECTS: IStatusEffect = {
   damageMultiplierForFreeze: 1,
   shockChance: 0,
   damageMultiplierForShock: 1,
+  extraAPPerTurn: 0,
 };
 
 export const STATUSES: IStatus[] = [
@@ -112,7 +114,7 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.FROZEN,
     name: 'Frozen',
     icon: ICON_ID.STATUS_FROZEN,
-    description: 'Cannot move or attack for 2 turns.',
+    description: 'Cannot move or attack.',
     duration: 2,
     durationCounter: 2,
     effect: {
@@ -125,7 +127,7 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.SHOCKED,
     name: 'Shocked',
     icon: ICON_ID.STATUS_SHOCKED,
-    description: 'Reduce 1 AP for 3 turns.',
+    description: 'Reduced AP per turn by 1.',
     duration: 3,
     durationCounter: 3,
     effect: {
@@ -408,6 +410,19 @@ export const STATUSES: IStatus[] = [
       ...BASE_STATUS_EFFECTS,
       shockChance: 0.5,
       damageMultiplierForShock: 1.2,
+    },
+  },
+  {
+    id: STATUS_ID.ARCANE_INTELLECT,
+    name: 'Arcane Intellect',
+    icon: ICON_ID.STATUS_ARCANE_INTELLECT,
+    description: 'Increased intelligence by 30%. Increased AP per turn by 1.',
+    duration: 3,
+    durationCounter: 3,
+    effect: {
+      ...BASE_STATUS_EFFECTS,
+      intelligenceMultiplier: 1.3,
+      extraAPPerTurn: 1,
     },
   },
 ];

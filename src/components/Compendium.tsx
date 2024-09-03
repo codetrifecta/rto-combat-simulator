@@ -53,8 +53,10 @@ export const Compendium: FC = () => {
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
-          <p>Damage Multiplier: STR * {skill.damageMultiplier}</p>
-          <p>Range: {skill.range}</p>
+          {skill.damageMultiplier > 0 ? (
+            <p>Damage Multiplier: STR * {skill.damageMultiplier}</p>
+          ) : null}
+          {skill.range > 0 ? <p>Range: {skill.range}</p> : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>
@@ -65,8 +67,10 @@ export const Compendium: FC = () => {
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
-          <p>Damage Multiplier: INT * {skill.damageMultiplier}</p>
-          <p>Range: {skill.range}</p>
+          {skill.damageMultiplier > 0 ? (
+            <p>Damage Multiplier: INT * {skill.damageMultiplier}</p>
+          ) : null}
+          {skill.range > 0 ? <p>Range: {skill.range}</p> : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>
@@ -77,7 +81,7 @@ export const Compendium: FC = () => {
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
-          <p>Range: {skill.range}</p>
+          {skill.range > 0 ? <p>Range: {skill.range}</p> : null}
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>
@@ -117,9 +121,9 @@ export const Compendium: FC = () => {
       <div className="mb-5">
         <h3 className="mb-3">Available skills</h3>
         <div
-          className={`grid gap-1 grid-cols-6`}
+          className={`grid gap-1 grid-cols-12`}
           style={{
-            gridTemplateRows: `repeat(${Math.ceil(SKILLS.length / 6)}, ${ICON_SIZE}px)`,
+            gridTemplateRows: `repeat(${Math.ceil(SKILLS.length / 12)}, ${ICON_SIZE}px)`,
           }}
         >
           {SKILLS.map((skill, index) => (
@@ -144,8 +148,8 @@ export const Compendium: FC = () => {
                   >
                     <Icon
                       icon={skill.icon}
-                      width={ICON_SIZE}
-                      height={ICON_SIZE}
+                      width={ICON_SIZE - 4}
+                      height={ICON_SIZE - 4}
                     />
                   </IconButton>
                   {renderSkillButtonTooltip(skill)}
@@ -171,8 +175,8 @@ export const Compendium: FC = () => {
                   <IconButton onClick={() => removeFromEquippedSkills(skill)}>
                     <Icon
                       icon={skill.icon}
-                      width={ICON_SIZE}
-                      height={ICON_SIZE}
+                      width={ICON_SIZE - 4}
+                      height={ICON_SIZE - 4}
                     />
                   </IconButton>
                   {renderSkillButtonTooltip(skill)}

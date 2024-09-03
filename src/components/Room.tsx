@@ -1617,6 +1617,12 @@ export const Room: FC<{
                     }
                     break;
                   case SKILL_ID.THROWING_KNIVES:
+                  case SKILL_ID.WHIRLWIND:
+                  case SKILL_ID.MANA_BURST:
+                  case SKILL_ID.SUPERNOVA:
+                  case SKILL_ID.BLIZZARD:
+                  case SKILL_ID.STORM_PULSE:
+                  case SKILL_ID.CLEAVE:
                     if (
                       playerVisionRange &&
                       playerVisionRange[rowIndex][columnIndex] === true &&
@@ -1643,7 +1649,10 @@ export const Room: FC<{
                   case SKILL_ID.WHIRLWIND:
                   case SKILL_ID.WARCRY:
                   case SKILL_ID.THROWING_KNIVES:
-                  case SKILL_ID.WRATH_OF_THE_ANCIENTS: {
+                  case SKILL_ID.WRATH_OF_THE_ANCIENTS:
+                  case SKILL_ID.MANA_BURST:
+                  case SKILL_ID.SUPERNOVA:
+                  case SKILL_ID.STORM_PULSE: {
                     if (isEffectZone && isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
 
@@ -1667,7 +1676,8 @@ export const Room: FC<{
                     }
                     break;
                   }
-                  case SKILL_ID.FIREBALL: {
+                  case SKILL_ID.FIREBALL:
+                  case SKILL_ID.BLIZZARD: {
                     // For fireball, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
                     if (isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
@@ -1724,24 +1734,89 @@ export const Room: FC<{
                         return;
                       }
 
-                      // Handle north, south, east, west directions
-                      // Handle north direction
-                      if (effectZoneHovered[0] < playerRow) {
+                      let isValidTargetZone = false;
+
+                      const isTop =
+                        playerRow > effectZoneHovered[0] &&
+                        playerCol === effectZoneHovered[1];
+                      const isBottom =
+                        playerRow < effectZoneHovered[0] &&
+                        playerCol === effectZoneHovered[1];
+                      const isLeft =
+                        playerRow === effectZoneHovered[0] &&
+                        playerCol > effectZoneHovered[1];
+                      const isRight =
+                        playerRow === effectZoneHovered[0] &&
+                        playerCol < effectZoneHovered[1];
+                      const isTopLeft =
+                        playerRow > effectZoneHovered[0] &&
+                        playerCol > effectZoneHovered[1];
+                      const isTopRight =
+                        playerRow > effectZoneHovered[0] &&
+                        playerCol < effectZoneHovered[1];
+                      const isBottomLeft =
+                        playerRow < effectZoneHovered[0] &&
+                        playerCol > effectZoneHovered[1];
+                      const isBottomRight =
+                        playerRow < effectZoneHovered[0] &&
+                        playerCol < effectZoneHovered[1];
+
+                      // Is row difference greater than column difference
+                      // Target zone is a 3x1 line perpendicular to the row direction
+                      if (isTop) {
                         if (rowIndex < playerRow) {
-                          isTargetZone = true;
+                          isValidTargetZone = true;
                         }
-                      } else if (effectZoneHovered[0] > playerRow) {
+                      } else if (isBottom) {
                         if (rowIndex > playerRow) {
-                          isTargetZone = true;
+                          isValidTargetZone = true;
                         }
-                      } else if (effectZoneHovered[1] < playerCol) {
+                      }
+                      // Is column difference greater than row difference
+                      // Target zone is a 3x1 line perpendicular to the column direction
+                      else if (isLeft) {
                         if (columnIndex < playerCol) {
-                          isTargetZone = true;
+                          isValidTargetZone = true;
                         }
-                      } else if (effectZoneHovered[1] > playerCol) {
+                      } else if (isRight) {
                         if (columnIndex > playerCol) {
-                          isTargetZone = true;
+                          isValidTargetZone = true;
                         }
+                      } else if (isTopLeft) {
+                        if (rowIndex <= playerRow && columnIndex <= playerCol) {
+                          isValidTargetZone = true;
+                        }
+                      } else if (isTopRight) {
+                        if (rowIndex <= playerRow && columnIndex >= playerCol) {
+                          isValidTargetZone = true;
+                        }
+                      } else if (isBottomLeft) {
+                        if (rowIndex >= playerRow && columnIndex <= playerCol) {
+                          isValidTargetZone = true;
+                        }
+                      } else if (isBottomRight) {
+                        if (rowIndex >= playerRow && columnIndex >= playerCol) {
+                          isValidTargetZone = true;
+                        }
+                      }
+
+                      if (isValidTargetZone) {
+                        // Add tiles to target zone to use to compute the effect of the skill
+                        const currentTargetZones = targetZones.current;
+
+                        // Check if tile is in target zone
+                        const isTileInTargetZone = currentTargetZones.some(
+                          ([row, col]) => {
+                            return row === rowIndex && col === columnIndex;
+                          }
+                        );
+
+                        if (!isTileInTargetZone) {
+                          currentTargetZones.push([rowIndex, columnIndex]);
+                          targetZones.current = currentTargetZones;
+                        }
+
+                        isTargetZone = true;
                       }
                     }
                     break;

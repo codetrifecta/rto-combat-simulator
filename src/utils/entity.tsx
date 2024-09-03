@@ -23,9 +23,18 @@ export const handlePlayerEndTurn = (
   if (turnCycle[0] && turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
     const player = getPlayer();
 
+    let playerActionPoints = player.actionPoints;
+
+    // Check if player has statuses that change action points gained
+    player.statuses.forEach((status) => {
+      if (status.effect.extraAPPerTurn) {
+        playerActionPoints += status.effect.extraAPPerTurn;
+      }
+    });
+
     // Give action points
     const newActionPoints =
-      player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
+      playerActionPoints >= 2 ? 6 : playerActionPoints + 4;
 
     // Reduce skill cooldowns
     const newSkills = player.skills.map((skill) => {
