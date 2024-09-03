@@ -114,7 +114,7 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.FROZEN,
     name: 'Frozen',
     icon: ICON_ID.STATUS_FROZEN,
-    description: 'Cannot move or attack for 2 turns.',
+    description: 'Cannot move or attack.',
     duration: 2,
     durationCounter: 2,
     effect: {
@@ -127,7 +127,7 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.SHOCKED,
     name: 'Shocked',
     icon: ICON_ID.STATUS_SHOCKED,
-    description: 'Reduce 1 AP for 3 turns.',
+    description: 'Reduced AP per turn by 1.',
     duration: 3,
     durationCounter: 3,
     effect: {

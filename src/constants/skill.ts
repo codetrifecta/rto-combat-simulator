@@ -114,7 +114,6 @@ export const strengthBasedSkillIDs: SKILL_ID[] = [
 export const intelligenceBasedSkillIDs: SKILL_ID[] = [
   SKILL_ID.LIGHTNING,
   SKILL_ID.FIREBALL,
-  SKILL_ID.FREEZE,
   SKILL_ID.ABSORB,
   SKILL_ID.FLAME_DIVE,
   SKILL_ID.MANA_BURST,
@@ -305,7 +304,7 @@ export const SKILLS: ISkill[] = [
     name: 'Lightning Bolt',
     icon: ICON_ID.SKILL_LIGHTNING,
     skillType: SKILL_TYPE.ST,
-    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
       'Strike a target with a lighning bolt. Has a 50% chance to shock target for 2 turn.',
     damageMultiplier: 1.5,
@@ -433,7 +432,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'The caster’s hand crackles with electricity, allowing them to deal shock damage to a single target within melee range. The target also receives a guaranteed shock status for 2 turns.',
+      'The caster’s hand crackles with electricity, allowing them to deal shock damage to a single target within melee range. The target also receives a guaranteed shock status for 4 turns.',
     damageMultiplier: 1.7,
     range: 1,
     cooldown: 3,
@@ -447,7 +446,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Create a spark of electricity that deals shock damage to a target. Has a 60% chance to shock targets hit for 2 turns.',
+      'Create a spark of electricity that deals shock damage to a target. Has a 60% chance to shock targets hit for 3 turns.',
     damageMultiplier: 0.8,
     range: 4,
     cooldown: 1,
@@ -461,7 +460,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Channel a storm pulse that deals shock damage to all enemies in a target area. Has a 80% chance to shock targets hit for 2 turns.',
+      'Channel a storm pulse that deals shock damage to all enemies in a target area. Has a 70% chance to shock targets hit for 3 turns.',
     damageMultiplier: 1.3,
     range: 4,
     cooldown: 3,

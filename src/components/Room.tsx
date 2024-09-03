@@ -1621,6 +1621,7 @@ export const Room: FC<{
                   case SKILL_ID.MANA_BURST:
                   case SKILL_ID.SUPERNOVA:
                   case SKILL_ID.BLIZZARD:
+                  case SKILL_ID.STORM_PULSE:
                     if (
                       playerVisionRange &&
                       playerVisionRange[rowIndex][columnIndex] === true &&
@@ -1649,7 +1650,8 @@ export const Room: FC<{
                   case SKILL_ID.THROWING_KNIVES:
                   case SKILL_ID.WRATH_OF_THE_ANCIENTS:
                   case SKILL_ID.MANA_BURST:
-                  case SKILL_ID.SUPERNOVA: {
+                  case SKILL_ID.SUPERNOVA:
+                  case SKILL_ID.STORM_PULSE: {
                     if (isEffectZone && isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
 

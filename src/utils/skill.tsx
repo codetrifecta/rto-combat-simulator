@@ -745,6 +745,12 @@ const handleSkillStatus = (
     case SKILL_ID.ARCANE_INTELLECT:
       statusID = STATUS_ID.ARCANE_INTELLECT;
       break;
+    case SKILL_ID.SHOCK_TOUCH:
+    case SKILL_ID.SPARK:
+    case SKILL_ID.STORM_PULSE:
+    case SKILL_ID.LIGHTNING:
+      statusID = STATUS_ID.SHOCKED;
+      break;
     default:
       break;
   }
@@ -866,26 +872,39 @@ const handleSkillStatus = (
 
     if (entityType === ENTITY_TYPE.ENEMY) {
       // Check for skills that have a chance to apply status effects
-      if ([SKILL_ID.WRATH_OF_THE_ANCIENTS].includes(skill.id)) {
-        // Wrath of the Ancients: 50% chance to apply Weakened status
-        if (Math.random() > 0.5) {
-          return;
-        }
-      } else if ([SKILL_ID.FIREBALL].includes(skill.id)) {
-        // Fireball: 60% chance to apply Burned status
-        if (Math.random() > 0.6) {
-          return;
-        }
-      } else if ([SKILL_ID.SUPERNOVA].includes(skill.id)) {
-        // Supernova: 80% chance to apply Burned status
-        if (Math.random() > 0.8) {
-          return;
-        }
-      } else if ([SKILL_ID.BLIZZARD].includes(skill.id)) {
-        // Blizzard: 50% chance to apply Frozen status
-        if (Math.random() > 0.5) {
-          return;
-        }
+      switch (skill.id) {
+        case SKILL_ID.SUPERNOVA:
+          // Supernova: 80% chance to apply Burned status
+          if (Math.random() > 0.8) {
+            return;
+          }
+          break;
+        case SKILL_ID.STORM_PULSE:
+          // Storm Pulse: 70% chance to apply Shocked status
+          if (Math.random() > 0.7) {
+            return;
+          }
+          break;
+        case SKILL_ID.FIREBALL:
+        case SKILL_ID.SPARK:
+          // Fireball: 60% chance to apply Burned status
+          // Spark: 60% chance to apply Shocked status
+          if (Math.random() > 0.6) {
+            return;
+          }
+          break;
+        case SKILL_ID.BLIZZARD:
+        case SKILL_ID.WRATH_OF_THE_ANCIENTS:
+        case SKILL_ID.LIGHTNING:
+          // Blizzard: 50% chance to apply Frozen status
+          // Wrath of the Ancients: 50% chance to apply Weakened status
+          // Lightning: 50% chance to apply Shocked status
+          if (Math.random() > 0.5) {
+            return;
+          }
+          break;
+        default:
+          break;
       }
 
       const enemy = enemiesAfterStatus.find((e) => e.id === entityId);
