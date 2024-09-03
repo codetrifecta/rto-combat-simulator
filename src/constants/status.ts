@@ -380,7 +380,7 @@ export const STATUSES: IStatus[] = [
     durationCounter: 5,
     effect: {
       ...BASE_STATUS_EFFECTS,
-      burnChance: 0.5,
+      burnChance: 0.6,
       damageMultiplierForBurn: 1.2,
     },
   },
@@ -394,7 +394,7 @@ export const STATUSES: IStatus[] = [
     durationCounter: 5,
     effect: {
       ...BASE_STATUS_EFFECTS,
-      freezeChance: 0.5,
+      freezeChance: 0.3,
       damageMultiplierForFreeze: 1.2,
     },
   },

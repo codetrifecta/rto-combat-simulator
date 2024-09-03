@@ -109,9 +109,24 @@ const EntityCard: FC<{
       {/* Display statuses if present */}
       <div className="mt-3 flex flex-wrap justify-center items-center">
         {entity.statuses.length > 0 &&
-          entity.statuses.map((status) => (
-            <StatusEffect key={status.id} status={status} />
-          ))}
+          // Display only unique statuses
+          entity.statuses
+            .filter(
+              (status, index, self) =>
+                index ===
+                self.findIndex(
+                  (s) => s.name === status.name && s.id === status.id
+                )
+            )
+            .map((status) => {
+              const stacks = entity.statuses.filter(
+                (s) => s.name === status.name && s.id === status.id
+              ).length;
+
+              return (
+                <StatusEffect key={status.id} status={status} stacks={stacks} />
+              );
+            })}
       </div>
     </div>
   );

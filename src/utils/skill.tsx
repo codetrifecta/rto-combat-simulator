@@ -715,7 +715,7 @@ const handleSkillStatus = (
           getPlayerTotalIntelligence(playerAfterStatus);
         statusEffectModifier[0] = true;
         statusEffectModifier[1].burnChance =
-          0.5 + (0.8 * playerTotalIntelligence) / 100;
+          0.6 + (0.8 * playerTotalIntelligence) / 100;
         statusEffectModifier[1].damageMultiplierForBurn =
           1 + (20 + 0.8 * playerTotalIntelligence) / 100;
       }
@@ -741,7 +741,7 @@ const handleSkillStatus = (
           getPlayerTotalIntelligence(playerAfterStatus);
         statusEffectModifier[0] = true;
         statusEffectModifier[1].shockChance =
-          0.4 + (0.8 * playerTotalIntelligence) / 100;
+          0.5 + (0.8 * playerTotalIntelligence) / 100;
         statusEffectModifier[1].damageMultiplierForShock =
           1 + (20 + 0.8 * playerTotalIntelligence) / 100;
       }
@@ -863,6 +863,9 @@ const handleSkillStatus = (
 
   // Apply modifiers to status duration
   if ([SKILL_ID.FLAME_TOUCH].includes(skill.id)) {
+    statusToBeApplied.duration = 5;
+    statusToBeApplied.durationCounter = 5;
+  } else if ([SKILL_ID.SHOCK_TOUCH].includes(skill.id)) {
     statusToBeApplied.duration = 4;
     statusToBeApplied.durationCounter = 4;
   } else if ([SKILL_ID.FROST_TOUCH].includes(skill.id)) {
