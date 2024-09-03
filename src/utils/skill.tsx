@@ -618,6 +618,7 @@ const handleSkillStatus = (
     case SKILL_ID.FIREBALL:
     case SKILL_ID.FLAME_DIVE:
     case SKILL_ID.FLAME_TOUCH:
+    case SKILL_ID.SUPERNOVA:
       statusID = STATUS_ID.BURNED;
       // DoT will scale with player's intelligence
       statusEffectModifier[0] = true;
@@ -863,6 +864,16 @@ const handleSkillStatus = (
       if ([SKILL_ID.WRATH_OF_THE_ANCIENTS].includes(skill.id)) {
         // Wrath of the Ancients: 50% chance to apply Weakened status
         if (Math.random() > 0.5) {
+          return;
+        }
+      } else if ([SKILL_ID.FIREBALL].includes(skill.id)) {
+        // Fireball: 60% chance to apply Burned status
+        if (Math.random() > 0.6) {
+          return;
+        }
+      } else if ([SKILL_ID.SUPERNOVA].includes(skill.id)) {
+        // Supernova: 80% chance to apply Burned status
+        if (Math.random() > 0.8) {
           return;
         }
       }

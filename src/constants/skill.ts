@@ -292,15 +292,15 @@ export const SKILLS: ISkill[] = [
   // Intelligence-based skills
   {
     id: SKILL_ID.LIGHTNING,
-    name: 'Spark',
+    name: 'Lightning Bolt',
     icon: ICON_ID.SKILL_LIGHTNING,
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
     description:
-      'Strike a target with lighning sparks. Has a 40% chance to shock target for 2 turn.',
+      'Strike a target with a lighning bolt. Has a 50% chance to shock target for 2 turn.',
     damageMultiplier: 2,
-    range: 4,
-    cooldown: 1,
+    range: 5,
+    cooldown: 2,
     cooldownCounter: 0,
     cost: 2,
   },
@@ -311,7 +311,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'Launch a fireball at a target area. Has a 50% chance to burn targets hit for 3 turns.',
+      'Launch a fireball at a target area. Has a 60% chance to burn targets hit for 3 turns.',
     damageMultiplier: 1.5,
     range: 4,
     cooldown: 2,
