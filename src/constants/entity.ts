@@ -92,7 +92,7 @@ export const getDefaultPlayer = (): IPlayer => {
         SKILL_ID.ICEBRAND,
         SKILL_ID.STORMBRAND,
         SKILL_ID.WRATH_OF_THE_ANCIENTS,
-        SKILL_ID.SHIELD_OF_THE_ANCIENTS,
+        // SKILL_ID.SHIELD_OF_THE_ANCIENTS,
         SKILL_ID.FLY,
       ].includes(skill.id)
     ),

@@ -267,20 +267,20 @@ export const SKILLS: ISkill[] = [
   },
 
   // Defense-based skills
-  {
-    id: SKILL_ID.SHIELD_OF_THE_ANCIENTS,
-    name: 'Shield of the Ancients',
-    icon: ICON_ID.SKILL_SHIELD_OF_THE_ANCIENTS,
-    skillType: SKILL_TYPE.SELF,
-    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
-    description:
-      'Channel the shield of the ancients, gaining a shield that absorbs all of incoming damage for 5 turns.',
-    damageMultiplier: 0,
-    range: 0,
-    cooldown: 5,
-    cooldownCounter: 0,
-    cost: 6,
-  },
+  // {
+  //   id: SKILL_ID.SHIELD_OF_THE_ANCIENTS,
+  //   name: 'Shield of the Ancients',
+  //   icon: ICON_ID.SKILL_SHIELD_OF_THE_ANCIENTS,
+  //   skillType: SKILL_TYPE.SELF,
+  //   tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+  //   description:
+  //     'Channel the shield of the ancients, gaining a shield that absorbs all of incoming damage for 5 turns.',
+  //   damageMultiplier: 0,
+  //   range: 0,
+  //   cooldown: 5,
+  //   cooldownCounter: 0,
+  //   cost: 6,
+  // },
 
   // Intelligence-based skills
   {
