@@ -52,7 +52,13 @@ Combat simulator for Return to Olympus
   - [x] Icebrand
   - [x] Stormbrand
   - [x] Wrath of the Ancients
-  - [ ] Shield of the Ancients
+  - [x] Flame Touch
+  - [x] Supernova
+  - [x] Frost Touch
+  - [x] Blizzard
+  - [x] Shock Touch
+  - [x] Spark
+  - [x] Storm Pulse
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
 - [x] Sprites for each of the above
