@@ -848,7 +848,11 @@ export const Room: FC<{
             burnedStatus.effect.damageOverTime = Math.ceil(
               0.2 * getPlayerTotalIntelligence(newPlayer)
             );
-            burnedStatus.id += Math.random();
+            // Check how many stacks of burned status are on the enemy and assign a unique ID to each
+            // const burnedStatuses = enemy.statuses.filter(
+            //   (status) => status.id === STATUS_ID.BURNED
+            // );
+            // burnedStatus.id += burnedStatuses.length;
 
             enemy.statuses = [...enemy.statuses, burnedStatus];
             displayStatusEffect(
@@ -885,11 +889,13 @@ export const Room: FC<{
           );
 
           if (frozenStatus === undefined) {
-            console.error(
-              'handleSkillDamage: No status found for the associated skill ID'
-            );
+            console.error('handleSkillDamage: No status found for FROZEN');
           } else {
-            frozenStatus.id += Math.random();
+            // Check how many stacks of frozen status are on the enemy and assign a unique ID to each
+            // const frozenStatuses = enemy.statuses.filter(
+            //   (status) => status.id === STATUS_ID.FROZEN
+            // );
+            // frozenStatus.id += frozenStatuses.length;
             enemy.statuses = [...enemy.statuses, frozenStatus];
             displayStatusEffect(
               frozenStatus,
@@ -916,21 +922,23 @@ export const Room: FC<{
         newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
       ) {
         console.log('Stormbrand status found');
-        // Icebranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
+        // Stormbranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
         const shockChance = stormbrandedStatus.effect.shockChance;
         console.log('shockChance', shockChance);
         if (Math.random() < shockChance) {
-          // Add burning status to enemy
+          // Add shocked status to enemy
           const shockedStatus = STATUSES.find(
             (status) => status.id === STATUS_ID.SHOCKED
           );
 
           if (shockedStatus === undefined) {
-            console.error(
-              'handleSkillDamage: No status found for the associated skill ID'
-            );
+            console.error('handleSkillDamage: No status found for SHOCKED');
           } else {
-            shockedStatus.id += Math.random();
+            // Check how many stacks of shocked status are on the enemy and assign a unique ID to each
+            // const shockedStatuses = enemy.statuses.filter(
+            //   (status) => status.id === STATUS_ID.SHOCKED
+            // );
+            // shockedStatus.id += shockedStatuses.length;
             enemy.statuses = [...enemy.statuses, shockedStatus];
             displayStatusEffect(
               shockedStatus,
@@ -940,11 +948,19 @@ export const Room: FC<{
           }
         }
 
+        console.log('totalDamage Before', totalDamage, enemy.statuses);
+
         if (enemy.statuses.some((status) => status.id === STATUS_ID.SHOCKED)) {
           totalDamage = Math.round(
             totalDamage * stormbrandedStatus.effect.damageMultiplierForShock
           );
         }
+
+        console.log(
+          'totalDamage After',
+          totalDamage,
+          stormbrandedStatus.effect.damageMultiplierForShock
+        );
       }
 
       // Remove hidden status from player if enemy is attacked
@@ -1623,6 +1639,7 @@ export const Room: FC<{
                   case SKILL_ID.BLIZZARD:
                   case SKILL_ID.STORM_PULSE:
                   case SKILL_ID.CLEAVE:
+                  case SKILL_ID.AIR_SLASH:
                     if (
                       playerVisionRange &&
                       playerVisionRange[rowIndex][columnIndex] === true &&

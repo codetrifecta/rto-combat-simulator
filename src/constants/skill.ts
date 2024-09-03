@@ -136,7 +136,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
     description:
-      "Cleave through enemies in front of you. Range is dependent on the player's current weapon.",
+      'Cleave through enemies in front of you. Range is dependent weapon.',
     damageMultiplier: 1.5,
     range: 1,
     cooldown: 3,
@@ -150,7 +150,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
     description:
-      "Spin around dealing damage to all adjacent enemies. Range is dependent on the player's current weapon.",
+      'Spin around dealing damage to all adjacent enemies. Range is dependent weapon.',
     damageMultiplier: 1,
     range: 1,
     cooldown: 3,
@@ -164,7 +164,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
     description:
-      "Execute an enemy with low health. Deals 2x damage to enemies with less than 25% health. If the enemy is executed, the player gains 2 AP. Range is dependent on the player's current weapon.",
+      'Execute an enemy with low health. Deals 2x damage to enemies with less than 25% health. If the enemy is executed, the player gains 4 AP. Range is dependent weapon.',
     damageMultiplier: 1,
     range: 1,
     cooldown: 3,
@@ -545,7 +545,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.SELF,
     tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
-      'Gain Focused for 3 turns. Focused increases strength and intelligence by 15%.',
+      'Gain Focused for 3 turns. Focused increases strength and intelligence by 20%.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,

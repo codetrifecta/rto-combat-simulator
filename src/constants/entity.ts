@@ -85,9 +85,16 @@ export const getDefaultPlayer = (): IPlayer => {
     health: getPlayerMaxHealth(PLAYER),
     // health: 5,
     maxHealth: getPlayerMaxHealth(PLAYER),
-    actionPoints: MAX_ACTION_POINTS,
+    // actionPoints: MAX_ACTION_POINTS,
     skills: SKILLS.filter((skill) =>
-      [SKILL_ID.CLEAVE, SKILL_ID.FLY].includes(skill.id)
+      [
+        SKILL_ID.EXECUTE,
+        SKILL_ID.AIR_SLASH,
+        SKILL_ID.FOCUS,
+        SKILL_ID.STORMBRAND,
+        SKILL_ID.STORM_PULSE,
+        SKILL_ID.LEAP_SLAM,
+      ].includes(skill.id)
     ),
   };
 };
