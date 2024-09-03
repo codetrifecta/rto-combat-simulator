@@ -104,6 +104,7 @@ export interface IStatusEffect {
   damageMultiplierForFreeze: number;
   shockChance: number;
   damageMultiplierForShock: number;
+  extraAPPerTurn: number;
 }
 
 export interface IWeapon {

@@ -738,6 +738,9 @@ const handleSkillStatus = (
           1 + (20 + 0.8 * playerTotalIntelligence) / 100;
       }
       break;
+    case SKILL_ID.ARCANE_INTELLECT:
+      statusID = STATUS_ID.ARCANE_INTELLECT;
+      break;
     default:
       break;
   }
