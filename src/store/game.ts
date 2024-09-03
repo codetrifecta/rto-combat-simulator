@@ -21,8 +21,8 @@ interface IGameStateStore {
   isInventoryOpen: boolean;
   isGameLogOpen: boolean;
   isCharacterSheetOpen: boolean;
-  isGenerateRoomOpen: boolean;
   isCompendiumOpen: boolean;
+  isGenerateRoomOpen: boolean;
   file: string;
   floorArtFile: string;
   wallArtFile: string;
@@ -38,8 +38,8 @@ interface IGameStateStore {
   setIsInventoryOpen: (isInventoryOpen: boolean) => void;
   setIsGameLogOpen: (isGameLogOpen: boolean) => void;
   setIsCharacterSheetOpen: (isCharacterSheetOpen: boolean) => void;
-  setIsGenerateRoomOpen: (isGenerateRoomOpen: boolean) => void;
   setIsCompendiumOpen: (isCompendiumOpen: boolean) => void;
+  setIsGenerateRoomOpen: (isGenerateRoomOpen: boolean) => void;
   setTurnCycle: (turnCycle: IEntity[]) => void;
   setIsRoomOver: (isRoomOver: boolean) => void;
   setIsGameOver: (isGameOver: boolean) => void;
@@ -118,10 +118,10 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   setIsCharacterSheetOpen: (isCharacterSheetOpen: boolean) =>
     set({ isCharacterSheetOpen }),
 
+  setIsCompendiumOpen: (isCompendiumOpen: boolean) => set({ isCompendiumOpen }),
+
   setIsGenerateRoomOpen: (isGenerateRoomOpen: boolean) =>
     set({ isGenerateRoomOpen }),
-
-  setIsCompendiumOpen: (isCompendiumOpen: boolean) => set({ isCompendiumOpen }),
 
   setTurnCycle: (turnCycle: IEntity[]) => set({ turnCycle }),
 
