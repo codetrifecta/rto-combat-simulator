@@ -90,9 +90,9 @@ export const getDefaultPlayer = (): IPlayer => {
       [
         SKILL_ID.EXECUTE,
         SKILL_ID.AIR_SLASH,
-        SKILL_ID.FOCUS,
         SKILL_ID.STORMBRAND,
         SKILL_ID.SHOCK_TOUCH,
+        SKILL_ID.SPARK,
         SKILL_ID.LEAP_SLAM,
       ].includes(skill.id)
     ),

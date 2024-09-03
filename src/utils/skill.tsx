@@ -317,7 +317,6 @@ const handleSkillDamage = (
             burnedStatus.effect.damageOverTime = Math.ceil(
               0.2 * getPlayerTotalIntelligence(playerAfterDamage)
             );
-            burnedStatus.id += Math.random();
             newEnemy.statuses = [...newEnemy.statuses, burnedStatus];
             displayStatusEffect(
               burnedStatus,
@@ -356,7 +355,6 @@ const handleSkillDamage = (
               'handleSkillDamage: No status found for the associated skill ID'
             );
           } else {
-            frozenStatus.id += Math.random();
             enemy.statuses = [...enemy.statuses, frozenStatus];
             displayStatusEffect(
               frozenStatus,
@@ -383,7 +381,7 @@ const handleSkillDamage = (
         // Stormbranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
         const shockChance = stormbrandedStatus.effect.shockChance;
         if (Math.random() < shockChance) {
-          // Add frozen status to enemy
+          // Add shocked status to enemy
           const shockedStatus = STATUSES.find(
             (status) => status.id === STATUS_ID.SHOCKED
           );
@@ -393,7 +391,6 @@ const handleSkillDamage = (
               'handleSkillDamage: No status found for the associated skill ID'
             );
           } else {
-            shockedStatus.id += Math.random();
             enemy.statuses = [...enemy.statuses, shockedStatus];
             displayStatusEffect(
               shockedStatus,
@@ -403,7 +400,7 @@ const handleSkillDamage = (
           }
         }
 
-        if (enemy.statuses.some((status) => status.id === STATUS_ID.FROZEN)) {
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.SHOCKED)) {
           totalDamage = Math.round(
             totalDamage * stormbrandedStatus.effect.damageMultiplierForShock
           );
