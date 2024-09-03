@@ -88,11 +88,11 @@ export const getDefaultPlayer = (): IPlayer => {
     actionPoints: MAX_ACTION_POINTS,
     skills: SKILLS.filter((skill) =>
       [
-        SKILL_ID.FIREBRAND,
-        SKILL_ID.ICEBRAND,
-        SKILL_ID.STORMBRAND,
-        SKILL_ID.WRATH_OF_THE_ANCIENTS,
-        // SKILL_ID.SHIELD_OF_THE_ANCIENTS,
+        SKILL_ID.MANA_BURST,
+        SKILL_ID.ARCANE_INTELLECT,
+        SKILL_ID.FLAME_TOUCH,
+        SKILL_ID.SUPERNOVA,
+        SKILL_ID.FIREBALL,
         SKILL_ID.FLY,
       ].includes(skill.id)
     ),

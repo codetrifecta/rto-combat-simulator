@@ -60,6 +60,10 @@ export enum SKILL_ID {
   STORMBRAND = id++,
   WRATH_OF_THE_ANCIENTS = id++,
   SHIELD_OF_THE_ANCIENTS = id++,
+  MANA_BURST = id++,
+  ARCANE_INTELLECT = id++,
+  FLAME_TOUCH = id++,
+  SUPERNOVA = id++,
 }
 
 export const weaponBasedSkillIDs: SKILL_ID[] = [
@@ -324,6 +328,62 @@ export const SKILLS: ISkill[] = [
     cooldown: 2,
     cooldownCounter: 0,
     cost: 2,
+  },
+  {
+    id: SKILL_ID.MANA_BURST,
+    name: 'Mana Burst',
+    icon: ICON_ID.SKILL_MANA_BURST,
+    skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
+    description:
+      'A powerful burst of energy that damages all enemies in a target area. Deals heavy AoE damage.',
+    damageMultiplier: 2.7,
+    range: 2,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 3,
+  },
+  {
+    id: SKILL_ID.ARCANE_INTELLECT,
+    name: 'Arcane Intellect',
+    icon: ICON_ID.SKILL_ARCANE_INTELLECT,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Increases intelligence and AP cost regeneration, enhancing spellcasting abilities.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.FLAME_TOUCH,
+    name: 'Flame Touch',
+    icon: ICON_ID.SKILL_FLAME_TOUCH,
+    skillType: SKILL_TYPE.ST,
+    tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
+    description:
+      "The caster's hand ignites with fire, allowing them to deal fire damage to a single target within melee range. The target also receives a guaranteed burn status, dealing additional damage over 4 turns.",
+    damageMultiplier: 2,
+    range: 1,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
+  {
+    id: SKILL_ID.SUPERNOVA,
+    name: 'Supernova',
+    icon: ICON_ID.SKILL_SUPERNOVA,
+    skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
+    description:
+      'Explode immediate surroundings,dealing fire damage and has a high chance to inflict burn status to enemies.',
+    damageMultiplier: 2.5,
+    range: 2,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 3,
   },
 
   // Self-targeted skills
