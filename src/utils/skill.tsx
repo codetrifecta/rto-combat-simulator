@@ -630,6 +630,8 @@ const handleSkillStatus = (
       statusID = STATUS_ID.PETRIFIED;
       break;
     case SKILL_ID.FREEZE:
+    case SKILL_ID.FROST_TOUCH:
+    case SKILL_ID.BLIZZARD:
       statusID = STATUS_ID.FROZEN;
       break;
     case SKILL_ID.BLOODLUST:
@@ -853,6 +855,9 @@ const handleSkillStatus = (
   if ([SKILL_ID.FLAME_TOUCH].includes(skill.id)) {
     statusToBeApplied.duration = 4;
     statusToBeApplied.durationCounter = 4;
+  } else if ([SKILL_ID.FROST_TOUCH].includes(skill.id)) {
+    statusToBeApplied.duration = 3;
+    statusToBeApplied.durationCounter = 3;
   }
 
   targets.forEach((target) => {
@@ -874,6 +879,11 @@ const handleSkillStatus = (
       } else if ([SKILL_ID.SUPERNOVA].includes(skill.id)) {
         // Supernova: 80% chance to apply Burned status
         if (Math.random() > 0.8) {
+          return;
+        }
+      } else if ([SKILL_ID.BLIZZARD].includes(skill.id)) {
+        // Blizzard: 50% chance to apply Frozen status
+        if (Math.random() > 0.5) {
           return;
         }
       }

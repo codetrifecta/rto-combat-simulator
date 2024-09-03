@@ -89,7 +89,7 @@ export const getDefaultPlayer = (): IPlayer => {
     skills: SKILLS.filter((skill) =>
       [
         SKILL_ID.STORM_PULSE,
-        SKILL_ID.ARCANE_INTELLECT,
+        SKILL_ID.FLY,
         SKILL_ID.FROST_TOUCH,
         SKILL_ID.BLIZZARD,
         SKILL_ID.SHOCK_TOUCH,

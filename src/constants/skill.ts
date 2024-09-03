@@ -405,7 +405,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description:
-      'The caster’s hand chills with frost, allowing them to deal frost damage to a single target within melee range. The target also receives a guaranteed freeze status for 2 turns.',
+      'The caster’s hand chills with frost, allowing them to deal frost damage to a single target within melee range. The target also receives a guaranteed freeze status for 3 turns.',
     damageMultiplier: 1.5,
     range: 1,
     cooldown: 3,

@@ -1620,6 +1620,7 @@ export const Room: FC<{
                   case SKILL_ID.WHIRLWIND:
                   case SKILL_ID.MANA_BURST:
                   case SKILL_ID.SUPERNOVA:
+                  case SKILL_ID.BLIZZARD:
                     if (
                       playerVisionRange &&
                       playerVisionRange[rowIndex][columnIndex] === true &&
@@ -1672,7 +1673,8 @@ export const Room: FC<{
                     }
                     break;
                   }
-                  case SKILL_ID.FIREBALL: {
+                  case SKILL_ID.FIREBALL:
+                  case SKILL_ID.BLIZZARD: {
                     // For fireball, the target zone is a 3x3 area around the hovered effect zone tile so it could go beyond the effect zone
                     if (isEffectZoneHovered) {
                       // Add tiles to target zone to use to compute the effect of the skill
