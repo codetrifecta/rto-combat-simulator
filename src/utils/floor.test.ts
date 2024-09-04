@@ -2,8 +2,22 @@ import { describe, expect, it } from 'vitest';
 import { floorToStringArray, generateFloorPlan, ROOM_TYPE } from './floor';
 
 describe('Initialize Floor Layout', () => {
-  it('returns a 5x5 array layout of rooms', () => {
+  it('returns a 5x5 array layout of rooms, that start in the middle bottom row', () => {
     const floor = generateFloorPlan(true);
+
+    console.log(floorToStringArray(floor));
+
+    // Expect the number of rows to be 5
+    expect(floor.length).toBe(5);
+
+    // Expect the number of columns to be 5 each
+    for (let row = 0; row < floor.length; row++) {
+      expect(floor[row].length).toBe(5);
+    }
+  });
+
+  it('returns a 5x5 array layout of rooms, that start in the middle middle row', () => {
+    const floor = generateFloorPlan(false);
 
     console.log(floorToStringArray(floor));
 

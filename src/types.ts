@@ -3,6 +3,7 @@ import { ICON_ID } from './constants/icon';
 import { SKILL_ID, SKILL_TAG, SKILL_TYPE } from './constants/skill';
 import { SPRITE_ID } from './constants/sprite';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from './constants/weapon';
+import { ROOM_TYPE } from './utils/floor';
 
 export interface IEntity {
   id: number;
@@ -133,4 +134,13 @@ export interface ILegging extends IArmor {}
 export interface ILog {
   message: string | JSX.Element;
   type: 'info' | 'error';
+}
+
+export interface IRoomNode {
+  type: ROOM_TYPE;
+  explored: boolean; // For minimap vision
+  northDoor: boolean;
+  southDoor: boolean;
+  eastDoor: boolean;
+  westDoor: boolean;
 }
