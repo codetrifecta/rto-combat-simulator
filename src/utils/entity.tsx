@@ -1,4 +1,8 @@
-import { ENTITY_TYPE, STARTING_MAX_HEALTH } from '../constants/entity';
+import {
+  ENTITY_SPRITE_DIRECTION,
+  ENTITY_TYPE,
+  STARTING_MAX_HEALTH,
+} from '../constants/entity';
 import { TILE_SIZE } from '../constants/tile';
 import { IEnemy, IEntity, IPlayer, IStatus } from '../types';
 
@@ -19,9 +23,18 @@ export const handlePlayerEndTurn = (
   if (turnCycle[0] && turnCycle[0].entityType === ENTITY_TYPE.PLAYER) {
     const player = getPlayer();
 
+    let playerActionPoints = player.actionPoints;
+
+    // Check if player has statuses that change action points gained
+    player.statuses.forEach((status) => {
+      if (status.effect.extraAPPerTurn) {
+        playerActionPoints += status.effect.extraAPPerTurn;
+      }
+    });
+
     // Give action points
     const newActionPoints =
-      player.actionPoints >= 2 ? 6 : player.actionPoints + 4;
+      playerActionPoints >= 2 ? 6 : playerActionPoints + 4;
 
     // Reduce skill cooldowns
     const newSkills = player.skills.map((skill) => {
@@ -238,116 +251,30 @@ export const damageEntity = (
 ): number => {
   // console.log('damageEntity', entity, damage, elementID);
   const newHealth = entity.health - damage;
+  const spriteDirection = getEntitySpriteDirection(entity);
 
   // Change entity sprite to damaged sprite animation
   if (entity.entityType === ENTITY_TYPE.PLAYER) {
-    console.log('Change entity to damaged sprite animation');
-    const playerSpriteSheetContainer = document.getElementById(
-      `spritesheet_container_${entity.entityType}_${entity.id}`
-    );
-
-    if (!playerSpriteSheetContainer) {
-      console.error('Player spritesheet container not found!');
-      return newHealth;
-    }
-
-    // Set entity animation to damaged by changing animation speed,
-    // and shifting position downwards on the spritesheet
-    const topPosition =
-      -entity.spriteSize * entity.spritesheetDamagedRow + 'px';
-    if (
-      playerSpriteSheetContainer.classList.contains(
-        'animate-entityAnimateLeft20'
-      )
-    ) {
-      playerSpriteSheetContainer.classList.remove(
-        'animate-entityAnimateLeft20'
-      );
-      playerSpriteSheetContainer.style.top = topPosition;
-      playerSpriteSheetContainer.style.left = entity.spriteSize + 'px';
-
-      setTimeout(() => {
-        playerSpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
-      }, 1);
-    } else {
-      playerSpriteSheetContainer.classList.remove('animate-entityAnimate20');
-      playerSpriteSheetContainer.style.top = topPosition;
-      playerSpriteSheetContainer.style.left = 0 + 'px';
-
-      setTimeout(() => {
-        playerSpriteSheetContainer.classList.add('animate-entityAnimate08');
-      }, 1);
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      setEntityAnimationDamaged(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
+    } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+      setEntityAnimationDamaged(entity, ENTITY_SPRITE_DIRECTION.LEFT);
     }
   } else {
     console.log('Change entity to damaged sprite animation');
 
-    const enemySpriteSheetContainer = document.getElementById(
-      `spritesheet_container_${entity.entityType}_${entity.id}`
-    );
-
-    if (!enemySpriteSheetContainer) {
-      console.error('Enemy spritesheet container not found!');
-      return newHealth;
-    }
-
     // Depending on enemy health, play either damaged or defeat animation
     if (newHealth > 0) {
-      const topPosition =
-        -entity.spriteSize * entity.spritesheetDamagedRow + 'px';
-      if (
-        enemySpriteSheetContainer.classList.contains(
-          'animate-entityAnimateLeft08'
-        )
-      ) {
-        enemySpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft08'
-        );
-        enemySpriteSheetContainer.style.left = entity.spriteSize + 'px';
-        enemySpriteSheetContainer.style.top = topPosition;
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeft08'
-          );
-        }, 1);
-      } else {
-        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        enemySpriteSheetContainer.style.left = 0 + 'px';
-        enemySpriteSheetContainer.style.top = topPosition;
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
-        }, 1);
+      if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+        setEntityAnimationDamaged(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
+      } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+        setEntityAnimationDamaged(entity, ENTITY_SPRITE_DIRECTION.LEFT);
       }
     } else {
-      const topPosition =
-        -entity.spriteSize * entity.spritesheetDefeatRow + 'px';
-      if (
-        enemySpriteSheetContainer.classList.contains(
-          'animate-entityAnimateLeft08'
-        )
-      ) {
-        enemySpriteSheetContainer.classList.remove(
-          'animate-entityAnimateLeft08'
-        );
-        enemySpriteSheetContainer.style.top = topPosition;
-        enemySpriteSheetContainer.style.left = entity.spriteSize + 'px';
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateLeftOnce08'
-          );
-        }, 1);
-      } else {
-        enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-        enemySpriteSheetContainer.style.top = topPosition;
-        enemySpriteSheetContainer.style.left = 0 + 'px';
-
-        setTimeout(() => {
-          enemySpriteSheetContainer.classList.add(
-            'animate-entityAnimateOnce08'
-          );
-        }, 1);
+      if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+        setEntityAnimationDefeat(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
+      } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+        setEntityAnimationDefeat(entity, ENTITY_SPRITE_DIRECTION.LEFT);
       }
     }
   }
@@ -368,107 +295,28 @@ export const damageEntity = (
 
       // Set entity animation to walking by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
       if (newHealth > 0) {
-        const topPosition =
-          -entity.spriteSize * entity.spritesheetIdleRow + 'px';
-        if (
-          playerSpriteSheetContainer.classList.contains(
-            'animate-entityAnimateLeft08'
-          )
-        ) {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = entity.spriteSize + 'px';
-
-          setTimeout(() => {
-            playerSpriteSheetContainer.classList.add(
-              'animate-entityAnimateLeft20'
-            );
-          }, 1);
-        } else {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = 0 + 'px';
-
-          setTimeout(() => {
-            playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
-          }, 1);
+        if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationIdle(entity, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+          setEntityAnimationIdle(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
       } else {
-        // Set entity animation to defeated by increasing animtions sprite x axis change speed and shifting position upwards on the spritesheet
-        const topPosition =
-          -entity.spriteSize * entity.spritesheetDefeatRow + 'px';
-        if (
-          playerSpriteSheetContainer.classList.contains(
-            'animate-entityAnimateLeft08'
-          )
-        ) {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = entity.spriteSize + 'px';
-
-          setTimeout(() => {
-            playerSpriteSheetContainer.classList.add(
-              'animate-entityAnimateLeft20'
-            );
-          }, 1);
-        } else {
-          playerSpriteSheetContainer.classList.remove(
-            'animate-entityAnimate08'
-          );
-          playerSpriteSheetContainer.style.top = topPosition;
-          playerSpriteSheetContainer.style.left = 0 + 'px';
-
-          setTimeout(() => {
-            playerSpriteSheetContainer.classList.add('animate-entityAnimate20');
-          }, 1);
+        if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationDefeat(entity, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+          setEntityAnimationDefeat(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
       }
     } else {
       // ENEMY
       console.log('Set enemy animation to defeated sprite animation');
-      const enemySpriteSheetContainer = document.getElementById(
-        `spritesheet_container_${entity.entityType}_${entity.id}`
-      );
-
-      if (!enemySpriteSheetContainer) {
-        console.error('Enemy spritesheet container not found!');
-        return newHealth;
-      }
 
       if (newHealth > 0) {
         // Set entity animation to idle
-        const topPosition =
-          -entity.spriteSize * entity.spritesheetIdleRow + 'px';
-        if (
-          enemySpriteSheetContainer.classList.contains(
-            'animate-entityAnimateLeft08'
-          )
-        ) {
-          enemySpriteSheetContainer.classList.remove(
-            'animate-entityAnimateLeft08'
-          );
-          enemySpriteSheetContainer.style.top = topPosition;
-          enemySpriteSheetContainer.style.left = entity.spriteSize + 'px';
-
-          setTimeout(() => {
-            enemySpriteSheetContainer.classList.add(
-              'animate-entityAnimateLeft08'
-            );
-          }, 1);
-        } else {
-          enemySpriteSheetContainer.classList.remove('animate-entityAnimate08');
-          enemySpriteSheetContainer.style.top = topPosition;
-          enemySpriteSheetContainer.style.left = 0 + 'px';
-
-          setTimeout(() => {
-            enemySpriteSheetContainer.classList.add('animate-entityAnimate08');
-          }, 1);
+        if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationIdle(entity, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+          setEntityAnimationIdle(entity, ENTITY_SPRITE_DIRECTION.RIGHT);
         }
       } else {
         console.log('SET ENTITY SPRITE TO DEFEATED');
@@ -705,4 +553,323 @@ export const getPotionHealAmount = (player: IPlayer) => {
   const healAmount = Math.round(newPlayer.maxHealth * healPercentage);
 
   return healAmount;
+};
+
+export const getEntitySpriteDirection = (entity: IEntity) => {
+  const entitySpriteSheetContainer = document.getElementById(
+    `spritesheet_container_${entity.entityType}_${entity.id}`
+  );
+
+  if (!entitySpriteSheetContainer) {
+    console.error('Entity spritesheet container not found!');
+    return ENTITY_SPRITE_DIRECTION.RIGHT;
+  }
+
+  if (
+    entitySpriteSheetContainer.classList.contains(
+      'animate-entityAnimateLeft08'
+    ) ||
+    entitySpriteSheetContainer.classList.contains(
+      'animate-entityAnimateLeft20'
+    ) ||
+    entitySpriteSheetContainer.classList.contains(
+      'animate-entityAnimateLeft05'
+    ) ||
+    entitySpriteSheetContainer.classList.contains(
+      'animate-entityAnimateLeftOnce05'
+    ) ||
+    entitySpriteSheetContainer.classList.contains(
+      'animate-entityAnimateLeftOnce08'
+    ) ||
+    entitySpriteSheetContainer.classList.contains(
+      'animate-entityAnimateLeftOnce20'
+    )
+  ) {
+    return ENTITY_SPRITE_DIRECTION.LEFT;
+  } else {
+    return ENTITY_SPRITE_DIRECTION.RIGHT;
+  }
+};
+
+export const setEntityAnimationIdle = (
+  entity: IEntity,
+  spriteDirection: ENTITY_SPRITE_DIRECTION = ENTITY_SPRITE_DIRECTION.RIGHT
+) => {
+  const entitySpriteSheetContainer = document.getElementById(
+    `spritesheet_container_${entity.entityType}_${entity.id}`
+  );
+
+  if (!entitySpriteSheetContainer) {
+    console.error('Entity spritesheet container not found!');
+    return;
+  }
+
+  removeEntityAnimationClasses(entitySpriteSheetContainer);
+
+  const topPosition = -entity.spriteSize * entity.spritesheetIdleRow + 'px';
+
+  if (entity.entityType === ENTITY_TYPE.PLAYER) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate20');
+      }, 1);
+    } else if (spriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft20');
+      }, 1);
+    }
+  } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    } else {
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
+    }
+  }
+};
+
+export const setEntityAnimationWalk = (
+  entity: IEntity,
+  spriteDirection: ENTITY_SPRITE_DIRECTION = ENTITY_SPRITE_DIRECTION.RIGHT
+) => {
+  const entitySpriteSheetContainer = document.getElementById(
+    `spritesheet_container_${entity.entityType}_${entity.id}`
+  );
+
+  if (!entitySpriteSheetContainer) {
+    console.error('Entity spritesheet container not found!');
+    return;
+  }
+
+  removeEntityAnimationClasses(entitySpriteSheetContainer);
+
+  const topPosition = -entity.spriteSize * entity.spritesheetMovementRow + 'px';
+
+  if (entity.entityType === ENTITY_TYPE.PLAYER) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    } else {
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
+    }
+  } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    } else {
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
+    }
+  }
+};
+
+export const setEntityAnimationAttack = (
+  entity: IEntity,
+  spriteDirection: ENTITY_SPRITE_DIRECTION = ENTITY_SPRITE_DIRECTION.RIGHT
+) => {
+  const entitySpriteSheetContainer = document.getElementById(
+    `spritesheet_container_${entity.entityType}_${entity.id}`
+  );
+
+  if (!entitySpriteSheetContainer) {
+    console.error('Entity spritesheet container not found!');
+    return;
+  }
+
+  removeEntityAnimationClasses(entitySpriteSheetContainer);
+
+  const topPosition = -entity.spriteSize * entity.spritesheetAttackRow + 'px';
+
+  if (entity.entityType === ENTITY_TYPE.ENEMY) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateOnce05');
+      }, 1);
+    } else {
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add(
+          'animate-entityAnimateLeftOnce05'
+        );
+      }, 1);
+    }
+  }
+};
+
+export const setEntityAnimationDamaged = (
+  entity: IEntity,
+  spriteDirection: ENTITY_SPRITE_DIRECTION = ENTITY_SPRITE_DIRECTION.RIGHT
+) => {
+  const entitySpriteSheetContainer = document.getElementById(
+    `spritesheet_container_${entity.entityType}_${entity.id}`
+  );
+
+  if (!entitySpriteSheetContainer) {
+    console.error('Entity spritesheet container not found!');
+    return;
+  }
+
+  removeEntityAnimationClasses(entitySpriteSheetContainer);
+
+  const topPosition = -entity.spriteSize * entity.spritesheetDamagedRow + 'px';
+
+  if (entity.entityType === ENTITY_TYPE.PLAYER) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      });
+    } else {
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      });
+    }
+  } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    } else {
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
+    }
+  }
+};
+
+export const setEntityAnimationDefeat = (
+  entity: IEntity,
+  spriteDirection: ENTITY_SPRITE_DIRECTION = ENTITY_SPRITE_DIRECTION.RIGHT
+) => {
+  const entitySpriteSheetContainer = document.getElementById(
+    `spritesheet_container_${entity.entityType}_${entity.id}`
+  );
+
+  if (!entitySpriteSheetContainer) {
+    console.error('Entity spritesheet container not found!');
+    return;
+  }
+
+  removeEntityAnimationClasses(entitySpriteSheetContainer);
+
+  const topPosition = -entity.spriteSize * entity.spritesheetDefeatRow + 'px';
+
+  if (entity.entityType === ENTITY_TYPE.PLAYER) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+      }, 1);
+    } else {
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+      }, 1);
+    }
+  } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
+    if (spriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+      entitySpriteSheetContainer.style.left = '0px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateOnce08');
+      }, 1);
+    } else {
+      entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
+      entitySpriteSheetContainer.style.top = topPosition;
+
+      setTimeout(() => {
+        entitySpriteSheetContainer.classList.add(
+          'animate-entityAnimateLeftOnce08'
+        );
+      }, 1);
+    }
+  }
+};
+
+const removeEntityAnimationClasses = (
+  entitySpriteSheetContainerElement: HTMLElement
+) => {
+  // Remove all animation classes
+  entitySpriteSheetContainerElement.classList.remove('animate-entityAnimate05');
+  entitySpriteSheetContainerElement.classList.remove('animate-entityAnimate08');
+  entitySpriteSheetContainerElement.classList.remove('animate-entityAnimate20');
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateOnce05'
+  );
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateOnce08'
+  );
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateOnce20'
+  );
+
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateLeft05'
+  );
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateLeft08'
+  );
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateLeft20'
+  );
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateLeftOnce05'
+  );
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateLeftOnce08'
+  );
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateLeftOnce20'
+  );
 };

@@ -80,6 +80,25 @@ import skill_bloodletting from '../assets/icons/skills/icon_skill_bloodletting.p
 import skill_poison_strike from '../assets/icons/skills/icon_skill_poison_strike.png';
 import skill_disabling_blow from '../assets/icons/skills/icon_skill_disorient.png';
 import skill_puncture_strike from '../assets/icons/skills/icon_skill_puncture_strike.png';
+import skill_berserk from '../assets/icons/skills/icon_skill_berserk.png';
+import skill_frenzy from '../assets/icons/skills/icon_skill_frenzy.png';
+import skill_deflect from '../assets/icons/skills/icon_skill_deflect.png';
+import skill_air_slash from '../assets/icons/skills/icon_skill_air_slash.png';
+import skill_flying_kick from '../assets/icons/skills/icon_skill_flying_kick.png';
+import skill_firebrand from '../assets/icons/skills/icon_skill_firebrand.png';
+import skill_icebrand from '../assets/icons/skills/icon_skill_icebrand.png';
+import skill_stormbrand from '../assets/icons/skills/icon_skill_stormbrand.png';
+import skill_wrath_of_the_ancients from '../assets/icons/skills/icon_skill_wrath_of_the_ancients.png';
+import skill_shield_of_the_ancients from '../assets/icons/skills/icon_skill_shield_of_the_ancients.png';
+import skill_mana_burst from '../assets/icons/skills/icon_skill_mana_burst.png';
+import skill_arcane_intellect from '../assets/icons/skills/icon_skill_arcane_intellect.png';
+import skill_flame_touch from '../assets/icons/skills/icon_skill_flame_touch.png';
+import skill_supernova from '../assets/icons/skills/icon_skill_supernova.png';
+import skill_frost_touch from '../assets/icons/skills/icon_skill_frost_touch.png';
+import skill_blizzard from '../assets/icons/skills/icon_skill_blizzard.png';
+import skill_shock_touch from '../assets/icons/skills/icon_skill_shock_touch.png';
+import skill_spark from '../assets/icons/skills/icon_skill_spark.png';
+import skill_storm_pulse from '../assets/icons/skills/icon_skill_storm_pulse.png';
 
 // STATUSES
 import status_defense_up from '../assets/icons/statuses/icon_status_defense_up.png';
@@ -87,6 +106,7 @@ import status_petrified from '../assets/icons/statuses/icon_status_petrified.png
 import status_attack_up from '../assets/icons/statuses/icon_status_attack_up.png';
 import status_burned from '../assets/icons/statuses/icon_status_burned.png';
 import status_frozen from '../assets/icons/statuses/icon_status_frozen.png';
+import status_shocked from '../assets/icons/statuses/icon_status_shocked.png';
 import status_battle_fury from '../assets/icons/statuses/icon_status_battle_fury.png';
 import status_bloodlust from '../assets/icons/statuses/icon_status_bloodlust.png';
 import status_focused from '../assets/icons/statuses/icon_status_focused.png';
@@ -101,6 +121,13 @@ import status_slowed from '../assets/icons/statuses/icon_status_slowed.png';
 import status_dodging from '../assets/icons/statuses/icon_status_dodging.png';
 import status_poisoned from '../assets/icons/statuses/icon_status_poisoned.png';
 import status_wounded from '../assets/icons/statuses/icon_status_wounded.png';
+import status_berserk from '../assets/icons/statuses/icon_status_berserk.png';
+import status_frenzy from '../assets/icons/statuses/icon_status_frenzy.png';
+import status_deflecting from '../assets/icons/statuses/icon_status_deflecting.png';
+import status_firebranded from '../assets/icons/statuses/icon_status_firebranded.png';
+import status_icebranded from '../assets/icons/statuses/icon_status_icebranded.png';
+import status_stormbranded from '../assets/icons/statuses/icon_status_stormbranded.png';
+import status_arcane_intellect from '../assets/icons/statuses/icon_status_arcane_intellect.png';
 
 export enum ICON_ID {
   //   PLAYER ACTIONS
@@ -185,6 +212,25 @@ export enum ICON_ID {
   SKILL_POISON_STRIKE = 'skill_poison_strike',
   SKILL_DISABLING_BLOW = 'skill_disabling_blow',
   SKILL_PUNCTURE_STRIKE = 'skill_puncture_strike',
+  SKILL_BERSERK = 'skill_berserk',
+  SKILL_FRENZY = 'skill_frenzy',
+  SKILL_DEFLECT = 'skill_deflect',
+  SKILL_AIR_SLASH = 'skill_air_slash',
+  SKILL_FLYING_KICK = 'skill_flying_kick',
+  SKILL_FIREBRAND = 'skill_firebrand',
+  SKILL_ICEBRAND = 'skill_icebrand',
+  SKILL_STORMBRAND = 'skill_stormbrand',
+  SKILL_WRATH_OF_THE_ANCIENTS = 'skill_wrath_of_the_ancients',
+  SKILL_SHIELD_OF_THE_ANCIENTS = 'skill_shield_of_the_ancients',
+  SKILL_MANA_BURST = 'skill_mana_burst',
+  SKILL_ARCANE_INTELLECT = 'skill_arcane_intellect',
+  SKILL_FLAME_TOUCH = 'skill_flame_touch',
+  SKILL_SUPERNOVA = 'skill_supernova',
+  SKILL_FROST_TOUCH = 'skill_frost_touch',
+  SKILL_BLIZZARD = 'skill_blizzard',
+  SKILL_SHOCK_TOUCH = 'skill_shock_touch',
+  SKILL_SPARK = 'skill_spark',
+  SKILL_STORM_PULSE = 'skill_storm_pulse',
 
   // STATUSES
   STATUS_DEFENSE_UP = 'status_defense_up',
@@ -192,6 +238,7 @@ export enum ICON_ID {
   STATUS_ATTACK_UP = 'status_attack_up',
   STATUS_BURNED = 'status_burned',
   STATUS_FROZEN = 'status_frozen',
+  STATUS_SHOCKED = 'status_shocked',
   STATUS_BATTLE_FURY = 'status_battle_fury',
   STATUS_BLOODLUST = 'status_bloodlust',
   STATUS_FOCUSED = 'status_focused',
@@ -207,6 +254,13 @@ export enum ICON_ID {
   STATUS_DODGING = 'status_dodging',
   STATUS_POISONED = 'status_poisoned',
   STATUS_WOUNDED = 'status_wounded',
+  STATUS_BERSERK = 'status_berserk',
+  STATUS_FRENZY = 'status_frenzy',
+  STATUS_DEFLECTING = 'status_deflecting',
+  STATUS_FIREBRANDED = 'status_firebrand',
+  STATUS_ICEBRANDED = 'status_icebranded',
+  STATUS_STORMBRANDED = 'status_stormbranded',
+  STATUS_ARCANE_INTELLECT = 'status_arcane_intellect',
 }
 
 const ICONS: Record<ICON_ID, string> = {
@@ -292,6 +346,25 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.SKILL_POISON_STRIKE]: skill_poison_strike,
   [ICON_ID.SKILL_DISABLING_BLOW]: skill_disabling_blow,
   [ICON_ID.SKILL_PUNCTURE_STRIKE]: skill_puncture_strike,
+  [ICON_ID.SKILL_BERSERK]: skill_berserk,
+  [ICON_ID.SKILL_FRENZY]: skill_frenzy,
+  [ICON_ID.SKILL_DEFLECT]: skill_deflect,
+  [ICON_ID.SKILL_AIR_SLASH]: skill_air_slash,
+  [ICON_ID.SKILL_FLYING_KICK]: skill_flying_kick,
+  [ICON_ID.SKILL_FIREBRAND]: skill_firebrand,
+  [ICON_ID.SKILL_ICEBRAND]: skill_icebrand,
+  [ICON_ID.SKILL_STORMBRAND]: skill_stormbrand,
+  [ICON_ID.SKILL_WRATH_OF_THE_ANCIENTS]: skill_wrath_of_the_ancients,
+  [ICON_ID.SKILL_SHIELD_OF_THE_ANCIENTS]: skill_shield_of_the_ancients,
+  [ICON_ID.SKILL_MANA_BURST]: skill_mana_burst,
+  [ICON_ID.SKILL_ARCANE_INTELLECT]: skill_arcane_intellect,
+  [ICON_ID.SKILL_FLAME_TOUCH]: skill_flame_touch,
+  [ICON_ID.SKILL_SUPERNOVA]: skill_supernova,
+  [ICON_ID.SKILL_FROST_TOUCH]: skill_frost_touch,
+  [ICON_ID.SKILL_BLIZZARD]: skill_blizzard,
+  [ICON_ID.SKILL_SHOCK_TOUCH]: skill_shock_touch,
+  [ICON_ID.SKILL_SPARK]: skill_spark,
+  [ICON_ID.SKILL_STORM_PULSE]: skill_storm_pulse,
 
   // STATUSES
   [ICON_ID.STATUS_DEFENSE_UP]: status_defense_up,
@@ -299,6 +372,7 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_ATTACK_UP]: status_attack_up,
   [ICON_ID.STATUS_BURNED]: status_burned,
   [ICON_ID.STATUS_FROZEN]: status_frozen,
+  [ICON_ID.STATUS_SHOCKED]: status_shocked,
   [ICON_ID.STATUS_BATTLE_FURY]: status_battle_fury,
   [ICON_ID.STATUS_BLOODLUST]: status_bloodlust,
   [ICON_ID.STATUS_FOCUSED]: status_focused,
@@ -314,6 +388,13 @@ const ICONS: Record<ICON_ID, string> = {
   [ICON_ID.STATUS_DODGING]: status_dodging,
   [ICON_ID.STATUS_POISONED]: status_poisoned,
   [ICON_ID.STATUS_WOUNDED]: status_wounded,
+  [ICON_ID.STATUS_BERSERK]: status_berserk,
+  [ICON_ID.STATUS_FRENZY]: status_frenzy,
+  [ICON_ID.STATUS_DEFLECTING]: status_deflecting,
+  [ICON_ID.STATUS_FIREBRANDED]: status_firebranded,
+  [ICON_ID.STATUS_ICEBRANDED]: status_icebranded,
+  [ICON_ID.STATUS_STORMBRANDED]: status_stormbranded,
+  [ICON_ID.STATUS_ARCANE_INTELLECT]: status_arcane_intellect,
 };
 
 export const getIconSrc = (icon: ICON_ID) => ICONS[icon] || '';

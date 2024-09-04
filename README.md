@@ -40,10 +40,25 @@ Combat simulator for Return to Olympus
   - [x] Swift Movement
   - [x] Throwing Knives
   - [x] Instinctual Dodge
-  - [ ] Bloodletting
   - [x] Poison Strike
   - [x] Disabling Blow
   - [x] Puncture Strike
+  - [x] Berserk
+  - [x] Frenzy
+  - [x] Deflect
+  - [x] Air Slash
+  - [x] Flying Kick
+  - [x] Firebrand
+  - [x] Icebrand
+  - [x] Stormbrand
+  - [x] Wrath of the Ancients
+  - [x] Flame Touch
+  - [x] Supernova
+  - [x] Frost Touch
+  - [x] Blizzard
+  - [x] Shock Touch
+  - [x] Spark
+  - [x] Storm Pulse
 - [x] Enemy attack (naive)
 - [x] Enemy movement (naive)
 - [x] Sprites for each of the above

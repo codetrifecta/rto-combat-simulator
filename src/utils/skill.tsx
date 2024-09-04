@@ -7,6 +7,7 @@ import {
   intelligenceBasedSkillIDs,
   SKILL_ID,
   SKILL_TAG,
+  weaponBasedSkillIDs,
 } from '../constants/skill';
 import { BASE_STATUS_EFFECTS, STATUS_ID, STATUSES } from '../constants/status';
 import { useSummonStore } from '../store/summon';
@@ -286,6 +287,128 @@ const handleSkillDamage = (
         }
       }
 
+      // Check for firebranded status
+      const firebrandedStatus = playerAfterDamage.statuses.find(
+        (status) => status.id === STATUS_ID.FIREBRANDED
+      );
+
+      if (firebrandedStatus && weaponBasedSkillIDs.includes(skill.id)) {
+        console.log('Firebranded status found');
+        // Firebranded: Damaging skills and attacks has a chance to burn. Increased damage on burning targets depending on player's intelligence
+        const burnChance = firebrandedStatus.effect.burnChance;
+        if (Math.random() < burnChance) {
+          // Add burning status to enemy
+          const burnedStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.BURNED
+          );
+
+          if (burnedStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            burnedStatus.description = burnedStatus.description.replace(
+              '#DAMAGE',
+              Math.ceil(
+                0.2 * getPlayerTotalIntelligence(playerAfterDamage)
+              ).toString()
+            );
+            burnedStatus.effect.damageOverTime = Math.ceil(
+              0.2 * getPlayerTotalIntelligence(playerAfterDamage)
+            );
+            burnedStatus.id += Math.random();
+            newEnemy.statuses = [...newEnemy.statuses, burnedStatus];
+            displayStatusEffect(
+              burnedStatus,
+              true,
+              `tile_${newEnemy.entityType}_${newEnemy.id}`
+            );
+          }
+        }
+
+        if (
+          newEnemy.statuses.some((status) => status.id === STATUS_ID.BURNED)
+        ) {
+          totalDamage = Math.ceil(
+            totalDamage * firebrandedStatus.effect.damageMultiplierForBurn
+          );
+        }
+      }
+
+      // Check for player icebranded status
+      const icebrandedStatus = playerAfterDamage.statuses.find(
+        (status) => status.id === STATUS_ID.ICEBRANDED
+      );
+
+      if (icebrandedStatus && weaponBasedSkillIDs.includes(skill.id)) {
+        console.log('Icebranded status found');
+        // Icebranded: Damaging skills and attacks has a chance to freeze. Increased damage on frozen targets depending on player's intelligence
+        const freezeChance = icebrandedStatus.effect.freezeChance;
+        if (Math.random() < freezeChance) {
+          // Add frozen status to enemy
+          const frozenStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.FROZEN
+          );
+
+          if (frozenStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            frozenStatus.id += Math.random();
+            enemy.statuses = [...enemy.statuses, frozenStatus];
+            displayStatusEffect(
+              frozenStatus,
+              true,
+              `tile_${enemy.entityType}_${enemy.id}`
+            );
+          }
+        }
+
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.FROZEN)) {
+          totalDamage = Math.round(
+            totalDamage * icebrandedStatus.effect.damageMultiplierForFreeze
+          );
+        }
+      }
+
+      // Check for player stormbranded status
+      const stormbrandedStatus = playerAfterDamage.statuses.find(
+        (status) => status.id === STATUS_ID.STORMBRANDED
+      );
+
+      if (stormbrandedStatus && weaponBasedSkillIDs.includes(skill.id)) {
+        console.log('Stormbranded status found');
+        // Stormbranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
+        const shockChance = stormbrandedStatus.effect.shockChance;
+        if (Math.random() < shockChance) {
+          // Add frozen status to enemy
+          const shockedStatus = STATUSES.find(
+            (status) => status.id === STATUS_ID.SHOCKED
+          );
+
+          if (shockedStatus === undefined) {
+            console.error(
+              'handleSkillDamage: No status found for the associated skill ID'
+            );
+          } else {
+            shockedStatus.id += Math.random();
+            enemy.statuses = [...enemy.statuses, shockedStatus];
+            displayStatusEffect(
+              shockedStatus,
+              true,
+              `tile_${enemy.entityType}_${enemy.id}`
+            );
+          }
+        }
+
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.FROZEN)) {
+          totalDamage = Math.round(
+            totalDamage * stormbrandedStatus.effect.damageMultiplierForShock
+          );
+        }
+      }
+
       // Calculate damage
       newEnemy.health = damageEntity(
         newEnemy,
@@ -379,7 +502,13 @@ const handleSkillDamage = (
     } else if (entityType === ENTITY_TYPE.PLAYER) {
       // Peform skill specific actions when applying to targets
       // Leap Slam, Flame Dive: Player never gets damaged (because they are supposed to be diving into the new position)
-      if ([SKILL_ID.LEAP_SLAM, SKILL_ID.FLAME_DIVE].includes(skill.id)) {
+      if (
+        [
+          SKILL_ID.LEAP_SLAM,
+          SKILL_ID.FLAME_DIVE,
+          SKILL_ID.FLYING_KICK,
+        ].includes(skill.id)
+      ) {
         return; // Skip applying status to player
       }
 
@@ -488,6 +617,8 @@ const handleSkillStatus = (
       break;
     case SKILL_ID.FIREBALL:
     case SKILL_ID.FLAME_DIVE:
+    case SKILL_ID.FLAME_TOUCH:
+    case SKILL_ID.SUPERNOVA:
       statusID = STATUS_ID.BURNED;
       // DoT will scale with player's intelligence
       statusEffectModifier[0] = true;
@@ -499,6 +630,8 @@ const handleSkillStatus = (
       statusID = STATUS_ID.PETRIFIED;
       break;
     case SKILL_ID.FREEZE:
+    case SKILL_ID.FROST_TOUCH:
+    case SKILL_ID.BLIZZARD:
       statusID = STATUS_ID.FROZEN;
       break;
     case SKILL_ID.BLOODLUST:
@@ -512,6 +645,7 @@ const handleSkillStatus = (
       statusID = STATUS_ID.ENTANGLED;
       break;
     case SKILL_ID.WEAKEN:
+    case SKILL_ID.WRATH_OF_THE_ANCIENTS:
       statusID = STATUS_ID.WEAKENED;
       break;
     case SKILL_ID.WARCRY:
@@ -551,6 +685,72 @@ const handleSkillStatus = (
     case SKILL_ID.PUNCTURE_STRIKE:
       statusID = STATUS_ID.WOUNDED;
       break;
+    case SKILL_ID.BERSERK:
+      statusID = STATUS_ID.BERSERK;
+      // Strength increase will scale with player's missing health
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].strengthMultiplier =
+        1 + (1 - playerAfterStatus.health / playerAfterStatus.maxHealth);
+      // console.log(playerAfterStatus);
+      break;
+    case SKILL_ID.FRENZY:
+      statusID = STATUS_ID.FRENZY;
+      break;
+    case SKILL_ID.DEFLECT:
+      statusID = STATUS_ID.DEFLECTING;
+      // Damage reduction will scale with player's strength
+      statusEffectModifier[0] = true;
+      statusEffectModifier[1].incomingDamageMultiplier =
+        0.1 + getPlayerTotalStrength(playerAfterStatus) / 100;
+      break;
+    case SKILL_ID.FIREBRAND:
+      {
+        statusID = STATUS_ID.FIREBRANDED;
+        // Burn chance and damage multiplier will scale with player's intelligence
+        const playerTotalIntelligence =
+          getPlayerTotalIntelligence(playerAfterStatus);
+        statusEffectModifier[0] = true;
+        statusEffectModifier[1].burnChance =
+          0.5 + (0.8 * playerTotalIntelligence) / 100;
+        statusEffectModifier[1].damageMultiplierForBurn =
+          1 + (20 + 0.8 * playerTotalIntelligence) / 100;
+      }
+      break;
+    case SKILL_ID.ICEBRAND:
+      {
+        statusID = STATUS_ID.ICEBRANDED;
+        // Freeze chance and damage multiplier will scale with player's intelligence
+        const playerTotalIntelligence =
+          getPlayerTotalIntelligence(playerAfterStatus);
+        statusEffectModifier[0] = true;
+        statusEffectModifier[1].freezeChance =
+          0.3 + (0.8 * playerTotalIntelligence) / 100;
+        statusEffectModifier[1].damageMultiplierForFreeze =
+          1 + (20 + 0.8 * playerTotalIntelligence) / 100;
+      }
+      break;
+    case SKILL_ID.STORMBRAND:
+      {
+        statusID = STATUS_ID.STORMBRANDED;
+        // Freeze chance and damage multiplier will scale with player's intelligence
+        const playerTotalIntelligence =
+          getPlayerTotalIntelligence(playerAfterStatus);
+        statusEffectModifier[0] = true;
+        statusEffectModifier[1].shockChance =
+          0.4 + (0.8 * playerTotalIntelligence) / 100;
+        statusEffectModifier[1].damageMultiplierForShock =
+          1 + (20 + 0.8 * playerTotalIntelligence) / 100;
+      }
+      break;
+    case SKILL_ID.ARCANE_INTELLECT:
+      statusID = STATUS_ID.ARCANE_INTELLECT;
+      break;
+    case SKILL_ID.SHOCK_TOUCH:
+    case SKILL_ID.SPARK:
+    case SKILL_ID.STORM_PULSE:
+    case SKILL_ID.LIGHTNING:
+      statusID = STATUS_ID.SHOCKED;
+      break;
     default:
       break;
   }
@@ -575,6 +775,7 @@ const handleSkillStatus = (
     };
   }
 
+  // Replace placeholder values in status description
   if (
     [STATUS_ID.BURNED, STATUS_ID.BLEEDING, STATUS_ID.POISONED].includes(
       statusToBeApplied.id
@@ -583,6 +784,48 @@ const handleSkillStatus = (
     statusToBeApplied.description = statusToBeApplied.description.replace(
       '#DAMAGE',
       statusToBeApplied.effect.damageOverTime + ''
+    );
+  } else if ([STATUS_ID.BERSERK].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#STRENGTH_MULTIPLIER',
+      Math.round((statusToBeApplied.effect.strengthMultiplier - 1) * 100) + ''
+    );
+  } else if ([STATUS_ID.DEFLECTING].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE_REDUCTION',
+      Math.round(statusToBeApplied.effect.incomingDamageMultiplier * 100) + ''
+    );
+  } else if ([STATUS_ID.FIREBRANDED].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#BURN_CHANCE',
+      Math.round(statusToBeApplied.effect.burnChance * 100) + ''
+    );
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE_MULTIPLIER',
+      Math.round((statusToBeApplied.effect.damageMultiplierForBurn - 1) * 100) +
+        ''
+    );
+  } else if ([STATUS_ID.ICEBRANDED].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#FREEZE_CHANCE',
+      Math.round(statusToBeApplied.effect.freezeChance * 100) + ''
+    );
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE_MULTIPLIER',
+      Math.round(
+        (statusToBeApplied.effect.damageMultiplierForFreeze - 1) * 100
+      ) + ''
+    );
+  } else if ([STATUS_ID.STORMBRANDED].includes(statusToBeApplied.id)) {
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#SHOCK_CHANCE',
+      Math.round(statusToBeApplied.effect.shockChance * 100) + ''
+    );
+    statusToBeApplied.description = statusToBeApplied.description.replace(
+      '#DAMAGE_MULTIPLIER',
+      Math.round(
+        (statusToBeApplied.effect.damageMultiplierForShock - 1) * 100
+      ) + ''
     );
   }
 
@@ -614,11 +857,56 @@ const handleSkillStatus = (
     return { playerAfterStatus, enemiesAfterStatus };
   }
 
+  // Apply modifiers to status duration
+  if ([SKILL_ID.FLAME_TOUCH].includes(skill.id)) {
+    statusToBeApplied.duration = 4;
+    statusToBeApplied.durationCounter = 4;
+  } else if ([SKILL_ID.FROST_TOUCH].includes(skill.id)) {
+    statusToBeApplied.duration = 3;
+    statusToBeApplied.durationCounter = 3;
+  }
+
   targets.forEach((target) => {
     const entityType = target[0];
     const entityId = target[1];
 
     if (entityType === ENTITY_TYPE.ENEMY) {
+      // Check for skills that have a chance to apply status effects
+      switch (skill.id) {
+        case SKILL_ID.SUPERNOVA:
+          // Supernova: 80% chance to apply Burned status
+          if (Math.random() > 0.8) {
+            return;
+          }
+          break;
+        case SKILL_ID.STORM_PULSE:
+          // Storm Pulse: 70% chance to apply Shocked status
+          if (Math.random() > 0.7) {
+            return;
+          }
+          break;
+        case SKILL_ID.FIREBALL:
+        case SKILL_ID.SPARK:
+          // Fireball: 60% chance to apply Burned status
+          // Spark: 60% chance to apply Shocked status
+          if (Math.random() > 0.6) {
+            return;
+          }
+          break;
+        case SKILL_ID.BLIZZARD:
+        case SKILL_ID.WRATH_OF_THE_ANCIENTS:
+        case SKILL_ID.LIGHTNING:
+          // Blizzard: 50% chance to apply Frozen status
+          // Wrath of the Ancients: 50% chance to apply Weakened status
+          // Lightning: 50% chance to apply Shocked status
+          if (Math.random() > 0.5) {
+            return;
+          }
+          break;
+        default:
+          break;
+      }
+
       const enemy = enemiesAfterStatus.find((e) => e.id === entityId);
 
       if (!enemy) {
