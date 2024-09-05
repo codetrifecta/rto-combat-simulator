@@ -53,6 +53,9 @@ import tile_cellar_253 from '../assets/sprites/tiles/cellar/door/sprite_tile_cel
 import tile_cellar_397 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_397.png';
 import tile_cellar_282 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_282.png';
 
+// SKILL ANIMATION
+import skill_90 from '../assets/sprites/skills/sprite_skill_90.png';
+
 export const spriteSize = 64;
 export const FLOOR_SIZE = 32;
 
@@ -110,6 +113,9 @@ export enum SPRITE_ID {
   // DOORS
   CELLAR_DOOR_397 = 'cellar_door_397',
   CELLAR_DOOR_282 = 'cellar_door_282',
+
+  // SKILL ANIMATION
+  SKILL_90 = 'SKILL_90',
 }
 
 export const SPRITES: Record<SPRITE_ID, string> = {
@@ -167,6 +173,9 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   // DOORS
   [SPRITE_ID.CELLAR_DOOR_397]: tile_cellar_397,
   [SPRITE_ID.CELLAR_DOOR_282]: tile_cellar_282,
+
+  // SKILL ANIMATION
+  [SPRITE_ID.SKILL_90]: skill_90,
 };
 
 export const getSpriteSrc = (spriteID: SPRITE_ID) => SPRITES[spriteID] || '';

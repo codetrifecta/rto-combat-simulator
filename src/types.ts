@@ -142,3 +142,14 @@ export interface ILog {
   message: string | JSX.Element;
   type: 'info' | 'error';
 }
+
+export interface IEffectAnimation {
+  sprite: SPRITE_ID;
+  position: [number, number];
+  duration: number;
+  durationDelay: number;
+  spriteSize: number;
+  spritesheetRows: number;
+  spritesheetColumns: number;
+  effectRow: number;
+}

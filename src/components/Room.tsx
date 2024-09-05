@@ -48,6 +48,8 @@ import {
 import { getVisionFromEntityPosition } from '../utils/vision';
 import debounce from 'debounce';
 import { useSummonStore } from '../store/summon';
+import { useEffectStore } from '../store/effect';
+import { SPRITE_ID } from '../constants/sprite';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -80,6 +82,7 @@ export const Room: FC<{
     setIsRoomOver,
     setHoveredTile,
   } = useGameStateStore();
+  const { setCurrentEffect } = useEffectStore();
   const {
     playerMovementAPCost,
     setPlayerMovementAPCost,
@@ -2056,6 +2059,17 @@ export const Room: FC<{
                   player.state.skillId,
                   targetZones.current
                 );
+
+                setCurrentEffect({
+                  sprite: SPRITE_ID.SKILL_90,
+                  position: [rowIndex, columnIndex],
+                  duration: 0.5,
+                  durationDelay: 0,
+                  spritesheetRows: 9,
+                  spritesheetColumns: 11,
+                  spriteSize: 128,
+                  effectRow: 5,
+                });
 
                 // If room is over, player can move to any valid tile (floor, door)
                 if (isRoomOver) {
