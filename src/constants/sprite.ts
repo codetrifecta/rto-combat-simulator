@@ -2,11 +2,6 @@
 import player_01 from '../assets/sprites/players/sprite_player_01.png';
 
 // ENEMIES
-import enemy_demon_02 from '../assets/sprites/enemies/sprite_enemy_demon_02.png';
-import enemy_demon_10 from '../assets/sprites/enemies/sprite_enemy_demon_10.png';
-import enemy_demon_12 from '../assets/sprites/enemies/sprite_enemy_demon_12.png';
-import enemy_demon_13 from '../assets/sprites/enemies/sprite_enemy_demon_13.png';
-
 // From Rogue Adventures Asset Pack
 import enemy_abyssal_cyclopean_wraith from '../assets/sprites/enemies/sprite_enemy_abyssal_cyclopean_wraith.png';
 import cerberus_pup from '../assets/sprites/enemies/sprite_enemy_cerberus_pup.png';
@@ -66,11 +61,6 @@ export enum SPRITE_ID {
   PLAYER_01 = 'PLAYER_01',
 
   // ENEMIES
-  DEMON_02 = 'DEMON_02',
-  DEMON_10 = 'DEMON_10',
-  DEMON_12 = 'DEMON_12',
-  DEMON_13 = 'DEMON_13',
-
   // From Rogue Adventures Asset Pack
   ENEMY_ABYSSAL_CYCLOPEAN_WRAITH = 'ENEMY_ABYSSAL_CYCLOPEAN_WRAITH',
   CERBERUS_PUP = 'CERBERUS_PUP',
@@ -127,11 +117,6 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.PLAYER_01]: player_01,
 
   // ENEMIES
-  [SPRITE_ID.DEMON_02]: enemy_demon_02,
-  [SPRITE_ID.DEMON_10]: enemy_demon_10,
-  [SPRITE_ID.DEMON_12]: enemy_demon_12,
-  [SPRITE_ID.DEMON_13]: enemy_demon_13,
-
   // From Rogue Adventures Asset Pack
   [SPRITE_ID.ENEMY_ABYSSAL_CYCLOPEAN_WRAITH]: enemy_abyssal_cyclopean_wraith,
   [SPRITE_ID.CERBERUS_PUP]: cerberus_pup,
