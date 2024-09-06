@@ -3,18 +3,6 @@ import { SKILL_ID } from './skill';
 import { SPRITE_ID } from './sprite';
 import { TILE_SIZE } from './tile';
 
-export const BASE_SKILL_ANIMATION: ISkillAnimation = {
-  sprite: SPRITE_ID.SKILL_72,
-  position: [0, 0],
-  duration: 0.5,
-  startDelay: 0,
-  effectDelay: 30,
-  spritesheetRows: 9,
-  spritesheetColumns: 10,
-  spriteSize: 160,
-  animationRow: 0,
-};
-
 interface IAnimation {
   sprite: SPRITE_ID;
   spritesheetRows: number;
@@ -173,6 +161,21 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     spritesheetRows: 9,
     spritesheetColumns: 14,
   },
+};
+
+export const BASE_SKILL_ANIMATION: ISkillAnimation = {
+  ...ANIMATION_PRESET[SPRITE_ID.SKILL_43],
+  position: [0, 0],
+  duration: 0.5,
+  startDelay: 0,
+  effectDelay: 50,
+  spriteSize: 100,
+  animationRow: 5,
+  yOffset: -TILE_SIZE / 3,
+};
+
+export const WEAPON_ATTACK_ANIMATION: ISkillAnimation = {
+  ...BASE_SKILL_ANIMATION,
 };
 
 export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
