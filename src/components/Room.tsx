@@ -52,6 +52,7 @@ import { useSkillAnimationStore } from '../store/skillAnimation';
 import {
   BASE_SKILL_ANIMATION,
   SKILL_ANIMATION_PRESET,
+  WEAPON_ATTACK_ANIMATION,
 } from '../constants/skillAnimation';
 
 export const Room: FC<{
@@ -2087,7 +2088,14 @@ export const Room: FC<{
                     entityIfExists &&
                     entityIfExists[0] === ENTITY_TYPE.ENEMY
                   ) {
-                    handleEnemyClick(entityId);
+                    setCurrentSkillAnimation({
+                      ...WEAPON_ATTACK_ANIMATION,
+                      position: [rowIndex, columnIndex],
+                    });
+
+                    setTimeout(() => {
+                      handleEnemyClick(entityId);
+                    }, WEAPON_ATTACK_ANIMATION.effectDelay);
                   } else if (
                     player.state.isMoving &&
                     !entityIfExists &&
@@ -2137,7 +2145,7 @@ export const Room: FC<{
                         }
                       }
                     } else {
-                      // Default to true for movement skills
+                      // Default to true for movement skills (that don't damage enemies)
                       isValid = true;
                     }
 

@@ -1,7 +1,7 @@
 import { IEnemy, IEntity, IPlayer, ISkill, ISummon } from '../types';
 import { getPlayerMaxHealth } from '../utils/entity';
 import { LEGGINGS } from './armor';
-import { SKILL_ID, SKILLS } from './skill';
+import { /*SKILL_ID ,*/ SKILLS } from './skill';
 import { SPRITE_ID } from './sprite';
 import { WEAPONS } from './weapon';
 
@@ -79,9 +79,15 @@ export const PLAYER: IPlayer = {
   healthPotions: 2,
 };
 
-const equippedSkills = [SKILL_ID.CLEAVE, SKILL_ID.FIREBALL, SKILL_ID.FOCUS].map(
-  (id) => SKILLS.find((skill) => skill.id === id)
-);
+// const equippedSkills = [SKILL_ID.CLEAVE, SKILL_ID.FIREBALL, SKILL_ID.FOCUS].map(
+//   (id) => SKILLS.find((skill) => skill.id === id)
+// );
+
+// const equippedSkills = SKILLS.slice(0, 0 + 11); // 11 strength-based damage dealing skills
+// const equippedSkills = SKILLS.slice(11, 11 + 12); // 12 intelligence-based damage dealing skills
+// const equippedSkills = SKILLS.slice(23, 23 + 16); // 16 self targeted skills
+// const equippedSkills = SKILLS.slice(39, 39 + 4); // 4 only debuff skills
+const equippedSkills = SKILLS.slice(43, 43 + 4); // 4 movement skills
 
 // const equippedSkills = [
 //   SKILL_ID.GORGONS_GAZE,
@@ -100,7 +106,7 @@ export const getDefaultPlayer = (): IPlayer => {
     health: getPlayerMaxHealth(PLAYER),
     // health: 5,
     maxHealth: getPlayerMaxHealth(PLAYER),
-    actionPoints: STARTING_ACTION_POINTS,
+    actionPoints: STARTING_ACTION_POINTS * 10,
     skills: filterUndefinedEquippedSkills(equippedSkills),
   };
 };

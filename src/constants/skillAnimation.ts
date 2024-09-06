@@ -3,18 +3,6 @@ import { SKILL_ID } from './skill';
 import { SPRITE_ID } from './sprite';
 import { TILE_SIZE } from './tile';
 
-export const BASE_SKILL_ANIMATION: ISkillAnimation = {
-  sprite: SPRITE_ID.SKILL_72,
-  position: [0, 0],
-  duration: 0.5,
-  startDelay: 0,
-  effectDelay: 30,
-  spritesheetRows: 9,
-  spritesheetColumns: 10,
-  spriteSize: 160,
-  animationRow: 0,
-};
-
 interface IAnimation {
   sprite: SPRITE_ID;
   spritesheetRows: number;
@@ -58,10 +46,20 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     spritesheetRows: 9,
     spritesheetColumns: 15,
   },
+  [SPRITE_ID.SKILL_45]: {
+    sprite: SPRITE_ID.SKILL_45,
+    spritesheetRows: 9,
+    spritesheetColumns: 17,
+  },
   [SPRITE_ID.SKILL_48]: {
     sprite: SPRITE_ID.SKILL_48,
     spritesheetRows: 9,
     spritesheetColumns: 16,
+  },
+  [SPRITE_ID.SKILL_58]: {
+    sprite: SPRITE_ID.SKILL_58,
+    spritesheetRows: 9,
+    spritesheetColumns: 19,
   },
   [SPRITE_ID.SKILL_64]: {
     sprite: SPRITE_ID.SKILL_64,
@@ -158,6 +156,26 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     spritesheetRows: 9,
     spritesheetColumns: 11,
   },
+  [SPRITE_ID.SKILL_149]: {
+    sprite: SPRITE_ID.SKILL_149,
+    spritesheetRows: 9,
+    spritesheetColumns: 14,
+  },
+};
+
+export const BASE_SKILL_ANIMATION: ISkillAnimation = {
+  ...ANIMATION_PRESET[SPRITE_ID.SKILL_43],
+  position: [0, 0],
+  duration: 0.5,
+  startDelay: 0,
+  effectDelay: 50,
+  spriteSize: 100,
+  animationRow: 5,
+  yOffset: -TILE_SIZE / 3,
+};
+
+export const WEAPON_ATTACK_ANIMATION: ISkillAnimation = {
+  ...BASE_SKILL_ANIMATION,
 };
 
 export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
@@ -202,6 +220,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 200,
     spriteSize: 120,
     animationRow: 7,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.WRATH_OF_THE_ANCIENTS]: {
     ...BASE_SKILL_ANIMATION,
@@ -269,13 +288,13 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
   },
   [SKILL_ID.AIR_SLASH]: {
     ...BASE_SKILL_ANIMATION,
-    ...ANIMATION_PRESET[SPRITE_ID.SKILL_92],
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_58],
     position: [0, 0],
-    duration: 0.7,
+    duration: 1,
     startDelay: 0,
     effectDelay: 100,
     spriteSize: 200,
-    animationRow: 7,
+    animationRow: 5,
     yOffset: -TILE_SIZE / 3,
   },
 
@@ -334,7 +353,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     ...BASE_SKILL_ANIMATION,
     ...ANIMATION_PRESET[SPRITE_ID.SKILL_128],
     position: [0, 0],
-    duration: 1.2,
+    duration: 1,
     startDelay: 0,
     effectDelay: 50,
     spriteSize: 120,
@@ -343,7 +362,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
   },
   [SKILL_ID.BLIZZARD]: {
     ...BASE_SKILL_ANIMATION,
-    ...ANIMATION_PRESET[SPRITE_ID.SKILL_105],
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_149],
     position: [0, 0],
     duration: 0.8,
     startDelay: 0,
@@ -570,5 +589,97 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     spriteSize: 120,
     animationRow: 4,
     yOffset: -TILE_SIZE * 1.1,
+  },
+
+  // Debuff skills
+  [SKILL_ID.GORGONS_GAZE]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_128],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 120,
+    animationRow: 6,
+    yOffset: -TILE_SIZE * 0.5,
+  },
+  [SKILL_ID.WEAKEN]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_58],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 100,
+    animationRow: 1,
+    yOffset: -TILE_SIZE * 0.5,
+  },
+  [SKILL_ID.DISABLE]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_128],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 120,
+    animationRow: 1,
+    yOffset: -TILE_SIZE * 0.5,
+  },
+  [SKILL_ID.ENTANGLE]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_45],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 100,
+    animationRow: 3,
+    yOffset: -TILE_SIZE * 0.5,
+  },
+
+  // Movement skills
+  [SKILL_ID.FLY]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_39],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 100,
+    spriteSize: 100,
+    animationRow: 5,
+    yOffset: -TILE_SIZE / 2,
+  },
+  [SKILL_ID.LEAP_SLAM]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_105],
+    position: [0, 0],
+    duration: 0.8,
+    startDelay: 0,
+    effectDelay: 100,
+    spriteSize: 200,
+    animationRow: 7,
+    yOffset: -TILE_SIZE / 3,
+  },
+  [SKILL_ID.FLAME_DIVE]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_105],
+    position: [0, 0],
+    duration: 0.8,
+    startDelay: 0,
+    effectDelay: 100,
+    spriteSize: 200,
+    animationRow: 0,
+    yOffset: -TILE_SIZE / 3,
+  },
+  [SKILL_ID.FLYING_KICK]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_149],
+    position: [0, 0],
+    duration: 0.8,
+    startDelay: 0,
+    effectDelay: 100,
+    spriteSize: 150,
+    animationRow: 7,
+    yOffset: -TILE_SIZE / 3,
   },
 };
