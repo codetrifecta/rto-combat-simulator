@@ -72,8 +72,33 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     spritesheetRows: 9,
     spritesheetColumns: 11,
   },
+  [SPRITE_ID.SKILL_105]: {
+    sprite: SPRITE_ID.SKILL_105,
+    spritesheetRows: 9,
+    spritesheetColumns: 11,
+  },
+  [SPRITE_ID.SKILL_111]: {
+    sprite: SPRITE_ID.SKILL_111,
+    spritesheetRows: 9,
+    spritesheetColumns: 12,
+  },
+  [SPRITE_ID.SKILL_119]: {
+    sprite: SPRITE_ID.SKILL_119,
+    spritesheetRows: 9,
+    spritesheetColumns: 12,
+  },
   [SPRITE_ID.SKILL_125]: {
     sprite: SPRITE_ID.SKILL_125,
+    spritesheetRows: 9,
+    spritesheetColumns: 12,
+  },
+  [SPRITE_ID.SKILL_128]: {
+    sprite: SPRITE_ID.SKILL_128,
+    spritesheetRows: 9,
+    spritesheetColumns: 12,
+  },
+  [SPRITE_ID.SKILL_132]: {
+    sprite: SPRITE_ID.SKILL_132,
     spritesheetRows: 9,
     spritesheetColumns: 12,
   },
@@ -189,5 +214,15 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 100,
     spriteSize: 200,
     animationRow: 7,
+  },
+  [SKILL_ID.MANA_BURST]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_111],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 150,
+    spriteSize: 250,
+    animationRow: 2,
   },
 };

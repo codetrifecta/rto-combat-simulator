@@ -2177,6 +2177,9 @@ export const Room: FC<{
                         SKILL_ID.WHIRLWIND,
                         SKILL_ID.WRATH_OF_THE_ANCIENTS,
                         SKILL_ID.KNIFE_BARRAGE,
+                        SKILL_ID.MANA_BURST,
+                        SKILL_ID.SUPERNOVA,
+                        SKILL_ID.STORM_PULSE,
                       ].includes(player.state.skillId)
                     ) {
                       skillAnimation.position = [playerRow, playerCol];
