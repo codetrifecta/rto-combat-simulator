@@ -455,6 +455,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 120,
     animationRow: 5,
+    yOffset: -TILE_SIZE * 0.1,
   },
   [SKILL_ID.IRONFLESH]: {
     ...BASE_SKILL_ANIMATION,
@@ -475,6 +476,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 1,
     spriteSize: 250,
     animationRow: 7,
+    yOffset: -TILE_SIZE * 0.05,
   },
   [SKILL_ID.BLOODLUST]: {
     ...BASE_SKILL_ANIMATION,
@@ -485,6 +487,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 120,
     animationRow: 8,
+    yOffset: -TILE_SIZE * 0.1,
   },
   [SKILL_ID.BERSERK]: {
     ...BASE_SKILL_ANIMATION,
@@ -515,6 +518,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 1,
     spriteSize: 120,
     animationRow: 0,
+    yOffset: -TILE_SIZE * 0.1,
   },
   [SKILL_ID.ARCANE_INTELLECT]: {
     ...BASE_SKILL_ANIMATION,
@@ -535,6 +539,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 120,
     animationRow: 3,
+    yOffset: -TILE_SIZE * 0.1,
   },
   [SKILL_ID.INSTINCTUAL_DODGE]: {
     ...BASE_SKILL_ANIMATION,
@@ -545,6 +550,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 120,
     animationRow: 5,
+    yOffset: -TILE_SIZE * 0.1,
   },
   [SKILL_ID.HIDE]: {
     ...BASE_SKILL_ANIMATION,
