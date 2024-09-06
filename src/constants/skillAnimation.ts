@@ -190,6 +190,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 100,
     spriteSize: 100,
     animationRow: 1,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.KNIFE_BARRAGE]: {
     ...BASE_SKILL_ANIMATION,
@@ -210,6 +211,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 100,
     spriteSize: 100,
     animationRow: 3,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.DISABLING_BLOW]: {
     ...BASE_SKILL_ANIMATION,
@@ -220,6 +222,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 150,
     animationRow: 7,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.PUNCTURE_STRIKE]: {
     ...BASE_SKILL_ANIMATION,
@@ -230,6 +233,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 100,
     spriteSize: 100,
     animationRow: 7,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.AIR_SLASH]: {
     ...BASE_SKILL_ANIMATION,
@@ -240,6 +244,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 100,
     spriteSize: 200,
     animationRow: 7,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.MANA_BURST]: {
     ...BASE_SKILL_ANIMATION,
@@ -300,7 +305,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 120,
     animationRow: 2,
-    yOffset: -TILE_SIZE / 2,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.BLIZZARD]: {
     ...BASE_SKILL_ANIMATION,
@@ -321,7 +326,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 80,
     animationRow: 4,
-    yOffset: -TILE_SIZE / 2,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.SPARK]: {
     ...BASE_SKILL_ANIMATION,
@@ -332,7 +337,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 80,
     animationRow: 4,
-    yOffset: -TILE_SIZE / 2,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.LIGHTNING]: {
     ...BASE_SKILL_ANIMATION,
@@ -343,7 +348,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 100,
     animationRow: 4,
-    yOffset: -TILE_SIZE / 2,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.STORM_PULSE]: {
     ...BASE_SKILL_ANIMATION,
@@ -364,6 +369,6 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 120,
     animationRow: 8,
-    yOffset: -TILE_SIZE / 2,
+    yOffset: -TILE_SIZE / 3,
   },
 };
