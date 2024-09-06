@@ -58,18 +58,23 @@ import skill_17 from '../assets/sprites/skills/sprite_skill_17.png';
 import skill_31 from '../assets/sprites/skills/sprite_skill_31.png';
 import skill_43 from '../assets/sprites/skills/sprite_skill_43.png';
 import skill_48 from '../assets/sprites/skills/sprite_skill_48.png';
+import skill_65 from '../assets/sprites/skills/sprite_skill_65.png';
 import skill_72 from '../assets/sprites/skills/sprite_skill_72.png';
 import skill_74 from '../assets/sprites/skills/sprite_skill_74.png';
 import skill_86 from '../assets/sprites/skills/sprite_skill_86.png';
 import skill_90 from '../assets/sprites/skills/sprite_skill_90.png';
 import skill_91 from '../assets/sprites/skills/sprite_skill_91.png';
 import skill_92 from '../assets/sprites/skills/sprite_skill_92.png';
+import skill_100 from '../assets/sprites/skills/sprite_skill_100.png';
 import skill_105 from '../assets/sprites/skills/sprite_skill_105.png';
 import skill_111 from '../assets/sprites/skills/sprite_skill_111.png';
 import skill_119 from '../assets/sprites/skills/sprite_skill_119.png';
 import skill_125 from '../assets/sprites/skills/sprite_skill_125.png';
 import skill_128 from '../assets/sprites/skills/sprite_skill_128.png';
 import skill_132 from '../assets/sprites/skills/sprite_skill_132.png';
+import skill_133 from '../assets/sprites/skills/sprite_skill_133.png';
+import skill_135 from '../assets/sprites/skills/sprite_skill_135.png';
+import skill_137 from '../assets/sprites/skills/sprite_skill_137.png';
 
 export const spriteSize = 64;
 export const FLOOR_SIZE = 32;
@@ -134,18 +139,23 @@ export enum SPRITE_ID {
   SKILL_31 = 'SKILL_31',
   SKILL_43 = 'SKILL_43',
   SKILL_48 = 'SKILL_48',
+  SKILL_65 = 'SKILL_65',
   SKILL_72 = 'SKILL_72',
   SKILL_74 = 'SKILL_74',
   SKILL_86 = 'SKILL_86',
   SKILL_90 = 'SKILL_90',
   SKILL_91 = 'SKILL_91',
   SKILL_92 = 'SKILL_92',
+  SKILL_100 = 'SKILL_100',
   SKILL_105 = 'SKILL_105',
   SKILL_111 = 'SKILL_111',
   SKILL_119 = 'SKILL_119',
   SKILL_125 = 'SKILL_125',
   SKILL_128 = 'SKILL_128',
   SKILL_132 = 'SKILL_132',
+  SKILL_133 = 'SKILL_133',
+  SKILL_135 = 'SKILL_135',
+  SKILL_137 = 'SKILL_137',
 }
 
 export const SPRITES: Record<SPRITE_ID, string> = {
@@ -209,18 +219,23 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.SKILL_31]: skill_31,
   [SPRITE_ID.SKILL_43]: skill_43,
   [SPRITE_ID.SKILL_48]: skill_48,
+  [SPRITE_ID.SKILL_65]: skill_65,
   [SPRITE_ID.SKILL_72]: skill_72,
   [SPRITE_ID.SKILL_74]: skill_74,
   [SPRITE_ID.SKILL_86]: skill_86,
   [SPRITE_ID.SKILL_90]: skill_90,
   [SPRITE_ID.SKILL_91]: skill_91,
   [SPRITE_ID.SKILL_92]: skill_92,
+  [SPRITE_ID.SKILL_100]: skill_100,
   [SPRITE_ID.SKILL_105]: skill_105,
   [SPRITE_ID.SKILL_111]: skill_111,
   [SPRITE_ID.SKILL_119]: skill_119,
   [SPRITE_ID.SKILL_125]: skill_125,
   [SPRITE_ID.SKILL_128]: skill_128,
   [SPRITE_ID.SKILL_132]: skill_132,
+  [SPRITE_ID.SKILL_133]: skill_133,
+  [SPRITE_ID.SKILL_135]: skill_135,
+  [SPRITE_ID.SKILL_137]: skill_137,
 };
 
 export const getSpriteSrc = (spriteID: SPRITE_ID) => SPRITES[spriteID] || '';

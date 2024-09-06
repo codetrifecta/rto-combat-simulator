@@ -1643,7 +1643,6 @@ export const Room: FC<{
                   case SKILL_ID.MANA_BURST:
                   case SKILL_ID.SUPERNOVA:
                   case SKILL_ID.BLIZZARD:
-                  case SKILL_ID.STORM_PULSE:
                   case SKILL_ID.CLEAVE:
                   case SKILL_ID.AIR_SLASH:
                     if (

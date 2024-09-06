@@ -80,12 +80,12 @@ export const PLAYER: IPlayer = {
 };
 
 const equippedSkills = [
-  SKILL_ID.MANA_BURST,
-  SKILL_ID.FLAME_TOUCH,
-  SKILL_ID.FIREBALL,
-  SKILL_ID.SUPERNOVA,
-  SKILL_ID.FROST_TOUCH,
-  SKILL_ID.FREEZE,
+  SKILL_ID.BLIZZARD,
+  SKILL_ID.SHOCK_TOUCH,
+  SKILL_ID.SPARK,
+  SKILL_ID.LIGHTNING,
+  SKILL_ID.STORM_PULSE,
+  SKILL_ID.ABSORB,
 ].map((id) => SKILLS.find((skill) => skill.id === id));
 
 const filterUndefinedEquippedSkills = (
