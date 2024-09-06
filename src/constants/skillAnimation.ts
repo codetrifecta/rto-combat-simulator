@@ -1,6 +1,7 @@
 import { ISkillAnimation } from '../types';
 import { SKILL_ID } from './skill';
 import { SPRITE_ID } from './sprite';
+import { TILE_SIZE } from './tile';
 
 export const BASE_SKILL_ANIMATION: ISkillAnimation = {
   sprite: SPRITE_ID.SKILL_72,
@@ -224,5 +225,56 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 150,
     spriteSize: 250,
     animationRow: 2,
+  },
+  [SKILL_ID.FLAME_TOUCH]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_119],
+    position: [0, 0],
+    duration: 0.8,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 80,
+    animationRow: 0,
+  },
+  [SKILL_ID.FIREBALL]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_105],
+    position: [0, 0],
+    duration: 0.8,
+    startDelay: 0,
+    effectDelay: 100,
+    spriteSize: 200,
+    animationRow: 0,
+  },
+  [SKILL_ID.SUPERNOVA]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_132],
+    position: [0, 0],
+    duration: 0.7,
+    startDelay: 0,
+    effectDelay: 150,
+    spriteSize: 320,
+    animationRow: 0,
+  },
+  [SKILL_ID.FROST_TOUCH]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_119],
+    position: [0, 0],
+    duration: 0.8,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 80,
+    animationRow: 2,
+  },
+  [SKILL_ID.FREEZE]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_128],
+    position: [0, 0],
+    duration: 1.2,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 120,
+    animationRow: 2,
+    yOffset: -TILE_SIZE / 2,
   },
 };

@@ -38,7 +38,7 @@ export const SkillAnimation: FC = () => {
           style={{
             width: currentSkillAnimation.spriteSize,
             height: currentSkillAnimation.spriteSize,
-            transform: `translate(${-currentSkillAnimation.spriteSize / 2 + TILE_SIZE / 2}px, ${-currentSkillAnimation.spriteSize / 2 + TILE_SIZE / 2}px)`,
+            transform: `translate(${-currentSkillAnimation.spriteSize / 2 + TILE_SIZE / 2}px, ${-currentSkillAnimation.spriteSize / 2 + TILE_SIZE / 2 + (currentSkillAnimation.yOffset !== undefined ? currentSkillAnimation.yOffset : 0)}px)`,
           }}
         >
           <div
