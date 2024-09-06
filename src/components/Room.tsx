@@ -2172,7 +2172,12 @@ export const Room: FC<{
                     skillAnimation.position = [rowIndex, columnIndex];
 
                     // Override position for skills that start from the player's position
-                    if ([SKILL_ID.WHIRLWIND].includes(player.state.skillId)) {
+                    if (
+                      [
+                        SKILL_ID.WHIRLWIND,
+                        SKILL_ID.WRATH_OF_THE_ANCIENTS,
+                      ].includes(player.state.skillId)
+                    ) {
                       skillAnimation.position = [playerRow, playerCol];
                     }
 
