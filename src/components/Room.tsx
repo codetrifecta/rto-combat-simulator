@@ -1638,7 +1638,7 @@ export const Room: FC<{
                       }
                     }
                     break;
-                  case SKILL_ID.THROWING_KNIVES:
+                  case SKILL_ID.KNIFE_BARRAGE:
                   case SKILL_ID.WHIRLWIND:
                   case SKILL_ID.MANA_BURST:
                   case SKILL_ID.SUPERNOVA:
@@ -1671,7 +1671,7 @@ export const Room: FC<{
                 switch (skill.id) {
                   case SKILL_ID.WHIRLWIND:
                   case SKILL_ID.WARCRY:
-                  case SKILL_ID.THROWING_KNIVES:
+                  case SKILL_ID.KNIFE_BARRAGE:
                   case SKILL_ID.WRATH_OF_THE_ANCIENTS:
                   case SKILL_ID.MANA_BURST:
                   case SKILL_ID.SUPERNOVA:
@@ -2176,6 +2176,7 @@ export const Room: FC<{
                       [
                         SKILL_ID.WHIRLWIND,
                         SKILL_ID.WRATH_OF_THE_ANCIENTS,
+                        SKILL_ID.KNIFE_BARRAGE,
                       ].includes(player.state.skillId)
                     ) {
                       skillAnimation.position = [playerRow, playerCol];

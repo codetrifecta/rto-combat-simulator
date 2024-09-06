@@ -80,12 +80,12 @@ export const PLAYER: IPlayer = {
 };
 
 const equippedSkills = [
-  SKILL_ID.CLEAVE,
-  SKILL_ID.WHIRLWIND,
-  SKILL_ID.EXECUTE,
-  SKILL_ID.ANNIHILATE,
-  SKILL_ID.WRATH_OF_THE_ANCIENTS,
   SKILL_ID.SHADOW_STRIKE,
+  SKILL_ID.KNIFE_BARRAGE,
+  SKILL_ID.POISON_STRIKE,
+  SKILL_ID.DISABLING_BLOW,
+  SKILL_ID.PUNCTURE_STRIKE,
+  SKILL_ID.AIR_SLASH,
 ].map((id) => SKILLS.find((skill) => skill.id === id));
 
 const filterUndefinedEquippedSkills = (
@@ -98,7 +98,7 @@ export const getDefaultPlayer = (): IPlayer => {
     health: getPlayerMaxHealth(PLAYER),
     // health: 5,
     maxHealth: getPlayerMaxHealth(PLAYER),
-    actionPoints: MAX_ACTION_POINTS,
+    actionPoints: STARTING_ACTION_POINTS,
     skills: filterUndefinedEquippedSkills(equippedSkills),
   };
 };
@@ -157,7 +157,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     ...BASE_ENTITY,
     id: 0,
     name: 'Abyssal Cyclopean Wraith',
-    sprite: SPRITE_ID.ENEMY_ABYSSAL_CYCLOPEAN_WRAITH,
+    sprite: SPRITE_ID.ABYSSAL_CYCLOPEAN_WRAITH,
     spriteSize: 90,
     spritesheetRows: 7,
     spritesheetColumns: 6,
