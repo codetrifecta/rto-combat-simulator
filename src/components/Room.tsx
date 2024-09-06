@@ -2169,52 +2169,73 @@ export const Room: FC<{
                       SKILL_ANIMATION_PRESET[player.state.skillId] ??
                       BASE_SKILL_ANIMATION;
 
-                    setCurrentSkillAnimation({
-                      ...skillAnimation,
-                      position: [rowIndex, columnIndex],
-                    });
+                    skillAnimation.position = [rowIndex, columnIndex];
 
-                    const { newPlayer, newEnemies, newRoomEntityPositions } =
-                      handleSkill(
-                        skill,
-                        [rowIndex, columnIndex],
-                        player,
-                        enemies,
-                        summons,
-                        targetZones.current,
-                        roomEntityPositions,
-                        addLog
-                      );
-
-                    // Change player's sprite direction if enemy is to the left side of the player
-                    if (columnIndex < playerPosition[1]) {
-                      setEntityAnimationIdle(
-                        player,
-                        ENTITY_SPRITE_DIRECTION.LEFT
-                      );
-                    } else if (columnIndex > playerPosition[1]) {
-                      setEntityAnimationIdle(
-                        player,
-                        ENTITY_SPRITE_DIRECTION.RIGHT
-                      );
+                    // Override position for skills that start from the player's position
+                    if ([SKILL_ID.WHIRLWIND].includes(player.state.skillId)) {
+                      skillAnimation.position = [playerRow, playerCol];
                     }
 
-                    const isEnemyDead = newEnemies.some((enemy) => {
-                      return enemy.health <= 0;
-                    });
+                    setCurrentSkillAnimation(skillAnimation);
 
-                    setEnemies([...newEnemies]);
-                    setPlayerState({
-                      ...newPlayer.state,
-                      isUsingSkill: false,
-                    });
-                    setRoomEntityPositions(newRoomEntityPositions);
-
-                    if (isEnemyDead) {
-                      setTimeout(() => {
-                        setEnemies(
-                          newEnemies.filter((enemy) => enemy.health > 0)
+                    setTimeout(() => {
+                      const { newPlayer, newEnemies, newRoomEntityPositions } =
+                        handleSkill(
+                          skill,
+                          [rowIndex, columnIndex],
+                          player,
+                          enemies,
+                          summons,
+                          targetZones.current,
+                          roomEntityPositions,
+                          addLog
                         );
+
+                      // Change player's sprite direction if enemy is to the left side of the player
+                      if (columnIndex < playerPosition[1]) {
+                        setEntityAnimationIdle(
+                          player,
+                          ENTITY_SPRITE_DIRECTION.LEFT
+                        );
+                      } else if (columnIndex > playerPosition[1]) {
+                        setEntityAnimationIdle(
+                          player,
+                          ENTITY_SPRITE_DIRECTION.RIGHT
+                        );
+                      }
+
+                      const isEnemyDead = newEnemies.some((enemy) => {
+                        return enemy.health <= 0;
+                      });
+
+                      setEnemies([...newEnemies]);
+                      setPlayerState({
+                        ...newPlayer.state,
+                        isUsingSkill: false,
+                      });
+                      setRoomEntityPositions(newRoomEntityPositions);
+
+                      if (isEnemyDead) {
+                        setTimeout(() => {
+                          setEnemies(
+                            newEnemies.filter((enemy) => enemy.health > 0)
+                          );
+                          setPlayer({
+                            ...newPlayer,
+                            state: {
+                              ...newPlayer.state,
+                              isUsingSkill: false,
+                              skillId: null,
+                            },
+                            actionPoints: newPlayer.actionPoints - skill.cost,
+                            skills: newPlayer.skills.map((s) =>
+                              s.id === skill.id
+                                ? { ...s, cooldownCounter: s.cooldown }
+                                : s
+                            ),
+                          });
+                        }, 1000);
+                      } else {
                         setPlayer({
                           ...newPlayer,
                           state: {
@@ -2229,23 +2250,8 @@ export const Room: FC<{
                               : s
                           ),
                         });
-                      }, 1000);
-                    } else {
-                      setPlayer({
-                        ...newPlayer,
-                        state: {
-                          ...newPlayer.state,
-                          isUsingSkill: false,
-                          skillId: null,
-                        },
-                        actionPoints: newPlayer.actionPoints - skill.cost,
-                        skills: newPlayer.skills.map((s) =>
-                          s.id === skill.id
-                            ? { ...s, cooldownCounter: s.cooldown }
-                            : s
-                        ),
-                      });
-                    }
+                      }
+                    }, skillAnimation.effectDelay);
                   }
                 }
               }}

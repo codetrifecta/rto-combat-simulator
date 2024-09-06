@@ -183,7 +183,21 @@ export const SKILLS: ISkill[] = [
     range: 1,
     cooldown: 4,
     cooldownCounter: 0,
-    cost: 5,
+    cost: 4,
+  },
+  {
+    id: SKILL_ID.WRATH_OF_THE_ANCIENTS,
+    name: 'Wrath of the Ancients',
+    icon: ICON_ID.SKILL_WRATH_OF_THE_ANCIENTS,
+    skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
+    description:
+      'Channel the wrath of the ancients, dealing damage to all enemies in an area around you. Has a 50% chance to apply weakened to enemies hit for 3 turns.',
+    damageMultiplier: 3,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 6,
   },
   {
     id: SKILL_ID.SHADOW_STRIKE,
@@ -267,20 +281,6 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
-  },
-  {
-    id: SKILL_ID.WRATH_OF_THE_ANCIENTS,
-    name: 'Wrath of the Ancients',
-    icon: ICON_ID.SKILL_WRATH_OF_THE_ANCIENTS,
-    skillType: SKILL_TYPE.AOE,
-    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
-    description:
-      'Channel the wrath of the ancients, dealing damage to all enemies in an area around you. Has a 50% chance to apply weakened to enemies hit for 3 turns.',
-    damageMultiplier: 3,
-    range: 3,
-    cooldown: 3,
-    cooldownCounter: 0,
-    cost: 6,
   },
 
   // Defense-based skills

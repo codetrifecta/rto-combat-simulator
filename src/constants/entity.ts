@@ -84,8 +84,8 @@ const equippedSkills = [
   SKILL_ID.WHIRLWIND,
   SKILL_ID.EXECUTE,
   SKILL_ID.ANNIHILATE,
+  SKILL_ID.WRATH_OF_THE_ANCIENTS,
   SKILL_ID.SHADOW_STRIKE,
-  SKILL_ID.THROWING_KNIVES,
 ].map((id) => SKILLS.find((skill) => skill.id === id));
 
 const filterUndefinedEquippedSkills = (
