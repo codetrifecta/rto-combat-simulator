@@ -594,7 +594,20 @@ export const SKILLS: ISkill[] = [
     cooldownCounter: 0,
     cost: 2,
   },
-
+  {
+    id: SKILL_ID.ARCANE_INTELLECT,
+    name: 'Arcane Intellect',
+    icon: ICON_ID.SKILL_ARCANE_INTELLECT,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Increases intelligence and AP cost regeneration, enhancing spellcasting abilities.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 2,
+  },
   {
     id: SKILL_ID.SWIFT_MOVEMENT,
     name: 'Swift Movement',
@@ -675,20 +688,6 @@ export const SKILLS: ISkill[] = [
     damageMultiplier: 0,
     range: 0,
     cooldown: 5,
-    cooldownCounter: 0,
-    cost: 2,
-  },
-  {
-    id: SKILL_ID.ARCANE_INTELLECT,
-    name: 'Arcane Intellect',
-    icon: ICON_ID.SKILL_ARCANE_INTELLECT,
-    skillType: SKILL_TYPE.SELF,
-    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
-    description:
-      'Increases intelligence and AP cost regeneration, enhancing spellcasting abilities.',
-    damageMultiplier: 0,
-    range: 0,
-    cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
   },
