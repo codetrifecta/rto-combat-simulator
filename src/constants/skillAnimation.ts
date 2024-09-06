@@ -20,58 +20,59 @@ interface IAnimation {
   spritesheetColumns: number;
 }
 
-export const BASE_ANIMATION: IAnimation = {
-  sprite: SPRITE_ID.SKILL_72,
-  spritesheetRows: 9,
-  spritesheetColumns: 10,
-};
-
 // @ts-expect-error - SPRITE_ID used for the key is only sprite IDs for skill animations
 export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
   [SPRITE_ID.SKILL_17]: {
-    ...BASE_ANIMATION,
     sprite: SPRITE_ID.SKILL_17,
     spritesheetRows: 9,
     spritesheetColumns: 14,
   },
+  [SPRITE_ID.SKILL_31]: {
+    sprite: SPRITE_ID.SKILL_31,
+    spritesheetRows: 9,
+    spritesheetColumns: 13,
+  },
   [SPRITE_ID.SKILL_43]: {
-    ...BASE_ANIMATION,
     sprite: SPRITE_ID.SKILL_43,
     spritesheetRows: 9,
     spritesheetColumns: 15,
   },
   [SPRITE_ID.SKILL_48]: {
-    ...BASE_ANIMATION,
     sprite: SPRITE_ID.SKILL_48,
     spritesheetRows: 9,
     spritesheetColumns: 16,
   },
   [SPRITE_ID.SKILL_72]: {
-    ...BASE_ANIMATION,
     sprite: SPRITE_ID.SKILL_72,
     spritesheetRows: 9,
     spritesheetColumns: 10,
   },
   [SPRITE_ID.SKILL_74]: {
-    ...BASE_ANIMATION,
     sprite: SPRITE_ID.SKILL_74,
     spritesheetRows: 9,
     spritesheetColumns: 9,
   },
+  [SPRITE_ID.SKILL_86]: {
+    sprite: SPRITE_ID.SKILL_86,
+    spritesheetRows: 9,
+    spritesheetColumns: 12,
+  },
   [SPRITE_ID.SKILL_90]: {
-    ...BASE_ANIMATION,
     sprite: SPRITE_ID.SKILL_90,
     spritesheetRows: 9,
     spritesheetColumns: 10,
   },
   [SPRITE_ID.SKILL_91]: {
-    ...BASE_ANIMATION,
     sprite: SPRITE_ID.SKILL_91,
     spritesheetRows: 9,
     spritesheetColumns: 12,
   },
+  [SPRITE_ID.SKILL_92]: {
+    sprite: SPRITE_ID.SKILL_92,
+    spritesheetRows: 9,
+    spritesheetColumns: 11,
+  },
   [SPRITE_ID.SKILL_125]: {
-    ...BASE_ANIMATION,
     sprite: SPRITE_ID.SKILL_125,
     spritesheetRows: 9,
     spritesheetColumns: 12,
@@ -167,6 +168,26 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     startDelay: 0,
     effectDelay: 50,
     spriteSize: 150,
+    animationRow: 7,
+  },
+  [SKILL_ID.PUNCTURE_STRIKE]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_31],
+    position: [0, 0],
+    duration: 0.5,
+    startDelay: 0,
+    effectDelay: 100,
+    spriteSize: 100,
+    animationRow: 7,
+  },
+  [SKILL_ID.AIR_SLASH]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_92],
+    position: [0, 0],
+    duration: 0.7,
+    startDelay: 0,
+    effectDelay: 100,
+    spriteSize: 170,
     animationRow: 7,
   },
 };
