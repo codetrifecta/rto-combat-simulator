@@ -2179,6 +2179,7 @@ export const Room: FC<{
                         SKILL_ID.MANA_BURST,
                         SKILL_ID.SUPERNOVA,
                         SKILL_ID.STORM_PULSE,
+                        SKILL_ID.WARCRY,
                       ].includes(player.state.skillId)
                     ) {
                       skillAnimation.position = [playerRow, playerCol];

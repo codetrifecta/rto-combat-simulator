@@ -61,7 +61,7 @@ export const SkillAnimation: FC = () => {
             }}
           >
             <Sprite
-              id="SkillAnimation_animation"
+              id="skill_animation_sprite"
               sprite={currentSkillAnimation.sprite}
               width={
                 currentSkillAnimation.spriteSize *

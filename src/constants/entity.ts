@@ -80,12 +80,12 @@ export const PLAYER: IPlayer = {
 };
 
 const equippedSkills = [
-  SKILL_ID.FLEX,
-  SKILL_ID.ENLIGHTEN,
-  SKILL_ID.FOCUS,
-  SKILL_ID.IRONFLESH,
   SKILL_ID.WARCRY,
   SKILL_ID.BLOODLUST,
+  SKILL_ID.BERSERK,
+  SKILL_ID.SWIFT_MOVEMENT,
+  SKILL_ID.INSTINCTUAL_DODGE,
+  SKILL_ID.HIDE,
 ].map((id) => SKILLS.find((skill) => skill.id === id));
 
 const filterUndefinedEquippedSkills = (

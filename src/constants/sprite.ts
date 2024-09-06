@@ -58,6 +58,7 @@ import skill_17 from '../assets/sprites/skills/sprite_skill_17.png';
 import skill_21 from '../assets/sprites/skills/sprite_skill_21.png';
 import skill_22 from '../assets/sprites/skills/sprite_skill_22.png';
 import skill_31 from '../assets/sprites/skills/sprite_skill_31.png';
+import skill_34 from '../assets/sprites/skills/sprite_skill_34.png';
 import skill_43 from '../assets/sprites/skills/sprite_skill_43.png';
 import skill_48 from '../assets/sprites/skills/sprite_skill_48.png';
 import skill_64 from '../assets/sprites/skills/sprite_skill_64.png';
@@ -143,6 +144,7 @@ export enum SPRITE_ID {
   SKILL_21 = 'SKILL_21',
   SKILL_22 = 'SKILL_22',
   SKILL_31 = 'SKILL_31',
+  SKILL_34 = 'SKILL_34',
   SKILL_43 = 'SKILL_43',
   SKILL_48 = 'SKILL_48',
   SKILL_64 = 'SKILL_64',
@@ -227,6 +229,7 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.SKILL_21]: skill_21,
   [SPRITE_ID.SKILL_22]: skill_22,
   [SPRITE_ID.SKILL_31]: skill_31,
+  [SPRITE_ID.SKILL_34]: skill_34,
   [SPRITE_ID.SKILL_43]: skill_43,
   [SPRITE_ID.SKILL_48]: skill_48,
   [SPRITE_ID.SKILL_64]: skill_64,
