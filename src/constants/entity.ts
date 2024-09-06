@@ -79,14 +79,16 @@ export const PLAYER: IPlayer = {
   healthPotions: 2,
 };
 
-const equippedSkills = [
-  SKILL_ID.FRENZY,
-  SKILL_ID.DEFLECT,
-  SKILL_ID.ARCANE_INTELLECT,
-  SKILL_ID.FIREBRAND,
-  SKILL_ID.ICEBRAND,
-  SKILL_ID.STORMBRAND,
-].map((id) => SKILLS.find((skill) => skill.id === id));
+const equippedSkills = [SKILL_ID.CLEAVE, SKILL_ID.FIREBALL, SKILL_ID.FOCUS].map(
+  (id) => SKILLS.find((skill) => skill.id === id)
+);
+
+// const equippedSkills = [
+//   SKILL_ID.GORGONS_GAZE,
+//   SKILL_ID.WEAKEN,
+//   SKILL_ID.DISABLE,
+//   SKILL_ID.ENTANGLE,
+// ].map((id) => SKILLS.find((skill) => skill.id === id));
 
 const filterUndefinedEquippedSkills = (
   equippedSkills: (ISkill | undefined)[]

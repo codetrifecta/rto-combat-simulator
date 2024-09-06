@@ -171,6 +171,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 50,
     spriteSize: 200,
     animationRow: 7,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.WHIRLWIND]: {
     ...BASE_SKILL_ANIMATION,
@@ -434,7 +435,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     startDelay: 0,
     effectDelay: 50,
     spriteSize: 120,
-    animationRow: 1,
+    animationRow: 5,
   },
   [SKILL_ID.IRONFLESH]: {
     ...BASE_SKILL_ANIMATION,
