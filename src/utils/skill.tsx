@@ -265,7 +265,7 @@ const handleSkillDamage = (
         ) {
           totalDamage *= 2;
         }
-      } else if ([SKILL_ID.THROWING_KNIVES].includes(skill.id)) {
+      } else if ([SKILL_ID.KNIFE_BARRAGE].includes(skill.id)) {
         // Throwing Knives: 15% chance to deal double damage
         if (Math.random() < 0.15) {
           totalDamage *= 2;
@@ -661,7 +661,7 @@ const handleSkillStatus = (
       statusID = STATUS_ID.HIDDEN;
       break;
     case SKILL_ID.SHADOW_STRIKE:
-    case SKILL_ID.THROWING_KNIVES:
+    case SKILL_ID.KNIFE_BARRAGE:
       statusID = STATUS_ID.BLEEDING;
       // DoT will scale with player's strength
       statusEffectModifier[0] = true;

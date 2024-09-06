@@ -60,6 +60,7 @@ import skill_48 from '../assets/sprites/skills/sprite_skill_48.png';
 import skill_72 from '../assets/sprites/skills/sprite_skill_72.png';
 import skill_74 from '../assets/sprites/skills/sprite_skill_74.png';
 import skill_90 from '../assets/sprites/skills/sprite_skill_90.png';
+import skill_91 from '../assets/sprites/skills/sprite_skill_91.png';
 import skill_125 from '../assets/sprites/skills/sprite_skill_125.png';
 
 export const spriteSize = 64;
@@ -127,6 +128,7 @@ export enum SPRITE_ID {
   SKILL_72 = 'SKILL_72',
   SKILL_74 = 'SKILL_74',
   SKILL_90 = 'SKILL_90',
+  SKILL_91 = 'SKILL_91',
   SKILL_125 = 'SKILL_125',
 }
 
@@ -193,6 +195,7 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.SKILL_72]: skill_72,
   [SPRITE_ID.SKILL_74]: skill_74,
   [SPRITE_ID.SKILL_90]: skill_90,
+  [SPRITE_ID.SKILL_91]: skill_91,
   [SPRITE_ID.SKILL_125]: skill_125,
 };
 
