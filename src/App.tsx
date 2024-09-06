@@ -20,7 +20,7 @@ import { Compendium } from './components/Compendium';
 import { EntityTurnText } from './components/EntityTurnText';
 import { RoomFloorArt } from './components/RoomFloorArt';
 import { RoomWallArt } from './components/RoomWallArt';
-import { EffectAnimations } from './components/EffectAnimations';
+import { SkillAnimation } from './components/SkillAnimation';
 
 // Flag for first room render
 
@@ -424,7 +424,7 @@ function App() {
                     width={roomLength * TILE_SIZE}
                     height={roomLength * TILE_SIZE}
                   />
-                  <EffectAnimations />
+                  <SkillAnimation />
                 </div>
                 <div className="absolute z-10">
                   <Room

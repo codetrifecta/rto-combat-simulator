@@ -48,8 +48,11 @@ import {
 import { getVisionFromEntityPosition } from '../utils/vision';
 import debounce from 'debounce';
 import { useSummonStore } from '../store/summon';
-import { useEffectStore } from '../store/effect';
-import { SPRITE_ID } from '../constants/sprite';
+import { useSkillAnimationStore } from '../store/skillAnimation';
+import {
+  BASE_SKILL_ANIMATION,
+  SKILL_ANIMATION_PRESET,
+} from '../constants/skillAnimation';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -82,7 +85,7 @@ export const Room: FC<{
     setIsRoomOver,
     setHoveredTile,
   } = useGameStateStore();
-  const { setCurrentEffect } = useEffectStore();
+  const { setCurrentSkillAnimation } = useSkillAnimationStore();
   const {
     playerMovementAPCost,
     setPlayerMovementAPCost,
@@ -2060,17 +2063,6 @@ export const Room: FC<{
                   targetZones.current
                 );
 
-                setCurrentEffect({
-                  sprite: SPRITE_ID.SKILL_90,
-                  position: [rowIndex, columnIndex],
-                  duration: 0.5,
-                  durationDelay: 0,
-                  spritesheetRows: 9,
-                  spritesheetColumns: 11,
-                  spriteSize: 128,
-                  effectRow: 5,
-                });
-
                 // If room is over, player can move to any valid tile (floor, door)
                 if (isRoomOver) {
                   if (tileType === TILE_TYPE.DOOR) {
@@ -2173,6 +2165,15 @@ export const Room: FC<{
                       return;
                     }
 
+                    const skillAnimation =
+                      SKILL_ANIMATION_PRESET[player.state.skillId] ??
+                      BASE_SKILL_ANIMATION;
+
+                    setCurrentSkillAnimation({
+                      ...skillAnimation,
+                      position: [rowIndex, columnIndex],
+                    });
+
                     const { newPlayer, newEnemies, newRoomEntityPositions } =
                       handleSkill(
                         skill,
@@ -2207,18 +2208,19 @@ export const Room: FC<{
                       ...newPlayer.state,
                       isUsingSkill: false,
                     });
+                    setRoomEntityPositions(newRoomEntityPositions);
 
                     if (isEnemyDead) {
                       setTimeout(() => {
                         setEnemies(
                           newEnemies.filter((enemy) => enemy.health > 0)
                         );
-                        setRoomEntityPositions(newRoomEntityPositions);
                         setPlayer({
                           ...newPlayer,
                           state: {
                             ...newPlayer.state,
                             isUsingSkill: false,
+                            skillId: null,
                           },
                           actionPoints: newPlayer.actionPoints - skill.cost,
                           skills: newPlayer.skills.map((s) =>
@@ -2229,12 +2231,12 @@ export const Room: FC<{
                         });
                       }, 1000);
                     } else {
-                      setRoomEntityPositions(newRoomEntityPositions);
                       setPlayer({
                         ...newPlayer,
                         state: {
                           ...newPlayer.state,
                           isUsingSkill: false,
+                          skillId: null,
                         },
                         actionPoints: newPlayer.actionPoints - skill.cost,
                         skills: newPlayer.skills.map((s) =>
