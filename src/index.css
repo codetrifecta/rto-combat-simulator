@@ -139,3 +139,18 @@ button {
 .entity-idle {
   animation: entityIdle 0.5s steps(6) infinite;
 }
+
+@keyframes leftToRightSpritesheet {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  80% {
+    transform: translate3d(-100%, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+    opacity: 0;
+  }
+}

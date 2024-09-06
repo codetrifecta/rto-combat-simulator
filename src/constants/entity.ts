@@ -1,4 +1,4 @@
-import { IEnemy, IEntity, IPlayer, ISummon } from '../types';
+import { IEnemy, IEntity, IPlayer, ISkill, ISummon } from '../types';
 import { getPlayerMaxHealth } from '../utils/entity';
 import { LEGGINGS } from './armor';
 import { SKILL_ID, SKILLS } from './skill';
@@ -79,6 +79,19 @@ export const PLAYER: IPlayer = {
   healthPotions: 2,
 };
 
+const equippedSkills = [
+  SKILL_ID.CLEAVE,
+  SKILL_ID.WHIRLWIND,
+  SKILL_ID.EXECUTE,
+  SKILL_ID.ANNIHILATE,
+  SKILL_ID.WRATH_OF_THE_ANCIENTS,
+  SKILL_ID.SHADOW_STRIKE,
+].map((id) => SKILLS.find((skill) => skill.id === id));
+
+const filterUndefinedEquippedSkills = (
+  equippedSkills: (ISkill | undefined)[]
+) => equippedSkills.filter((skill) => skill !== undefined) as ISkill[];
+
 export const getDefaultPlayer = (): IPlayer => {
   return {
     ...PLAYER,
@@ -86,9 +99,7 @@ export const getDefaultPlayer = (): IPlayer => {
     // health: 5,
     maxHealth: getPlayerMaxHealth(PLAYER),
     actionPoints: MAX_ACTION_POINTS,
-    skills: SKILLS.filter((skill) =>
-      [SKILL_ID.CLEAVE, SKILL_ID.FLY].includes(skill.id)
-    ),
+    skills: filterUndefinedEquippedSkills(equippedSkills),
   };
 };
 

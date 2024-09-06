@@ -189,13 +189,13 @@ export const STATUSES: IStatus[] = [
     id: STATUS_ID.FOCUSED,
     name: 'Focused',
     icon: ICON_ID.STATUS_FOCUSED,
-    description: 'Increased strength and intelligence by 15%.',
+    description: 'Increased strength and intelligence by 20%.',
     duration: 3,
     durationCounter: 3,
     effect: {
       ...BASE_STATUS_EFFECTS,
-      strengthMultiplier: 1.15,
-      intelligenceMultiplier: 1.15,
+      strengthMultiplier: 1.2,
+      intelligenceMultiplier: 1.2,
     },
   },
   {
@@ -380,7 +380,7 @@ export const STATUSES: IStatus[] = [
     durationCounter: 5,
     effect: {
       ...BASE_STATUS_EFFECTS,
-      burnChance: 0.5,
+      burnChance: 0.6,
       damageMultiplierForBurn: 1.2,
     },
   },
@@ -394,7 +394,7 @@ export const STATUSES: IStatus[] = [
     durationCounter: 5,
     effect: {
       ...BASE_STATUS_EFFECTS,
-      freezeChance: 0.5,
+      freezeChance: 0.3,
       damageMultiplierForFreeze: 1.2,
     },
   },

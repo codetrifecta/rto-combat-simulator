@@ -140,7 +140,7 @@ export const EntitySpritePositions: FC<{
           top: row * TILE_SIZE - TILE_SIZE * 0.8,
           left: col * TILE_SIZE + TILE_SIZE / 2,
           transform: 'translate(-50%, -50%)',
-          zIndex: 1000,
+          zIndex: 100,
         }}
       >
         {renderPlayerStateIndicator(player)}

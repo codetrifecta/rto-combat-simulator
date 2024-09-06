@@ -136,7 +136,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
     description:
-      "Cleave through enemies in front of you. Range is dependent on the player's current weapon.",
+      'Cleave through enemies in front of you. Range is dependent weapon.',
     damageMultiplier: 1.5,
     range: 1,
     cooldown: 3,
@@ -150,7 +150,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.AOE,
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE],
     description:
-      "Spin around dealing damage to all adjacent enemies. Range is dependent on the player's current weapon.",
+      'Spin around dealing damage to all adjacent enemies. Range is dependent weapon.',
     damageMultiplier: 1,
     range: 1,
     cooldown: 3,
@@ -164,7 +164,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.ST,
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE],
     description:
-      "Execute an enemy with low health. Deals 2x damage to enemies with less than 25% health. If the enemy is executed, the player gains 2 AP. Range is dependent on the player's current weapon.",
+      'Execute an enemy with low health. Deals 2x damage to enemies with less than 25% health. If the enemy is executed, the player gains 4 AP. Range is dependent weapon.',
     damageMultiplier: 1,
     range: 1,
     cooldown: 3,
@@ -183,7 +183,21 @@ export const SKILLS: ISkill[] = [
     range: 1,
     cooldown: 4,
     cooldownCounter: 0,
-    cost: 5,
+    cost: 4,
+  },
+  {
+    id: SKILL_ID.WRATH_OF_THE_ANCIENTS,
+    name: 'Wrath of the Ancients',
+    icon: ICON_ID.SKILL_WRATH_OF_THE_ANCIENTS,
+    skillType: SKILL_TYPE.AOE,
+    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
+    description:
+      'Channel the wrath of the ancients, dealing damage to all enemies in an area around you. Has a 50% chance to apply weakened to enemies hit for 3 turns.',
+    damageMultiplier: 3,
+    range: 3,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 6,
   },
   {
     id: SKILL_ID.SHADOW_STRIKE,
@@ -267,20 +281,6 @@ export const SKILLS: ISkill[] = [
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
-  },
-  {
-    id: SKILL_ID.WRATH_OF_THE_ANCIENTS,
-    name: 'Wrath of the Ancients',
-    icon: ICON_ID.SKILL_WRATH_OF_THE_ANCIENTS,
-    skillType: SKILL_TYPE.AOE,
-    tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
-    description:
-      'Channel the wrath of the ancients, dealing damage to all enemies in an area around you. Has a 50% chance to apply weakened to enemies hit for 3 turns.',
-    damageMultiplier: 3,
-    range: 3,
-    cooldown: 3,
-    cooldownCounter: 0,
-    cost: 6,
   },
 
   // Defense-based skills
@@ -545,7 +545,7 @@ export const SKILLS: ISkill[] = [
     skillType: SKILL_TYPE.SELF,
     tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
-      'Gain Focused for 3 turns. Focused increases strength and intelligence by 15%.',
+      'Gain Focused for 3 turns. Focused increases strength and intelligence by 20%.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,

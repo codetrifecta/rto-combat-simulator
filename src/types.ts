@@ -43,7 +43,7 @@ export interface IPlayerState {
   isAttacking: boolean;
   isMoving: boolean;
   isUsingSkill: boolean;
-  skillId?: number;
+  skillId?: number | null;
 }
 
 export interface IEnemy extends IEntity {
@@ -141,4 +141,16 @@ export interface ILegging extends IArmor {}
 export interface ILog {
   message: string | JSX.Element;
   type: 'info' | 'error';
+}
+
+export interface ISkillAnimation {
+  sprite: SPRITE_ID;
+  position: [number, number];
+  duration: number;
+  startDelay: number;
+  effectDelay: number;
+  spriteSize: number;
+  spritesheetRows: number;
+  spritesheetColumns: number;
+  animationRow: number;
 }

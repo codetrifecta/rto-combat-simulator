@@ -150,12 +150,12 @@ export const generateInitialRoomEntityPositions: () => Map<
 
   // Place entities in the room
   // Place player
-  roomEntityPositions.set(`5,5`, [ENTITY_TYPE.PLAYER, 1]);
+  roomEntityPositions.set(`3,6`, [ENTITY_TYPE.PLAYER, 1]);
 
   // Place enemies (that match the number of enemies specified in enemy store)
   roomEntityPositions.set(`11,12`, [ENTITY_TYPE.ENEMY, 1]);
   roomEntityPositions.set(`8,6`, [ENTITY_TYPE.ENEMY, 2]);
-  roomEntityPositions.set(`5,2`, [ENTITY_TYPE.ENEMY, 3]);
+  roomEntityPositions.set(`5,3`, [ENTITY_TYPE.ENEMY, 3]);
   roomEntityPositions.set(`3,7`, [ENTITY_TYPE.ENEMY, 4]);
 
   return roomEntityPositions;
