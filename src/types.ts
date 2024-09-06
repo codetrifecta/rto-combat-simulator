@@ -153,4 +153,6 @@ export interface ISkillAnimation {
   spritesheetRows: number;
   spritesheetColumns: number;
   animationRow: number;
+  xOffset?: number;
+  yOffset?: number;
 }
