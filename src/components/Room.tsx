@@ -2137,7 +2137,7 @@ export const Room: FC<{
                         }
                       }
                     } else {
-                      // Default to true for movement skills
+                      // Default to true for movement skills (that don't damage enemies)
                       isValid = true;
                     }
 

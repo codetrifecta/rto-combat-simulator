@@ -63,6 +63,11 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     spritesheetRows: 9,
     spritesheetColumns: 16,
   },
+  [SPRITE_ID.SKILL_58]: {
+    sprite: SPRITE_ID.SKILL_58,
+    spritesheetRows: 9,
+    spritesheetColumns: 19,
+  },
   [SPRITE_ID.SKILL_64]: {
     sprite: SPRITE_ID.SKILL_64,
     spritesheetRows: 9,
@@ -202,6 +207,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     effectDelay: 200,
     spriteSize: 120,
     animationRow: 7,
+    yOffset: -TILE_SIZE / 3,
   },
   [SKILL_ID.WRATH_OF_THE_ANCIENTS]: {
     ...BASE_SKILL_ANIMATION,
@@ -269,13 +275,13 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
   },
   [SKILL_ID.AIR_SLASH]: {
     ...BASE_SKILL_ANIMATION,
-    ...ANIMATION_PRESET[SPRITE_ID.SKILL_92],
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_58],
     position: [0, 0],
-    duration: 0.7,
+    duration: 1,
     startDelay: 0,
     effectDelay: 100,
     spriteSize: 200,
-    animationRow: 7,
+    animationRow: 5,
     yOffset: -TILE_SIZE / 3,
   },
 
