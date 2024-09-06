@@ -3,7 +3,7 @@ import player_01 from '../assets/sprites/players/sprite_player_01.png';
 
 // ENEMIES
 // From Rogue Adventures Asset Pack
-import enemy_abyssal_cyclopean_wraith from '../assets/sprites/enemies/sprite_enemy_abyssal_cyclopean_wraith.png';
+import abyssal_cyclopean_wraith from '../assets/sprites/enemies/sprite_enemy_abyssal_cyclopean_wraith.png';
 import cerberus_pup from '../assets/sprites/enemies/sprite_enemy_cerberus_pup.png';
 import corrupt_minotaur from '../assets/sprites/enemies/sprite_enemy_corrupt_minotaur.png';
 import corrupt_olympian from '../assets/sprites/enemies/sprite_enemy_corrupt_olympian.png';
@@ -75,7 +75,7 @@ export enum SPRITE_ID {
 
   // ENEMIES
   // From Rogue Adventures Asset Pack
-  ENEMY_ABYSSAL_CYCLOPEAN_WRAITH = 'ENEMY_ABYSSAL_CYCLOPEAN_WRAITH',
+  ABYSSAL_CYCLOPEAN_WRAITH = 'ABYSSAL_CYCLOPEAN_WRAITH',
   CERBERUS_PUP = 'CERBERUS_PUP',
   CORRUPT_MINOTAUR = 'CORRUPT_MINOTAUR',
   CORRUPT_OLYMPIAN = 'CORRUPT_OLYMPIAN',
@@ -144,7 +144,7 @@ export const SPRITES: Record<SPRITE_ID, string> = {
 
   // ENEMIES
   // From Rogue Adventures Asset Pack
-  [SPRITE_ID.ENEMY_ABYSSAL_CYCLOPEAN_WRAITH]: enemy_abyssal_cyclopean_wraith,
+  [SPRITE_ID.ABYSSAL_CYCLOPEAN_WRAITH]: abyssal_cyclopean_wraith,
   [SPRITE_ID.CERBERUS_PUP]: cerberus_pup,
   [SPRITE_ID.CORRUPT_MINOTAUR]: corrupt_minotaur,
   [SPRITE_ID.CORRUPT_OLYMPIAN]: corrupt_olympian,

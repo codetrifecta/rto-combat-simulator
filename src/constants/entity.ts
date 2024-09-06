@@ -98,7 +98,7 @@ export const getDefaultPlayer = (): IPlayer => {
     health: getPlayerMaxHealth(PLAYER),
     // health: 5,
     maxHealth: getPlayerMaxHealth(PLAYER),
-    actionPoints: MAX_ACTION_POINTS,
+    actionPoints: STARTING_ACTION_POINTS,
     skills: filterUndefinedEquippedSkills(equippedSkills),
   };
 };
@@ -157,7 +157,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     ...BASE_ENTITY,
     id: 0,
     name: 'Abyssal Cyclopean Wraith',
-    sprite: SPRITE_ID.ENEMY_ABYSSAL_CYCLOPEAN_WRAITH,
+    sprite: SPRITE_ID.ABYSSAL_CYCLOPEAN_WRAITH,
     spriteSize: 90,
     spritesheetRows: 7,
     spritesheetColumns: 6,
