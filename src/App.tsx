@@ -20,6 +20,7 @@ import { Compendium } from './components/Compendium';
 import { EntityTurnText } from './components/EntityTurnText';
 import { RoomFloorArt } from './components/RoomFloorArt';
 import { RoomWallArt } from './components/RoomWallArt';
+import { SkillAnimation } from './components/SkillAnimation';
 
 // Flag for first room render
 
@@ -130,7 +131,7 @@ function App() {
 
             bufferArtRender();
           }
-        }, 500);
+        }, 200);
       }
     };
 
@@ -330,9 +331,7 @@ function App() {
   return (
     <>
       {firstRoomRender === true ? (
-        <h1 className="fixed w-screen h-screen flex justify-center items-center z-[100] bg-black">
-          Loading...
-        </h1>
+        <h1 className="fixed w-screen h-screen flex justify-center items-center z-[100] bg-black"></h1>
       ) : null}
       <div className="relative max-w-screen h-screen flex flex-col justify-start overflow-hidden">
         <header className="absolute top-0 w-full z-[100]">
@@ -423,6 +422,7 @@ function App() {
                     width={roomLength * TILE_SIZE}
                     height={roomLength * TILE_SIZE}
                   />
+                  <SkillAnimation />
                 </div>
                 <div className="absolute z-10">
                   <Room

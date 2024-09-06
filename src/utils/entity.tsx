@@ -322,7 +322,7 @@ export const damageEntity = (
         console.log('SET ENTITY SPRITE TO DEFEATED');
       }
     }
-  }, 800);
+  }, 700);
 
   // Display damage numbers
   displayDamageNumbers(elementID, damage);

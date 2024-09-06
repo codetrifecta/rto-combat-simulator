@@ -1,5 +1,6 @@
 import {
   ENTITY_TYPE,
+  MAX_ACTION_POINTS,
   SUMMON_PRESET_ID,
   SUMMON_PRESETS,
 } from '../constants/entity';
@@ -264,7 +265,7 @@ const handleSkillDamage = (
         ) {
           totalDamage *= 2;
         }
-      } else if ([SKILL_ID.THROWING_KNIVES].includes(skill.id)) {
+      } else if ([SKILL_ID.KNIFE_BARRAGE].includes(skill.id)) {
         // Throwing Knives: 15% chance to deal double damage
         if (Math.random() < 0.15) {
           totalDamage *= 2;
@@ -316,7 +317,6 @@ const handleSkillDamage = (
             burnedStatus.effect.damageOverTime = Math.ceil(
               0.2 * getPlayerTotalIntelligence(playerAfterDamage)
             );
-            burnedStatus.id += Math.random();
             newEnemy.statuses = [...newEnemy.statuses, burnedStatus];
             displayStatusEffect(
               burnedStatus,
@@ -355,7 +355,6 @@ const handleSkillDamage = (
               'handleSkillDamage: No status found for the associated skill ID'
             );
           } else {
-            frozenStatus.id += Math.random();
             enemy.statuses = [...enemy.statuses, frozenStatus];
             displayStatusEffect(
               frozenStatus,
@@ -382,7 +381,7 @@ const handleSkillDamage = (
         // Stormbranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
         const shockChance = stormbrandedStatus.effect.shockChance;
         if (Math.random() < shockChance) {
-          // Add frozen status to enemy
+          // Add shocked status to enemy
           const shockedStatus = STATUSES.find(
             (status) => status.id === STATUS_ID.SHOCKED
           );
@@ -392,7 +391,6 @@ const handleSkillDamage = (
               'handleSkillDamage: No status found for the associated skill ID'
             );
           } else {
-            shockedStatus.id += Math.random();
             enemy.statuses = [...enemy.statuses, shockedStatus];
             displayStatusEffect(
               shockedStatus,
@@ -402,7 +400,7 @@ const handleSkillDamage = (
           }
         }
 
-        if (enemy.statuses.some((status) => status.id === STATUS_ID.FROZEN)) {
+        if (enemy.statuses.some((status) => status.id === STATUS_ID.SHOCKED)) {
           totalDamage = Math.round(
             totalDamage * stormbrandedStatus.effect.damageMultiplierForShock
           );
@@ -469,9 +467,12 @@ const handleSkillDamage = (
 
       // Log damage
       if (newEnemy.health <= 0) {
-        // For Execute skill, player gains 2 AP if enemy is defeated
+        // For Execute skill, player gains 4 AP if enemy is defeated
         if ([SKILL_ID.EXECUTE].includes(skill.id)) {
-          playerAfterDamage.actionPoints += 2;
+          playerAfterDamage.actionPoints = Math.min(
+            playerAfterDamage.actionPoints + 4,
+            MAX_ACTION_POINTS
+          );
         }
 
         // enemiesAfterDamage.splice(enemyIndex, 1);
@@ -660,7 +661,7 @@ const handleSkillStatus = (
       statusID = STATUS_ID.HIDDEN;
       break;
     case SKILL_ID.SHADOW_STRIKE:
-    case SKILL_ID.THROWING_KNIVES:
+    case SKILL_ID.KNIFE_BARRAGE:
       statusID = STATUS_ID.BLEEDING;
       // DoT will scale with player's strength
       statusEffectModifier[0] = true;
@@ -711,7 +712,7 @@ const handleSkillStatus = (
           getPlayerTotalIntelligence(playerAfterStatus);
         statusEffectModifier[0] = true;
         statusEffectModifier[1].burnChance =
-          0.5 + (0.8 * playerTotalIntelligence) / 100;
+          0.6 + (0.8 * playerTotalIntelligence) / 100;
         statusEffectModifier[1].damageMultiplierForBurn =
           1 + (20 + 0.8 * playerTotalIntelligence) / 100;
       }
@@ -737,7 +738,7 @@ const handleSkillStatus = (
           getPlayerTotalIntelligence(playerAfterStatus);
         statusEffectModifier[0] = true;
         statusEffectModifier[1].shockChance =
-          0.4 + (0.8 * playerTotalIntelligence) / 100;
+          0.5 + (0.8 * playerTotalIntelligence) / 100;
         statusEffectModifier[1].damageMultiplierForShock =
           1 + (20 + 0.8 * playerTotalIntelligence) / 100;
       }
@@ -859,6 +860,9 @@ const handleSkillStatus = (
 
   // Apply modifiers to status duration
   if ([SKILL_ID.FLAME_TOUCH].includes(skill.id)) {
+    statusToBeApplied.duration = 5;
+    statusToBeApplied.durationCounter = 5;
+  } else if ([SKILL_ID.SHOCK_TOUCH].includes(skill.id)) {
     statusToBeApplied.duration = 4;
     statusToBeApplied.durationCounter = 4;
   } else if ([SKILL_ID.FROST_TOUCH].includes(skill.id)) {

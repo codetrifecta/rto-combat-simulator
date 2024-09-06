@@ -44,7 +44,7 @@ export interface IPlayerState {
   isAttacking: boolean;
   isMoving: boolean;
   isUsingSkill: boolean;
-  skillId?: number;
+  skillId?: number | null;
 }
 
 export interface IEnemy extends IEntity {
@@ -151,4 +151,16 @@ export interface IRoomNode {
   southDoor: boolean;
   eastDoor: boolean;
   westDoor: boolean;
+}
+
+export interface ISkillAnimation {
+  sprite: SPRITE_ID;
+  position: [number, number];
+  duration: number;
+  startDelay: number;
+  effectDelay: number;
+  spriteSize: number;
+  spritesheetRows: number;
+  spritesheetColumns: number;
+  animationRow: number;
 }

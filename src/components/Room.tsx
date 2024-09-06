@@ -48,6 +48,11 @@ import {
 import { getVisionFromEntityPosition } from '../utils/vision';
 import debounce from 'debounce';
 import { useSummonStore } from '../store/summon';
+import { useSkillAnimationStore } from '../store/skillAnimation';
+import {
+  BASE_SKILL_ANIMATION,
+  SKILL_ANIMATION_PRESET,
+} from '../constants/skillAnimation';
 
 export const Room: FC<{
   currentHoveredEntity: IEntity | null;
@@ -80,6 +85,7 @@ export const Room: FC<{
     setIsRoomOver,
     setHoveredTile,
   } = useGameStateStore();
+  const { setCurrentSkillAnimation } = useSkillAnimationStore();
   const {
     playerMovementAPCost,
     setPlayerMovementAPCost,
@@ -848,7 +854,11 @@ export const Room: FC<{
             burnedStatus.effect.damageOverTime = Math.ceil(
               0.2 * getPlayerTotalIntelligence(newPlayer)
             );
-            burnedStatus.id += Math.random();
+            // Check how many stacks of burned status are on the enemy and assign a unique ID to each
+            // const burnedStatuses = enemy.statuses.filter(
+            //   (status) => status.id === STATUS_ID.BURNED
+            // );
+            // burnedStatus.id += burnedStatuses.length;
 
             enemy.statuses = [...enemy.statuses, burnedStatus];
             displayStatusEffect(
@@ -885,11 +895,13 @@ export const Room: FC<{
           );
 
           if (frozenStatus === undefined) {
-            console.error(
-              'handleSkillDamage: No status found for the associated skill ID'
-            );
+            console.error('handleSkillDamage: No status found for FROZEN');
           } else {
-            frozenStatus.id += Math.random();
+            // Check how many stacks of frozen status are on the enemy and assign a unique ID to each
+            // const frozenStatuses = enemy.statuses.filter(
+            //   (status) => status.id === STATUS_ID.FROZEN
+            // );
+            // frozenStatus.id += frozenStatuses.length;
             enemy.statuses = [...enemy.statuses, frozenStatus];
             displayStatusEffect(
               frozenStatus,
@@ -916,21 +928,23 @@ export const Room: FC<{
         newPlayer.equipment.weapon.attackType === WEAPON_ATTACK_TYPE.MELEE
       ) {
         console.log('Stormbrand status found');
-        // Icebranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
+        // Stormbranded: Damaging skills and attacks has a chance to shock. Increased damage on shocked targets depending on player's intelligence
         const shockChance = stormbrandedStatus.effect.shockChance;
         console.log('shockChance', shockChance);
         if (Math.random() < shockChance) {
-          // Add burning status to enemy
+          // Add shocked status to enemy
           const shockedStatus = STATUSES.find(
             (status) => status.id === STATUS_ID.SHOCKED
           );
 
           if (shockedStatus === undefined) {
-            console.error(
-              'handleSkillDamage: No status found for the associated skill ID'
-            );
+            console.error('handleSkillDamage: No status found for SHOCKED');
           } else {
-            shockedStatus.id += Math.random();
+            // Check how many stacks of shocked status are on the enemy and assign a unique ID to each
+            // const shockedStatuses = enemy.statuses.filter(
+            //   (status) => status.id === STATUS_ID.SHOCKED
+            // );
+            // shockedStatus.id += shockedStatuses.length;
             enemy.statuses = [...enemy.statuses, shockedStatus];
             displayStatusEffect(
               shockedStatus,
@@ -940,11 +954,19 @@ export const Room: FC<{
           }
         }
 
+        console.log('totalDamage Before', totalDamage, enemy.statuses);
+
         if (enemy.statuses.some((status) => status.id === STATUS_ID.SHOCKED)) {
           totalDamage = Math.round(
             totalDamage * stormbrandedStatus.effect.damageMultiplierForShock
           );
         }
+
+        console.log(
+          'totalDamage After',
+          totalDamage,
+          stormbrandedStatus.effect.damageMultiplierForShock
+        );
       }
 
       // Remove hidden status from player if enemy is attacked
@@ -1616,13 +1638,14 @@ export const Room: FC<{
                       }
                     }
                     break;
-                  case SKILL_ID.THROWING_KNIVES:
+                  case SKILL_ID.KNIFE_BARRAGE:
                   case SKILL_ID.WHIRLWIND:
                   case SKILL_ID.MANA_BURST:
                   case SKILL_ID.SUPERNOVA:
                   case SKILL_ID.BLIZZARD:
                   case SKILL_ID.STORM_PULSE:
                   case SKILL_ID.CLEAVE:
+                  case SKILL_ID.AIR_SLASH:
                     if (
                       playerVisionRange &&
                       playerVisionRange[rowIndex][columnIndex] === true &&
@@ -1648,7 +1671,7 @@ export const Room: FC<{
                 switch (skill.id) {
                   case SKILL_ID.WHIRLWIND:
                   case SKILL_ID.WARCRY:
-                  case SKILL_ID.THROWING_KNIVES:
+                  case SKILL_ID.KNIFE_BARRAGE:
                   case SKILL_ID.WRATH_OF_THE_ANCIENTS:
                   case SKILL_ID.MANA_BURST:
                   case SKILL_ID.SUPERNOVA:
@@ -2142,52 +2165,89 @@ export const Room: FC<{
                       return;
                     }
 
-                    const { newPlayer, newEnemies, newRoomEntityPositions } =
-                      handleSkill(
-                        skill,
-                        [rowIndex, columnIndex],
-                        player,
-                        enemies,
-                        summons,
-                        targetZones.current,
-                        roomEntityPositions,
-                        addLog
-                      );
+                    const skillAnimation =
+                      SKILL_ANIMATION_PRESET[player.state.skillId] ??
+                      BASE_SKILL_ANIMATION;
 
-                    // Change player's sprite direction if enemy is to the left side of the player
-                    if (columnIndex < playerPosition[1]) {
-                      setEntityAnimationIdle(
-                        player,
-                        ENTITY_SPRITE_DIRECTION.LEFT
-                      );
-                    } else if (columnIndex > playerPosition[1]) {
-                      setEntityAnimationIdle(
-                        player,
-                        ENTITY_SPRITE_DIRECTION.RIGHT
-                      );
+                    skillAnimation.position = [rowIndex, columnIndex];
+
+                    // Override position for skills that start from the player's position
+                    if (
+                      [
+                        SKILL_ID.WHIRLWIND,
+                        SKILL_ID.WRATH_OF_THE_ANCIENTS,
+                        SKILL_ID.KNIFE_BARRAGE,
+                      ].includes(player.state.skillId)
+                    ) {
+                      skillAnimation.position = [playerRow, playerCol];
                     }
 
-                    const isEnemyDead = newEnemies.some((enemy) => {
-                      return enemy.health <= 0;
-                    });
+                    setCurrentSkillAnimation(skillAnimation);
 
-                    setEnemies([...newEnemies]);
-                    setPlayerState({
-                      ...newPlayer.state,
-                      isUsingSkill: false,
-                    });
-
-                    if (isEnemyDead) {
-                      setTimeout(() => {
-                        setEnemies(
-                          newEnemies.filter((enemy) => enemy.health > 0)
+                    setTimeout(() => {
+                      const { newPlayer, newEnemies, newRoomEntityPositions } =
+                        handleSkill(
+                          skill,
+                          [rowIndex, columnIndex],
+                          player,
+                          enemies,
+                          summons,
+                          targetZones.current,
+                          roomEntityPositions,
+                          addLog
                         );
-                        setRoomEntityPositions(newRoomEntityPositions);
+
+                      // Change player's sprite direction if enemy is to the left side of the player
+                      if (columnIndex < playerPosition[1]) {
+                        setEntityAnimationIdle(
+                          player,
+                          ENTITY_SPRITE_DIRECTION.LEFT
+                        );
+                      } else if (columnIndex > playerPosition[1]) {
+                        setEntityAnimationIdle(
+                          player,
+                          ENTITY_SPRITE_DIRECTION.RIGHT
+                        );
+                      }
+
+                      const isEnemyDead = newEnemies.some((enemy) => {
+                        return enemy.health <= 0;
+                      });
+
+                      setEnemies([...newEnemies]);
+                      setPlayerState({
+                        ...newPlayer.state,
+                        isUsingSkill: false,
+                      });
+                      setRoomEntityPositions(newRoomEntityPositions);
+
+                      if (isEnemyDead) {
+                        setTimeout(() => {
+                          setEnemies(
+                            newEnemies.filter((enemy) => enemy.health > 0)
+                          );
+                          setPlayer({
+                            ...newPlayer,
+                            state: {
+                              ...newPlayer.state,
+                              isUsingSkill: false,
+                              skillId: null,
+                            },
+                            actionPoints: newPlayer.actionPoints - skill.cost,
+                            skills: newPlayer.skills.map((s) =>
+                              s.id === skill.id
+                                ? { ...s, cooldownCounter: s.cooldown }
+                                : s
+                            ),
+                          });
+                        }, 1000);
+                      } else {
                         setPlayer({
                           ...newPlayer,
                           state: {
                             ...newPlayer.state,
                             isUsingSkill: false,
+                            skillId: null,
                           },
                           actionPoints: newPlayer.actionPoints - skill.cost,
                           skills: newPlayer.skills.map((s) =>
@@ -2196,23 +2256,8 @@ export const Room: FC<{
                               : s
                           ),
                         });
-                      }, 1000);
-                    } else {
-                      setRoomEntityPositions(newRoomEntityPositions);
-                      setPlayer({
-                        ...newPlayer,
-                        state: {
-                          ...newPlayer.state,
-                          isUsingSkill: false,
-                        },
-                        actionPoints: newPlayer.actionPoints - skill.cost,
-                        skills: newPlayer.skills.map((s) =>
-                          s.id === skill.id
-                            ? { ...s, cooldownCounter: s.cooldown }
-                            : s
-                        ),
-                      });
-                    }
+                      }
+                    }, skillAnimation.effectDelay);
                   }
                 }
               }}

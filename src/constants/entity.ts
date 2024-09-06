@@ -1,4 +1,4 @@
-import { IEnemy, IEntity, IPlayer, ISummon } from '../types';
+import { IEnemy, IEntity, IPlayer, ISkill, ISummon } from '../types';
 import { getPlayerMaxHealth } from '../utils/entity';
 import { LEGGINGS } from './armor';
 import { SKILL_ID, SKILLS } from './skill';
@@ -79,16 +79,27 @@ export const PLAYER: IPlayer = {
   healthPotions: 2,
 };
 
+const equippedSkills = [
+  SKILL_ID.SHADOW_STRIKE,
+  SKILL_ID.KNIFE_BARRAGE,
+  SKILL_ID.POISON_STRIKE,
+  SKILL_ID.DISABLING_BLOW,
+  SKILL_ID.PUNCTURE_STRIKE,
+  SKILL_ID.AIR_SLASH,
+].map((id) => SKILLS.find((skill) => skill.id === id));
+
+const filterUndefinedEquippedSkills = (
+  equippedSkills: (ISkill | undefined)[]
+) => equippedSkills.filter((skill) => skill !== undefined) as ISkill[];
+
 export const getDefaultPlayer = (): IPlayer => {
   return {
     ...PLAYER,
     health: getPlayerMaxHealth(PLAYER),
     // health: 5,
     maxHealth: getPlayerMaxHealth(PLAYER),
-    actionPoints: MAX_ACTION_POINTS,
-    skills: SKILLS.filter((skill) =>
-      [SKILL_ID.CLEAVE, SKILL_ID.FLY].includes(skill.id)
-    ),
+    actionPoints: STARTING_ACTION_POINTS,
+    skills: filterUndefinedEquippedSkills(equippedSkills),
   };
 };
 
@@ -146,7 +157,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     ...BASE_ENTITY,
     id: 0,
     name: 'Abyssal Cyclopean Wraith',
-    sprite: SPRITE_ID.ENEMY_ABYSSAL_CYCLOPEAN_WRAITH,
+    sprite: SPRITE_ID.ABYSSAL_CYCLOPEAN_WRAITH,
     spriteSize: 90,
     spritesheetRows: 7,
     spritesheetColumns: 6,
