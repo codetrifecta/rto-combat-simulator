@@ -484,6 +484,20 @@ export const SKILLS: ISkill[] = [
     cost: 1,
   },
   {
+    id: SKILL_ID.ENLIGHTEN,
+    name: 'Enlighten',
+    icon: ICON_ID.SKILL_ENLIGHTEN,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Gain Enlightened for 3 turns. Enlightened increases intelligence by 30%.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 1,
+  },
+  {
     id: SKILL_ID.IRONFLESH,
     name: 'Ironflesh',
     icon: ICON_ID.SKILL_DEFENSE_UP,
@@ -491,6 +505,20 @@ export const SKILLS: ISkill[] = [
     tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
     description:
       'Applies Stone Skin on self for 3 turns. Stone Skin increases defense by 30%.',
+    damageMultiplier: 0,
+    range: 0,
+    cooldown: 3,
+    cooldownCounter: 0,
+    cost: 1,
+  },
+  {
+    id: SKILL_ID.FOCUS,
+    name: 'Focus',
+    icon: ICON_ID.SKILL_FOCUS,
+    skillType: SKILL_TYPE.SELF,
+    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
+    description:
+      'Gain Focused for 3 turns. Focused increases strength and intelligence by 20%.',
     damageMultiplier: 0,
     range: 0,
     cooldown: 3,
@@ -524,34 +552,7 @@ export const SKILLS: ISkill[] = [
     cooldownCounter: 0,
     cost: 2,
   },
-  {
-    id: SKILL_ID.FOCUS,
-    name: 'Focus',
-    icon: ICON_ID.SKILL_FOCUS,
-    skillType: SKILL_TYPE.SELF,
-    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
-    description:
-      'Gain Focused for 3 turns. Focused increases strength and intelligence by 20%.',
-    damageMultiplier: 0,
-    range: 0,
-    cooldown: 3,
-    cooldownCounter: 0,
-    cost: 1,
-  },
-  {
-    id: SKILL_ID.ENLIGHTEN,
-    name: 'Enlighten',
-    icon: ICON_ID.SKILL_ENLIGHTEN,
-    skillType: SKILL_TYPE.SELF,
-    tags: [SKILL_TAG.SELF, SKILL_TAG.STATUS],
-    description:
-      'Gain Enlightened for 3 turns. Enlightened increases intelligence by 30%.',
-    damageMultiplier: 0,
-    range: 0,
-    cooldown: 3,
-    cooldownCounter: 0,
-    cost: 1,
-  },
+
   {
     id: SKILL_ID.HIDE,
     name: 'Hide',

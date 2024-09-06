@@ -28,6 +28,16 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     spritesheetRows: 9,
     spritesheetColumns: 14,
   },
+  [SPRITE_ID.SKILL_21]: {
+    sprite: SPRITE_ID.SKILL_21,
+    spritesheetRows: 9,
+    spritesheetColumns: 14,
+  },
+  [SPRITE_ID.SKILL_22]: {
+    sprite: SPRITE_ID.SKILL_22,
+    spritesheetRows: 9,
+    spritesheetColumns: 14,
+  },
   [SPRITE_ID.SKILL_31]: {
     sprite: SPRITE_ID.SKILL_31,
     spritesheetRows: 9,
@@ -43,6 +53,11 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     spritesheetRows: 9,
     spritesheetColumns: 16,
   },
+  [SPRITE_ID.SKILL_64]: {
+    sprite: SPRITE_ID.SKILL_64,
+    spritesheetRows: 9,
+    spritesheetColumns: 8,
+  },
   [SPRITE_ID.SKILL_65]: {
     sprite: SPRITE_ID.SKILL_65,
     spritesheetRows: 9,
@@ -57,6 +72,11 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     sprite: SPRITE_ID.SKILL_74,
     spritesheetRows: 9,
     spritesheetColumns: 9,
+  },
+  [SPRITE_ID.SKILL_81]: {
+    sprite: SPRITE_ID.SKILL_81,
+    spritesheetRows: 9,
+    spritesheetColumns: 12,
   },
   [SPRITE_ID.SKILL_86]: {
     sprite: SPRITE_ID.SKILL_86,
@@ -131,6 +151,7 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
 };
 
 export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
+  // Strength skills
   [SKILL_ID.CLEAVE]: {
     ...BASE_SKILL_ANIMATION,
     ...ANIMATION_PRESET[SPRITE_ID.SKILL_72],
@@ -246,6 +267,8 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     animationRow: 7,
     yOffset: -TILE_SIZE / 3,
   },
+
+  // Intelligence skills
   [SKILL_ID.MANA_BURST]: {
     ...BASE_SKILL_ANIMATION,
     ...ANIMATION_PRESET[SPRITE_ID.SKILL_111],
@@ -370,5 +393,47 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     spriteSize: 120,
     animationRow: 8,
     yOffset: -TILE_SIZE / 3,
+  },
+
+  // Self targeted skills
+  [SKILL_ID.FLEX]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_81],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 120,
+    animationRow: 7,
+  },
+  [SKILL_ID.ENLIGHTEN]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_81],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 120,
+    animationRow: 2,
+  },
+  [SKILL_ID.FOCUS]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_21],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 120,
+    animationRow: 1,
+  },
+  [SKILL_ID.IRONFLESH]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_81],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 120,
+    animationRow: 6,
   },
 };
