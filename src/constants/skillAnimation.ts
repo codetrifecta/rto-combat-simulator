@@ -58,6 +58,11 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     spritesheetRows: 9,
     spritesheetColumns: 15,
   },
+  [SPRITE_ID.SKILL_45]: {
+    sprite: SPRITE_ID.SKILL_45,
+    spritesheetRows: 9,
+    spritesheetColumns: 17,
+  },
   [SPRITE_ID.SKILL_48]: {
     sprite: SPRITE_ID.SKILL_48,
     spritesheetRows: 9,
@@ -162,6 +167,11 @@ export const ANIMATION_PRESET: Record<SPRITE_ID, IAnimation> = {
     sprite: SPRITE_ID.SKILL_137,
     spritesheetRows: 9,
     spritesheetColumns: 11,
+  },
+  [SPRITE_ID.SKILL_149]: {
+    sprite: SPRITE_ID.SKILL_149,
+    spritesheetRows: 9,
+    spritesheetColumns: 14,
   },
 };
 
@@ -340,7 +350,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     ...BASE_SKILL_ANIMATION,
     ...ANIMATION_PRESET[SPRITE_ID.SKILL_128],
     position: [0, 0],
-    duration: 1.2,
+    duration: 1,
     startDelay: 0,
     effectDelay: 50,
     spriteSize: 120,
@@ -349,7 +359,7 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
   },
   [SKILL_ID.BLIZZARD]: {
     ...BASE_SKILL_ANIMATION,
-    ...ANIMATION_PRESET[SPRITE_ID.SKILL_105],
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_149],
     position: [0, 0],
     duration: 0.8,
     startDelay: 0,
@@ -576,5 +586,51 @@ export const SKILL_ANIMATION_PRESET: Record<SKILL_ID, ISkillAnimation> = {
     spriteSize: 120,
     animationRow: 4,
     yOffset: -TILE_SIZE * 1.1,
+  },
+
+  // Debuff skills
+  [SKILL_ID.GORGONS_GAZE]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_128],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 120,
+    animationRow: 6,
+    yOffset: -TILE_SIZE * 0.5,
+  },
+  [SKILL_ID.WEAKEN]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_58],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 100,
+    animationRow: 1,
+    yOffset: -TILE_SIZE * 0.5,
+  },
+  [SKILL_ID.DISABLE]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_128],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 120,
+    animationRow: 1,
+    yOffset: -TILE_SIZE * 0.5,
+  },
+  [SKILL_ID.ENTANGLE]: {
+    ...BASE_SKILL_ANIMATION,
+    ...ANIMATION_PRESET[SPRITE_ID.SKILL_45],
+    position: [0, 0],
+    duration: 1,
+    startDelay: 0,
+    effectDelay: 50,
+    spriteSize: 100,
+    animationRow: 3,
+    yOffset: -TILE_SIZE * 0.5,
   },
 };

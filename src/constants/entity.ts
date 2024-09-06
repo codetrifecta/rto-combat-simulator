@@ -83,10 +83,10 @@ export const PLAYER: IPlayer = {
 //   (id) => SKILLS.find((skill) => skill.id === id)
 // );
 
-const equippedSkills = SKILLS.slice(0, 0 + 11); // 11 strength-based damage dealing skills
+// const equippedSkills = SKILLS.slice(0, 0 + 11); // 11 strength-based damage dealing skills
 // const equippedSkills = SKILLS.slice(11, 11 + 12); // 12 intelligence-based damage dealing skills
 // const equippedSkills = SKILLS.slice(23, 23 + 16); // 16 self targeted skills
-// const equippedSkills = SKILLS.slice(39, 39 + 4); // 4 only debuff skills
+const equippedSkills = SKILLS.slice(39, 39 + 4); // 4 only debuff skills
 // const equippedSkills = SKILLS.slice(43, 43 + 4); // 4 movement skills
 
 // const equippedSkills = [
