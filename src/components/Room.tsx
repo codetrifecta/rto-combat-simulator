@@ -1912,6 +1912,26 @@ export const Room: FC<{
                         }
 
                         isTargetZone = true;
+                      } else {
+                        // Remove tiles from target zone if they are not in the target zone
+                        const currentTargetZones = targetZones.current;
+
+                        // Check if tile is in target zone
+                        const isTileInTargetZone = currentTargetZones.some(
+                          ([row, col]) => {
+                            return row === rowIndex && col === columnIndex;
+                          }
+                        );
+
+                        if (isTileInTargetZone) {
+                          targetZones.current = currentTargetZones.filter(
+                            ([row, col]) => {
+                              return row !== rowIndex || col !== columnIndex;
+                            }
+                          );
+                        }
+
+                        isTargetZone = false;
                       }
                     }
                     break;
@@ -2054,6 +2074,26 @@ export const Room: FC<{
                           }
 
                           isTargetZone = true;
+                        } else {
+                          // Remove tiles from target zone if they are not in the target zone
+                          const currentTargetZones = targetZones.current;
+
+                          // Check if tile is in target zone
+                          const isTileInTargetZone = currentTargetZones.some(
+                            ([row, col]) => {
+                              return row === rowIndex && col === columnIndex;
+                            }
+                          );
+
+                          if (isTileInTargetZone) {
+                            targetZones.current = currentTargetZones.filter(
+                              ([row, col]) => {
+                                return row !== rowIndex || col !== columnIndex;
+                              }
+                            );
+                          }
+
+                          isTargetZone = false;
                         }
                       }
                     }
