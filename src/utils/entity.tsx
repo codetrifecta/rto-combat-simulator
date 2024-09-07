@@ -366,7 +366,7 @@ export const displayGeneralMessage = (elementID: string, message: string) => {
   messageDisplay.style.position = 'absolute';
   messageDisplay.style.top = `${tileTopPosition - TILE_SIZE}px`;
   messageDisplay.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - messageDisplay.offsetWidth / 2)}px`;
-  messageDisplay.style.zIndex = '100';
+  messageDisplay.style.zIndex = '150';
   messageDisplay.style.color = 'white';
 
   messageDisplay.classList.add('animate-floatUpAndFadeOut20');
@@ -413,7 +413,7 @@ const displayDamageNumbers = (elementID: string, damage: number) => {
   damageNumbers.style.position = 'absolute';
   damageNumbers.style.top = `${tileTopPosition - TILE_SIZE * 1.5}px`;
   damageNumbers.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - damageNumbers.offsetWidth / 2)}px`;
-  damageNumbers.style.zIndex = '100';
+  damageNumbers.style.zIndex = '150';
   damageNumbers.style.color = 'red';
 
   damageNumbers.classList.add('animate-floatUpAndFadeOut20');
@@ -474,7 +474,7 @@ const displayHealNumbers = (elementID: string, heal: number) => {
   healNumbers.style.position = 'absolute';
   healNumbers.style.top = `${tileTopPosition - TILE_SIZE * 1.5}px`;
   healNumbers.style.left = `${tileLeftPosition + TILE_SIZE / 2 - healNumbers.offsetWidth / 2}px`;
-  healNumbers.style.zIndex = '100';
+  healNumbers.style.zIndex = '150';
   healNumbers.style.color = 'green';
 
   healNumbers.classList.add('animate-floatUpAndFadeOut20');
@@ -534,7 +534,7 @@ export const displayStatusEffect = (
   statusIndicator.style.position = 'absolute';
   statusIndicator.style.top = `${tileTopPosition - TILE_SIZE}px`;
   statusIndicator.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - statusIndicator.offsetWidth / 2)}px`;
-  statusIndicator.style.zIndex = '100';
+  statusIndicator.style.zIndex = '150';
   statusIndicator.style.color = 'yellow';
 
   statusIndicator.classList.add('animate-floatUpAndFadeOut20');
