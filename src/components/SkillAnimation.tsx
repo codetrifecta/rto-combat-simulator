@@ -8,14 +8,14 @@ export const SkillAnimation: FC = () => {
     useSkillAnimationStore();
 
   useEffect(() => {
-    console.log('do current SkillAnimation');
+    // console.log('do current SkillAnimation', currentSkillAnimation);
 
     if (!currentSkillAnimation) {
       return;
     }
 
     setTimeout(() => {
-      console.log('SkillAnimation done');
+      // console.log('SkillAnimation done');
       setCurrentSkillAnimation(null);
     }, currentSkillAnimation.duration * 900);
   }, [currentSkillAnimation, setCurrentSkillAnimation]);
