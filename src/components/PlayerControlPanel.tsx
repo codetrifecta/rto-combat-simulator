@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { usePlayerStore } from '../store/player';
 import { useGameStateStore } from '../store/game';
 import {
+  getPlayerWeaponDamage,
   getPotionHealAmount,
   handlePlayerEndTurn,
   healEntity,
@@ -40,7 +41,6 @@ export const PlayerControlPanel: FC = () => {
 
   const {
     getPlayer,
-    getPlayerBaseAttackDamage,
     getPlayerTotalStrength,
     getPlayerTotalIntelligence,
     getPlayerBonusDamage,
@@ -49,7 +49,7 @@ export const PlayerControlPanel: FC = () => {
   } = usePlayerStore();
 
   const player = getPlayer();
-  const baseAttackDamage = getPlayerBaseAttackDamage();
+  const weaponDamage = getPlayerWeaponDamage(player);
   const totalStrength = getPlayerTotalStrength();
   const totalIntelligence = getPlayerTotalIntelligence();
 
@@ -323,9 +323,9 @@ export const PlayerControlPanel: FC = () => {
                     <>
                       <h2>Weapon attack</h2>
                       <h3>Weapon Equipped: {player.equipment.weapon.name}</h3>
-                      <p>Base DMG: {baseAttackDamage}</p>
+                      <p>Base DMG: {weaponDamage}</p>
                       <p>Bonus DMG: {bonusDamage}</p>
-                      <p>Total DMG: {baseAttackDamage + bonusDamage}</p>
+                      <p>Damage: {weaponDamage + bonusDamage}</p>
                     </>
                   ) : (
                     <h2>No weapon equipped</h2>

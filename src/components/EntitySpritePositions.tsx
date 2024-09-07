@@ -160,7 +160,6 @@ export const EntitySpritePositions: FC<{
           style={{
             bottom: player.spriteSize + 5,
             transform: 'translateX(-50%)',
-            zIndex: 1000,
           }}
         ></div>
         {/* Cap off extra width and height */}

@@ -4,6 +4,7 @@ import {
   STARTING_MAX_HEALTH,
 } from '../constants/entity';
 import { TILE_SIZE } from '../constants/tile';
+import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from '../constants/weapon';
 import { IEnemy, IEntity, IPlayer, IStatus } from '../types';
 
 /**
@@ -121,6 +122,34 @@ export const getEntityPosition = (
   }
 
   return [-1, -1];
+};
+
+export const getPlayerWeaponDamage = (player: IPlayer) => {
+  const weapon = player.equipment.weapon;
+
+  if (!weapon) {
+    return 0;
+  }
+
+  const totalStrength = getPlayerTotalStrength(player);
+  const totalIntelligence = getPlayerTotalIntelligence(player);
+
+  const weaponDamageMultiplier = weapon.damageMultiplier || 0;
+  let baseStat = totalStrength;
+
+  if (weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
+    baseStat = totalStrength;
+  } else if (weapon.attackType === WEAPON_ATTACK_TYPE.RANGED) {
+    if (weapon.type === WEAPON_TYPE.BOW) {
+      baseStat = totalStrength;
+    } else {
+      baseStat = totalIntelligence;
+    }
+  } else {
+    baseStat = totalIntelligence;
+  }
+
+  return Math.round(baseStat * weaponDamageMultiplier);
 };
 
 export const getPlayerTotalStrength = (player: IPlayer) => {
