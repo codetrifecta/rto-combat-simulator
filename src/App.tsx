@@ -22,6 +22,7 @@ import { RoomFloorArt } from './components/RoomFloorArt';
 import { RoomObstacleArt } from './components/RoomObstacleArt';
 import { SkillAnimation } from './components/SkillAnimation';
 import { RoomWallArt } from './components/RoomWallArt';
+import { RoomDoorArt } from './components/RoomDoorArt';
 
 // Flag for first room render
 
@@ -431,13 +432,18 @@ function App() {
                     setCurrentHoveredEntity={setCurrentHoveredEntity}
                   />
                 </div>
+                <div className="absolute z-[6]">
+                  <RoomDoorArt
+                    width={roomLength * TILE_SIZE}
+                    height={roomLength * TILE_SIZE}
+                  />
+                </div>
                 <div className="absolute z-[5]">
                   <RoomWallArt
                     width={roomLength * TILE_SIZE}
                     height={roomLength * TILE_SIZE}
                   />
                 </div>
-
                 <div className="absolute z-0">
                   <RoomFloorArt
                     width={roomLength * TILE_SIZE}
