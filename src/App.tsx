@@ -19,8 +19,9 @@ import { TILE_SIZE } from './constants/tile';
 import { Compendium } from './components/Compendium';
 import { EntityTurnText } from './components/EntityTurnText';
 import { RoomFloorArt } from './components/RoomFloorArt';
-import { RoomWallArt } from './components/RoomWallArt';
+import { RoomObstacleArt } from './components/RoomObstacleArt';
 import { SkillAnimation } from './components/SkillAnimation';
+import { RoomWallArt } from './components/RoomWallArt';
 
 // Flag for first room render
 
@@ -418,7 +419,7 @@ function App() {
                   <EntitySpritePositions
                     setCurrentHoveredEntity={setCurrentHoveredEntity}
                   />
-                  <RoomWallArt
+                  <RoomObstacleArt
                     width={roomLength * TILE_SIZE}
                     height={roomLength * TILE_SIZE}
                   />
@@ -430,6 +431,13 @@ function App() {
                     setCurrentHoveredEntity={setCurrentHoveredEntity}
                   />
                 </div>
+                <div className="absolute z-[5]">
+                  <RoomWallArt
+                    width={roomLength * TILE_SIZE}
+                    height={roomLength * TILE_SIZE}
+                  />
+                </div>
+
                 <div className="absolute z-0">
                   <RoomFloorArt
                     width={roomLength * TILE_SIZE}

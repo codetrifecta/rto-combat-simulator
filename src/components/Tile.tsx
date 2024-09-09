@@ -65,12 +65,19 @@ export const Tile: FC<{
 
   const isAttackEffectTile = useMemo(() => {
     return (
-      tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR && !hasPlayer
+      tileType !== TILE_TYPE.OBSTACLE &&
+      tileType !== TILE_TYPE.WALL &&
+      tileType !== TILE_TYPE.DOOR &&
+      !hasPlayer
     );
   }, [hasPlayer, tileType]);
 
   const isSkillEffectTile = useMemo(() => {
-    return tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR;
+    return (
+      tileType !== TILE_TYPE.OBSTACLE &&
+      tileType !== TILE_TYPE.WALL &&
+      tileType !== TILE_TYPE.DOOR
+    );
   }, [tileType]);
 
   const targetZoneClasses = useMemo(() => {
@@ -206,7 +213,8 @@ export const Tile: FC<{
       className={clsx('relative group', {
         // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
         'cursor-pointer ':
-          (tileType !== TILE_TYPE.WALL &&
+          (tileType !== TILE_TYPE.OBSTACLE &&
+            tileType !== TILE_TYPE.WALL &&
             tileType !== TILE_TYPE.DOOR &&
             tileType !== TILE_TYPE.NULL) ||
           (tileType === TILE_TYPE.DOOR && isRoomOver),
@@ -228,7 +236,8 @@ export const Tile: FC<{
         className={clsx('absolute w-full h-full', classNames, {
           // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
           'cursor-pointer ':
-            (tileType !== TILE_TYPE.WALL &&
+            (tileType !== TILE_TYPE.OBSTACLE &&
+              tileType !== TILE_TYPE.WALL &&
               tileType !== TILE_TYPE.DOOR &&
               tileType !== TILE_TYPE.NULL) ||
             (tileType === TILE_TYPE.DOOR && isRoomOver),
