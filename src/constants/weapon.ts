@@ -145,7 +145,7 @@ export const WEAPONS: IWeapon[] = [
   },
   {
     id: 9,
-    name: 'Doom Hammer',
+    name: 'Test Sword',
     icon: ICON_ID.WEAPON_GREATSWORD,
     attackType: WEAPON_ATTACK_TYPE.MELEE,
     type: WEAPON_TYPE.TWO_HANDED,

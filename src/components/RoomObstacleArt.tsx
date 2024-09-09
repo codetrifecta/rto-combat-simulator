@@ -36,9 +36,9 @@ export const RoomObstacleArt: FC<{
 
     let imgSrc = wallArtFile;
 
-    if (!imgSrc) {
-      imgSrc = defaultRoomArt;
-    }
+    // if (!imgSrc) {
+    // }
+    imgSrc = defaultRoomArt;
 
     if (isRoomOver && imgSrc === defaultRoomArt) {
       imgSrc = defaultRoomArt;
@@ -134,18 +134,22 @@ export const RoomObstacleArt: FC<{
 
       // Logic for hovered tiles
       // Modify the alpha channel for the hovered tile (if any)
-      const [hoveredTileRow, tileCol] = hoveredTile ?? [-1, -1];
+      const [hoveredTileRow, hoveredTileCol] = hoveredTile ?? [-1, -1];
 
       // Skip if no tile is hovered
-      if (hoveredTileRow === -1 || tileCol === -1) {
+      if (hoveredTileRow === -1 || hoveredTileCol === -1) {
         // Do nothing if no tile is hovered
       } else {
-        // Skip if no tile nearby is a wall (in this case, check for the 2 tiles below the entity)
-        // console.log(hoveredTileRow, tileCol);
+        // Skip if no tile nearby is an obstacle (in this case, check for the 2 tiles below the entity)
+        // console.log(hoveredTileRow, hoveredTileCol);
         if (
-          roomTileMatrix[hoveredTileRow][tileCol] === TILE_TYPE.FLOOR &&
-          (roomTileMatrix[hoveredTileRow + 1][tileCol] === TILE_TYPE.OBSTACLE ||
-            roomTileMatrix[hoveredTileRow + 2][tileCol] === TILE_TYPE.OBSTACLE)
+          roomTileMatrix[hoveredTileRow][hoveredTileCol] === TILE_TYPE.FLOOR &&
+          ((hoveredTileRow + 1 < roomTileMatrix.length &&
+            roomTileMatrix[hoveredTileRow + 1][hoveredTileCol] ===
+              TILE_TYPE.OBSTACLE) ||
+            (hoveredTileRow + 2 < roomTileMatrix.length &&
+              roomTileMatrix[hoveredTileRow + 2][hoveredTileCol] ===
+                TILE_TYPE.OBSTACLE))
         ) {
           // Modify the alpha channel for a specific area
           for (
@@ -154,8 +158,8 @@ export const RoomObstacleArt: FC<{
             y++
           ) {
             for (
-              let x = tileCol * TILE_SIZE;
-              x < tileCol * TILE_SIZE + TILE_SIZE;
+              let x = hoveredTileCol * TILE_SIZE;
+              x < hoveredTileCol * TILE_SIZE + TILE_SIZE;
               x++
             ) {
               const index = (y * imageData.width + x) * 4;
@@ -418,20 +422,20 @@ export const RoomObstacleArt: FC<{
 //       // });
 
 //       // // Modify the alpha channel for the hovered tile (if any)
-//       // const [hoveredTileRow, tileCol] = hoveredTile ?? [-1, -1];
+//       // const [hoveredTileRow, hoveredTileCol] = hoveredTile ?? [-1, -1];
 
 //       // // Skip if no tile is hovered
-//       // if (hoveredTileRow === -1 || tileCol === -1) {
+//       // if (hoveredTileRow === -1 || hoveredTileCol === -1) {
 //       //   return;
 //       // } else {
 //       //   // Skip if no tile nearby is a wall (in this case, check for the 2 tiles below the entity)
-//       //   // console.log(hoveredTileRow, tileCol);
+//       //   // console.log(hoveredTileRow, hoveredTileCol);
 //       //   if (
 //       //     row === hoveredTileRow && // Check if the hovered tile is the same as the current tile
-//       //     col === tileCol && // Check if the hovered tile is the same as the current tile
-//       //     roomTileMatrix[hoveredTileRow][tileCol] === TILE_TYPE.FLOOR &&
-//       //     (roomTileMatrix[hoveredTileRow + 1][tileCol] === TILE_TYPE.OBSTACLE ||
-//       //       roomTileMatrix[hoveredTileRow + 2][tileCol] === TILE_TYPE.OBSTACLE)
+//       //     col === hoveredTileCol && // Check if the hovered tile is the same as the current tile
+//       //     roomTileMatrix[hoveredTileRow][hoveredTileCol] === TILE_TYPE.FLOOR &&
+//       //     (roomTileMatrix[hoveredTileRow + 1][hoveredTileCol] === TILE_TYPE.OBSTACLE ||
+//       //       roomTileMatrix[hoveredTileRow + 2][hoveredTileCol] === TILE_TYPE.OBSTACLE)
 //       //   ) {
 //       //     // Modify the alpha channel for a specific area
 //       //     for (let y = 0; y < TILE_SIZE; y++) {
