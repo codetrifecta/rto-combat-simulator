@@ -59,7 +59,7 @@ export const floorToStringArray = (floor: ROOM_TYPE[][]): string[] => {
  * @param phase number type, determines if the function is finding the path between Start and Boss (1), Start and Intermediate (2),
  *              Intermediate and Boss (3), Intermediate (Path) and Miniboss (4), or Intermediate (Path) and Shop (5)
  */
-function generatePath(
+export function generatePath(
   floor: ROOM_TYPE[][],
   startCoord: [number, number],
   goalCoord: [number, number],
@@ -328,6 +328,7 @@ export function generateFloorPlan(start: boolean): ROOM_TYPE[][] {
     }
   }
   // console.log(floor);
+  // console.log(floorToStringArray(floor));
 
   // Get path from Start to Boss Room.
   // Get a random boolean to determine existance of Intermediate Room between Start and Boss Rooms.
@@ -341,11 +342,8 @@ export function generateFloorPlan(start: boolean): ROOM_TYPE[][] {
     let intermediateRow = Math.floor(Math.random() * 5);
     let intermediateCol = Math.floor(Math.random() * 5);
 
-    // While Intermediate room coordinates overlap with either Start or Boss Rooms, RNG again.
-    while (
-      floor[intermediateRow][intermediateCol] === ROOM_TYPE.START ||
-      floor[intermediateRow][intermediateCol] === ROOM_TYPE.BOSS
-    ) {
+    // While Intermediate room coordinates overlap with either Start or Boss Rooms (not NULL ROOM_TYPE), RNG again.
+    while (floor[intermediateRow][intermediateCol] !== ROOM_TYPE.NULL) {
       intermediateRow = Math.floor(Math.random() * 5);
       intermediateCol = Math.floor(Math.random() * 5);
     }
@@ -356,6 +354,7 @@ export function generateFloorPlan(start: boolean): ROOM_TYPE[][] {
     generatePath(floor, intermediateCoord, bossCoord, 3);
     floor[intermediateRow][intermediateCol] = ROOM_TYPE.COMMON; // Unassign this room as Intermediate Room.
   }
+  // console.log(floorToStringArray(floor));
 
   // Get path from Intermediate to Miniboss Room
   // Determine which rooms are Common Rooms
@@ -375,26 +374,75 @@ export function generateFloorPlan(start: boolean): ROOM_TYPE[][] {
   intermediateCoord = [commons[intermediate][0], commons[intermediate][1]];
 
   // Initialize Miniboss Room
-  let miniBossRow = Math.floor(Math.random() * 5);
-  let miniBossCol = Math.floor(Math.random() * 5);
-  // NOTE: Rows and Columns will ALWAYS be valid and within floor space.
+  // Determine which rooms are NULL Rooms in the current state of the Floor
+  const mbNulls: [number, number][] = [];
+  for (let i = 0; i < floor.length; i++) {
+    for (let j = 0; j < floor.length; j++) {
+      // If assigned tile is a NULL ROOM_TYPE
+      if (floor[i][j] === ROOM_TYPE.NULL) {
+        // If Right adjacent tile is within bounds
+        if (j + 1 < 5) {
+          // If Right adjacent tile is NOT a COMMON and NOT NULL ROOM_TYPE
+          if (
+            floor[i][j + 1] !== ROOM_TYPE.COMMON &&
+            floor[i][j + 1] !== ROOM_TYPE.NULL
+          ) {
+            continue;
+          }
+        }
 
-  // If the Mini Boss row and columns are on either Start, Boss, Common or Intermediate rooms, RNG Miniboss room coordinates again.
-  while (
-    floor[miniBossRow][miniBossCol] === ROOM_TYPE.START ||
-    floor[miniBossRow][miniBossCol] === ROOM_TYPE.BOSS ||
-    floor[miniBossRow][miniBossCol] === ROOM_TYPE.COMMON ||
-    floor[miniBossRow][miniBossCol] === ROOM_TYPE.INTERMEDIATE
-  ) {
-    miniBossRow = Math.floor(Math.random() * 5);
-    miniBossCol = Math.floor(Math.random() * 5);
+        // If Left adjacent tile is within bounds
+        if (j - 1 >= 0) {
+          // If Left adjacent tile is NOT a COMMON and NOT NULL ROOM_TYPE
+          if (
+            floor[i][j - 1] !== ROOM_TYPE.COMMON &&
+            floor[i][j - 1] !== ROOM_TYPE.NULL
+          ) {
+            continue;
+          }
+        }
+
+        // If Down adjacent tile is within bounds
+        if (i + 1 < 5) {
+          // If Down adjacent tile is NOT a COMMON and NOT NULL ROOM_TYPE
+          if (
+            floor[i + 1][j] !== ROOM_TYPE.COMMON &&
+            floor[i + 1][j] !== ROOM_TYPE.NULL
+          ) {
+            continue;
+          }
+        }
+
+        // If Up adjacent tile is within bounds
+        if (i - 1 >= 0) {
+          // If Up adjacent tile is NOT a COMMON and NOT NULL ROOM_TYPE
+          if (
+            floor[i - 1][j] !== ROOM_TYPE.COMMON &&
+            floor[i - 1][j] !== ROOM_TYPE.NULL
+          ) {
+            continue;
+          }
+        }
+
+        mbNulls.push([i, j]);
+      }
+    }
   }
+  // console.log(mbNulls);
+
+  // Get a MiniBoss Room from one of the NULL Rooms and assign it on the Floor
+  const mbNull = Math.floor(Math.random() * mbNulls.length);
+  const miniBossRow = mbNulls[mbNull][0];
+  const miniBossCol = mbNulls[mbNull][1];
+  // console.log(miniBossRow);
+  // console.log(miniBossCol);
 
   floor[miniBossRow][miniBossCol] = ROOM_TYPE.MINIBOSS;
   const minibossCoord: [number, number] = [miniBossRow, miniBossCol];
 
   generatePath(floor, intermediateCoord, minibossCoord, 4);
   floor[commons[intermediate][0]][commons[intermediate][1]] = ROOM_TYPE.COMMON; // Unassign this room as Intermediate Room.
+  // console.log(floorToStringArray(floor));
 
   // Get path from Intermediate to Shop Room
   // Determine again which rooms are Common Rooms
@@ -409,44 +457,90 @@ export function generateFloorPlan(start: boolean): ROOM_TYPE[][] {
   // Get an Intermediate Room from one of the Common Rooms
   intermediate = Math.floor(Math.random() * commons.length);
   floor[commons[intermediate][0]][commons[intermediate][1]] =
-    ROOM_TYPE.INTERMEDIATE; // Temporarily assign this room as Intermediate Room.
+    ROOM_TYPE.INTERMEDIATE; // Temporarily assign this room as Intesrmediate Room.
   intermediateCoord = [commons[intermediate][0], commons[intermediate][1]];
 
   // Initialize Shop Room
-  let shopRow = Math.floor(Math.random() * 5);
-  let shopCol = Math.floor(Math.random() * 5);
-  // NOTE: Rows and Columns will ALWAYS be valid and within floor space.
+  // Determine again which rooms are NULL Rooms in the current state of the Floor
+  const shNulls: [number, number][] = [];
+  for (let i = 0; i < floor.length; i++) {
+    for (let j = 0; j < floor.length; j++) {
+      // If assigned tile is a NULL ROOM_TYPE
+      if (floor[i][j] === ROOM_TYPE.NULL) {
+        // If Right adjacent tile is within bounds
+        if (j + 1 < 5) {
+          // If Right adjacent tile is NOT a COMMON and NOT NULL ROOM_TYPE
+          if (
+            floor[i][j + 1] !== ROOM_TYPE.COMMON &&
+            floor[i][j + 1] !== ROOM_TYPE.NULL
+          ) {
+            continue;
+          }
+        }
 
-  // If the Shop row and columns are on either Start, Boss, Miniboss, Common or Intermediate rooms, RNG Shop room coordinates again.
-  while (
-    floor[miniBossRow][miniBossCol] === ROOM_TYPE.START ||
-    floor[miniBossRow][miniBossCol] === ROOM_TYPE.BOSS ||
-    floor[miniBossRow][miniBossCol] === ROOM_TYPE.MINIBOSS ||
-    floor[miniBossRow][miniBossCol] === ROOM_TYPE.COMMON ||
-    floor[miniBossRow][miniBossCol] === ROOM_TYPE.INTERMEDIATE
-  ) {
-    shopRow = Math.floor(Math.random() * 5);
-    shopCol = Math.floor(Math.random() * 5);
+        // If Left adjacent tile is within bounds
+        if (j - 1 >= 0) {
+          // If Left adjacent tile is NOT a COMMON and NOT NULL ROOM_TYPE
+          if (
+            floor[i][j - 1] !== ROOM_TYPE.COMMON &&
+            floor[i][j - 1] !== ROOM_TYPE.NULL
+          ) {
+            continue;
+          }
+        }
+
+        // If Down adjacent tile is within bounds
+        if (i + 1 < 5) {
+          // If Down adjacent tile is NOT a COMMON and NOT NULL ROOM_TYPE
+          if (
+            floor[i + 1][j] !== ROOM_TYPE.COMMON &&
+            floor[i + 1][j] !== ROOM_TYPE.NULL
+          ) {
+            continue;
+          }
+        }
+
+        // If Up adjacent tile is within bounds
+        if (i - 1 >= 0) {
+          // If Up adjacent tile is NOT a COMMON and NOT NULL ROOM_TYPE
+          if (
+            floor[i - 1][j] !== ROOM_TYPE.COMMON &&
+            floor[i - 1][j] !== ROOM_TYPE.NULL
+          ) {
+            continue;
+          }
+        }
+
+        shNulls.push([i, j]);
+      }
+    }
   }
+  // console.log(shNulls);
+
+  // Get a Shop Room from one of the NULL Rooms and assign it on the Floor
+  const shNull = Math.floor(Math.random() * shNulls.length);
+  const shopRow = shNulls[shNull][0];
+  const shopCol = shNulls[shNull][1];
+  // console.log(shopRow);
+  // console.log(shopCol);
 
   floor[shopRow][shopCol] = ROOM_TYPE.SHOP;
   const shopCoord: [number, number] = [shopRow, shopCol];
 
   generatePath(floor, intermediateCoord, shopCoord, 5);
   floor[commons[intermediate][0]][commons[intermediate][1]] = ROOM_TYPE.COMMON; // Unassign this room as Intermediate Room.
-
+  // console.log(floorToStringArray(floor));
   // console.log(floor);
 
   return floor;
 }
 
-// TODO: Implement to find adjacent rooms
 /**
  * Function to determine the existence of adjacent rooms in
  * @param floor ROOM_TYPE type, 2d 5x5 matrix represemting the floor layout.
  * @returns A 2d 5x5 matrix of IRoomNode type.
  */
-export function findAdjacentRooms(floor: ROOM_TYPE[][]): IRoomNode[][] {
+export function connectAdjacentRooms(floor: ROOM_TYPE[][]): IRoomNode[][] {
   // Initialize directions
   const dir: [number, number][] = [
     [0, 1], // Right
@@ -521,18 +615,6 @@ export function findAdjacentRooms(floor: ROOM_TYPE[][]): IRoomNode[][] {
       adjRooms[row][col].explored = true; // Room has been explored.
     }
   }
-
-  // const adjRooms: IRoomNode[][] = Array.from({ length: floor.length }, () =>
-  //   Array(floor[0].length).fill({
-  //     type: floor[0][0],
-  //     explored: false,
-  //     eastDoor: false,
-  //     westDoor: false,
-  //     northDoor: false,
-  //     southDoor: false,
-  //   })
-  // );
-  // room.explored = true
 
   return adjRooms;
 }
