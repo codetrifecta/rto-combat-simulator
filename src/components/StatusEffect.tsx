@@ -3,7 +3,10 @@ import { IStatus } from '../types';
 import { Tooltip } from './Tooltip';
 import { Icon } from './Icon';
 
-export const StatusEffect: FC<{ status: IStatus }> = ({ status }) => {
+export const StatusEffect: FC<{ status: IStatus; stacks: number }> = ({
+  status,
+  stacks = 1,
+}) => {
   return (
     <div
       key={status.id}
@@ -15,6 +18,7 @@ export const StatusEffect: FC<{ status: IStatus }> = ({ status }) => {
 
       <Tooltip>
         <h2>{status.name}</h2>
+        {stacks > 1 ? <p>Stacks: {stacks}</p> : null}
         <p>{status.description}</p>
         <p className="">Lasts {status.durationCounter} more turns.</p>
       </Tooltip>

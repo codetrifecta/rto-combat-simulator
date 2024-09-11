@@ -2,13 +2,8 @@
 import player_01 from '../assets/sprites/players/sprite_player_01.png';
 
 // ENEMIES
-import enemy_demon_02 from '../assets/sprites/enemies/sprite_enemy_demon_02.png';
-import enemy_demon_10 from '../assets/sprites/enemies/sprite_enemy_demon_10.png';
-import enemy_demon_12 from '../assets/sprites/enemies/sprite_enemy_demon_12.png';
-import enemy_demon_13 from '../assets/sprites/enemies/sprite_enemy_demon_13.png';
-
 // From Rogue Adventures Asset Pack
-import enemy_abyssal_cyclopean_wraith from '../assets/sprites/enemies/sprite_enemy_abyssal_cyclopean_wraith.png';
+import abyssal_cyclopean_wraith from '../assets/sprites/enemies/sprite_enemy_abyssal_cyclopean_wraith.png';
 import cerberus_pup from '../assets/sprites/enemies/sprite_enemy_cerberus_pup.png';
 import corrupt_minotaur from '../assets/sprites/enemies/sprite_enemy_corrupt_minotaur.png';
 import corrupt_olympian from '../assets/sprites/enemies/sprite_enemy_corrupt_olympian.png';
@@ -58,6 +53,19 @@ import tile_cellar_253 from '../assets/sprites/tiles/cellar/door/sprite_tile_cel
 import tile_cellar_397 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_397.png';
 import tile_cellar_282 from '../assets/sprites/tiles/cellar/door/sprite_tile_cellar_282.png';
 
+// SKILL ANIMATION
+import skill_17 from '../assets/sprites/skills/sprite_skill_17.png';
+import skill_31 from '../assets/sprites/skills/sprite_skill_31.png';
+import skill_43 from '../assets/sprites/skills/sprite_skill_43.png';
+import skill_48 from '../assets/sprites/skills/sprite_skill_48.png';
+import skill_72 from '../assets/sprites/skills/sprite_skill_72.png';
+import skill_74 from '../assets/sprites/skills/sprite_skill_74.png';
+import skill_86 from '../assets/sprites/skills/sprite_skill_86.png';
+import skill_90 from '../assets/sprites/skills/sprite_skill_90.png';
+import skill_91 from '../assets/sprites/skills/sprite_skill_91.png';
+import skill_92 from '../assets/sprites/skills/sprite_skill_92.png';
+import skill_125 from '../assets/sprites/skills/sprite_skill_125.png';
+
 export const spriteSize = 64;
 export const FLOOR_SIZE = 32;
 
@@ -66,13 +74,8 @@ export enum SPRITE_ID {
   PLAYER_01 = 'PLAYER_01',
 
   // ENEMIES
-  DEMON_02 = 'DEMON_02',
-  DEMON_10 = 'DEMON_10',
-  DEMON_12 = 'DEMON_12',
-  DEMON_13 = 'DEMON_13',
-
   // From Rogue Adventures Asset Pack
-  ENEMY_ABYSSAL_CYCLOPEAN_WRAITH = 'ENEMY_ABYSSAL_CYCLOPEAN_WRAITH',
+  ABYSSAL_CYCLOPEAN_WRAITH = 'ABYSSAL_CYCLOPEAN_WRAITH',
   CERBERUS_PUP = 'CERBERUS_PUP',
   CORRUPT_MINOTAUR = 'CORRUPT_MINOTAUR',
   CORRUPT_OLYMPIAN = 'CORRUPT_OLYMPIAN',
@@ -120,6 +123,19 @@ export enum SPRITE_ID {
   // DOORS
   CELLAR_DOOR_397 = 'cellar_door_397',
   CELLAR_DOOR_282 = 'cellar_door_282',
+
+  // SKILL ANIMATION
+  SKILL_17 = 'SKILL_17',
+  SKILL_31 = 'SKILL_31',
+  SKILL_43 = 'SKILL_43',
+  SKILL_48 = 'SKILL_48',
+  SKILL_72 = 'SKILL_72',
+  SKILL_74 = 'SKILL_74',
+  SKILL_86 = 'SKILL_86',
+  SKILL_90 = 'SKILL_90',
+  SKILL_91 = 'SKILL_91',
+  SKILL_92 = 'SKILL_92',
+  SKILL_125 = 'SKILL_125',
 }
 
 export const SPRITES: Record<SPRITE_ID, string> = {
@@ -127,13 +143,8 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   [SPRITE_ID.PLAYER_01]: player_01,
 
   // ENEMIES
-  [SPRITE_ID.DEMON_02]: enemy_demon_02,
-  [SPRITE_ID.DEMON_10]: enemy_demon_10,
-  [SPRITE_ID.DEMON_12]: enemy_demon_12,
-  [SPRITE_ID.DEMON_13]: enemy_demon_13,
-
   // From Rogue Adventures Asset Pack
-  [SPRITE_ID.ENEMY_ABYSSAL_CYCLOPEAN_WRAITH]: enemy_abyssal_cyclopean_wraith,
+  [SPRITE_ID.ABYSSAL_CYCLOPEAN_WRAITH]: abyssal_cyclopean_wraith,
   [SPRITE_ID.CERBERUS_PUP]: cerberus_pup,
   [SPRITE_ID.CORRUPT_MINOTAUR]: corrupt_minotaur,
   [SPRITE_ID.CORRUPT_OLYMPIAN]: corrupt_olympian,
@@ -182,6 +193,19 @@ export const SPRITES: Record<SPRITE_ID, string> = {
   // DOORS
   [SPRITE_ID.CELLAR_DOOR_397]: tile_cellar_397,
   [SPRITE_ID.CELLAR_DOOR_282]: tile_cellar_282,
+
+  // SKILL ANIMATION
+  [SPRITE_ID.SKILL_17]: skill_17,
+  [SPRITE_ID.SKILL_31]: skill_31,
+  [SPRITE_ID.SKILL_43]: skill_43,
+  [SPRITE_ID.SKILL_48]: skill_48,
+  [SPRITE_ID.SKILL_72]: skill_72,
+  [SPRITE_ID.SKILL_74]: skill_74,
+  [SPRITE_ID.SKILL_86]: skill_86,
+  [SPRITE_ID.SKILL_90]: skill_90,
+  [SPRITE_ID.SKILL_91]: skill_91,
+  [SPRITE_ID.SKILL_92]: skill_92,
+  [SPRITE_ID.SKILL_125]: skill_125,
 };
 
 export const getSpriteSrc = (spriteID: SPRITE_ID) => SPRITES[spriteID] || '';
