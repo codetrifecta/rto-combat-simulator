@@ -543,10 +543,10 @@ export function generateFloorPlan(start: boolean): ROOM_TYPE[][] {
 export function connectAdjacentRooms(floor: ROOM_TYPE[][]): IRoomNode[][] {
   // Initialize directions
   const dir: [number, number][] = [
-    [0, 1], // Right
-    [0, -1], // Left
-    [1, 0], // Down
-    [-1, 0], // Up
+    [0, 1], // East
+    [0, -1], // West
+    [1, 0], // South
+    [-1, 0], // North
   ]; // (vertical is dir[0], horizontal is dir[1])
 
   // Initialize IRoomNode variable (adjRooms.type is automatically assigned during initialization with the values of 'floor', which is a
@@ -568,51 +568,44 @@ export function connectAdjacentRooms(floor: ROOM_TYPE[][]): IRoomNode[][] {
   // Check for each room, whether it has adjacent rooms in each cardinal direction.
   for (let row = 0; row < floor.length; row++) {
     for (let col = 0; col < floor.length; col++) {
+      // Skip if the room is a NULL room.
+      if (adjRooms[row][col].type === ROOM_TYPE.NULL) {
+        continue;
+      }
+
       // Check Right/East
       if (
-        adjRooms[row + dir[0][0]][col + dir[0][1]].type !== ROOM_TYPE.NULL || // The room isn't ROOM_TYPE NULL.
-        (row + dir[0][0] >= 0 && // The room to the right/east is within the bounds of the grid
-          col + dir[0][1] >= 0 &&
-          row + dir[0][0] < floor.length &&
-          col + dir[0][1] < floor.length)
+        col + dir[0][1] < floor.length && // The room to the right/east is within the bounds of the grid
+        adjRooms[row + dir[0][0]][col + dir[0][1]].type !== ROOM_TYPE.NULL // The room isn't ROOM_TYPE NULL.
       ) {
-        adjRooms[row + dir[0][0]][col + dir[0][1]].eastDoor = true;
+        adjRooms[row][col].eastDoor = true;
       }
 
       // Check Left/West
       if (
-        adjRooms[row + dir[1][0]][col + dir[1][1]].type !== ROOM_TYPE.NULL || // The room isn't ROOM_TYPE NULL.
-        (row + dir[1][0] >= 0 && // The room to the left/west is within the bounds of the grid
-          col + dir[1][1] >= 0 &&
-          row + dir[1][0] < floor.length &&
-          col + dir[1][1] < floor.length)
+        col + dir[1][1] >= 0 && // The room to the left/west is within the bounds of the grid
+        adjRooms[row + dir[1][0]][col + dir[1][1]].type !== ROOM_TYPE.NULL // The room isn't ROOM_TYPE NULL.
       ) {
-        adjRooms[row + dir[1][0]][col + dir[1][1]].westDoor = true;
+        adjRooms[row][col].westDoor = true;
       }
 
       // Check Down/South
       if (
-        adjRooms[row + dir[2][0]][col + dir[2][1]].type !== ROOM_TYPE.NULL || // The room isn't ROOM_TYPE NULL.
-        (row + dir[2][0] >= 0 && // The room down/south is within the bounds of the grid
-          col + dir[2][1] >= 0 &&
-          row + dir[2][0] < floor.length &&
-          col + dir[2][1] < floor.length)
+        row + dir[2][0] < floor.length && // The room down/south is within the bounds of the grid
+        adjRooms[row + dir[2][0]][col + dir[2][1]].type !== ROOM_TYPE.NULL // The room isn't ROOM_TYPE NULL.
       ) {
-        adjRooms[row + dir[2][0]][col + dir[2][1]].southDoor = true;
+        adjRooms[row][col].southDoor = true;
       }
 
       // Check Up/North
       if (
-        adjRooms[row + dir[3][0]][col + dir[3][1]].type !== ROOM_TYPE.NULL || // The room isn't ROOM_TYPE NULL.
-        (row + dir[3][0] >= 0 && // The room up/north is within the bounds of the grid
-          col + dir[3][1] >= 0 &&
-          row + dir[3][0] < floor.length &&
-          col + dir[3][1] < floor.length)
+        row + dir[3][0] >= 0 && // The room up/north is within the bounds of the grid
+        adjRooms[row + dir[3][0]][col + dir[3][1]].type !== ROOM_TYPE.NULL // The room isn't ROOM_TYPE NULL.
       ) {
-        adjRooms[row + dir[3][0]][col + dir[3][1]].northDoor = true;
+        adjRooms[row][col].northDoor = true;
       }
 
-      adjRooms[row][col].explored = true; // Room has been explored.
+      // adjRooms[row][col].explored = true; // Room has been explored.
     }
   }
 
