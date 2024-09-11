@@ -1,8 +1,8 @@
-# Return to Olympus
+# Rise to Olympus
 
 ## Combat Simulator
 
-Combat simulator for Return to Olympus
+Combat simulator for Rise to Olympus
 
 ![Current state of combat simulator](combat-simulator.png)
 
