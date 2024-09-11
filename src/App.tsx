@@ -24,6 +24,7 @@ import { SkillAnimation } from './components/SkillAnimation';
 import { RoomWallArt } from './components/RoomWallArt';
 import { RoomDoorArt } from './components/RoomDoorArt';
 import { ChestItemsDisplay } from './components/ChestItemsDisplay';
+import { Minimap } from './components/Minimap';
 
 // Flag for first room render
 
@@ -71,6 +72,7 @@ function App() {
     isCharacterSheetOpen,
     isGenerateRoomOpen,
     isCompendiumOpen,
+    isMinimapOpen,
     setIsInventoryOpen,
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
@@ -496,6 +498,7 @@ function App() {
           <GenerateRoomModal />
         </section>
 
+        {/* Compendium */}
         <section
           className="fixed z-[60] top-[50%] left-[50%]  shadow-lg flex"
           style={{
@@ -518,6 +521,16 @@ function App() {
         >
           <InventoryChooser />
           <div></div>
+        </section>
+
+        {/* Minimap */}
+        <section
+          className={clsx('fixed right-10 top-60 w-[23%] max-h-[200px]', {
+            'z-[50]': isMinimapOpen,
+            'z-[-10] opacity-0': !isMinimapOpen,
+          })}
+        >
+          <Minimap />
         </section>
 
         {/* <div className="fixed bottom-0 flex flex-col justify-between items-center"> */}

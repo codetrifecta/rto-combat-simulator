@@ -1,7 +1,7 @@
 import { IFloor, IRoom } from '../types';
 import { ROOM_TYPE } from '../utils/floor';
 
-const BASE_ROOM: IRoom = {
+export const BASE_ROOM: IRoom = {
   type: ROOM_TYPE.NULL,
   explored: false,
   northDoor: false,
