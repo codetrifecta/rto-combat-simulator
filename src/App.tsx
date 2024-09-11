@@ -455,16 +455,19 @@ function App() {
           </div>
         </section>
 
-        <div
-          className="fixed z-40"
-          style={{
-            bottom: `${PLAYER_CONTROL_PANEL_HEIGHT + 90}px`,
-            left: '50%',
-            transform: 'translateX(-50%)',
-          }}
-        >
-          <EntityTurnText />
-        </div>
+        {/* Entity Turn Text */}
+        {isRoomOver ? null : (
+          <div
+            className="fixed z-40"
+            style={{
+              bottom: `${PLAYER_CONTROL_PANEL_HEIGHT + 90}px`,
+              left: '50%',
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <EntityTurnText />
+          </div>
+        )}
 
         {/* Generate Room */}
         <section
