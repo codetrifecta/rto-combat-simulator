@@ -8,14 +8,14 @@ export const SkillAnimation: FC = () => {
     useSkillAnimationStore();
 
   useEffect(() => {
-    console.log('do current SkillAnimation');
+    // console.log('do current SkillAnimation', currentSkillAnimation);
 
     if (!currentSkillAnimation) {
       return;
     }
 
     setTimeout(() => {
-      console.log('SkillAnimation done');
+      // console.log('SkillAnimation done');
       setCurrentSkillAnimation(null);
     }, currentSkillAnimation.duration * 900);
   }, [currentSkillAnimation, setCurrentSkillAnimation]);
@@ -38,7 +38,7 @@ export const SkillAnimation: FC = () => {
           style={{
             width: currentSkillAnimation.spriteSize,
             height: currentSkillAnimation.spriteSize,
-            transform: `translate(${-currentSkillAnimation.spriteSize / 2 + TILE_SIZE / 2}px, ${-currentSkillAnimation.spriteSize / 2 + TILE_SIZE / 2}px)`,
+            transform: `translate(${-currentSkillAnimation.spriteSize / 2 + TILE_SIZE / 2}px, ${-currentSkillAnimation.spriteSize / 2 + TILE_SIZE / 2 + (currentSkillAnimation.yOffset !== undefined ? currentSkillAnimation.yOffset : 0)}px)`,
           }}
         >
           <div
@@ -61,7 +61,7 @@ export const SkillAnimation: FC = () => {
             }}
           >
             <Sprite
-              id="SkillAnimation_animation"
+              id="skill_animation_sprite"
               sprite={currentSkillAnimation.sprite}
               width={
                 currentSkillAnimation.spriteSize *

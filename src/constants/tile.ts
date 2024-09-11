@@ -5,8 +5,10 @@ export const TILE_SIZE = 48;
 export enum TILE_TYPE {
   NULL = 0,
   FLOOR = 1,
-  WALL = 2,
-  DOOR = 3,
+  OBSTACLE = 2,
+  WALL = 3,
+  DOOR = 4,
+  CHEST = 5,
 }
 
 interface ITile {

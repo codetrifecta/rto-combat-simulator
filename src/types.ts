@@ -114,6 +114,7 @@ export interface IWeapon {
   icon: ICON_ID;
   attackType: WEAPON_ATTACK_TYPE.MELEE | WEAPON_ATTACK_TYPE.RANGED;
   type: WEAPON_TYPE;
+  damageMultiplier: number;
   stats: IStats;
   range: number;
   cost: number;
@@ -163,4 +164,6 @@ export interface ISkillAnimation {
   spritesheetRows: number;
   spritesheetColumns: number;
   animationRow: number;
+  xOffset?: number;
+  yOffset?: number;
 }

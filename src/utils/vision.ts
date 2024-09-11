@@ -52,6 +52,8 @@ function castRayAtAngle(
         (
           currentRow >= 0 &&
           currentCol >= 0 &&
+          currentRow < room.length && // Current row is within the room bounds
+          currentCol < room[0].length && // Current column is within the room bounds
           currentRow <= startRow + skillRadius && // Current row is between startRow +- skillRadius
           currentRow >= startRow - skillRadius && // Current row is between startRow +- skillRadius
           currentCol <= startCol + skillRadius && // Current column is between startRow +- skillRadius
@@ -65,7 +67,10 @@ function castRayAtAngle(
     visibleTiles[currentRow][currentCol] = true; // Set the current tile as visible
 
     // If the current tile is a wall, break
-    if (room[currentRow][currentCol] === TILE_TYPE.WALL) {
+    if (
+      room[currentRow][currentCol] === TILE_TYPE.WALL ||
+      room[currentRow][currentCol] === TILE_TYPE.OBSTACLE
+    ) {
       break;
     } else {
       // If current tile is a floor but has an entity

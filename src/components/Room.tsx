@@ -17,7 +17,7 @@ import {
 } from '../constants/skill';
 import { STATUS_ID, STATUSES } from '../constants/status';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from '../constants/weapon';
-import { IEnemy, IEntity } from '../types';
+import { IEnemy, IEntity, ISkill, ISkillAnimation } from '../types';
 import { useGameStateStore } from '../store/game';
 import { usePlayerStore } from '../store/player';
 import { useEnemyStore } from '../store/enemy';
@@ -50,8 +50,8 @@ import debounce from 'debounce';
 import { useSummonStore } from '../store/summon';
 import { useSkillAnimationStore } from '../store/skillAnimation';
 import {
-  BASE_SKILL_ANIMATION,
   SKILL_ANIMATION_PRESET,
+  WEAPON_ATTACK_ANIMATION,
 } from '../constants/skillAnimation';
 
 export const Room: FC<{
@@ -81,6 +81,7 @@ export const Room: FC<{
     endTurn,
     isRoomOver,
     isGameOver,
+    setIsChestOpen,
     setIsGameOver,
     setIsRoomOver,
     setHoveredTile,
@@ -777,6 +778,79 @@ export const Room: FC<{
   // Debounce hovered tile
   const debouncedSetHoveredTile = debounce(setHoveredTile, 50);
 
+  // Handle player clicking on a tile to use a skill with animations
+  const handlePlayerSkillWithAnimation = (
+    skill: ISkill,
+    skillAnimation: ISkillAnimation,
+    targetZones: [number, number][],
+    rowIndex: number,
+    columnIndex: number
+  ) => {
+    setTimeout(() => {
+      const { newPlayer, newEnemies, newRoomEntityPositions } = handleSkill(
+        skill,
+        [rowIndex, columnIndex],
+        player,
+        [...enemies],
+        summons,
+        targetZones,
+        roomEntityPositions,
+        addLog
+      );
+
+      targetZones = [];
+
+      // Change player's sprite direction if enemy is to the left side of the player
+      if (columnIndex < playerPosition[1]) {
+        setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.LEFT);
+      } else if (columnIndex > playerPosition[1]) {
+        setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.RIGHT);
+      }
+
+      const isEnemyDead = newEnemies.some((enemy) => {
+        return enemy.health <= 0;
+      });
+
+      setEnemies([...newEnemies]);
+      setPlayerState({
+        ...newPlayer.state,
+        isUsingSkill: false,
+      });
+      setRoomEntityPositions(newRoomEntityPositions);
+
+      if (isEnemyDead) {
+        setTimeout(() => {
+          setEnemies(newEnemies.filter((enemy) => enemy.health > 0));
+          setPlayer({
+            ...newPlayer,
+            state: {
+              ...newPlayer.state,
+              isUsingSkill: false,
+              skillId: null,
+            },
+            actionPoints: newPlayer.actionPoints - skill.cost,
+            skills: newPlayer.skills.map((s) =>
+              s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+            ),
+          });
+        }, 1000);
+      } else {
+        setPlayer({
+          ...newPlayer,
+          state: {
+            ...newPlayer.state,
+            isUsingSkill: false,
+            skillId: null,
+          },
+          actionPoints: newPlayer.actionPoints - skill.cost,
+          skills: newPlayer.skills.map((s) =>
+            s.id === skill.id ? { ...s, cooldownCounter: s.cooldown } : s
+          ),
+        });
+      }
+    }, skillAnimation.effectDelay);
+  };
+
   // Handle player attacking an enemy
   const handleEnemyClick = (
     entityId: number | null
@@ -1404,7 +1478,7 @@ export const Room: FC<{
     }
   };
 
-  // console.log(roomTileMatrix);
+  // console.log('targetZones', targetZones.current);
 
   return (
     <div
@@ -1643,7 +1717,6 @@ export const Room: FC<{
                   case SKILL_ID.MANA_BURST:
                   case SKILL_ID.SUPERNOVA:
                   case SKILL_ID.BLIZZARD:
-                  case SKILL_ID.STORM_PULSE:
                   case SKILL_ID.CLEAVE:
                   case SKILL_ID.AIR_SLASH:
                     if (
@@ -1840,6 +1913,26 @@ export const Room: FC<{
                         }
 
                         isTargetZone = true;
+                      } else {
+                        // Remove tiles from target zone if they are not in the target zone
+                        const currentTargetZones = targetZones.current;
+
+                        // Check if tile is in target zone
+                        const isTileInTargetZone = currentTargetZones.some(
+                          ([row, col]) => {
+                            return row === rowIndex && col === columnIndex;
+                          }
+                        );
+
+                        if (isTileInTargetZone) {
+                          targetZones.current = currentTargetZones.filter(
+                            ([row, col]) => {
+                              return row !== rowIndex || col !== columnIndex;
+                            }
+                          );
+                        }
+
+                        isTargetZone = false;
                       }
                     }
                     break;
@@ -1982,6 +2075,26 @@ export const Room: FC<{
                           }
 
                           isTargetZone = true;
+                        } else {
+                          // Remove tiles from target zone if they are not in the target zone
+                          const currentTargetZones = targetZones.current;
+
+                          // Check if tile is in target zone
+                          const isTileInTargetZone = currentTargetZones.some(
+                            ([row, col]) => {
+                              return row === rowIndex && col === columnIndex;
+                            }
+                          );
+
+                          if (isTileInTargetZone) {
+                            targetZones.current = currentTargetZones.filter(
+                              ([row, col]) => {
+                                return row !== rowIndex || col !== columnIndex;
+                              }
+                            );
+                          }
+
+                          isTargetZone = false;
                         }
                       }
                     }
@@ -2077,6 +2190,8 @@ export const Room: FC<{
                     });
                   } else if (tileType === TILE_TYPE.FLOOR) {
                     handlePlayerMove(rowIndex, columnIndex);
+                  } else if (tileType === TILE_TYPE.CHEST) {
+                    setIsChestOpen(true);
                   }
 
                   return;
@@ -2088,7 +2203,14 @@ export const Room: FC<{
                     entityIfExists &&
                     entityIfExists[0] === ENTITY_TYPE.ENEMY
                   ) {
-                    handleEnemyClick(entityId);
+                    setCurrentSkillAnimation({
+                      ...WEAPON_ATTACK_ANIMATION,
+                      position: [rowIndex, columnIndex],
+                    });
+
+                    setTimeout(() => {
+                      handleEnemyClick(entityId);
+                    }, WEAPON_ATTACK_ANIMATION.effectDelay);
                   } else if (
                     player.state.isMoving &&
                     !entityIfExists &&
@@ -2101,6 +2223,7 @@ export const Room: FC<{
                     player.state.isUsingSkill &&
                     player.state.skillId
                   ) {
+                    console.log('Skill clicked', player.state.skillId);
                     // Check tile clicked
                     // Defensive programming: Check if the tile clicked is valid for the specific skill. Prevents player from using skills on invalid tiles.
                     let isValid = false;
@@ -2138,7 +2261,7 @@ export const Room: FC<{
                         }
                       }
                     } else {
-                      // Default to true for movement skills
+                      // Default to true for movement skills (that don't damage enemies)
                       isValid = true;
                     }
 
@@ -2165,9 +2288,9 @@ export const Room: FC<{
                       return;
                     }
 
-                    const skillAnimation =
-                      SKILL_ANIMATION_PRESET[player.state.skillId] ??
-                      BASE_SKILL_ANIMATION;
+                    const skillAnimation = {
+                      ...SKILL_ANIMATION_PRESET[player.state.skillId],
+                    };
 
                     skillAnimation.position = [rowIndex, columnIndex];
 
@@ -2177,6 +2300,10 @@ export const Room: FC<{
                         SKILL_ID.WHIRLWIND,
                         SKILL_ID.WRATH_OF_THE_ANCIENTS,
                         SKILL_ID.KNIFE_BARRAGE,
+                        SKILL_ID.MANA_BURST,
+                        SKILL_ID.SUPERNOVA,
+                        SKILL_ID.STORM_PULSE,
+                        SKILL_ID.WARCRY,
                       ].includes(player.state.skillId)
                     ) {
                       skillAnimation.position = [playerRow, playerCol];
@@ -2184,80 +2311,13 @@ export const Room: FC<{
 
                     setCurrentSkillAnimation(skillAnimation);
 
-                    setTimeout(() => {
-                      const { newPlayer, newEnemies, newRoomEntityPositions } =
-                        handleSkill(
-                          skill,
-                          [rowIndex, columnIndex],
-                          player,
-                          enemies,
-                          summons,
-                          targetZones.current,
-                          roomEntityPositions,
-                          addLog
-                        );
-
-                      // Change player's sprite direction if enemy is to the left side of the player
-                      if (columnIndex < playerPosition[1]) {
-                        setEntityAnimationIdle(
-                          player,
-                          ENTITY_SPRITE_DIRECTION.LEFT
-                        );
-                      } else if (columnIndex > playerPosition[1]) {
-                        setEntityAnimationIdle(
-                          player,
-                          ENTITY_SPRITE_DIRECTION.RIGHT
-                        );
-                      }
-
-                      const isEnemyDead = newEnemies.some((enemy) => {
-                        return enemy.health <= 0;
-                      });
-
-                      setEnemies([...newEnemies]);
-                      setPlayerState({
-                        ...newPlayer.state,
-                        isUsingSkill: false,
-                      });
-                      setRoomEntityPositions(newRoomEntityPositions);
-
-                      if (isEnemyDead) {
-                        setTimeout(() => {
-                          setEnemies(
-                            newEnemies.filter((enemy) => enemy.health > 0)
-                          );
-                          setPlayer({
-                            ...newPlayer,
-                            state: {
-                              ...newPlayer.state,
-                              isUsingSkill: false,
-                              skillId: null,
-                            },
-                            actionPoints: newPlayer.actionPoints - skill.cost,
-                            skills: newPlayer.skills.map((s) =>
-                              s.id === skill.id
-                                ? { ...s, cooldownCounter: s.cooldown }
-                                : s
-                            ),
-                          });
-                        }, 1000);
-                      } else {
-                        setPlayer({
-                          ...newPlayer,
-                          state: {
-                            ...newPlayer.state,
-                            isUsingSkill: false,
-                            skillId: null,
-                          },
-                          actionPoints: newPlayer.actionPoints - skill.cost,
-                          skills: newPlayer.skills.map((s) =>
-                            s.id === skill.id
-                              ? { ...s, cooldownCounter: s.cooldown }
-                              : s
-                          ),
-                        });
-                      }
-                    }, skillAnimation.effectDelay);
+                    handlePlayerSkillWithAnimation(
+                      skill,
+                      skillAnimation,
+                      targetZones.current,
+                      rowIndex,
+                      columnIndex
+                    );
                   }
                 }
               }}
@@ -2304,13 +2364,11 @@ export const Room: FC<{
                 }
               }}
               onMouseLeave={() => {
-                if (isEffectZone) {
-                  // Set isEffectZoneHovered to true when mouse leaves effect zone
-                  // and reset saved target zones and effect zone hovered
-                  setIsEffectZoneHovered(false);
-                  targetZones.current = [];
-                  setEffectZoneHovered(null);
-                }
+                // Set isEffectZoneHovered to true when mouse leaves any tile
+                // and reset saved target zones and effect zone hovered
+                setIsEffectZoneHovered(false);
+                targetZones.current = [];
+                setEffectZoneHovered(null);
 
                 if (entityIfExists) {
                   // Set currentHoveredEntity to null when mouse leaves enemy or player tile

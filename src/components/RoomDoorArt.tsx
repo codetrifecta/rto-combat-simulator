@@ -1,10 +1,10 @@
 import { FC, useEffect, useRef } from 'react';
 
-import defaultRoom from '../assets/sprites/tiles/room_demo_wall.png';
+import defaultRoom from '../assets/sprites/tiles/room_demo_door.png';
 import { TILE_SIZE } from '../constants/tile';
 import { useGameStateStore } from '../store/game';
 
-export const RoomWallArt: FC<{
+export const RoomDoorArt: FC<{
   width: number;
   height: number;
   grayscale?: boolean;
@@ -32,7 +32,9 @@ export const RoomWallArt: FC<{
       imgSrc = defaultRoom;
     }
 
-    if (isRoomOver && imgSrc === defaultRoom) {
+    if (!isRoomOver) {
+      return;
+    } else {
       imgSrc = defaultRoom;
     }
 

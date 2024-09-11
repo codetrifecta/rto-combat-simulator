@@ -65,12 +65,21 @@ export const Tile: FC<{
 
   const isAttackEffectTile = useMemo(() => {
     return (
-      tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR && !hasPlayer
+      tileType !== TILE_TYPE.OBSTACLE &&
+      tileType !== TILE_TYPE.WALL &&
+      tileType !== TILE_TYPE.DOOR &&
+      tileType !== TILE_TYPE.CHEST &&
+      !hasPlayer
     );
   }, [hasPlayer, tileType]);
 
   const isSkillEffectTile = useMemo(() => {
-    return tileType !== TILE_TYPE.WALL && tileType !== TILE_TYPE.DOOR;
+    return (
+      tileType !== TILE_TYPE.OBSTACLE &&
+      tileType !== TILE_TYPE.WALL &&
+      tileType !== TILE_TYPE.DOOR &&
+      tileType !== TILE_TYPE.CHEST
+    );
   }, [tileType]);
 
   const targetZoneClasses = useMemo(() => {
@@ -204,12 +213,18 @@ export const Tile: FC<{
         padding: 5,
       }}
       className={clsx('relative group', {
-        // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
-        'cursor-pointer ':
-          (tileType !== TILE_TYPE.WALL &&
-            tileType !== TILE_TYPE.DOOR &&
-            tileType !== TILE_TYPE.NULL) ||
-          (tileType === TILE_TYPE.DOOR && isRoomOver),
+        // Add tile type as classname
+        null: tileType === TILE_TYPE.NULL,
+        floor: tileType === TILE_TYPE.FLOOR,
+        wall: tileType === TILE_TYPE.WALL,
+        door: tileType === TILE_TYPE.DOOR,
+        chest: tileType === TILE_TYPE.CHEST,
+
+        // Only use cursor-pointer non-wall tiles (and door tiles and chest tiles if room is over)
+        'cursor-pointer':
+          tileType === TILE_TYPE.FLOOR ||
+          (tileType === TILE_TYPE.DOOR && isRoomOver) ||
+          (tileType === TILE_TYPE.CHEST && isRoomOver),
       })}
       onClick={onClick}
       onMouseEnter={() => {
@@ -226,18 +241,11 @@ export const Tile: FC<{
           top: TILE_HIGHLIGHT_PADDING / 2,
         }}
         className={clsx('absolute w-full h-full', classNames, {
-          // Only use cursor-pointer non-wall tiles (and door tiles if room is over)
-          'cursor-pointer ':
-            (tileType !== TILE_TYPE.WALL &&
-              tileType !== TILE_TYPE.DOOR &&
-              tileType !== TILE_TYPE.NULL) ||
-            (tileType === TILE_TYPE.DOOR && isRoomOver),
-          // "cursor-default": tileType === TILE_TYPE.DOOR && !isRoomOver,
-
           // Only put shadow black on non-wall tiles
           'group-hover:shadow-mild-black group-hover:z-30':
             (tileType == TILE_TYPE.FLOOR && !(hasPlayer || hasEnemy)) ||
-            (tileType == TILE_TYPE.DOOR && isRoomOver),
+            (tileType == TILE_TYPE.DOOR && isRoomOver) ||
+            (tileType == TILE_TYPE.CHEST && isRoomOver),
 
           // Tile type color
           // 'bg-white': tileType === TILE_TYPE.FLOOR,

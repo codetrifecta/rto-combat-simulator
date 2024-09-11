@@ -4,6 +4,7 @@ import {
   STARTING_MAX_HEALTH,
 } from '../constants/entity';
 import { TILE_SIZE } from '../constants/tile';
+import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from '../constants/weapon';
 import { IEnemy, IEntity, IPlayer, IStatus } from '../types';
 
 /**
@@ -121,6 +122,34 @@ export const getEntityPosition = (
   }
 
   return [-1, -1];
+};
+
+export const getPlayerWeaponDamage = (player: IPlayer) => {
+  const weapon = player.equipment.weapon;
+
+  if (!weapon) {
+    return 0;
+  }
+
+  const totalStrength = getPlayerTotalStrength(player);
+  const totalIntelligence = getPlayerTotalIntelligence(player);
+
+  const weaponDamageMultiplier = weapon.damageMultiplier || 0;
+  let baseStat = totalStrength;
+
+  if (weapon.attackType === WEAPON_ATTACK_TYPE.MELEE) {
+    baseStat = totalStrength;
+  } else if (weapon.attackType === WEAPON_ATTACK_TYPE.RANGED) {
+    if (weapon.type === WEAPON_TYPE.BOW) {
+      baseStat = totalStrength;
+    } else {
+      baseStat = totalIntelligence;
+    }
+  } else {
+    baseStat = totalIntelligence;
+  }
+
+  return Math.round(baseStat * weaponDamageMultiplier);
 };
 
 export const getPlayerTotalStrength = (player: IPlayer) => {
@@ -366,7 +395,7 @@ export const displayGeneralMessage = (elementID: string, message: string) => {
   messageDisplay.style.position = 'absolute';
   messageDisplay.style.top = `${tileTopPosition - TILE_SIZE}px`;
   messageDisplay.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - messageDisplay.offsetWidth / 2)}px`;
-  messageDisplay.style.zIndex = '100';
+  messageDisplay.style.zIndex = '150';
   messageDisplay.style.color = 'white';
 
   messageDisplay.classList.add('animate-floatUpAndFadeOut20');
@@ -413,7 +442,7 @@ const displayDamageNumbers = (elementID: string, damage: number) => {
   damageNumbers.style.position = 'absolute';
   damageNumbers.style.top = `${tileTopPosition - TILE_SIZE * 1.5}px`;
   damageNumbers.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - damageNumbers.offsetWidth / 2)}px`;
-  damageNumbers.style.zIndex = '100';
+  damageNumbers.style.zIndex = '150';
   damageNumbers.style.color = 'red';
 
   damageNumbers.classList.add('animate-floatUpAndFadeOut20');
@@ -474,7 +503,7 @@ const displayHealNumbers = (elementID: string, heal: number) => {
   healNumbers.style.position = 'absolute';
   healNumbers.style.top = `${tileTopPosition - TILE_SIZE * 1.5}px`;
   healNumbers.style.left = `${tileLeftPosition + TILE_SIZE / 2 - healNumbers.offsetWidth / 2}px`;
-  healNumbers.style.zIndex = '100';
+  healNumbers.style.zIndex = '150';
   healNumbers.style.color = 'green';
 
   healNumbers.classList.add('animate-floatUpAndFadeOut20');
@@ -534,7 +563,7 @@ export const displayStatusEffect = (
   statusIndicator.style.position = 'absolute';
   statusIndicator.style.top = `${tileTopPosition - TILE_SIZE}px`;
   statusIndicator.style.left = `${tileLeftPosition + (TILE_SIZE / 2 - statusIndicator.offsetWidth / 2)}px`;
-  statusIndicator.style.zIndex = '100';
+  statusIndicator.style.zIndex = '150';
   statusIndicator.style.color = 'yellow';
 
   statusIndicator.classList.add('animate-floatUpAndFadeOut20');
