@@ -32,11 +32,13 @@ export const PlayerControlPanel: FC = () => {
     isCharacterSheetOpen,
     isGenerateRoomOpen,
     isCompendiumOpen,
+    isMinimapOpen,
     setIsCharacterSheetOpen,
     setIsInventoryOpen,
     setIsGameLogOpen,
     setIsGenerateRoomOpen,
     setIsCompendiumOpen,
+    setIsMinimapOpen,
   } = useGameStateStore();
 
   const {
@@ -228,6 +230,23 @@ export const PlayerControlPanel: FC = () => {
                 </IconButton>
                 <Tooltip>
                   <p>Game Log (L)</p>
+                </Tooltip>
+              </div>
+              <div className="relative">
+                <IconButton
+                  onClick={() => {
+                    if (isGenerateRoomOpen) return;
+                    setIsMinimapOpen(!isMinimapOpen);
+                  }}
+                >
+                  <Icon
+                    icon={ICON_ID.MAP}
+                    width={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                    height={PLAYER_CONTROL_PANEL_ICON_SIZE}
+                  />
+                </IconButton>
+                <Tooltip>
+                  <p>Minimap (M)</p>
                 </Tooltip>
               </div>
               <div className="relative">

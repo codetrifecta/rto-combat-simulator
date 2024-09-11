@@ -77,6 +77,7 @@ function App() {
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
     setIsCompendiumOpen,
+    setIsMinimapOpen,
     setTurnCycle,
     setIsLoading,
   } = useGameStateStore();
@@ -301,6 +302,10 @@ function App() {
         if (e.key === 'k') {
           setIsCompendiumOpen(!isCompendiumOpen);
         }
+
+        if (e.key === 'm') {
+          setIsMinimapOpen(!isMinimapOpen);
+        }
       }
     };
 
@@ -316,10 +321,12 @@ function App() {
     isInventoryOpen,
     isCharacterSheetOpen,
     isCompendiumOpen,
+    isMinimapOpen,
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
     setIsInventoryOpen,
     setIsCompendiumOpen,
+    setIsMinimapOpen,
     isGenerateRoomOpen,
   ]);
 
