@@ -1,4 +1,4 @@
-import { IRoomNode } from '../types';
+import { IFloor, IRoom } from '../types';
 
 export enum ROOM_TYPE {
   NULL = 0,
@@ -538,9 +538,9 @@ export function generateFloorPlan(start: boolean): ROOM_TYPE[][] {
 /**
  * Function to determine the existence of adjacent rooms in
  * @param floor ROOM_TYPE type, 2d 5x5 matrix represemting the floor layout.
- * @returns A 2d 5x5 matrix of IRoomNode type.
+ * @returns A 2d 5x5 matrix of IRoom type.
  */
-export function connectAdjacentRooms(floor: ROOM_TYPE[][]): IRoomNode[][] {
+export function connectAdjacentRooms(floor: ROOM_TYPE[][]): IFloor {
   // Initialize directions
   const dir: [number, number][] = [
     [0, 1], // East
@@ -549,11 +549,11 @@ export function connectAdjacentRooms(floor: ROOM_TYPE[][]): IRoomNode[][] {
     [-1, 0], // North
   ]; // (vertical is dir[0], horizontal is dir[1])
 
-  // Initialize IRoomNode variable (adjRooms.type is automatically assigned during initialization with the values of 'floor', which is a
+  // Initialize IRoom variable (adjRooms.type is automatically assigned during initialization with the values of 'floor', which is a
   // 'ROOM_TYPE' type)
-  const adjRooms: IRoomNode[][] = floor.map((row) =>
+  const adjRooms: IFloor = floor.map((row) =>
     row.map((roomType) => {
-      const adjRoom: IRoomNode = {
+      const adjRoom: IRoom = {
         type: roomType,
         explored: false,
         eastDoor: false,

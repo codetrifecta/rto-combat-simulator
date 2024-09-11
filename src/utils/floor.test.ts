@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { IRoomNode } from '../types';
+import { IFloor, IRoom } from '../types';
 import {
   connectAdjacentRooms,
   floorToStringArray,
@@ -67,7 +67,7 @@ describe('Initialize Floor Layout', () => {
 });
 
 describe('Determine Adjacent Rooms', () => {
-  it('returns a 5x5 layout of type IRoomNode, with start in the middle bottom row.', () => {
+  it('returns a 5x5 layout of type IRoom, with start in the middle bottom row.', () => {
     const floor1: ROOM_TYPE[][] = [
       [0, 0, 0, 0, 3],
       [0, 0, 0, 5, 1],
@@ -85,10 +85,10 @@ describe('Determine Adjacent Rooms', () => {
      * ]
      */
 
-    // The IRoomNode matrix with the correct sequence of variables
-    const adjRoomsAnswer1: IRoomNode[][] = floor1.map((row) =>
+    // The IRoom matrix with the correct sequence of variables
+    const adjRoomsAnswer1: IFloor = floor1.map((row) =>
       row.map((roomType) => {
-        const adjRoom: IRoomNode = {
+        const adjRoom: IRoom = {
           type: roomType,
           explored: false,
           eastDoor: false,
@@ -151,7 +151,7 @@ describe('Determine Adjacent Rooms', () => {
     adjRoomsAnswer1[4][2].westDoor = true;
     adjRoomsAnswer1[4][2].northDoor = true;
 
-    const adjRooms1: IRoomNode[][] = connectAdjacentRooms(floor1);
+    const adjRooms1: IFloor = connectAdjacentRooms(floor1);
 
     let isAdjRoomsCorrect1 = true;
 
@@ -194,10 +194,10 @@ describe('Determine Adjacent Rooms', () => {
       ]
     */
 
-    // The IRoomNode matrix with the correct sequence of variables
-    const adjRoomsAnswer2: IRoomNode[][] = floor2.map((row) =>
+    // The IRoom matrix with the correct sequence of variables
+    const adjRoomsAnswer2: IFloor = floor2.map((row) =>
       row.map((roomType) => {
-        const adjRoom: IRoomNode = {
+        const adjRoom: IRoom = {
           type: roomType,
           explored: false,
           eastDoor: false,
@@ -253,7 +253,7 @@ describe('Determine Adjacent Rooms', () => {
 
     adjRoomsAnswer2[4][2].westDoor = true;
 
-    const adjRooms2: IRoomNode[][] = connectAdjacentRooms(floor2);
+    const adjRooms2: IFloor = connectAdjacentRooms(floor2);
 
     let isAdjRoomsCorrect2 = true;
 
@@ -280,7 +280,7 @@ describe('Determine Adjacent Rooms', () => {
     expect(isAdjRoomsCorrect2).toBe(true);
   });
 
-  it('returns a 5x5 layout of type IRoomNode, with start in the middle middle row', () => {
+  it('returns a 5x5 layout of type IRoom, with start in the middle middle row', () => {
     const floor1: ROOM_TYPE[][] = [
       [1, 1, 1, 1, 1],
       [1, 1, 0, 5, 1],
@@ -298,10 +298,10 @@ describe('Determine Adjacent Rooms', () => {
       ]
      */
 
-    // The IRoomNode matrix with the correct sequence of variables
-    const adjRoomsAnswer1: IRoomNode[][] = floor1.map((row) =>
+    // The IRoom matrix with the correct sequence of variables
+    const adjRoomsAnswer1: IFloor = floor1.map((row) =>
       row.map((roomType) => {
-        const adjRoom: IRoomNode = {
+        const adjRoom: IRoom = {
           type: roomType,
           explored: false,
           eastDoor: false,
@@ -366,7 +366,7 @@ describe('Determine Adjacent Rooms', () => {
 
     adjRoomsAnswer1[4][1].northDoor = true;
 
-    const adjRooms1: IRoomNode[][] = connectAdjacentRooms(floor1);
+    const adjRooms1: IFloor = connectAdjacentRooms(floor1);
 
     let isAdjRoomsCorrect1 = true;
 
@@ -409,10 +409,10 @@ describe('Determine Adjacent Rooms', () => {
       ]
     */
 
-    // The IRoomNode matrix with the correct sequence of variables
-    const adjRoomsAnswer2: IRoomNode[][] = floor2.map((row) =>
+    // The IRoom matrix with the correct sequence of variables
+    const adjRoomsAnswer2: IFloor = floor2.map((row) =>
       row.map((roomType) => {
-        const adjRoom: IRoomNode = {
+        const adjRoom: IRoom = {
           type: roomType,
           explored: false,
           eastDoor: false,
@@ -456,7 +456,7 @@ describe('Determine Adjacent Rooms', () => {
 
     adjRoomsAnswer2[4][1].northDoor = true;
 
-    const adjRooms2: IRoomNode[][] = connectAdjacentRooms(floor2);
+    const adjRooms2: IFloor = connectAdjacentRooms(floor2);
 
     let isAdjRoomsCorrect2 = true;
 

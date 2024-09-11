@@ -145,7 +145,7 @@ export interface ILog {
   type: 'info' | 'error';
 }
 
-export interface IRoomNode {
+export interface IRoom {
   type: ROOM_TYPE;
   explored: boolean; // For minimap vision
   northDoor: boolean;
@@ -153,6 +153,8 @@ export interface IRoomNode {
   eastDoor: boolean;
   westDoor: boolean;
 }
+
+export type IFloor = IRoom[][];
 
 export interface ISkillAnimation {
   sprite: SPRITE_ID;
