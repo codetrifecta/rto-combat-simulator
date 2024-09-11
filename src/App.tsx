@@ -23,6 +23,7 @@ import { RoomObstacleArt } from './components/RoomObstacleArt';
 import { SkillAnimation } from './components/SkillAnimation';
 import { RoomWallArt } from './components/RoomWallArt';
 import { RoomDoorArt } from './components/RoomDoorArt';
+import { ChestItemsDisplay } from './components/ChestItemsDisplay';
 
 // Flag for first room render
 
@@ -63,6 +64,7 @@ function App() {
   const {
     roomLength,
     isRoomOver,
+    isChestOpen,
     turnCycle,
     isInventoryOpen,
     isGameLogOpen,
@@ -358,6 +360,20 @@ function App() {
           </div>
         </header>
 
+        {/* Chest Items Display (Only display when chest is clicked and room is over) */}
+        {isRoomOver && isChestOpen ? (
+          <section
+            className="fixed z-[60] top-[50%] left-[50%]  shadow-lg flex"
+            style={{
+              maxHeight: `calc(100vh - ${PLAYER_CONTROL_PANEL_HEIGHT}px)`,
+              visibility: 'visible',
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            <ChestItemsDisplay />
+          </section>
+        ) : null}
+
         {/* Game Info (Currently only displays turn cycle) */}
         {!isRoomOver ? (
           <section
@@ -455,16 +471,19 @@ function App() {
           </div>
         </section>
 
-        <div
-          className="fixed z-40"
-          style={{
-            bottom: `${PLAYER_CONTROL_PANEL_HEIGHT + 90}px`,
-            left: '50%',
-            transform: 'translateX(-50%)',
-          }}
-        >
-          <EntityTurnText />
-        </div>
+        {/* Entity Turn Text */}
+        {isRoomOver ? null : (
+          <div
+            className="fixed z-40"
+            style={{
+              bottom: `${PLAYER_CONTROL_PANEL_HEIGHT + 90}px`,
+              left: '50%',
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <EntityTurnText />
+          </div>
+        )}
 
         {/* Generate Room */}
         <section

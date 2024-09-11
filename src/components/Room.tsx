@@ -81,6 +81,7 @@ export const Room: FC<{
     endTurn,
     isRoomOver,
     isGameOver,
+    setIsChestOpen,
     setIsGameOver,
     setIsRoomOver,
     setHoveredTile,
@@ -2189,6 +2190,8 @@ export const Room: FC<{
                     });
                   } else if (tileType === TILE_TYPE.FLOOR) {
                     handlePlayerMove(rowIndex, columnIndex);
+                  } else if (tileType === TILE_TYPE.CHEST) {
+                    setIsChestOpen(true);
                   }
 
                   return;
