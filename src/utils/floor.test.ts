@@ -7,6 +7,7 @@ import {
   // connectAdjacentRooms,
   ROOM_TYPE,
 } from './floor';
+import { BASE_ROOM } from '../constants/floor';
 
 describe('Initialize Floor Layout', () => {
   it('returns a 5x5 array layout of rooms, that start in the middle bottom row', () => {
@@ -89,12 +90,8 @@ describe('Determine Adjacent Rooms', () => {
     const adjRoomsAnswer1: IFloor = floor1.map((row) =>
       row.map((roomType) => {
         const adjRoom: IRoom = {
+          ...BASE_ROOM,
           type: roomType,
-          explored: false,
-          eastDoor: false,
-          westDoor: false,
-          northDoor: false,
-          southDoor: false,
         };
         return adjRoom;
       })
@@ -198,12 +195,8 @@ describe('Determine Adjacent Rooms', () => {
     const adjRoomsAnswer2: IFloor = floor2.map((row) =>
       row.map((roomType) => {
         const adjRoom: IRoom = {
+          ...BASE_ROOM,
           type: roomType,
-          explored: false,
-          eastDoor: false,
-          westDoor: false,
-          northDoor: false,
-          southDoor: false,
         };
         return adjRoom;
       })
@@ -302,12 +295,8 @@ describe('Determine Adjacent Rooms', () => {
     const adjRoomsAnswer1: IFloor = floor1.map((row) =>
       row.map((roomType) => {
         const adjRoom: IRoom = {
+          ...BASE_ROOM,
           type: roomType,
-          explored: false,
-          eastDoor: false,
-          westDoor: false,
-          northDoor: false,
-          southDoor: false,
         };
         return adjRoom;
       })
@@ -413,12 +402,8 @@ describe('Determine Adjacent Rooms', () => {
     const adjRoomsAnswer2: IFloor = floor2.map((row) =>
       row.map((roomType) => {
         const adjRoom: IRoom = {
+          ...BASE_ROOM,
           type: roomType,
-          explored: false,
-          eastDoor: false,
-          westDoor: false,
-          northDoor: false,
-          southDoor: false,
         };
         return adjRoom;
       })

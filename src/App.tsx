@@ -74,21 +74,20 @@ function App() {
     setIsMinimapOpen,
     setTurnCycle,
     setIsLoading,
+    setRoomEntityPositions,
+    setRoomLength,
+    setRoomTileMatrix,
   } = useGameStateStore();
 
-  const { floor, setCurrentRoom } = useFloorStore();
+  const { floor, currentRoom, setCurrentRoom } = useFloorStore();
 
   const { getPlayer } = usePlayerStore();
   const player = getPlayer();
 
-  const { enemies } = useEnemyStore();
+  const { setEnemies } = useEnemyStore();
 
   // Initialize key press handlers
   useEffect(() => {
-    // Set turn cycle and loading state in game store
-    setTurnCycle([player, ...enemies]);
-    setIsLoading(false);
-
     const handleKeydownEvent = (e: KeyboardEvent) => {
       if (availableKeys.includes(e.key.toLowerCase())) {
         if (keyPressed[e.key] === undefined) {
@@ -142,9 +141,27 @@ function App() {
   }, [floor]);
 
   // When room changes, initialize game state according to the room
-  // useEffect(() => {
+  useEffect(() => {
+    console.log(currentRoom);
+    if (currentRoom !== null) {
+      const roomEnemies = currentRoom.enemies;
+      const roomEntityPositions = currentRoom.roomEntityPositions;
+      const roomLength = currentRoom.roomLength;
+      const roomTileMatrix = currentRoom.roomTileMatrix;
 
-  // }, [currentRoom]);
+      // Setup room
+      setRoomLength(roomLength);
+      setRoomTileMatrix(roomTileMatrix);
+
+      // Setup entities
+      setEnemies(roomEnemies);
+      setRoomEntityPositions(roomEntityPositions);
+
+      // Set turn cycle and loading state in game store
+      setTurnCycle([player, ...roomEnemies]);
+      setIsLoading(false);
+    }
+  }, [currentRoom]);
 
   // When room container ref value changes, (in this case when the room container is mounted).
   // Scroll into the middle of the room container (to view the room)

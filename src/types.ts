@@ -2,6 +2,7 @@ import { ENTITY_TYPE } from './constants/entity';
 import { ICON_ID } from './constants/icon';
 import { SKILL_ID, SKILL_TAG, SKILL_TYPE } from './constants/skill';
 import { SPRITE_ID } from './constants/sprite';
+import { TILE_TYPE } from './constants/tile';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from './constants/weapon';
 import { ROOM_TYPE } from './utils/floor';
 
@@ -152,6 +153,10 @@ export interface IRoom {
   southDoor: boolean;
   eastDoor: boolean;
   westDoor: boolean;
+  enemies: IEnemy[];
+  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>;
+  roomLength: number;
+  roomTileMatrix: TILE_TYPE[][];
 }
 
 export type IFloor = IRoom[][];
