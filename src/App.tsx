@@ -67,6 +67,7 @@ function App() {
     isGenerateRoomOpen,
     isCompendiumOpen,
     isMinimapOpen,
+    setIsRoomOver,
     setIsInventoryOpen,
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
@@ -148,6 +149,9 @@ function App() {
       const roomEntityPositions = currentRoom.roomEntityPositions;
       const roomLength = currentRoom.roomLength;
       const roomTileMatrix = currentRoom.roomTileMatrix;
+
+      // Reset room is over
+      setIsRoomOver(false);
 
       // Setup room
       setRoomLength(roomLength);

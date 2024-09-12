@@ -25,7 +25,6 @@ export const RoomDoorArt: FC<{
     image: HTMLImageElement
   ) => {
     if (!context) return;
-    context.reset();
     context.imageSmoothingEnabled = false;
 
     if (grayscale) {
@@ -60,6 +59,8 @@ export const RoomDoorArt: FC<{
       console.error('No context');
       return;
     }
+
+    context.reset();
 
     const northDoorImg = new Image();
     const southDoorImg = new Image();

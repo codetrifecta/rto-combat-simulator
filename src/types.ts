@@ -148,6 +148,7 @@ export interface ILog {
 
 export interface IRoom {
   id: number;
+  position: [number, number];
   type: ROOM_TYPE;
   explored: boolean; // For minimap vision
   northDoor: boolean;

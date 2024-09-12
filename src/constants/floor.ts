@@ -4,15 +4,18 @@ import { BASE_ROOM, ROOM_TYPE } from './room';
 
 let id = 0;
 
-export const TUTORIAL_FLOOR: IFloor = Array.from({ length: 3 }, () =>
-  Array.from({ length: 3 }, () => {
-    id += 1;
-    return {
+export const TUTORIAL_FLOOR: IFloor = [];
+
+for (let row = 0; row < 3; row++) {
+  TUTORIAL_FLOOR[row] = [];
+  for (let col = 0; col < 3; col++) {
+    TUTORIAL_FLOOR[row][col] = {
       ...BASE_ROOM,
-      id,
+      id: id++,
+      position: [row, col],
     };
-  })
-);
+  }
+}
 
 TUTORIAL_FLOOR[0][2] = {
   ...TUTORIAL_FLOOR[0][2],
@@ -49,7 +52,6 @@ TUTORIAL_FLOOR[2][2] = {
     },
   ],
   roomEntityPositions: new Map([
-    ['3,6', [ENTITY_TYPE.PLAYER, 1]],
     ['11,12', [ENTITY_TYPE.ENEMY, 1]],
     ['8,6', [ENTITY_TYPE.ENEMY, 2]],
     ['5,3', [ENTITY_TYPE.ENEMY, 3]],

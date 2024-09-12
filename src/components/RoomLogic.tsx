@@ -53,6 +53,7 @@ import {
   SKILL_ANIMATION_PRESET,
   WEAPON_ATTACK_ANIMATION,
 } from '../constants/skillAnimation';
+import { useFloorStore } from '../store/floor';
 
 export const RoomLogic: FC<{
   currentHoveredEntity: IEntity | null;
@@ -103,6 +104,8 @@ export const RoomLogic: FC<{
 
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
   const { summons } = useSummonStore();
+
+  const { floor, currentRoom, setCurrentRoom } = useFloorStore();
 
   const { addLog } = useLogStore();
 
@@ -2177,8 +2180,44 @@ export const RoomLogic: FC<{
                 );
 
                 // If room is over, player can move to any valid tile (floor, door)
-                if (isRoomOver) {
+                if (isRoomOver && currentRoom) {
                   if (tileType === TILE_TYPE.DOOR) {
+                    // Find out which door the player clicked (north, south, east, west)
+
+                    // Remove transition property from player
+                    document
+                      .getElementById('sprite_player_1')
+                      ?.classList.remove('transition-all');
+
+                    // Check north door
+                    if (rowIndex < roomLength / 3) {
+                      // Move player to the next room
+                      console.log('North');
+                    } else if (rowIndex > (roomLength / 3) * 2) {
+                      // Check south door
+                      console.log('South');
+                    } else if (columnIndex < roomLength / 3) {
+                      // Check west door
+                      console.log('West');
+                    } else if (columnIndex > (roomLength / 3) * 2) {
+                      // Check east door
+                      console.log('East Door');
+
+                      const nextRoom = {
+                        ...floor[currentRoom.position[0]][
+                          currentRoom.position[1] + 1
+                        ],
+                        roomEntityPositions: floor[currentRoom.position[0]][
+                          currentRoom.position[1] + 1
+                        ].roomEntityPositions.set('7,1', [
+                          ENTITY_TYPE.PLAYER,
+                          1,
+                        ]),
+                      };
+
+                      setCurrentRoom(nextRoom);
+                    }
+
                     addLog({
                       message: (
                         <>
@@ -2188,6 +2227,13 @@ export const RoomLogic: FC<{
                       ),
                       type: 'info',
                     });
+
+                    // Put back transition property to player
+                    setTimeout(() => {
+                      document
+                        .getElementById('sprite_player_1')
+                        ?.classList.add('transition-all');
+                    }, 500);
                   } else if (tileType === TILE_TYPE.FLOOR) {
                     handlePlayerMove(rowIndex, columnIndex);
                   } else if (tileType === TILE_TYPE.CHEST) {
