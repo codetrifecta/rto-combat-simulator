@@ -180,6 +180,7 @@ export const PlayerControlPanel: FC = () => {
                     disabled ||
                     player.actionPoints < skill.cost ||
                     skill.cooldownCounter > 0 ||
+                    isRoomOver ||
                     (skill.id === SKILL_ID.WHIRLWIND &&
                       player.equipment.weapon === null)
                   }

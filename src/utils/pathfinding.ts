@@ -119,7 +119,8 @@ export function findPathsFromCurrentLocation(
   room: TILE_TYPE[][],
   AP: number,
   roomEntityPositions: Map<string, [ENTITY_TYPE, number]>,
-  movementRange: number = DEFAULT_MOVEMENT_RANGE
+  movementRange: number = DEFAULT_MOVEMENT_RANGE,
+  isRoomOver: boolean = false
 ): Map<string, [number, number][]> {
   // player_loc is starting coordinate
   const dir: [number, number][] = [
@@ -166,7 +167,8 @@ export function findPathsFromCurrentLocation(
         row < room.length &&
         col < room.length &&
         explored.has(`${row},${col}`) === false &&
-        room[row][col] == TILE_TYPE.FLOOR &&
+        (room[row][col] === TILE_TYPE.FLOOR ||
+          (isRoomOver && room[row][col] === TILE_TYPE.DOOR)) &&
         roomEntityPositions.has(`${row},${col}`) === false
       ) {
         frontier_queue.push([row, col]); // Push [row, col] location to frontier
@@ -194,7 +196,10 @@ export function findPathsFromCurrentLocation(
       }
 
       // If row and col indicate a floor tile, push to goal
-      if (room[row][col] == TILE_TYPE.FLOOR) {
+      if (
+        room[row][col] == TILE_TYPE.FLOOR ||
+        (isRoomOver && room[row][col] == TILE_TYPE.DOOR)
+      ) {
         goals.push([row, col]);
       }
     }

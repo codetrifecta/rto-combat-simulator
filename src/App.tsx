@@ -459,7 +459,7 @@ function App() {
             )}
           >
             <h1 className="mb-2 uppercase">
-              R<span className="text-4xl">eturn</span>{' '}
+              R<span className="text-4xl">ise</span>{' '}
               <span className="text-4xl">to</span> O
               <span className="text-4xl">lympus</span>
             </h1>
