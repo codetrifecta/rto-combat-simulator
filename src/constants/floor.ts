@@ -86,6 +86,7 @@ const createTutorialFloor = () => {
     ...tutorialFloor[2][1],
     type: ROOM_TYPE.START,
     eastDoor: true,
+    isCleared: true,
   };
 
   return tutorialFloor;

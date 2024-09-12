@@ -105,7 +105,7 @@ export const RoomLogic: FC<{
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
   const { summons } = useSummonStore();
 
-  const { floor, currentRoom, setCurrentRoom } = useFloorStore();
+  const { floor, currentRoom, setFloor, setCurrentRoom } = useFloorStore();
 
   const { addLog } = useLogStore();
 
@@ -114,7 +114,7 @@ export const RoomLogic: FC<{
     console.log('handleRoomChange');
 
     const handleRoomChange = () => {
-      if (currentRoom?.enemies.length === 0) {
+      if (currentRoom?.enemies.length === 0 || currentRoom?.isCleared) {
         setIsRoomOver(true);
       }
     };
@@ -229,7 +229,7 @@ export const RoomLogic: FC<{
 
     // If all enemies are defeated, log a message saying the player has completed the room
     const logRoomCompletion = () => {
-      if (enemies.length === 0) {
+      if (enemies.length === 0 && currentRoom) {
         addLog({
           message: (
             <span className="text-green-500">Player completed the room!</span>
@@ -237,6 +237,22 @@ export const RoomLogic: FC<{
           type: 'info',
         });
         setIsRoomOver(true);
+
+        // Mark current room as cleared
+        const newFloor = floor.map((row) =>
+          row.map((room) =>
+            room.id === currentRoom?.id ? { ...room, isCleared: true } : room
+          )
+        );
+
+        const newCurrentRoom: IRoom = {
+          ...currentRoom,
+          isCleared: true,
+          roomEntityPositions: roomEntityPositions,
+        };
+
+        setFloor(newFloor);
+        setCurrentRoom(newCurrentRoom);
         setPlayer({
           ...player,
           actionPoints: STARTING_ACTION_POINTS,
@@ -2203,6 +2219,24 @@ export const RoomLogic: FC<{
                   if (tileType === TILE_TYPE.DOOR) {
                     // Find out which door the player clicked (north, south, east, west)
 
+                    // Remove player position from current room to be updated in the floor state
+                    const newRoomEntityPositions = new Map(
+                      currentRoom.roomEntityPositions
+                    );
+                    newRoomEntityPositions.delete(`${playerRow},${playerCol}`);
+                    const newFloor = floor.map((row) => {
+                      return row.map((room) => {
+                        if (room.id === currentRoom.id) {
+                          return {
+                            ...room,
+                            roomEntityPositions: newRoomEntityPositions,
+                          };
+                        } else {
+                          return room;
+                        }
+                      });
+                    });
+
                     let nextRoom: IRoom | null = null;
 
                     // Check north door
@@ -2280,6 +2314,7 @@ export const RoomLogic: FC<{
                       .getElementById('sprite_player_1')
                       ?.classList.remove('transition-all');
 
+                    setFloor(newFloor);
                     setCurrentRoom(nextRoom);
                     addLog({
                       message: (

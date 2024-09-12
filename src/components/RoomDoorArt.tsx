@@ -70,29 +70,39 @@ export const RoomDoorArt: FC<{
     if (!isRoomOver) {
       return;
     } else {
-      console.log(currentRoom);
-      if (currentRoom.northDoor) {
-        northDoorImg.src = northDoor;
-        northDoorImg.onload = () => onLoad(context, northDoorImg);
-      }
+      console.log('currentRoom', currentRoom);
+      if (currentRoom.isCleared) {
+        if (currentRoom.northDoor) {
+          northDoorImg.src = northDoor;
+          northDoorImg.onload = () => onLoad(context, northDoorImg);
+        }
 
-      if (currentRoom.southDoor) {
-        southDoorImg.src = southDoor;
-        southDoorImg.onload = () => onLoad(context, southDoorImg);
-      }
+        if (currentRoom.southDoor) {
+          southDoorImg.src = southDoor;
+          southDoorImg.onload = () => onLoad(context, southDoorImg);
+        }
 
-      if (currentRoom.eastDoor) {
-        // console.log('east door');
-        eastDoorImg.src = eastDoor;
-        eastDoorImg.onload = () => onLoad(context, eastDoorImg);
-      }
+        if (currentRoom.eastDoor) {
+          // console.log('east door');
+          eastDoorImg.src = eastDoor;
+          eastDoorImg.onload = () => onLoad(context, eastDoorImg);
+        }
 
-      if (currentRoom.westDoor) {
-        westDoorImg.src = westDoor;
-        westDoorImg.onload = () => onLoad(context, westDoorImg);
+        if (currentRoom.westDoor) {
+          westDoorImg.src = westDoor;
+          westDoorImg.onload = () => onLoad(context, westDoorImg);
+        }
       }
     }
-  }, [canvasRef.current, width, height, grayscale, isRoomOver, floorArtFile]);
+  }, [
+    canvasRef.current,
+    width,
+    height,
+    grayscale,
+    isRoomOver,
+    floorArtFile,
+    currentRoom,
+  ]);
 
   return (
     <canvas

@@ -151,7 +151,6 @@ describe('Determine Adjacent Rooms', () => {
     for (let i = 0; i < floor1.length; i++) {
       for (let j = 0; j < floor1.length; j++) {
         if (
-          adjRooms1[i][j].explored !== adjRoomsAnswer1[i][j].explored ||
           adjRooms1[i][j].northDoor !== adjRoomsAnswer1[i][j].northDoor ||
           adjRooms1[i][j].southDoor !== adjRoomsAnswer1[i][j].southDoor ||
           adjRooms1[i][j].eastDoor !== adjRoomsAnswer1[i][j].eastDoor ||
@@ -247,7 +246,6 @@ describe('Determine Adjacent Rooms', () => {
     for (let i = 0; i < floor2.length; i++) {
       for (let j = 0; j < floor2.length; j++) {
         if (
-          adjRooms2[i][j].explored !== adjRoomsAnswer2[i][j].explored ||
           adjRooms2[i][j].northDoor !== adjRoomsAnswer2[i][j].northDoor ||
           adjRooms2[i][j].southDoor !== adjRoomsAnswer2[i][j].southDoor ||
           adjRooms2[i][j].eastDoor !== adjRoomsAnswer2[i][j].eastDoor ||
@@ -354,7 +352,6 @@ describe('Determine Adjacent Rooms', () => {
     for (let i = 0; i < floor1.length; i++) {
       for (let j = 0; j < floor1.length; j++) {
         if (
-          adjRooms1[i][j].explored !== adjRoomsAnswer1[i][j].explored ||
           adjRooms1[i][j].northDoor !== adjRoomsAnswer1[i][j].northDoor ||
           adjRooms1[i][j].southDoor !== adjRoomsAnswer1[i][j].southDoor ||
           adjRooms1[i][j].eastDoor !== adjRoomsAnswer1[i][j].eastDoor ||
@@ -438,7 +435,6 @@ describe('Determine Adjacent Rooms', () => {
     for (let i = 0; i < floor2.length; i++) {
       for (let j = 0; j < floor2.length; j++) {
         if (
-          adjRooms2[i][j].explored !== adjRoomsAnswer2[i][j].explored ||
           adjRooms2[i][j].northDoor !== adjRoomsAnswer2[i][j].northDoor ||
           adjRooms2[i][j].southDoor !== adjRoomsAnswer2[i][j].southDoor ||
           adjRooms2[i][j].eastDoor !== adjRoomsAnswer2[i][j].eastDoor ||

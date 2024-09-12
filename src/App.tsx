@@ -152,32 +152,68 @@ function App() {
 
       setCurrentRoom(newStartRoom);
     }
-  }, [floor]);
+  }, [floor.length]);
 
   // When room changes, initialize game state according to the room
   useEffect(() => {
-    console.log(currentRoom);
-    if (currentRoom !== null) {
-      const roomEnemies = currentRoom.enemies;
-      const roomEntityPositions = currentRoom.roomEntityPositions;
-      const roomLength = currentRoom.roomLength;
-      const roomTileMatrix = currentRoom.roomTileMatrix;
+    console.log('handleRoomInitialization', currentRoom);
 
-      // Reset room is over
-      setIsRoomOver(false);
+    const handleRoomInitialization = () => {
+      if (currentRoom !== null) {
+        const roomEnemies = currentRoom.enemies;
+        const roomEntityPositions = currentRoom.roomEntityPositions;
+        const roomLength = currentRoom.roomLength;
+        const roomTileMatrix = currentRoom.roomTileMatrix;
 
-      // Setup room
-      setRoomLength(roomLength);
-      setRoomTileMatrix(roomTileMatrix);
+        if (currentRoom.isCleared) {
+          console.log('Room is cleared', roomEntityPositions);
+          // Filter out player entity from room entity positions
+          const newRoomEntityPositions = new Map<
+            string,
+            [ENTITY_TYPE, number]
+          >();
+          roomEntityPositions.forEach((value, key) => {
+            if (value[0] === ENTITY_TYPE.PLAYER) {
+              newRoomEntityPositions.set(key, value);
+            }
+          });
 
-      // Setup entities
-      setEnemies(roomEnemies);
-      setRoomEntityPositions(roomEntityPositions);
+          console.log('newRoomEntityPositions', newRoomEntityPositions);
 
-      // Set turn cycle and loading state in game store
-      setTurnCycle([player, ...roomEnemies]);
-      setIsLoading(false);
-    }
+          // Set room is over to true
+          setIsRoomOver(true);
+
+          // Setup room
+          setRoomLength(roomLength);
+          setRoomTileMatrix(roomTileMatrix);
+
+          // Setup entities
+          setEnemies([]);
+          setRoomEntityPositions(roomEntityPositions);
+
+          // Set turn cycle
+          setTurnCycle([player]);
+        } else {
+          // Reset room is over
+          setIsRoomOver(false);
+
+          // Setup room
+          setRoomLength(roomLength);
+          setRoomTileMatrix(roomTileMatrix);
+
+          // Setup entities
+          setEnemies(roomEnemies);
+          setRoomEntityPositions(roomEntityPositions);
+
+          // Set turn cycle
+          setTurnCycle([player, ...roomEnemies]);
+        }
+
+        setIsLoading(false);
+      }
+    };
+
+    handleRoomInitialization();
   }, [currentRoom]);
 
   // When room container ref value changes, (in this case when the room container is mounted).
