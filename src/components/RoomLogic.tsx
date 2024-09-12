@@ -17,7 +17,7 @@ import {
 } from '../constants/skill';
 import { STATUS_ID, STATUSES } from '../constants/status';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from '../constants/weapon';
-import { IEnemy, IEntity, ISkill, ISkillAnimation } from '../types';
+import { IEnemy, IEntity, IRoom, ISkill, ISkillAnimation } from '../types';
 import { useGameStateStore } from '../store/game';
 import { usePlayerStore } from '../store/player';
 import { useEnemyStore } from '../store/enemy';
@@ -109,6 +109,21 @@ export const RoomLogic: FC<{
 
   const { addLog } = useLogStore();
 
+  // When player changes room, check if the room is over and set it to true if it is
+  useEffect(() => {
+    console.log('handleRoomChange');
+
+    const handleRoomChange = () => {
+      if (currentRoom?.enemies.length === 0) {
+        setIsRoomOver(true);
+      }
+    };
+
+    handleRoomChange();
+  }, [currentRoom, isRoomOver]);
+
+  // console.log(isRoomOver);
+
   // When player movement path changes,
   // Handle player movement
   useEffect(() => {
@@ -148,9 +163,12 @@ export const RoomLogic: FC<{
         });
 
         // Delete the first element in the path array
-        setTimeout(() => {
-          setPlayerMovementPath(playerMovementPath.slice(1));
-        }, 500);
+        setTimeout(
+          () => {
+            setPlayerMovementPath(playerMovementPath.slice(1));
+          },
+          isRoomOver ? 200 : 500
+        );
       } else {
         // Remove walking animation and set player back to idle depending on direction (left or right)
         const entitySpriteDirection = getEntitySpriteDirection(player);
@@ -776,6 +794,7 @@ export const RoomLogic: FC<{
     playerPosition,
     roomTileMatrix.length,
     player.statuses,
+    // isRoomOver,
   ]);
 
   // Debounce hovered tile
@@ -2184,26 +2203,61 @@ export const RoomLogic: FC<{
                   if (tileType === TILE_TYPE.DOOR) {
                     // Find out which door the player clicked (north, south, east, west)
 
-                    // Remove transition property from player
-                    document
-                      .getElementById('sprite_player_1')
-                      ?.classList.remove('transition-all');
+                    let nextRoom: IRoom | null = null;
 
                     // Check north door
                     if (rowIndex < roomLength / 3) {
                       // Move player to the next room
-                      console.log('North');
+                      console.log('North Door');
+
+                      // Remove room entity position for player for current room
+
+                      nextRoom = {
+                        ...floor[currentRoom.position[0] - 1][
+                          currentRoom.position[1]
+                        ],
+                        roomEntityPositions: floor[currentRoom.position[0] - 1][
+                          currentRoom.position[1]
+                        ].roomEntityPositions.set('13,7', [
+                          ENTITY_TYPE.PLAYER,
+                          1,
+                        ]),
+                      };
                     } else if (rowIndex > (roomLength / 3) * 2) {
                       // Check south door
-                      console.log('South');
+                      console.log('South Door');
+
+                      nextRoom = {
+                        ...floor[currentRoom.position[0] + 1][
+                          currentRoom.position[1]
+                        ],
+                        roomEntityPositions: floor[currentRoom.position[0] + 1][
+                          currentRoom.position[1]
+                        ].roomEntityPositions.set('3,7', [
+                          ENTITY_TYPE.PLAYER,
+                          1,
+                        ]),
+                      };
                     } else if (columnIndex < roomLength / 3) {
                       // Check west door
-                      console.log('West');
+                      console.log('West Door');
+
+                      nextRoom = {
+                        ...floor[currentRoom.position[0]][
+                          currentRoom.position[1] - 1
+                        ],
+                        roomEntityPositions: floor[currentRoom.position[0]][
+                          currentRoom.position[1] - 1
+                        ].roomEntityPositions.set('7,13', [
+                          ENTITY_TYPE.PLAYER,
+                          1,
+                        ]),
+                      };
                     } else if (columnIndex > (roomLength / 3) * 2) {
                       // Check east door
                       console.log('East Door');
 
-                      const nextRoom = {
+                      nextRoom = {
                         ...floor[currentRoom.position[0]][
                           currentRoom.position[1] + 1
                         ],
@@ -2214,10 +2268,19 @@ export const RoomLogic: FC<{
                           1,
                         ]),
                       };
-
-                      setCurrentRoom(nextRoom);
                     }
 
+                    if (!nextRoom) {
+                      console.error('Next room not found!');
+                      return;
+                    }
+
+                    // Remove transition property from player
+                    document
+                      .getElementById('sprite_player_1')
+                      ?.classList.remove('transition-all');
+
+                    setCurrentRoom(nextRoom);
                     addLog({
                       message: (
                         <>

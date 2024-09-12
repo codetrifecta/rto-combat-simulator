@@ -1,5 +1,4 @@
 import { IRoom } from '../types';
-import { ENTITY_TYPE } from './entity';
 
 export enum ROOM_TYPE {
   NULL = 0,
@@ -21,7 +20,7 @@ export const BASE_ROOM: IRoom = {
   eastDoor: false,
   westDoor: false,
   enemies: [],
-  roomEntityPositions: new Map([['7,7', [ENTITY_TYPE.PLAYER, 1]]]),
+  roomEntityPositions: new Map(),
   roomLength: 15,
   roomTileMatrix: [
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],

@@ -20,6 +20,7 @@ import { ChestItemsDisplay } from './components/ChestItemsDisplay';
 import { Minimap } from './components/Minimap';
 import { useFloorStore } from './store/floor';
 import { ROOM_TYPE } from './constants/room';
+import { ENTITY_TYPE } from './constants/entity';
 
 // Flag for first room render
 
@@ -117,6 +118,7 @@ function App() {
   // When floor is initialized, set current room to the start room
   useEffect(() => {
     if (floor) {
+      console.log('Floor initialized');
       // Set first room to START room
       let startRoom: IRoom | null = null;
 
@@ -137,7 +139,18 @@ function App() {
         return;
       }
 
-      setCurrentRoom(startRoom);
+      // Initialize player position to the start room
+      const newStartRoom: IRoom = {
+        ...startRoom,
+        roomEntityPositions: new Map([
+          [
+            `${Math.floor(startRoom.roomLength / 2)},${Math.floor(startRoom.roomLength / 2)}`,
+            [ENTITY_TYPE.PLAYER, 1],
+          ],
+        ]),
+      };
+
+      setCurrentRoom(newStartRoom);
     }
   }, [floor]);
 
