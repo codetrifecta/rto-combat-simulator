@@ -4,10 +4,8 @@ import {
   connectAdjacentRooms,
   floorToStringArray,
   generateFloorPlan,
-  // connectAdjacentRooms,
-  ROOM_TYPE,
 } from './floor';
-import { BASE_ROOM } from '../constants/floor';
+import { BASE_ROOM, ROOM_TYPE } from '../constants/room';
 
 describe('Initialize Floor Layout', () => {
   it('returns a 5x5 array layout of rooms, that start in the middle bottom row', () => {
@@ -89,10 +87,8 @@ describe('Determine Adjacent Rooms', () => {
     // The IRoom matrix with the correct sequence of variables
     const adjRoomsAnswer1: IFloor = floor1.map((row) =>
       row.map((roomType) => {
-        const adjRoom: IRoom = {
-          ...BASE_ROOM,
-          type: roomType,
-        };
+        const adjRoom: IRoom = { ...BASE_ROOM };
+        adjRoom.type = roomType;
         return adjRoom;
       })
     );
@@ -194,10 +190,8 @@ describe('Determine Adjacent Rooms', () => {
     // The IRoom matrix with the correct sequence of variables
     const adjRoomsAnswer2: IFloor = floor2.map((row) =>
       row.map((roomType) => {
-        const adjRoom: IRoom = {
-          ...BASE_ROOM,
-          type: roomType,
-        };
+        const adjRoom: IRoom = { ...BASE_ROOM };
+        adjRoom.type = roomType;
         return adjRoom;
       })
     );
@@ -294,10 +288,8 @@ describe('Determine Adjacent Rooms', () => {
     // The IRoom matrix with the correct sequence of variables
     const adjRoomsAnswer1: IFloor = floor1.map((row) =>
       row.map((roomType) => {
-        const adjRoom: IRoom = {
-          ...BASE_ROOM,
-          type: roomType,
-        };
+        const adjRoom: IRoom = { ...BASE_ROOM };
+        adjRoom.type = roomType;
         return adjRoom;
       })
     );
@@ -401,10 +393,8 @@ describe('Determine Adjacent Rooms', () => {
     // The IRoom matrix with the correct sequence of variables
     const adjRoomsAnswer2: IFloor = floor2.map((row) =>
       row.map((roomType) => {
-        const adjRoom: IRoom = {
-          ...BASE_ROOM,
-          type: roomType,
-        };
+        const adjRoom: IRoom = { ...BASE_ROOM };
+        adjRoom.type = roomType;
         return adjRoom;
       })
     );

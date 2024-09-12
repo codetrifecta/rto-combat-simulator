@@ -1,14 +1,5 @@
+import { BASE_ROOM, ROOM_TYPE } from '../constants/room';
 import { IFloor, IRoom } from '../types';
-
-export enum ROOM_TYPE {
-  NULL = 0,
-  COMMON = 1,
-  START = 2,
-  BOSS = 3,
-  MINIBOSS = 4,
-  SHOP = 5,
-  INTERMEDIATE = 6,
-}
 
 /**
  * Convert a floor to a string array representation.
@@ -554,12 +545,8 @@ export function connectAdjacentRooms(floor: ROOM_TYPE[][]): IFloor {
   const adjRooms: IFloor = floor.map((row) =>
     row.map((roomType) => {
       const adjRoom: IRoom = {
+        ...BASE_ROOM,
         type: roomType,
-        explored: false,
-        eastDoor: false,
-        westDoor: false,
-        northDoor: false,
-        southDoor: false,
       };
       return adjRoom;
     })

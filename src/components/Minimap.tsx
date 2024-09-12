@@ -1,13 +1,11 @@
 import { FC } from 'react';
 import { useFloorStore } from '../store/floor';
-import { ROOM_TYPE } from '../utils/floor';
+import { ROOM_TYPE } from '../constants/room';
 import { IRoom } from '../types';
 import clsx from 'clsx';
 
 export const Minimap: FC = () => {
   const { floor, currentRoom } = useFloorStore();
-
-  console.log(currentRoom, floor);
 
   return (
     <div className="relative bg-zinc-900 p-5 border-white border inline-block">

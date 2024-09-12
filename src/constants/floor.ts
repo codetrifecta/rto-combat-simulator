@@ -1,23 +1,6 @@
-import { IFloor, IRoom } from '../types';
-import { ROOM_TYPE } from '../utils/floor';
+import { IFloor } from '../types';
 import { ENEMY_PRESET_ID, ENEMY_PRESETS, ENTITY_TYPE } from './entity';
-import { TILE_TYPE } from './tile';
-
-export const BASE_ROOM: IRoom = {
-  id: 0,
-  type: ROOM_TYPE.NULL,
-  explored: false,
-  northDoor: false,
-  southDoor: false,
-  eastDoor: false,
-  westDoor: false,
-  enemies: [],
-  roomEntityPositions: new Map([['7,7', [ENTITY_TYPE.PLAYER, 1]]]),
-  roomLength: 15,
-  roomTileMatrix: Array.from({ length: 15 }, () =>
-    Array.from({ length: 15 }, () => TILE_TYPE.FLOOR)
-  ),
-};
+import { BASE_ROOM, ROOM_TYPE } from './room';
 
 let id = 0;
 

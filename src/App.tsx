@@ -19,7 +19,7 @@ import { EntityTurnText } from './components/EntityTurnText';
 import { ChestItemsDisplay } from './components/ChestItemsDisplay';
 import { Minimap } from './components/Minimap';
 import { useFloorStore } from './store/floor';
-import { ROOM_TYPE } from './utils/floor';
+import { ROOM_TYPE } from './constants/room';
 
 // Flag for first room render
 
