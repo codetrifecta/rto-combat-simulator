@@ -801,7 +801,8 @@ export const RoomLogic: FC<{
         roomTileMatrix,
         playerPosition,
         range,
-        new Map()
+        new Map(),
+        range >= 8 ? 122 : range >= 6 ? 100 : 40
       );
 
       // console.log('visionRangeForWeaponAttack', visionRangeForWeaponAttack);

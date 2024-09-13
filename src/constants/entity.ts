@@ -89,9 +89,12 @@ export const PLAYER: IPlayer = {
 // const equippedSkills = SKILLS.slice(39, 39 + 4); // 4 only debuff skills
 // const equippedSkills = SKILLS.slice(43, 43 + 4); // 4 movement skills
 
-const equippedSkills = [SKILL_ID.CLEAVE, SKILL_ID.FIREBALL, SKILL_ID.FOCUS].map(
-  (id) => SKILLS.find((skill) => skill.id === id)
-);
+const equippedSkills = [
+  SKILL_ID.CLEAVE,
+  SKILL_ID.FIREBALL,
+  SKILL_ID.FOCUS,
+  SKILL_ID.FLY,
+].map((id) => SKILLS.find((skill) => skill.id === id));
 
 const filterUndefinedEquippedSkills = (
   equippedSkills: (ISkill | undefined)[]
