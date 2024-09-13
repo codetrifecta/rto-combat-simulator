@@ -589,7 +589,7 @@ function App() {
 
         {/* Minimap */}
         <section
-          className={clsx('fixed right-10 top-60 w-[23%] max-h-[200px]', {
+          className={clsx('fixed right-10 top-60 max-h-[200px]', {
             'z-[50]': isMinimapOpen,
             'z-[-10] opacity-0': !isMinimapOpen,
           })}

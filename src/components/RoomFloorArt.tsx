@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 
-import defaultRoom from '../assets/sprites/tiles/room_demo_floor.png';
+import defaultRoom from '../assets/sprites/tiles/tutorial/room_tutorial_floor.png';
 import { TILE_SIZE } from '../constants/tile';
 import { useGameStateStore } from '../store/game';
 

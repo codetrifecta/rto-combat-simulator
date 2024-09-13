@@ -1,10 +1,10 @@
 import { FC, useEffect, useRef } from 'react';
 
 // import defaultRoom from '../assets/sprites/tiles/room_demo_door.png';
-import northDoor from '../assets/sprites/tiles/room_demo_door_north.png';
-import southDoor from '../assets/sprites/tiles/room_demo_door_south.png';
-import eastDoor from '../assets/sprites/tiles/room_demo_door_east.png';
-import westDoor from '../assets/sprites/tiles/room_demo_door_west.png';
+import northDoor from '../assets/sprites/tiles/tutorial/room_tutorial_door_north.png';
+import southDoor from '../assets/sprites/tiles/tutorial/room_tutorial_door_south.png';
+import eastDoor from '../assets/sprites/tiles/tutorial/room_tutorial_door_east.png';
+import westDoor from '../assets/sprites/tiles/tutorial/room_tutorial_door_west.png';
 import { TILE_SIZE } from '../constants/tile';
 import { useGameStateStore } from '../store/game';
 import { useFloorStore } from '../store/floor';
