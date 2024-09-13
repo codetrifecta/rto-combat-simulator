@@ -3,6 +3,7 @@ import { FC, useEffect, useRef } from 'react';
 import defaultRoom from '../assets/sprites/tiles/tutorial/room_tutorial_floor.png';
 import { TILE_SIZE } from '../constants/tile';
 import { useGameStateStore } from '../store/game';
+import { useFloorStore } from '../store/floor';
 
 export const RoomFloorArt: FC<{
   width: number;
@@ -10,6 +11,8 @@ export const RoomFloorArt: FC<{
   grayscale?: boolean;
 }> = ({ width, height, grayscale }) => {
   const { isRoomOver, floorArtFile } = useGameStateStore();
+
+  const { currentRoom } = useFloorStore();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -26,7 +29,12 @@ export const RoomFloorArt: FC<{
 
     const image = new Image();
 
-    let imgSrc = floorArtFile;
+    if (!currentRoom) {
+      console.error('RoomFloorArt: No current room');
+      return;
+    }
+
+    let imgSrc = currentRoom.artFloor;
 
     if (!imgSrc) {
       imgSrc = defaultRoom;

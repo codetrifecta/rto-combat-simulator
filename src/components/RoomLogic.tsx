@@ -253,15 +253,9 @@ export const RoomLogic: FC<{
     };
 
     // If all enemies are defeated, log a message saying the player has completed the room
-    const logRoomCompletion = () => {
-      console.log('logRoomCompletion');
+    const setRoomCompletion = () => {
+      console.log('logRoomCompletion', enemies.length);
       if (enemies.length === 0 && currentRoom) {
-        addLog({
-          message: (
-            <span className="text-green-500">Player completed the room!</span>
-          ),
-          type: 'info',
-        });
         setIsRoomOver(true);
 
         // Mark current room as cleared
@@ -297,8 +291,25 @@ export const RoomLogic: FC<{
     // updateRoomMatrixWhenEnemyDefeated();
     updateEnemyPositionsWhenEnemyDefeated();
     updateTurnCycleWhenEnemyDefeated();
-    logRoomCompletion();
+    setRoomCompletion();
   }, [enemies.length]);
+
+  // When room is cleared, log a message
+  useEffect(() => {
+    if (
+      currentRoom &&
+      currentRoom.enemies.length > 0 &&
+      enemies.length === 0 &&
+      currentRoom.isCleared
+    ) {
+      addLog({
+        message: (
+          <span className="text-green-500">Player cleared the room!</span>
+        ),
+        type: 'info',
+      });
+    }
+  }, [currentRoom]);
 
   // When player's action points reach 0 and there are still enemies in the room (room is not over),
   // Automatically end player's turn
@@ -1311,6 +1322,7 @@ export const RoomLogic: FC<{
     // Check north door
     if (tileRow < roomLength / 3) {
       // Move player to the next room
+      // Go to north door of the current room
       console.log('North Door');
 
       // Remove room entity position for player for current room
@@ -1319,37 +1331,49 @@ export const RoomLogic: FC<{
         ...floor[currentRoom.position[0] - 1][currentRoom.position[1]],
         roomEntityPositions: floor[currentRoom.position[0] - 1][
           currentRoom.position[1]
-        ].roomEntityPositions.set('13,7', [ENTITY_TYPE.PLAYER, 1]),
+        ].roomEntityPositions.set(
+          `${roomLength - 2},${Math.floor(roomLength / 2)}`,
+          [ENTITY_TYPE.PLAYER, 1]
+        ),
       };
     } else if (tileRow > (roomLength / 3) * 2) {
-      // Check south door
+      // Go to south door of the current room
       console.log('South Door');
 
       nextRoom = {
         ...floor[currentRoom.position[0] + 1][currentRoom.position[1]],
         roomEntityPositions: floor[currentRoom.position[0] + 1][
           currentRoom.position[1]
-        ].roomEntityPositions.set('3,7', [ENTITY_TYPE.PLAYER, 1]),
+        ].roomEntityPositions.set(`3,${Math.floor(roomLength / 2)}`, [
+          ENTITY_TYPE.PLAYER,
+          1,
+        ]),
       };
     } else if (tileCol < roomLength / 3) {
-      // Check west door
+      // Go to west door of the current room
       console.log('West Door');
 
       nextRoom = {
         ...floor[currentRoom.position[0]][currentRoom.position[1] - 1],
         roomEntityPositions: floor[currentRoom.position[0]][
           currentRoom.position[1] - 1
-        ].roomEntityPositions.set('7,13', [ENTITY_TYPE.PLAYER, 1]),
+        ].roomEntityPositions.set(
+          `${Math.floor(roomLength / 2)},${roomLength - 2}`,
+          [ENTITY_TYPE.PLAYER, 1]
+        ),
       };
     } else if (tileCol > (roomLength / 3) * 2) {
-      // Check east door
+      // Go to east door of the current room
       console.log('East Door');
 
       nextRoom = {
         ...floor[currentRoom.position[0]][currentRoom.position[1] + 1],
         roomEntityPositions: floor[currentRoom.position[0]][
           currentRoom.position[1] + 1
-        ].roomEntityPositions.set('7,1', [ENTITY_TYPE.PLAYER, 1]),
+        ].roomEntityPositions.set(`${Math.floor(roomLength / 2)},${1}`, [
+          ENTITY_TYPE.PLAYER,
+          1,
+        ]),
       };
     }
 
@@ -1358,9 +1382,9 @@ export const RoomLogic: FC<{
       return;
     }
 
-    console.log('nextRoom', nextRoom);
-    console.log('currentRoom', currentRoom);
-    console.log('newFloor', newFloor);
+    // console.log('nextRoom', nextRoom);
+    // console.log('currentRoom', currentRoom);
+    // console.log('newFloor', newFloor);
     // return;
     // Remove transition property from player
     document

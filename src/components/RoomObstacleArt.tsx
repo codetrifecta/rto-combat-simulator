@@ -3,6 +3,7 @@ import { FC, useEffect, useRef } from 'react';
 import defaultRoomArt from '../assets/sprites/tiles/tutorial/room_tutorial_obstacle.png';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import { useGameStateStore } from '../store/game';
+import { useFloorStore } from '../store/floor';
 // import { ENTITY_TYPE } from '../constants/entity';
 
 export const RoomObstacleArt: FC<{
@@ -19,6 +20,8 @@ export const RoomObstacleArt: FC<{
     hoveredTile,
   } = useGameStateStore();
 
+  const { currentRoom } = useFloorStore();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Create a canvas element and draw the wall art on it
@@ -34,11 +37,16 @@ export const RoomObstacleArt: FC<{
 
     const image = new Image();
 
-    let imgSrc = wallArtFile;
+    if (!currentRoom) {
+      console.error('RoomFloorArt: No current room');
+      return;
+    }
 
-    // if (!imgSrc) {
-    // }
-    imgSrc = defaultRoomArt;
+    let imgSrc = currentRoom.artObstacle;
+
+    if (!imgSrc) {
+      imgSrc = defaultRoomArt;
+    }
 
     if (isRoomOver && imgSrc === defaultRoomArt) {
       imgSrc = defaultRoomArt;
@@ -186,6 +194,7 @@ export const RoomObstacleArt: FC<{
     wallArtFile,
     roomEntityPositions,
     hoveredTile,
+    currentRoom,
   ]);
 
   return (
