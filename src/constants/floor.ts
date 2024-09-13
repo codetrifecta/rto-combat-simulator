@@ -8,6 +8,9 @@ import art_room_tutorial_obstacle from '../assets/sprites/tiles/tutorial/room_tu
 import art_room_tutorial_floor_2 from '../assets/sprites/tiles/tutorial/room_tutorial_floor_2.png';
 import art_room_tutorial_obstacle_2 from '../assets/sprites/tiles/tutorial/room_tutorial_obstacle_2.png';
 
+import art_room_tutorial_floor_3 from '../assets/sprites/tiles/tutorial/room_tutorial_floor_3.png';
+import art_room_tutorial_obstacle_3 from '../assets/sprites/tiles/tutorial/room_tutorial_obstacle_3.png';
+
 const createTutorialFloor = () => {
   let id = 0;
   const tutorialFloor: IFloor = [];
@@ -79,8 +82,33 @@ const createTutorialFloor = () => {
     ],
     roomEntityPositions: new Map([
       ['8,6', [ENTITY_TYPE.ENEMY, 2]],
-      ['5,3', [ENTITY_TYPE.ENEMY, 3]],
+      ['4,10', [ENTITY_TYPE.ENEMY, 3]],
     ]),
+    roomTileMatrix: [
+      [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+      [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+      [3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+      [3, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 3],
+      [3, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 3],
+      [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+      [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+      [3, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 3],
+      [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+      [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 4],
+      [4, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 4],
+      [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 4],
+      [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 3],
+      [3, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 0, 2, 1, 1, 1, 3],
+      [3, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+      [3, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+      [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 3],
+      [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+      [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+      [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3],
+      [3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+    ],
+    artFloor: art_room_tutorial_floor_3,
+    artObstacle: art_room_tutorial_obstacle_3,
   };
   tutorialFloor[2][2] = {
     ...tutorialFloor[2][2],
@@ -93,7 +121,7 @@ const createTutorialFloor = () => {
         id: 1,
       },
     ],
-    roomEntityPositions: new Map([['15,15', [ENTITY_TYPE.ENEMY, 1]]]),
+    roomEntityPositions: new Map([['12,9', [ENTITY_TYPE.ENEMY, 1]]]),
     roomTileMatrix: [
       [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
       [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],

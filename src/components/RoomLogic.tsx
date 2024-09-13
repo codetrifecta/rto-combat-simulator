@@ -172,7 +172,7 @@ export const RoomLogic: FC<{
           () => {
             setPlayerMovementPath(playerMovementPath.slice(1));
           },
-          isRoomOver ? 200 : 500
+          isRoomOver ? 300 : 500
         );
       } else {
         // Remove walking animation and set player back to idle depending on direction (left or right)
