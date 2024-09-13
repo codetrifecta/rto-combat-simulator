@@ -1,10 +1,10 @@
 import { FC, useEffect, useRef } from 'react';
 
-import defaultRoomArt from '../assets/sprites/tiles/room_demo_obstacle.png';
+import defaultRoomArt from '../assets/sprites/tiles/tutorial/room_tutorial_obstacle.png';
 import { TILE_SIZE, TILE_TYPE } from '../constants/tile';
 import { useGameStateStore } from '../store/game';
+import { useFloorStore } from '../store/floor';
 // import { ENTITY_TYPE } from '../constants/entity';
-import { ROOM_LENGTH } from '../constants/game';
 
 export const RoomObstacleArt: FC<{
   width: number;
@@ -12,12 +12,15 @@ export const RoomObstacleArt: FC<{
   grayscale?: boolean;
 }> = ({ grayscale }) => {
   const {
+    roomLength,
     isRoomOver,
     wallArtFile,
     roomEntityPositions,
     roomTileMatrix,
     hoveredTile,
   } = useGameStateStore();
+
+  const { currentRoom } = useFloorStore();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -34,11 +37,16 @@ export const RoomObstacleArt: FC<{
 
     const image = new Image();
 
-    let imgSrc = wallArtFile;
+    if (!currentRoom) {
+      console.error('RoomFloorArt: No current room');
+      return;
+    }
 
-    // if (!imgSrc) {
-    // }
-    imgSrc = defaultRoomArt;
+    let imgSrc = currentRoom.artObstacle;
+
+    if (!imgSrc) {
+      imgSrc = defaultRoomArt;
+    }
 
     if (isRoomOver && imgSrc === defaultRoomArt) {
       imgSrc = defaultRoomArt;
@@ -186,6 +194,7 @@ export const RoomObstacleArt: FC<{
     wallArtFile,
     roomEntityPositions,
     hoveredTile,
+    currentRoom,
   ]);
 
   return (
@@ -209,6 +218,7 @@ export const RoomObstacleArt: FC<{
         });
       })} */}
       <canvas
+        id="room_obstacle_art"
         className="absolute pointer-events-none"
         style={{
           top: 0,
@@ -216,8 +226,8 @@ export const RoomObstacleArt: FC<{
           zIndex: 34,
         }}
         ref={canvasRef}
-        width={TILE_SIZE * ROOM_LENGTH}
-        height={TILE_SIZE * ROOM_LENGTH}
+        width={TILE_SIZE * roomLength}
+        height={TILE_SIZE * roomLength}
       ></canvas>
     </>
   );

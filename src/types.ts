@@ -1,9 +1,10 @@
 import { ENTITY_TYPE } from './constants/entity';
 import { ICON_ID } from './constants/icon';
+import { ROOM_TYPE } from './constants/room';
 import { SKILL_ID, SKILL_TAG, SKILL_TYPE } from './constants/skill';
 import { SPRITE_ID } from './constants/sprite';
+import { TILE_TYPE } from './constants/tile';
 import { WEAPON_ATTACK_TYPE, WEAPON_TYPE } from './constants/weapon';
-import { ROOM_TYPE } from './utils/floor';
 
 export interface IEntity {
   id: number;
@@ -145,14 +146,24 @@ export interface ILog {
   type: 'info' | 'error';
 }
 
-export interface IRoomNode {
+export interface IRoom {
+  id: number;
+  position: [number, number];
   type: ROOM_TYPE;
-  explored: boolean; // For minimap vision
+  isCleared: boolean; // For minimap vision
   northDoor: boolean;
   southDoor: boolean;
   eastDoor: boolean;
   westDoor: boolean;
+  enemies: IEnemy[];
+  roomEntityPositions: Map<string, [ENTITY_TYPE, number]>;
+  roomLength: number;
+  roomTileMatrix: TILE_TYPE[][];
+  artFloor: string;
+  artObstacle: string;
 }
+
+export type IFloor = IRoom[][];
 
 export interface ISkillAnimation {
   sprite: SPRITE_ID;

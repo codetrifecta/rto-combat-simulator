@@ -94,7 +94,7 @@ function castRayAtAngle(
  * @param startLoc - The starting location of the player/enemy in the room
  * @param skillRadius - The range of the skill set for maximum distance to cast ray
  * @param roomEntityPositions - The location of any enities in the room (player/enemy), of type Map<string, [ENTITY_TYPE, number]>
- * @param numRays - The number of rays set to cover in 360 degrees (default 360 deg for 1 deg intervals)
+ * @param numRays - The number of rays set to cover in 360 degrees (default 40 rays)
  * @returns A boolean grid of size room, with the tiles the entity (player/enemy) can "see" having true and the ones they can't having false for the entire room.
  */
 export function getVisionFromEntityPosition(

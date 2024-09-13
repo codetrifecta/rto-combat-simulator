@@ -277,7 +277,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Slash the air in front of you, dealing damage to enemies at further range.',
     damageMultiplier: 1.3,
-    range: 4,
+    range: 6,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
@@ -337,7 +337,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Launch a fireball at a target area. Has a 60% chance to burn targets hit for 3 turns.',
     damageMultiplier: 1.5,
-    range: 4,
+    range: 8,
     cooldown: 2,
     cooldownCounter: 0,
     cost: 2,
@@ -378,7 +378,7 @@ export const SKILLS: ISkill[] = [
     tags: [SKILL_TAG.SINGLE_TARGET, SKILL_TAG.DAMAGE, SKILL_TAG.STATUS],
     description: 'Freeze an enemy for 2 turns.',
     damageMultiplier: 0.5,
-    range: 3,
+    range: 5,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
@@ -392,7 +392,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Summon a blizzard to deal frost damage to all enemies in a target area. Has a 50% chance to freeze targets hit for 2 turns.',
     damageMultiplier: 2,
-    range: 4,
+    range: 8,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 3,
@@ -420,7 +420,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Create a spark of electricity that deals shock damage to a target. Has a 60% chance to shock targets hit for 3 turns.',
     damageMultiplier: 0.8,
-    range: 4,
+    range: 6,
     cooldown: 1,
     cooldownCounter: 0,
     cost: 1,
@@ -434,7 +434,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Strike a target with a lighning bolt. Has a 50% chance to shock target for 2 turn.',
     damageMultiplier: 1.5,
-    range: 6,
+    range: 10,
     cooldown: 2,
     cooldownCounter: 0,
     cost: 2,
@@ -462,7 +462,7 @@ export const SKILLS: ISkill[] = [
     description:
       "Absorb an enemy's life force. Enemy health lost is converted to caster's health.",
     damageMultiplier: 0.5,
-    range: 3,
+    range: 6,
     cooldown: 2,
     cooldownCounter: 0,
     cost: 2,
@@ -702,7 +702,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Petrify an enemy for 3 turns. Petrified enemies cannot move or attack.',
     damageMultiplier: 0,
-    range: 4,
+    range: 6,
     cooldown: 4,
     cooldownCounter: 0,
     cost: 2,
@@ -716,7 +716,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Weaken an enemy for 3 turns. Weakened enemies deal 30% less damage.',
     damageMultiplier: 0,
-    range: 3,
+    range: 6,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
@@ -730,7 +730,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Disable an enemy for 3 turns. Disabled enemies cannot attack.',
     damageMultiplier: 0,
-    range: 3,
+    range: 6,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
@@ -744,7 +744,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Entangle an enemy for 3 turns. Entangled enemies cannot move.',
     damageMultiplier: 0,
-    range: 3,
+    range: 6,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
@@ -772,7 +772,7 @@ export const SKILLS: ISkill[] = [
     tags: [SKILL_TAG.MOVEMENT],
     description: 'Fly to an empty tile in the room.',
     damageMultiplier: 0,
-    range: 6,
+    range: 10,
     cooldown: 4,
     cooldownCounter: 0,
     cost: 1,
@@ -786,7 +786,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Leap slam to a location and deal damage around your landing position.',
     damageMultiplier: 1,
-    range: 4,
+    range: 6,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
@@ -805,7 +805,7 @@ export const SKILLS: ISkill[] = [
     description:
       'Dive to a location and deal damage to enemies around your landing position. Additionally applies Burned to enemies hit for 3 turns.',
     damageMultiplier: 0.5,
-    range: 5,
+    range: 8,
     cooldown: 3,
     cooldownCounter: 0,
     cost: 2,
@@ -818,7 +818,7 @@ export const SKILLS: ISkill[] = [
     tags: [SKILL_TAG.AOE, SKILL_TAG.DAMAGE, SKILL_TAG.MOVEMENT],
     description: 'Leap to a target and deal damage.',
     damageMultiplier: 1,
-    range: 3,
+    range: 4,
     cooldown: 2,
     cooldownCounter: 0,
     cost: 2,

@@ -89,9 +89,12 @@ export const PLAYER: IPlayer = {
 // const equippedSkills = SKILLS.slice(39, 39 + 4); // 4 only debuff skills
 // const equippedSkills = SKILLS.slice(43, 43 + 4); // 4 movement skills
 
-const equippedSkills = [SKILL_ID.CLEAVE, SKILL_ID.FIREBALL, SKILL_ID.FOCUS].map(
-  (id) => SKILLS.find((skill) => skill.id === id)
-);
+const equippedSkills = [
+  SKILL_ID.CLEAVE,
+  SKILL_ID.FIREBALL,
+  SKILL_ID.FOCUS,
+  SKILL_ID.FLY,
+].map((id) => SKILLS.find((skill) => skill.id === id));
 
 const filterUndefinedEquippedSkills = (
   equippedSkills: (ISkill | undefined)[]
@@ -163,7 +166,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     id: 0,
     name: 'Abyssal Cyclopean Wraith',
     sprite: SPRITE_ID.ABYSSAL_CYCLOPEAN_WRAITH,
-    spriteSize: 90,
+    spriteSize: 100,
     spritesheetRows: 7,
     spritesheetColumns: 6,
     spritesheetIdleRow: 0,
@@ -184,7 +187,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     id: 0,
     name: 'Cerberus Pup',
     sprite: SPRITE_ID.CERBERUS_PUP,
-    spriteSize: 64,
+    spriteSize: 100,
     spritesheetRows: 5,
     spritesheetColumns: 6,
     spritesheetIdleRow: 0,
@@ -268,7 +271,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     id: 0,
     name: 'Infernal Minotaur',
     sprite: SPRITE_ID.INFERNAL_MINOTAUR,
-    spriteSize: 130,
+    spriteSize: 200,
     spritesheetRows: 6,
     spritesheetColumns: 6,
     spritesheetIdleRow: 0,
@@ -331,7 +334,7 @@ export const ENEMY_PRESETS: Record<ENEMY_PRESET_ID, IEnemy> = {
     id: 0,
     name: 'Stygian Wraith',
     sprite: SPRITE_ID.STYGIAN_WRAITH,
-    spriteSize: 64,
+    spriteSize: 70,
     spritesheetRows: 5,
     spritesheetColumns: 6,
     spritesheetIdleRow: 0,

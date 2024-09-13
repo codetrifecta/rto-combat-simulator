@@ -2,10 +2,6 @@ import { create } from 'zustand';
 import { IEntity } from '../types';
 import { ENTITY_TYPE } from '../constants/entity';
 import { TILE_TYPE } from '../constants/tile';
-import {
-  generateInitialRoomEntityPositions,
-  generateInitialRoomTileMatrix,
-} from '../utils/room';
 import { ROOM_LENGTH } from '../constants/game';
 
 interface IGameStateStore {
@@ -24,6 +20,7 @@ interface IGameStateStore {
   isCompendiumOpen: boolean;
   isGenerateRoomOpen: boolean;
   isChestOpen: boolean;
+  isMinimapOpen: boolean;
   file: string;
   floorArtFile: string;
   wallArtFile: string;
@@ -41,6 +38,7 @@ interface IGameStateStore {
   setIsCharacterSheetOpen: (isCharacterSheetOpen: boolean) => void;
   setIsCompendiumOpen: (isCompendiumOpen: boolean) => void;
   setIsGenerateRoomOpen: (isGenerateRoomOpen: boolean) => void;
+  setIsMinimapOpen: (isMinimapOpen: boolean) => void;
   setTurnCycle: (turnCycle: IEntity[]) => void;
   setIsRoomOver: (isRoomOver: boolean) => void;
   setIsGameOver: (isGameOver: boolean) => void;
@@ -55,8 +53,10 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   doorPositions: [],
   hoveredTile: null,
   roomLength: ROOM_LENGTH,
-  roomTileMatrix: generateInitialRoomTileMatrix(),
-  roomEntityPositions: generateInitialRoomEntityPositions(),
+  // roomTileMatrix: generateInitialRoomTileMatrix(),
+  // roomEntityPositions: generateInitialRoomEntityPositions(),
+  roomTileMatrix: [],
+  roomEntityPositions: new Map(),
   turnCycle: [],
   isRoomOver: false,
   isGameOver: false,
@@ -67,6 +67,7 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
   isGenerateRoomOpen: false,
   isCompendiumOpen: false,
   isChestOpen: false,
+  isMinimapOpen: true,
   file: '',
   floorArtFile: '',
   wallArtFile: '',
@@ -127,6 +128,8 @@ export const useGameStateStore = create<IGameStateStore>((set, get) => ({
     set({ isGenerateRoomOpen }),
 
   setIsChestOpen: (isChestOpen: boolean) => set({ isChestOpen }),
+
+  setIsMinimapOpen: (isMinimapOpen: boolean) => set({ isMinimapOpen }),
 
   setTurnCycle: (turnCycle: IEntity[]) => set({ turnCycle }),
 

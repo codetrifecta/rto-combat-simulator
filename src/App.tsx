@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { PlayerControlPanel } from './components/PlayerControlPanel';
-import { IEntity } from './types';
+import { IEntity, IRoom } from './types';
 import { Room } from './components/Room';
 import { TurnInfo } from './components/TurnInfo';
 import { PlayerInfo } from './components/PlayerInfo';
@@ -14,16 +14,13 @@ import { InventoryChooser } from './components/InventoryChooser';
 import { CharacterSheet } from './components/CharacterSheet';
 import { GenerateRoomModal } from './components/GenerateRoomModal';
 import { PLAYER_CONTROL_PANEL_HEIGHT } from './constants/game';
-import { EntitySpritePositions } from './components/EntitySpritePositions';
-import { TILE_SIZE } from './constants/tile';
 import { Compendium } from './components/Compendium';
 import { EntityTurnText } from './components/EntityTurnText';
-import { RoomFloorArt } from './components/RoomFloorArt';
-import { RoomObstacleArt } from './components/RoomObstacleArt';
-import { SkillAnimation } from './components/SkillAnimation';
-import { RoomWallArt } from './components/RoomWallArt';
-import { RoomDoorArt } from './components/RoomDoorArt';
 import { ChestItemsDisplay } from './components/ChestItemsDisplay';
+import { Minimap } from './components/Minimap';
+import { useFloorStore } from './store/floor';
+import { ROOM_TYPE } from './constants/room';
+import { ENTITY_TYPE } from './constants/entity';
 
 // Flag for first room render
 
@@ -62,7 +59,6 @@ function App() {
   const roomScrollRef = useRef<HTMLDivElement>(null);
 
   const {
-    roomLength,
     isRoomOver,
     isChestOpen,
     turnCycle,
@@ -71,25 +67,29 @@ function App() {
     isCharacterSheetOpen,
     isGenerateRoomOpen,
     isCompendiumOpen,
+    isMinimapOpen,
+    setIsRoomOver,
     setIsInventoryOpen,
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
     setIsCompendiumOpen,
+    setIsMinimapOpen,
     setTurnCycle,
     setIsLoading,
+    setRoomEntityPositions,
+    setRoomLength,
+    setRoomTileMatrix,
   } = useGameStateStore();
+
+  const { floor, currentRoom, setCurrentRoom } = useFloorStore();
 
   const { getPlayer } = usePlayerStore();
   const player = getPlayer();
 
-  const { enemies } = useEnemyStore();
+  const { setEnemies } = useEnemyStore();
 
-  // Initialize game state
+  // Initialize key press handlers
   useEffect(() => {
-    // Set turn cycle and loading state in game store
-    setTurnCycle([player, ...enemies]);
-    setIsLoading(false);
-
     const handleKeydownEvent = (e: KeyboardEvent) => {
       if (availableKeys.includes(e.key.toLowerCase())) {
         if (keyPressed[e.key] === undefined) {
@@ -114,6 +114,107 @@ function App() {
       document.body.removeEventListener('keyup', handleKeyupEvent);
     };
   }, []);
+
+  // When floor is initialized, set current room to the start room
+  useEffect(() => {
+    if (floor) {
+      console.log('Floor initialized');
+      // Set first room to START room
+      let startRoom: IRoom | null = null;
+
+      for (let row = 0; row < floor.length; row++) {
+        for (let col = 0; col < floor[row].length; col++) {
+          if (floor[row][col].type === ROOM_TYPE.START) {
+            startRoom = floor[row][col];
+            break;
+          }
+        }
+        if (startRoom) {
+          break;
+        }
+      }
+
+      if (!startRoom) {
+        console.error('No start room found in floor!');
+        return;
+      }
+
+      // Initialize player position to the start room
+      const newStartRoom: IRoom = {
+        ...startRoom,
+        roomEntityPositions: new Map([
+          [
+            `${Math.floor(startRoom.roomLength / 2)},${Math.floor(startRoom.roomLength / 2)}`,
+            [ENTITY_TYPE.PLAYER, 1],
+          ],
+        ]),
+      };
+
+      setCurrentRoom(newStartRoom);
+    }
+  }, [floor.length]);
+
+  // When room changes, initialize game state according to the room
+  useEffect(() => {
+    console.log('handleRoomInitialization', currentRoom);
+
+    const handleRoomInitialization = () => {
+      if (currentRoom !== null) {
+        const roomEnemies = currentRoom.enemies;
+        const roomEntityPositions = currentRoom.roomEntityPositions;
+        const roomLength = currentRoom.roomLength;
+        const roomTileMatrix = currentRoom.roomTileMatrix;
+
+        if (currentRoom.isCleared) {
+          console.log('Room is cleared', roomEntityPositions);
+          // Filter out player entity from room entity positions
+          const newRoomEntityPositions = new Map<
+            string,
+            [ENTITY_TYPE, number]
+          >();
+          roomEntityPositions.forEach((value, key) => {
+            if (value[0] === ENTITY_TYPE.PLAYER) {
+              newRoomEntityPositions.set(key, value);
+            }
+          });
+
+          console.log('newRoomEntityPositions', newRoomEntityPositions);
+
+          // Set room is over to true
+          setIsRoomOver(true);
+
+          // Setup room
+          setRoomLength(roomLength);
+          setRoomTileMatrix(roomTileMatrix);
+
+          // Setup entities
+          setEnemies([]);
+          setRoomEntityPositions(roomEntityPositions);
+
+          // Set turn cycle
+          setTurnCycle([player]);
+        } else {
+          // Reset room is over
+          setIsRoomOver(false);
+
+          // Setup room
+          setRoomLength(roomLength);
+          setRoomTileMatrix(roomTileMatrix);
+
+          // Setup entities
+          setEnemies(roomEnemies);
+          setRoomEntityPositions(roomEntityPositions);
+
+          // Set turn cycle
+          setTurnCycle([player, ...roomEnemies]);
+        }
+
+        setIsLoading(false);
+      }
+    };
+
+    handleRoomInitialization();
+  }, [currentRoom]);
 
   // When room container ref value changes, (in this case when the room container is mounted).
   // Scroll into the middle of the room container (to view the room)
@@ -299,6 +400,10 @@ function App() {
         if (e.key === 'k') {
           setIsCompendiumOpen(!isCompendiumOpen);
         }
+
+        if (e.key === 'm') {
+          setIsMinimapOpen(!isMinimapOpen);
+        }
       }
     };
 
@@ -314,10 +419,12 @@ function App() {
     isInventoryOpen,
     isCharacterSheetOpen,
     isCompendiumOpen,
+    isMinimapOpen,
     setIsGameLogOpen,
     setIsCharacterSheetOpen,
     setIsInventoryOpen,
     setIsCompendiumOpen,
+    setIsMinimapOpen,
     isGenerateRoomOpen,
   ]);
 
@@ -352,7 +459,7 @@ function App() {
             )}
           >
             <h1 className="mb-2 uppercase">
-              R<span className="text-4xl">eturn</span>{' '}
+              R<span className="text-4xl">ise</span>{' '}
               <span className="text-4xl">to</span> O
               <span className="text-4xl">lympus</span>
             </h1>
@@ -422,51 +529,10 @@ function App() {
               className="relative min-w-[2000px] min-h-[1500px] flex justify-center items-center"
               ref={roomContainerRef}
             >
-              <div
-                className="relative"
-                style={{
-                  width: roomLength * TILE_SIZE,
-                  height: roomLength * TILE_SIZE,
-                }}
-              >
-                <div
-                  id="entity_sprite_positions"
-                  className="absolute top-0 left-0 z-20 "
-                >
-                  <EntitySpritePositions
-                    setCurrentHoveredEntity={setCurrentHoveredEntity}
-                  />
-                  <RoomObstacleArt
-                    width={roomLength * TILE_SIZE}
-                    height={roomLength * TILE_SIZE}
-                  />
-                  <SkillAnimation />
-                </div>
-                <div className="absolute z-10">
-                  <Room
-                    currentHoveredEntity={currentHoveredEntity}
-                    setCurrentHoveredEntity={setCurrentHoveredEntity}
-                  />
-                </div>
-                <div className="absolute z-[6]">
-                  <RoomDoorArt
-                    width={roomLength * TILE_SIZE}
-                    height={roomLength * TILE_SIZE}
-                  />
-                </div>
-                <div className="absolute z-[5]">
-                  <RoomWallArt
-                    width={roomLength * TILE_SIZE}
-                    height={roomLength * TILE_SIZE}
-                  />
-                </div>
-                <div className="absolute z-0">
-                  <RoomFloorArt
-                    width={roomLength * TILE_SIZE}
-                    height={roomLength * TILE_SIZE}
-                  />
-                </div>
-              </div>
+              <Room
+                currentHoveredEntity={currentHoveredEntity}
+                setCurrentHoveredEntity={setCurrentHoveredEntity}
+              />
             </div>
           </div>
         </section>
@@ -496,6 +562,7 @@ function App() {
           <GenerateRoomModal />
         </section>
 
+        {/* Compendium */}
         <section
           className="fixed z-[60] top-[50%] left-[50%]  shadow-lg flex"
           style={{
@@ -518,6 +585,16 @@ function App() {
         >
           <InventoryChooser />
           <div></div>
+        </section>
+
+        {/* Minimap */}
+        <section
+          className={clsx('fixed right-10 top-60 max-h-[200px]', {
+            'z-[50]': isMinimapOpen,
+            'z-[-10] opacity-0': !isMinimapOpen,
+          })}
+        >
+          <Minimap />
         </section>
 
         {/* <div className="fixed bottom-0 flex flex-col justify-between items-center"> */}
