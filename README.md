@@ -63,7 +63,7 @@ Combat simulator for Rise to Olympus
 - [x] Enemy movement (naive)
 - [x] Sprites for each of the above
 - [x] Animations for each of the above (except player attacks)
-- [ ] Multiple rooms (floor)
+- [x] Multiple rooms (floor)
 - [x] Room generator
 
 ## Setup
