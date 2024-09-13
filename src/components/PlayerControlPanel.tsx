@@ -478,7 +478,7 @@ export const PlayerControlPanel: FC = () => {
             </div>
 
             {/* Tool buttons */}
-            <div className="flex justify-center gap-5 col-span-1">
+            {/* <div className="flex justify-center gap-5 col-span-1">
               <div className="relative">
                 <IconButton
                   onClick={() => {
@@ -498,7 +498,7 @@ export const PlayerControlPanel: FC = () => {
                   <p>Customize room layout</p>
                 </Tooltip>
               </div>
-            </div>
+            </div> */}
           </div>
         )}
       </div>

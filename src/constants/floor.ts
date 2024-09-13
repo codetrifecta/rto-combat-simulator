@@ -142,7 +142,7 @@ const createTutorialFloor = () => {
     northDoor: true,
     enemies: [
       {
-        ...ENEMY_PRESETS[ENEMY_PRESET_ID.INFERNAL_MINOTAUR],
+        ...ENEMY_PRESETS[ENEMY_PRESET_ID.CERBERUS_PUP],
         id: 1,
       },
     ],
