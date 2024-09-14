@@ -1,6 +1,6 @@
 import { SPRITE_ID } from './sprite';
 
-export const TILE_SIZE = 48;
+export const TILE_SIZE = 50;
 
 export enum TILE_TYPE {
   NULL = 0,
