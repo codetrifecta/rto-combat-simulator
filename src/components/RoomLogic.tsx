@@ -61,6 +61,7 @@ import {
   WEAPON_ATTACK_ANIMATION,
 } from '../constants/skillAnimation';
 import { useFloorStore } from '../store/floor';
+import { sleep } from '../utils/general';
 
 export const RoomLogic: FC<{
   currentHoveredEntity: IEntity | null;
@@ -135,6 +136,7 @@ export const RoomLogic: FC<{
     // When player finishes moving, set player's animation back to idle
     const handlePlayerPathMovement = () => {
       console.log('handlePlayerMovement');
+
       if (playerMovementPath.length > 0) {
         const [row, col] = playerMovementPath[0];
 
@@ -314,8 +316,6 @@ export const RoomLogic: FC<{
   // When player's action points reach 0 and there are still enemies in the room (room is not over),
   // Automatically end player's turn
   useEffect(() => {
-    console.log('automaticallyEndPlayerTurn');
-
     const automaticallyEndPlayerTurn = () => {
       if (
         player.actionPoints === 0 &&
@@ -323,6 +323,7 @@ export const RoomLogic: FC<{
         !isRoomOver &&
         enemies.length > 0
       ) {
+        console.log('automaticallyEndPlayerTurn');
         handlePlayerEndTurn(turnCycle, getPlayer, setPlayer, endTurn);
         addLog({
           message: (
@@ -474,7 +475,7 @@ export const RoomLogic: FC<{
     };
 
     // Handle enemy's action and end turn
-    const handleEnemyTurn = (affectedEnemy: IEnemy) => {
+    const handleEnemyTurn = async (affectedEnemy: IEnemy) => {
       if (
         turnCycle.length > 0 &&
         turnCycle[0].entityType === ENTITY_TYPE.ENEMY &&
@@ -532,72 +533,73 @@ export const RoomLogic: FC<{
           }, moveTime);
         } else {
           if (!cannotMove) {
-            setTimeout(() => {
-              enemyPosition = handleEnemyMovement(newEnemy);
+            enemyPosition = await handleEnemyMovement(newEnemy);
+            // setTimeout(() => {
+            //   console.log('enemyPosition', enemyPosition);
 
-              // Remove walking animation and set enemy back to idle depending on direction (left or right)
-              setTimeout(() => {
-                const enemySpriteDirection = getEntitySpriteDirection(enemy);
-                if (enemySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
-                  setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
-                } else if (
-                  enemySpriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT
-                ) {
-                  setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
-                }
-              }, 500);
+            //   // Remove walking animation and set enemy back to idle depending on direction (left or right)
+            //   setTimeout(() => {
+            //     const enemySpriteDirection = getEntitySpriteDirection(enemy);
+            //     if (enemySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+            //       setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
+            //     } else if (
+            //       enemySpriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT
+            //     ) {
+            //       setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
+            //     }
+            //   }, 500);
 
-              // Make enemy attack player if they can attack
-              if (!cannotAttack) {
-                totalTime += attackTime;
+            //   // Make enemy attack player if they can attack
+            //   if (!cannotAttack) {
+            //     totalTime += attackTime;
 
-                setTimeout(() => {
-                  if (!enemyPosition) {
-                    console.error('Enemy position not found!');
-                    const oldEnemyPos = getEntityPosition(
-                      enemy,
-                      roomEntityPositions
-                    );
-                    if (oldEnemyPos[0] === -1 && oldEnemyPos[1] === -1) {
-                      console.error('Old enemy position not found!');
-                      return;
-                    }
-                    newEnemy = {
-                      ...newEnemy,
-                      ...handleEnemyAttack(
-                        newEnemy,
-                        oldEnemyPos,
-                        playerPosition
-                      ),
-                    };
-                    // setEnemy(newEnemy);
-                  } else {
-                    newEnemy = {
-                      ...newEnemy,
-                      ...handleEnemyAttack(
-                        newEnemy,
-                        enemyPosition,
-                        playerPosition
-                      ),
-                    };
+            //     setTimeout(() => {
+            //       if (!enemyPosition) {
+            //         console.error('Enemy position not found!');
+            //         const oldEnemyPos = getEntityPosition(
+            //           enemy,
+            //           roomEntityPositions
+            //         );
+            //         if (oldEnemyPos[0] === -1 && oldEnemyPos[1] === -1) {
+            //           console.error('Old enemy position not found!');
+            //           return;
+            //         }
+            //         newEnemy = {
+            //           ...newEnemy,
+            //           ...handleEnemyAttack(
+            //             newEnemy,
+            //             oldEnemyPos,
+            //             playerPosition
+            //           ),
+            //         };
+            //         // setEnemy(newEnemy);
+            //       } else {
+            //         newEnemy = {
+            //           ...newEnemy,
+            //           ...handleEnemyAttack(
+            //             newEnemy,
+            //             enemyPosition,
+            //             playerPosition
+            //           ),
+            //         };
 
-                    // setEnemy(newEnemy);
-                  }
-                }, attackTime);
-              } else {
-                setTimeout(() => {
-                  addLog({
-                    message: (
-                      <>
-                        <span className="text-red-500">{enemy.name}</span> is
-                        unable to attack.
-                      </>
-                    ),
-                    type: 'info',
-                  });
-                }, attackTime);
-              }
-            }, moveTime);
+            //         // setEnemy(newEnemy);
+            //       }
+            //     }, attackTime);
+            //   } else {
+            //     setTimeout(() => {
+            //       addLog({
+            //         message: (
+            //           <>
+            //             <span className="text-red-500">{enemy.name}</span> is
+            //             unable to attack.
+            //           </>
+            //         ),
+            //         type: 'info',
+            //       });
+            //     }, attackTime);
+            //   }
+            // }, moveTime);
           } else {
             setTimeout(() => {
               addLog({
@@ -651,62 +653,62 @@ export const RoomLogic: FC<{
         }
 
         // End enemy's turn after moving and attacking (if they can)
-        setTimeout(() => {
-          // Decrease enemy's statuses' duration
-          const decreasedStatuses = enemy.statuses.map((status) => {
-            return {
-              ...status,
-              durationCounter: status.durationCounter - 1,
-            };
-          });
+        // setTimeout(() => {
+        //   // Decrease enemy's statuses' duration
+        //   const decreasedStatuses = enemy.statuses.map((status) => {
+        //     return {
+        //       ...status,
+        //       durationCounter: status.durationCounter - 1,
+        //     };
+        //   });
 
-          // Filter out statuses with duration 0
-          const filteredStatuses = decreasedStatuses.filter((status) => {
-            if (status.durationCounter <= 0) {
-              displayStatusEffect(
-                status,
-                false,
-                `tile_${enemy.entityType}_${enemy.id}`
-              );
-              return false;
-            }
-            return true;
-          });
+        //   // Filter out statuses with duration 0
+        //   const filteredStatuses = decreasedStatuses.filter((status) => {
+        //     if (status.durationCounter <= 0) {
+        //       displayStatusEffect(
+        //         status,
+        //         false,
+        //         `tile_${enemy.entityType}_${enemy.id}`
+        //       );
+        //       return false;
+        //     }
+        //     return true;
+        //   });
 
-          // Update enemy with new statuses
-          newEnemy = {
-            ...newEnemy,
-            statuses: filteredStatuses,
-          };
+        //   // Update enemy with new statuses
+        //   newEnemy = {
+        //     ...newEnemy,
+        //     statuses: filteredStatuses,
+        //   };
 
-          // Check for enemy defeat and log message
-          if (newEnemy.health <= 0) {
-            addLog({
-              message: (
-                <>
-                  <span className="text-red-500">{newEnemy.name}</span> has been
-                  defeated!
-                </>
-              ),
-              type: 'info',
-            });
-            // endTurn();
-            return;
-          } else {
-            // Update enemy with new health
-            setEnemy(newEnemy);
-            addLog({
-              message: (
-                <>
-                  <span className="text-red-500">{enemy.name}</span> ended their
-                  turn.
-                </>
-              ),
-              type: 'info',
-            });
-            endTurn();
-          }
-        }, totalTime + endTurnTime);
+        //   // Check for enemy defeat and log message
+        //   if (newEnemy.health <= 0) {
+        //     addLog({
+        //       message: (
+        //         <>
+        //           <span className="text-red-500">{newEnemy.name}</span> has been
+        //           defeated!
+        //         </>
+        //       ),
+        //       type: 'info',
+        //     });
+        //     // endTurn();
+        //     return;
+        //   } else {
+        //     // Update enemy with new health
+        //     setEnemy(newEnemy);
+        //     addLog({
+        //       message: (
+        //         <>
+        //           <span className="text-red-500">{enemy.name}</span> ended their
+        //           turn.
+        //         </>
+        //       ),
+        //       type: 'info',
+        //     });
+        //     endTurn();
+        //   }
+        // }, totalTime + endTurnTime);
       }
     };
 
@@ -1422,7 +1424,9 @@ export const RoomLogic: FC<{
 
   // Handle enemy movement (naive)
   // For now, just move the enemy to a random adjacent tile
-  const handleEnemyMovement = (enemy: IEnemy): [number, number] | undefined => {
+  const handleEnemyMovement = async (
+    enemy: IEnemy
+  ): Promise<[number, number] | undefined> => {
     console.log('handleEnemyMovement');
 
     const [enemyRow, enemyCol] = getEntityPosition(enemy, roomEntityPositions);
@@ -1432,63 +1436,176 @@ export const RoomLogic: FC<{
       return;
     }
 
-    const possibleMoves: [number, number][] = [
-      [enemyRow - 1, enemyCol], // Up
-      [enemyRow + 1, enemyCol], // Down
-      [enemyRow, enemyCol - 1], // Left
-      [enemyRow, enemyCol + 1], // Right
-    ];
+    // Get enemy range and get tiles around the player's vision with the same range (one of these will be the enemy's target tile)
+    const range = enemy.range;
+    const possibleTiles = getVisionFromEntityPosition(
+      roomTileMatrix,
+      playerPosition,
+      range,
+      roomEntityPositions
+    );
 
-    const randomMove = possibleMoves[Math.floor(Math.random() * 4)];
+    const [playerRow, playerCol] = playerPosition;
+    const possibleTilesInRange: [number, number][] = [];
 
-    // Check if random move is outside bounds (ie. outside the room matrix bounds and not an empty tile) and also if it doesnt have another entity
-    // If so, do nothing
-    if (
-      randomMove[0] < 0 ||
-      randomMove[0] >= roomLength ||
-      randomMove[1] < 0 ||
-      randomMove[1] >= roomLength ||
-      roomTileMatrix[randomMove[0]][randomMove[1]] !== TILE_TYPE.FLOOR ||
-      roomEntityPositions.get(`${randomMove[0]},${randomMove[1]}`)
-    ) {
-      // Do nothing if random move is out of bounds or not an empty tile
-      return;
-    }
-
-    // // Change class of enemy sprite to animate movement
-    const spriteDirection = getEntitySpriteDirection(enemy);
-    if (randomMove[1] < enemyCol) {
-      setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
-    } else if (randomMove[1] > enemyCol) {
-      setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
-    } else {
-      setEntityAnimationWalk(enemy, spriteDirection);
-    }
-
-    // Update room matrix to move enemy to random adjacent tile
-    if (randomMove[0] >= 0 && randomMove[0] < roomLength) {
-      if (randomMove[1] >= 0 && randomMove[1] < roomLength) {
-        setRoomEntityPositions(
-          updateRoomEntityPositions(
-            randomMove,
-            [enemyRow, enemyCol],
-            roomEntityPositions
-          )
-        );
-
-        addLog({
-          message: (
-            <>
-              <span className="text-red-500">{enemy.name}</span> moved to tile (
-              {randomMove[1]}, {randomMove[0]}).
-            </>
-          ),
-          type: 'info',
-        });
+    for (let row = 0; row < roomLength; row++) {
+      for (let col = 0; col < roomLength; col++) {
+        if (
+          possibleTiles[row][col] === true &&
+          roomTileMatrix[row][col] === TILE_TYPE.FLOOR &&
+          Math.max(Math.abs(row - playerRow), Math.abs(col - playerCol)) ===
+            range
+        ) {
+          possibleTilesInRange.push([row, col]);
+        }
       }
     }
 
-    return randomMove;
+    // Find path to the possible tiles for the enemy to move to
+    const path = findPathsFromCurrentLocation(
+      [enemyRow, enemyCol],
+      roomTileMatrix,
+      Math.round(roomLength / 2),
+      roomEntityPositions
+    );
+
+    let shortestPath: [number, number][] = [];
+
+    console.log('possibleTilesInRange', possibleTilesInRange);
+
+    // Find the shortest path to the possible tiles
+    for (const possibleTile of possibleTilesInRange) {
+      const possibleTilePath = path.get(
+        `${possibleTile[0]},${possibleTile[1]}`
+      );
+
+      if (!possibleTilePath) {
+        continue;
+      }
+
+      if (shortestPath.length === 0) {
+        shortestPath = possibleTilePath;
+      } else {
+        if (possibleTilePath.length < shortestPath.length) {
+          shortestPath = possibleTilePath;
+        }
+      }
+    }
+
+    // If there is no shortest path, do nothing
+    if (shortestPath.length === 0) {
+      console.log('No shortest path found for enemy', enemy.id);
+      return;
+    }
+
+    // Get the tile the enemy will move to
+    console.log('shortestPath of enemy', enemy.id, shortestPath);
+
+    while (shortestPath.length > 0) {
+      const [row, col] = shortestPath[0];
+
+      // Update enemy walking animation direction based on movement path
+      const spriteDirection = getEntitySpriteDirection(enemy);
+      if (col < enemyCol && spriteDirection !== ENTITY_SPRITE_DIRECTION.LEFT) {
+        setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
+      } else if (
+        col > enemyCol &&
+        spriteDirection !== ENTITY_SPRITE_DIRECTION.RIGHT
+      ) {
+        setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
+      }
+
+      // Update enemy's position in the entity positions map
+      setRoomEntityPositions(
+        updateRoomEntityPositions(
+          [row, col],
+          [enemyRow, enemyCol],
+          roomEntityPositions
+        )
+      );
+
+      addLog({
+        message: (
+          <>
+            <span className="text-green-500">{enemy.name}</span> moved to tile (
+            {col}, {row})
+          </>
+        ),
+        type: 'info',
+      });
+
+      // Delete the first element in the path array
+      await sleep(700);
+      shortestPath = shortestPath.slice(1);
+
+      if (shortestPath.length === 0) {
+        // Remove walking animation and set enemy back to idle depending on direction (left or right)
+        const entitySpriteDirection = getEntitySpriteDirection(enemy);
+        if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+          setEntityAnimationIdle(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
+        }
+      }
+    }
+
+    // const possibleMoves: [number, number][] = [
+    //   [enemyRow - 1, enemyCol], // Up
+    //   [enemyRow + 1, enemyCol], // Down
+    //   [enemyRow, enemyCol - 1], // Left
+    //   [enemyRow, enemyCol + 1], // Right
+    // ];
+
+    // const randomMove = possibleMoves[Math.floor(Math.random() * 4)];
+
+    // // Check if random move is outside bounds (ie. outside the room matrix bounds and not an empty tile) and also if it doesnt have another entity
+    // // If so, do nothing
+    // if (
+    //   randomMove[0] < 0 ||
+    //   randomMove[0] >= roomLength ||
+    //   randomMove[1] < 0 ||
+    //   randomMove[1] >= roomLength ||
+    //   roomTileMatrix[randomMove[0]][randomMove[1]] !== TILE_TYPE.FLOOR ||
+    //   roomEntityPositions.get(`${randomMove[0]},${randomMove[1]}`)
+    // ) {
+    //   // Do nothing if random move is out of bounds or not an empty tile
+    //   return;
+    // }
+
+    // // Change class of enemy sprite to animate movement
+    // const spriteDirection = getEntitySpriteDirection(enemy);
+    // if (randomMove[1] < enemyCol) {
+    //   setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.LEFT);
+    // } else if (randomMove[1] > enemyCol) {
+    //   setEntityAnimationWalk(enemy, ENTITY_SPRITE_DIRECTION.RIGHT);
+    // } else {
+    //   setEntityAnimationWalk(enemy, spriteDirection);
+    // }
+
+    // // Update room matrix to move enemy to random adjacent tile
+    // if (randomMove[0] >= 0 && randomMove[0] < roomLength) {
+    //   if (randomMove[1] >= 0 && randomMove[1] < roomLength) {
+    //     setRoomEntityPositions(
+    //       updateRoomEntityPositions(
+    //         randomMove,
+    //         [enemyRow, enemyCol],
+    //         roomEntityPositions
+    //       )
+    //     );
+
+    //     addLog({
+    //       message: (
+    //         <>
+    //           <span className="text-red-500">{enemy.name}</span> moved to tile (
+    //           {randomMove[1]}, {randomMove[0]}).
+    //         </>
+    //       ),
+    //       type: 'info',
+    //     });
+    //   }
+    // }
+
+    // return randomMove;
   };
 
   // Handle enemy attack (naive)
