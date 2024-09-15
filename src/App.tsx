@@ -498,7 +498,7 @@ function App() {
         ) : null}
 
         <div
-          className={clsx('fixed left-10 xl:w-[18%] w-[23%] max-h-[200px]', {
+          className={clsx('fixed left-10 xl:w-[20%] w-[23%] max-h-[200px]', {
             'z-[50]': isGameLogOpen,
             'z-[-10] opacity-0': !isGameLogOpen,
           })}
