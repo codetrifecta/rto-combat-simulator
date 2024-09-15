@@ -741,6 +741,7 @@ export const RoomLogic: FC<{
 
   // Get player's position in the room matrix
   const playerPosition: [number, number] = useMemo(() => {
+    // console.log('playerPosition: ', roomEntityPositions);
     if (roomEntityPositions) {
       const playerPos = getEntityPosition(player, roomEntityPositions);
       return playerPos;
@@ -1253,7 +1254,7 @@ export const RoomLogic: FC<{
 
   // Update room matrix when player moves
   // x = column, y = row
-  const handlePlayerMove = (row: number, col: number) => {
+  const handlePlayerMove = async (row: number, col: number) => {
     console.log('handlePlayerMove');
 
     // Do nothing if movement path is not empty
@@ -1262,8 +1263,11 @@ export const RoomLogic: FC<{
       return;
     }
 
+    let newPlayerPosition = playerPosition;
+    let newRoomEntityPositions = new Map([...roomEntityPositions]);
+
     // Do nothing if player is already in the tile they are trying to move to
-    if (playerPosition[0] === row && playerPosition[1] === col) {
+    if (newPlayerPosition[0] === row && newPlayerPosition[1] === col) {
       return;
     }
 
@@ -1275,14 +1279,105 @@ export const RoomLogic: FC<{
       return;
     }
 
-    const path = playerMovementPossibilities[0].get(`${row},${col}`);
+    let path = playerMovementPossibilities[0].get(`${row},${col}`);
 
-    if (!path) {
-      addLog({ message: 'Invalid movement!', type: 'error' });
+    if (path === undefined) {
+      addLog({ message: 'Invalid movement! Path is undefined', type: 'error' });
       return;
     }
 
-    setPlayerMovementPath(path);
+    // Set player sprite to walk
+    if (path.length > 0) {
+      const spriteDirection = getEntitySpriteDirection(player);
+      if (col < newPlayerPosition[1]) {
+        setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.LEFT);
+      } else if (col > newPlayerPosition[1]) {
+        setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.RIGHT);
+      } else {
+        setEntityAnimationWalk(player, spriteDirection);
+      }
+    }
+
+    while (path.length > 0) {
+      const [row, col] = path[0];
+
+      // Update player walking animation direction based on movement path if player is not already facing that direction
+      const spriteDirection = getEntitySpriteDirection(player);
+      if (
+        col < newPlayerPosition[1] &&
+        spriteDirection !== ENTITY_SPRITE_DIRECTION.LEFT
+      ) {
+        setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.LEFT);
+      } else if (
+        col > newPlayerPosition[1] &&
+        spriteDirection !== ENTITY_SPRITE_DIRECTION.RIGHT
+      ) {
+        setEntityAnimationWalk(player, ENTITY_SPRITE_DIRECTION.RIGHT);
+      }
+
+      // Update player's position in the entity positions map
+      newRoomEntityPositions = updateRoomEntityPositions(
+        [row, col],
+        newPlayerPosition,
+        newRoomEntityPositions
+      );
+      setRoomEntityPositions(newRoomEntityPositions);
+
+      addLog({
+        message: (
+          <>
+            <span className="text-green-500">{player.name}</span> moved to tile
+            ({col}, {row})
+          </>
+        ),
+        type: 'info',
+      });
+
+      newPlayerPosition = [row, col];
+
+      // Delete the first element in the path array
+      path = path.slice(1);
+      await sleep(isRoomOver ? 300 : 500);
+
+      if (path.length === 0) {
+        // Remove walking animation and set player back to idle depending on direction (left or right)
+        const entitySpriteDirection = getEntitySpriteDirection(player);
+        if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.LEFT) {
+          setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.LEFT);
+        } else if (entitySpriteDirection === ENTITY_SPRITE_DIRECTION.RIGHT) {
+          setEntityAnimationIdle(player, ENTITY_SPRITE_DIRECTION.RIGHT);
+        }
+
+        // Check if player is on a door tile and if they are, move them to the next room
+        if (!currentRoom) {
+          console.error(
+            'handlePlayerPathMovement: currentRoom is null or undefined'
+          );
+          return;
+        }
+
+        // console.log(
+        //   'playerRow',
+        //   newPlayerPosition[0],
+        //   'playerCol',
+        //   newPlayerPosition[1]
+        // );
+
+        if (
+          roomTileMatrix[newPlayerPosition[0]][newPlayerPosition[1]] ===
+          TILE_TYPE.DOOR
+        ) {
+          handlePlayerMoveToDifferentRoom(
+            roomTileMatrix[newPlayerPosition[0]][newPlayerPosition[1]],
+            currentRoom,
+            newRoomEntityPositions,
+            [newPlayerPosition[0], newPlayerPosition[1]],
+            [newPlayerPosition[0], newPlayerPosition[1]]
+          );
+        }
+      }
+    }
+
     setPlayerState({
       ...player.state,
       isMoving: false,
@@ -2655,6 +2750,7 @@ export const RoomLogic: FC<{
                 }
               }}
               onMouseEnter={() => {
+                // TODO: Only allow setting hovered tile if no entity is moving nor camera is moving
                 debouncedSetHoveredTile([rowIndex, columnIndex]);
                 if (
                   isEffectZone &&
