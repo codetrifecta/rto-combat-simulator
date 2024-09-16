@@ -404,7 +404,7 @@ export const RoomLogic: FC<{
           (status) => status.effect.canAttack === false
         );
 
-        let enemyPosition: [number, number] | undefined = getEntityPosition(
+        const enemyPosition: [number, number] | undefined = getEntityPosition(
           enemy,
           roomEntityPositions
         );
@@ -427,25 +427,34 @@ export const RoomLogic: FC<{
           });
         } else {
           // Wait for a short time before enemy can move or attack
-          await sleep(500);
+          await sleep(1000);
 
           if (!cannotMove) {
             // Move enemy to a random adjacent tile
-            enemyPosition = await handleEnemyMovement(newEnemy);
+            const [enemyAfterMove, enemyPosition] =
+              await handleEnemyMovement(newEnemy);
+
+            newEnemy = {
+              ...newEnemy,
+              ...enemyAfterMove,
+            };
+            setEnemy(newEnemy);
 
             if (!cannotAttack) {
-              // Make enemy attack player if they can attack
-              const enemyAfterAttack = await handleEnemyAttack(
-                newEnemy,
-                enemyPosition,
-                playerPosition
-              );
+              if (newEnemy.actionPoints >= 2) {
+                // Make enemy attack player if they can attack
+                const enemyAfterAttack = await handleEnemyAttack(
+                  newEnemy,
+                  enemyPosition,
+                  playerPosition
+                );
 
-              newEnemy = {
-                ...newEnemy,
-                ...enemyAfterAttack,
-              };
-              setEnemy(newEnemy);
+                newEnemy = {
+                  ...newEnemy,
+                  ...enemyAfterAttack,
+                };
+                setEnemy(newEnemy);
+              }
             } else {
               addLog({
                 message: (
@@ -470,22 +479,24 @@ export const RoomLogic: FC<{
             });
 
             // Make enemy attack player if they can attack
-            if (!cannotAttack) {
-              if (!enemyPosition) {
-                console.error('Enemy position not found!');
-                return;
-              }
-              const enemyAfterAttack = await handleEnemyAttack(
-                newEnemy,
-                enemyPosition,
-                playerPosition
-              );
+            if (enemy.actionPoints >= 2) {
+              if (!cannotAttack) {
+                if (!enemyPosition) {
+                  console.error('Enemy position not found!');
+                  return;
+                }
+                const enemyAfterAttack = await handleEnemyAttack(
+                  newEnemy,
+                  enemyPosition,
+                  playerPosition
+                );
 
-              newEnemy = {
-                ...newEnemy,
-                ...enemyAfterAttack,
-              };
-              setEnemy(newEnemy);
+                newEnemy = {
+                  ...newEnemy,
+                  ...enemyAfterAttack,
+                };
+                setEnemy(newEnemy);
+              }
             } else {
               addLog({
                 message: (
@@ -506,6 +517,7 @@ export const RoomLogic: FC<{
 
         // End enemy's turn after moving and attacking (if they can)
         // Decrease enemy's statuses' duration
+        // Increase enemy AP
         const decreasedStatuses = enemy.statuses.map((status) => {
           return {
             ...status,
@@ -530,6 +542,12 @@ export const RoomLogic: FC<{
         newEnemy = {
           ...newEnemy,
           statuses: filteredStatuses,
+        };
+
+        // Update enemy with new action points
+        newEnemy = {
+          ...newEnemy,
+          actionPoints: newEnemy.actionPoints + STARTING_ACTION_POINTS,
         };
 
         // Check for enemy defeat and log message
@@ -1106,6 +1124,12 @@ export const RoomLogic: FC<{
   const handlePlayerMove = async (row: number, col: number) => {
     console.log('handlePlayerMove');
 
+    // Set player's state to not moving to turn off effect tiles
+    setPlayerState({
+      ...player.state,
+      isMoving: false,
+    });
+
     let newPlayerPosition = playerPosition;
     let newRoomEntityPositions = new Map([...roomEntityPositions]);
 
@@ -1220,11 +1244,6 @@ export const RoomLogic: FC<{
         }
       }
     }
-
-    setPlayerState({
-      ...player.state,
-      isMoving: false,
-    });
 
     if (!isRoomOver) {
       setPlayerActionPoints(player.actionPoints - playerMovementAPCost);
@@ -1364,21 +1383,33 @@ export const RoomLogic: FC<{
   // For now, just move the enemy to a random adjacent tile
   const handleEnemyMovement = async (
     enemy: IEnemy
-  ): Promise<[number, number]> => {
+  ): Promise<[IEnemy, [number, number]]> => {
     console.log('handleEnemyMovement');
+
+    let newEnemy = { ...enemy };
+    const [playerRow, playerCol] = playerPosition;
 
     let newRoomEntityPositions = new Map([...roomEntityPositions]);
 
-    const enemyPosition = getEntityPosition(enemy, newRoomEntityPositions);
+    const enemyPosition = getEntityPosition(newEnemy, newRoomEntityPositions);
     let newEnemyPosition = enemyPosition;
+
+    // Check if enemy is already within range of player
+    const canAttackPlayer =
+      Math.abs(playerRow - enemyPosition[0]) <= newEnemy.range &&
+      Math.abs(playerCol - enemyPosition[1]) <= newEnemy.range;
+
+    if (canAttackPlayer) {
+      return [newEnemy, newEnemyPosition];
+    }
 
     if (newEnemyPosition[0] === -1 || newEnemyPosition[1] === -1) {
       addLog({ message: 'Enemy not found in room matrix!', type: 'error' });
-      return newEnemyPosition;
+      return [newEnemy, newEnemyPosition];
     }
 
     // Get enemy range and get tiles around the player's vision with the same range (one of these will be the enemy's target tile)
-    const range = enemy.range;
+    const range = newEnemy.range;
     const possibleTiles = getVisionFromEntityPosition(
       roomTileMatrix,
       playerPosition,
@@ -1386,7 +1417,6 @@ export const RoomLogic: FC<{
       newRoomEntityPositions
     );
 
-    const [playerRow, playerCol] = playerPosition;
     const possibleTilesInRange: [number, number][] = [];
 
     for (let row = 0; row < roomLength; row++) {
@@ -1394,6 +1424,7 @@ export const RoomLogic: FC<{
         if (
           possibleTiles[row][col] === true &&
           roomTileMatrix[row][col] === TILE_TYPE.FLOOR &&
+          !roomEntityPositions.has(`${row},${col}`) &&
           Math.max(Math.abs(row - playerRow), Math.abs(col - playerCol)) ===
             range
         ) {
@@ -1435,9 +1466,27 @@ export const RoomLogic: FC<{
 
     // If there is no shortest path, do nothing
     if (shortestPath.length === 0) {
-      console.log('No shortest path found for enemy', enemy.id);
-      return newEnemyPosition;
+      console.log('No shortest path found for enemy', newEnemy.id);
+      return [newEnemy, newEnemyPosition];
     }
+
+    // Shorten the path based on the enemy's available action points
+    let apCost = Math.ceil(shortestPath.length / newEnemy.movementRange);
+
+    if (apCost > newEnemy.actionPoints) {
+      shortestPath = shortestPath.slice(
+        0,
+        newEnemy.actionPoints * newEnemy.movementRange
+      );
+
+      apCost = newEnemy.actionPoints;
+    }
+
+    // Update enemy action points
+    newEnemy = {
+      ...newEnemy,
+      actionPoints: enemy.actionPoints - apCost,
+    };
 
     // Get the tile the enemy will move to
     console.log('shortestPath of enemy', enemy.id, shortestPath);
@@ -1505,7 +1554,7 @@ export const RoomLogic: FC<{
       }
     }
 
-    return newEnemyPosition;
+    return [newEnemy, newEnemyPosition];
   };
 
   // Handle enemy attack (naive)

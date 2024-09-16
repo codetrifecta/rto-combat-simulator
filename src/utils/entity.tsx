@@ -599,6 +599,9 @@ export const getEntitySpriteDirection = (entity: IEntity) => {
       'animate-entityAnimateLeft08'
     ) ||
     entitySpriteSheetContainer.classList.contains(
+      'animate-entityAnimateLeft10'
+    ) ||
+    entitySpriteSheetContainer.classList.contains(
       'animate-entityAnimateLeft20'
     ) ||
     entitySpriteSheetContainer.classList.contains(
@@ -695,14 +698,14 @@ export const setEntityAnimationWalk = (
       entitySpriteSheetContainer.style.top = topPosition;
 
       setTimeout(() => {
-        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate10');
       }, 1);
     } else {
       entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
       entitySpriteSheetContainer.style.top = topPosition;
 
       setTimeout(() => {
-        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft10');
       }, 1);
     }
   } else if (entity.entityType === ENTITY_TYPE.ENEMY) {
@@ -711,14 +714,14 @@ export const setEntityAnimationWalk = (
       entitySpriteSheetContainer.style.top = topPosition;
 
       setTimeout(() => {
-        entitySpriteSheetContainer.classList.add('animate-entityAnimate08');
+        entitySpriteSheetContainer.classList.add('animate-entityAnimate10');
       }, 1);
     } else {
       entitySpriteSheetContainer.style.left = entity.spriteSize + 'px';
       entitySpriteSheetContainer.style.top = topPosition;
 
       setTimeout(() => {
-        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft08');
+        entitySpriteSheetContainer.classList.add('animate-entityAnimateLeft10');
       }, 1);
     }
   }
@@ -872,6 +875,7 @@ const removeEntityAnimationClasses = (
   // Remove all animation classes
   entitySpriteSheetContainerElement.classList.remove('animate-entityAnimate05');
   entitySpriteSheetContainerElement.classList.remove('animate-entityAnimate08');
+  entitySpriteSheetContainerElement.classList.remove('animate-entityAnimate10');
   entitySpriteSheetContainerElement.classList.remove('animate-entityAnimate20');
   entitySpriteSheetContainerElement.classList.remove(
     'animate-entityAnimateOnce05'
@@ -888,6 +892,9 @@ const removeEntityAnimationClasses = (
   );
   entitySpriteSheetContainerElement.classList.remove(
     'animate-entityAnimateLeft08'
+  );
+  entitySpriteSheetContainerElement.classList.remove(
+    'animate-entityAnimateLeft10'
   );
   entitySpriteSheetContainerElement.classList.remove(
     'animate-entityAnimateLeft20'

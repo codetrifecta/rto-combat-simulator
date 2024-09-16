@@ -60,12 +60,14 @@ export default {
         entityAnimateOnce05: 'entityAnimate 0.5s steps(6) forwards',
         entityAnimate08: 'entityAnimate 0.8s steps(6) infinite',
         entityAnimateOnce08: 'entityAnimate 0.8s steps(6) forwards',
+        entityAnimate10: 'entityAnimate 1s steps(6) infinite',
         entityAnimate20: 'entityAnimate 2s steps(6) infinite',
 
         entityAnimateLeft05: 'entityAnimateLeft 0.5s steps(6) infinite',
         entityAnimateLeftOnce05: 'entityAnimateLeft 0.5s steps(6) forwards',
         entityAnimateLeft08: 'entityAnimateLeft 0.8s steps(6) infinite',
         entityAnimateLeftOnce08: 'entityAnimateLeft 0.8s steps(6) forwards',
+        entityAnimateLeft10: 'entityAnimateLeft 1s steps(6) infinite',
         entityAnimateLeft20: 'entityAnimateLeft 2s steps(6) infinite',
 
         floatUpAndDown: 'floatUpAndDown 1s linear infinite',
