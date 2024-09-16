@@ -498,10 +498,11 @@ function App() {
         ) : null}
 
         <div
-          className={clsx('fixed left-10 top-60 w-[23%] max-h-[200px]', {
+          className={clsx('fixed left-10 xl:w-[20%] w-[23%] max-h-[200px]', {
             'z-[50]': isGameLogOpen,
             'z-[-10] opacity-0': !isGameLogOpen,
           })}
+          style={{ bottom: PLAYER_CONTROL_PANEL_HEIGHT + 300 }}
         >
           <Logger />
         </div>
@@ -589,7 +590,7 @@ function App() {
 
         {/* Minimap */}
         <section
-          className={clsx('fixed right-10 top-60 max-h-[200px]', {
+          className={clsx('fixed right-10 top-10 max-h-[200px]', {
             'z-[50]': isMinimapOpen,
             'z-[-10] opacity-0': !isMinimapOpen,
           })}

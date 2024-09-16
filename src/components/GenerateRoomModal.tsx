@@ -498,7 +498,7 @@ export const GenerateRoomModal: FC = () => {
                 [
                   prevEnemyPositions.length.toString(),
                   prevEnemyPositions.length.toString(),
-                  ENEMY_PRESET_ID.SHADE,
+                  ENEMY_PRESET_ID.CERBERUS_PUP,
                 ],
               ])
             }

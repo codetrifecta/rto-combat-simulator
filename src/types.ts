@@ -15,6 +15,7 @@ export interface IEntity {
   statuses: IStatus[];
   damageBonus: number;
   movementRange: number;
+  actionPoints: number;
   sprite: SPRITE_ID;
   spriteSize: number;
   spritesheetRows: number;
@@ -29,7 +30,6 @@ export interface IEntity {
 export type IAllEntity = IEntity | IPlayer | IEnemy;
 
 export interface IPlayer extends IEntity {
-  actionPoints: number;
   skills: ISkill[];
   state: IPlayerState;
   equipment: {

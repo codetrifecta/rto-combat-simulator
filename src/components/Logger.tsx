@@ -1,9 +1,9 @@
-import { FC, forwardRef, useEffect, useRef } from "react";
+import { FC, forwardRef, useEffect, useRef } from 'react';
 // import { ROOM_LENGTH, TILE_SIZE } from "../constants";
-import { useLogStore } from "../store/log";
-import { ILog } from "../types";
-import clsx from "clsx";
-import { useGameStateStore } from "../store/game";
+import { useLogStore } from '../store/log';
+import { ILog } from '../types';
+import clsx from 'clsx';
+import { useGameStateStore } from '../store/game';
 
 export const Logger: FC = () => {
   const { logs } = useLogStore();
@@ -53,11 +53,12 @@ export const Logger: FC = () => {
 };
 
 const LogItem = forwardRef<HTMLDivElement, { log: ILog }>(({ log }, ref) => {
-  const bgColor = log.type === "info" ? "bg-neutral-800" : "bg-red-950";
+  const bgColor = log.type === 'info' ? 'bg-neutral-800' : 'bg-red-950';
 
   return (
-    <div className={clsx("mb-2 rounded-md py-1 px-3", bgColor)} ref={ref}>
+    <div className={clsx('mb-2 rounded-md py-1 px-3', bgColor)} ref={ref}>
       <p className="text-left text-white"> {log.message}</p>
     </div>
   );
 });
+LogItem.displayName = 'LogItem';

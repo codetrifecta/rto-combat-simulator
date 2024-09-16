@@ -59,7 +59,7 @@ const createTutorialFloor = () => {
     southDoor: true,
     enemies: [
       {
-        ...ENEMY_PRESETS[ENEMY_PRESET_ID.INFERNAL_MINOTAUR],
+        ...ENEMY_PRESETS[ENEMY_PRESET_ID.ABYSSAL_CYCLOPEAN_WRAITH],
         id: 4,
       },
     ],
@@ -98,16 +98,26 @@ const createTutorialFloor = () => {
     enemies: [
       {
         ...ENEMY_PRESETS[ENEMY_PRESET_ID.STYGIAN_WRAITH],
+        id: 1,
+      },
+      {
+        ...ENEMY_PRESETS[ENEMY_PRESET_ID.STYGIAN_WRAITH],
         id: 2,
       },
       {
-        ...ENEMY_PRESETS[ENEMY_PRESET_ID.ABYSSAL_CYCLOPEAN_WRAITH],
+        ...ENEMY_PRESETS[ENEMY_PRESET_ID.STYGIAN_WRAITH],
         id: 3,
+      },
+      {
+        ...ENEMY_PRESETS[ENEMY_PRESET_ID.INFERNAL_MINOTAUR],
+        id: 4,
       },
     ],
     roomEntityPositions: new Map([
-      ['8,6', [ENTITY_TYPE.ENEMY, 2]],
-      ['4,10', [ENTITY_TYPE.ENEMY, 3]],
+      ['8,6', [ENTITY_TYPE.ENEMY, 1]],
+      ['10,18', [ENTITY_TYPE.ENEMY, 2]],
+      ['16,14', [ENTITY_TYPE.ENEMY, 3]],
+      ['4,10', [ENTITY_TYPE.ENEMY, 4]],
     ]),
     roomTileMatrix: [
       [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
@@ -145,8 +155,20 @@ const createTutorialFloor = () => {
         ...ENEMY_PRESETS[ENEMY_PRESET_ID.CERBERUS_PUP],
         id: 1,
       },
+      {
+        ...ENEMY_PRESETS[ENEMY_PRESET_ID.CERBERUS_PUP],
+        id: 2,
+      },
+      {
+        ...ENEMY_PRESETS[ENEMY_PRESET_ID.CERBERUS_PUP],
+        id: 3,
+      },
     ],
-    roomEntityPositions: new Map([['12,9', [ENTITY_TYPE.ENEMY, 1]]]),
+    roomEntityPositions: new Map([
+      ['12,9', [ENTITY_TYPE.ENEMY, 1]],
+      ['5,14', [ENTITY_TYPE.ENEMY, 2]],
+      ['16,16', [ENTITY_TYPE.ENEMY, 3]],
+    ]),
     roomTileMatrix: [
       [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
       [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
