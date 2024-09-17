@@ -56,7 +56,7 @@ export const Compendium: FC = () => {
           {skill.damageMultiplier > 0 ? (
             <p>Damage Multiplier: STR * {skill.damageMultiplier}</p>
           ) : null}
-          {skill.range > 0 ? <p>Range: {skill.range}</p> : null}
+          <p>Range: {skill.range > 0 ? skill.range : 'Self'}</p>
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>
@@ -70,7 +70,7 @@ export const Compendium: FC = () => {
           {skill.damageMultiplier > 0 ? (
             <p>Damage Multiplier: INT * {skill.damageMultiplier}</p>
           ) : null}
-          {skill.range > 0 ? <p>Range: {skill.range}</p> : null}
+          <p>Range: {skill.range > 0 ? skill.range : 'Self'}</p>
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>
@@ -81,7 +81,7 @@ export const Compendium: FC = () => {
           <h2>{skill.name}</h2>
           <p>{tagString}</p>
           <p>{skill.description}</p>
-          {skill.range > 0 ? <p>Range: {skill.range}</p> : null}
+          <p>Range: {skill.range > 0 ? skill.range : 'Self'}</p>
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
         </Tooltip>

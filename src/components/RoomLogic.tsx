@@ -37,6 +37,7 @@ import {
   getEntitySpriteDirection,
   getPlayerTotalDefense,
   getPlayerTotalIntelligence,
+  getPlayerWeaponDamage,
   handlePlayerEndTurn,
   healEntity,
   isEnemy,
@@ -95,14 +96,12 @@ export const RoomLogic: FC<{
     playerMovementAPCost,
     setPlayerMovementAPCost,
     getPlayer,
-    getPlayerBaseAttackDamage,
     getPlayerLifestealMultiplier,
     setPlayer,
     setPlayerActionPoints,
     setPlayerState,
   } = usePlayerStore();
   const player = getPlayer();
-  const playerBaseAttackDamage = getPlayerBaseAttackDamage();
   const playerLifestealMultiplier = getPlayerLifestealMultiplier();
 
   const { enemies, setEnemies, setEnemy } = useEnemyStore();
@@ -838,7 +837,8 @@ export const RoomLogic: FC<{
       }
 
       // Compute base attack damage based on the higher of player's strength or intelligence
-      let totalDamage = playerBaseAttackDamage + statusDamageBonus;
+      const weaponDamage = getPlayerWeaponDamage(newPlayer);
+      let totalDamage = weaponDamage + statusDamageBonus;
 
       // Check if enemy has any statuses that affect damage taken
       // Check for wounded status
