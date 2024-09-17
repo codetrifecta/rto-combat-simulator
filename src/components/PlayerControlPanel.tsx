@@ -89,6 +89,7 @@ export const PlayerControlPanel: FC = () => {
               {Math.round(totalStrength * skill.damageMultiplier) + bonusDamage}
             </p>
           ) : null}
+          <p>Range : {skill.range > 0 ? skill.range : 'Self'}</p>
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
           {skill.cooldownCounter > 0 && (
@@ -114,6 +115,7 @@ export const PlayerControlPanel: FC = () => {
                 bonusDamage}
             </p>
           ) : null}
+          <p>Range : {skill.range > 0 ? skill.range : 'Self'}</p>
           <p>Cost: {skill.cost} AP</p>
           <p>Cooldown: {skill.cooldown} turns</p>
           {skill.cooldownCounter > 0 && (
@@ -343,8 +345,8 @@ export const PlayerControlPanel: FC = () => {
                     <>
                       <h2>Weapon attack</h2>
                       <h3>Weapon Equipped: {player.equipment.weapon.name}</h3>
-                      <p>Base DMG: {weaponDamage}</p>
-                      <p>Bonus DMG: {bonusDamage}</p>
+                      {/* <p>Base DMG: {weaponDamage}</p>
+                      <p>Bonus DMG: {bonusDamage}</p> */}
                       <p>Damage: {weaponDamage + bonusDamage}</p>
                     </>
                   ) : (
